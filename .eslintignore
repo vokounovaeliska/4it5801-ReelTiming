@@ -1,0 +1,8 @@
+/.git
+.eslintrc.cjs
+build
+dist
+node_modules
+
+/frontend/src/gql/*.ts
+/backend/src/types/graphqlTypesGenerated.ts

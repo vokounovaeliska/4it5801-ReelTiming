@@ -1,0 +1,5 @@
+package.json
+
+/backend/schema.graphql
+/backend/dist
+/frontend/build

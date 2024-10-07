@@ -1,0 +1,72 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./vite-entry.cjs",
+  "scripts": {
+    "dev": "vite",
+    "build": "run-s \"build:*\"",
+    "build:tsc": "tsc",
+    "build:vite": "vite build",
+    "test": "vitest",
+    "download-schema": "run-s \"download-schema:*\"",
+    "download-schema:script": "node ./bin/download-schema.mjs",
+    "download-schema:format": "prettier --write schema.graphql",
+    "graphql": "run-s download-schema \"graphql:*\"",
+    "graphql:codegen": "graphql-codegen",
+    "graphql-watch": "graphql-codegen --watch",
+    "preview": "vite preview",
+    "postinstall": "yarn chakra-cli tokens src/shared/design-system/theme/index.ts"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.11.8",
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@hookform/resolvers": "~3.9.0",
+    "apollo-upload-client": "^18.0.1",
+    "cross-fetch": "^4.0.0",
+    "framer-motion": "^11.5.4",
+    "graphql-tag": "^2.12.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.0",
+    "react-icons": "^5.3.0",
+    "react-router-dom": "6.26.2",
+    "zod": "^3.22.5"
+  },
+  "devDependencies": {
+    "@chakra-ui/cli": "^2.4.1",
+    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/client-preset": "^4.3.3",
+    "@graphql-codegen/typescript": "^4.0.9",
+    "@graphql-inspector/graphql-cli-common": "^2.9.0",
+    "@parcel/watcher": "^2.4.1",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.5.1",
+    "@types/apollo-upload-client": "^18.0.0",
+    "@types/node": "^20.16.5",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.0.4",
+    "jsdom": "^25.0.0",
+    "node-fetch": "^3.3.2",
+    "vite": "^5.4.4",
+    "vitest": "^1.6.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

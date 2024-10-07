@@ -1,0 +1,21 @@
+type AuthInfo {
+  token: String!
+  user: User!
+}
+
+type Mutation {
+  signIn(email: String!, password: String!): AuthInfo!
+  signUp(email: String!, name: String!, password: String!): AuthInfo!
+}
+
+type Query {
+  _empty: String!
+  user(id: String!): User
+  users: [User!]!
+}
+
+type User {
+  email: String!
+  id: ID!
+  name: String!
+}

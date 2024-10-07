@@ -1,0 +1,7 @@
+projects:
+  frontend:
+    schema: 'frontend/schema.graphql'
+    documents: 'frontend/src/**/*.{ts,txs}'
+  backend:
+    schema: 'backend/src/graphql/**/*.graphql'
+    documents: 'backend/src/**/*.{ts}'
