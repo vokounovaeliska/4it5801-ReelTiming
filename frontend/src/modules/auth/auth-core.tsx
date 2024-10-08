@@ -99,7 +99,9 @@ function getStorageState(defaultState: AuthState): AuthState {
     if (token && user && user.id && user.name) {
       return { token, user };
     }
-  } catch {}
+  } catch {
+    /* empty */
+  }
 
   return defaultState;
 }

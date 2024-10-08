@@ -1,14 +1,17 @@
 module.exports = {
   root: true,
-  env: { browser: true, es2020: true },
-  extends: ['react-app'],
+  env: { browser: true, es2020: true, node: true },
+  extends: ['react-app', 'eslint:recommended'],
   parser: '@typescript-eslint/parser',
-  plugins: ['react-refresh', 'simple-import-sort', 'import'],
+  plugins: ['react-refresh', 'simple-import-sort', 'import', 'prettier'],
   overrides: [
     {
       files: ['*.ts', '*.tsx'],
       rules: {
         '@typescript-eslint/no-explicit-any': 'warn',
+        // might get annoying, discuss ?
+        // '@typescript-eslint/explicit-function-return-type': 'warn',
+        // '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       },
     },
     {
@@ -45,7 +48,20 @@ module.exports = {
           'warn',
           { allowConstantExport: true },
         ],
+        // 'react/no-unused-prop-types': 'warn', // warn if props never user
+        // 'react/no-unused-state': 'warn', // warn if vars never used
+        // 'react/jsx-equals-spacing': ['error', 'never'] // no space around =
       },
     },
   ],
+  rules: {
+    'prettier/prettier': [
+      'warn',
+      {
+        singleQuote: true,
+        trailingComma: 'all',
+        semi: true,
+      },
+    ],
+  },
 };
