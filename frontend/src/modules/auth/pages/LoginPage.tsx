@@ -1,5 +1,3 @@
-// @frontend/modules/auth/pages/LoginPage.tsx
-
 import React from 'react';
 import {
   Box,
@@ -72,7 +70,11 @@ const LoginPage: React.FC = () => {
             </Button>
             <Text textAlign="center" mt={2}>
               Don't have an account?{' '}
-              <Button variant="link" onClick={handleRegister} colorScheme="orange">
+              <Button
+                variant="link"
+                onClick={handleRegister}
+                colorScheme="orange"
+              >
                 Register
               </Button>
             </Text>
