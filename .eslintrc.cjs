@@ -9,9 +9,11 @@ module.exports = {
       files: ['*.ts', '*.tsx'],
       rules: {
         '@typescript-eslint/no-explicit-any': 'warn',
-        // might get annoying, discuss ?
         // '@typescript-eslint/explicit-function-return-type': 'warn',
-        // '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+        '@typescript-eslint/no-unused-vars': [
+          'warn',
+          { argsIgnorePattern: '^_' },
+        ],
       },
     },
     {
@@ -48,8 +50,8 @@ module.exports = {
           'warn',
           { allowConstantExport: true },
         ],
-        // 'react/no-unused-prop-types': 'warn', // warn if props never user
-        // 'react/no-unused-state': 'warn', // warn if vars never used
+        'react/no-unused-prop-types': 'warn', // warn if props never user
+        'react/no-unused-state': 'warn', // warn if vars never used
         // 'react/jsx-equals-spacing': ['error', 'never'] // no space around =
       },
     },

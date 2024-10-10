@@ -17,6 +17,7 @@
     "lint:fix": "run-s \"lint --fix --cache\""
   },
   "devDependencies": {
+    "@chakra-ui/cli": "^2.5.5",
     "@typescript-eslint/eslint-plugin": "^7.13.0",
     "@typescript-eslint/parser": "^7.13.0",
     "date-fns": "^3.6.0",
