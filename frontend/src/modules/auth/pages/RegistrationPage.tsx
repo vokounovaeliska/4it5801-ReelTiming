@@ -11,20 +11,16 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
-const LoginPage: React.FC = () => {
+const RegistrationPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleRegister = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log('Logging in...');
+    console.log('Registering...');
   };
 
-  const handleRegister = () => {
-    navigate('/auth/register');
-  };
-
-  const handleForgotPassword = () => {
-    console.log('Forgot password clicked');
+  const handleLoginRedirect = () => {
+    navigate('/auth/login');
   };
 
   return (
@@ -43,12 +39,11 @@ const LoginPage: React.FC = () => {
         borderRadius="md"
         boxShadow="lg"
         bg="white"
-        mb={4}
       >
         <Heading as="h2" size="xl" textAlign="center" mb={4}>
-          Login
+          Register
         </Heading>
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleRegister}>
           <Stack spacing={4}>
             <FormControl id="email" isRequired>
               <FormLabel>Email</FormLabel>
@@ -58,25 +53,21 @@ const LoginPage: React.FC = () => {
               <FormLabel>Password</FormLabel>
               <Input type="password" placeholder="Enter your password" />
             </FormControl>
+            <FormControl id="confirm-password" isRequired>
+              <FormLabel>Confirm Password</FormLabel>
+              <Input type="password" placeholder="Confirm your password" />
+            </FormControl>
             <Button type="submit" colorScheme="orange" width="full" mt={4}>
-              Login
-            </Button>
-            <Button
-              variant="link"
-              onClick={handleForgotPassword}
-              colorScheme="orange"
-              textAlign="center"
-            >
-              Forgot Password?
+              Register
             </Button>
             <Text textAlign="center" mt={2}>
-              Don't have an account?{' '}
+              Already have an account?{' '}
               <Button
                 variant="link"
-                onClick={handleRegister}
+                onClick={handleLoginRedirect}
                 colorScheme="orange"
               >
-                Register
+                Login
               </Button>
             </Text>
           </Stack>
@@ -86,4 +77,4 @@ const LoginPage: React.FC = () => {
   );
 };
 
-export default LoginPage;
+export default RegistrationPage;
