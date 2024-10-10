@@ -23,6 +23,7 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.0.0",
     "@apollo/client": "^3.11.8",
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.13.3",
