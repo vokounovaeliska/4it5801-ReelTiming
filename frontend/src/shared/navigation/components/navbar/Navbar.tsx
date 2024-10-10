@@ -31,7 +31,7 @@ const Navbar: React.FC = () => {
 
   return (
     <Box bg="#2D3748" p={4} color="white">
-      <Flex align="center" justify="flex-start">
+      <Flex align="center" justify={'flex-start'}>
         {/* Logo */}
         <Image src={logo} alt="Logo" boxSize="60px" mr={4} />
         {/* App Name */}
@@ -62,6 +62,7 @@ const Navbar: React.FC = () => {
               onClick={toggleDrawer}
               aria-label="Open Menu"
               colorScheme="orange"
+              ml={'auto'}
             />
             <Drawer
               isOpen={isOpen}

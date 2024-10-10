@@ -16,7 +16,6 @@ const LoginPage: React.FC = () => {
 
   const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Add your login logic here
     console.log('Logging in...');
   };
 
@@ -31,6 +30,7 @@ const LoginPage: React.FC = () => {
   return (
     <Box
       display="flex"
+      flexDirection="column"
       alignItems="center"
       justifyContent="center"
       height="100vh"
@@ -43,6 +43,7 @@ const LoginPage: React.FC = () => {
         borderRadius="md"
         boxShadow="lg"
         bg="white"
+        mb={4}
       >
         <Heading as="h2" size="xl" textAlign="center" mb={4}>
           Login
@@ -85,4 +86,4 @@ const LoginPage: React.FC = () => {
   );
 };
 
-export default LoginPage; // Make sure this is the default export
+export default LoginPage;
