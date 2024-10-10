@@ -3,4 +3,5 @@ export const route = {
   hello: () => `/helloworld`,
   signIn: () => `/auth/signin`,
   signUp: () => `/auth/signup`,
+  login: () => `/auth/login`,
 };

@@ -1,5 +1,6 @@
 import { Route, Routes as RouterRoutes } from 'react-router-dom';
 
+import LoginPage from '@frontend/modules/auth/pages/LoginPage';
 import { SignInPage } from '@frontend/modules/auth/pages/SignInPage';
 import { SignUpPage } from '@frontend/modules/auth/pages/SignUpPage';
 import { HelloPage } from '@frontend/modules/hello/pages/HelloPage';
@@ -15,6 +16,7 @@ export function Routes() {
       <Route path={route.hello()} element={<HelloPage />} />
       <Route path={route.signIn()} element={<SignInPage />} />
       <Route path={route.signUp()} element={<SignUpPage />} />
+      <Route path={route.login()} element={<LoginPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </RouterRoutes>
   );
