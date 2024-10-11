@@ -11,6 +11,7 @@ export function TopNavigation() {
       <RouterNavLink to={route.home()}>Home</RouterNavLink>
       {user === null ? (
         <>
+          <RouterNavLink to={route.hello()}>HelloWorld</RouterNavLink>
           <RouterNavLink to={route.signIn()}>Sign In</RouterNavLink>
           <RouterNavLink to={route.signUp()}>Sign Up</RouterNavLink>
         </>
