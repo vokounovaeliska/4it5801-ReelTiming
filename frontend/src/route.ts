@@ -5,4 +5,5 @@ export const route = {
   signUp: () => `/auth/signup`,
   login: () => `/auth/login`,
   register: () => `/auth/register`,
+  terms: () => `/term`,
 };

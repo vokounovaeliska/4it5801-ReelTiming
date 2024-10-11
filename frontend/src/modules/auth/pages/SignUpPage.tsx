@@ -1,14 +1,13 @@
-import { useMutation } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 
-import { gql } from '@frontend/gql';
 import { useAuth } from '@frontend/modules/auth';
 import { Box, Button } from '@frontend/shared/design-system';
 import { TopNavigation } from '@frontend/shared/navigation/organisms/TopNavigation';
 
 const SIGNUP_MUTATION = gql(/* GraphQL */ `
-  mutation SignUp($email: String!, $name: String!, $password: String!) {
-    signUp(email: $email, name: $name, password: $password) {
+  mutation login($email: String!, $name: String!, $password: String!) {
+    login(email: $email, name: $name, password: $password) {
       user {
         id
         name
@@ -19,10 +18,10 @@ const SIGNUP_MUTATION = gql(/* GraphQL */ `
   }
 `);
 
-export function SignUpPage() {
+export function LoginPage() {
   const auth = useAuth();
   const navigate = useNavigate();
-  const [signUpRequest, signUpRequestState] = useMutation(SIGNUP_MUTATION, {
+  const [loginReques, loginRequestState] = useMutation(SIGNUP_MUTATION, {
     onCompleted: ({ signUp: { user, token } }) => {
       auth.signIn({ token, user });
       navigate('/');
@@ -36,7 +35,7 @@ export function SignUpPage() {
       <Box p="8">
         <Button
           onClick={() => {
-            signUpRequest({
+            loginReques({
               variables: {
                 email: 'a@a.com',
                 name: 'John Doe',
@@ -44,12 +43,12 @@ export function SignUpPage() {
               },
             });
           }}
-          isLoading={signUpRequestState.loading}
+          isLoading={loginRequestState.loading}
         >
           Sign Up
         </Button>
-        {signUpRequestState.error ? (
-          <Box color="red">{signUpRequestState.error.message}</Box>
+        {loginRequestState.error ? (
+          <Box color="red">{loginRequestState.error.message}</Box>
         ) : null}
       </Box>
     </Box>

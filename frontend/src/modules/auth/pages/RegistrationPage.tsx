@@ -11,6 +11,21 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
+import { gql } from '@frontend/gql';
+
+const SIGNUP_MUTATION = gql(/* GraphQL */ `
+  mutation login($email: String!, $name: String!, $password: String!) {
+    login(email: $email, name: $name, password: $password) {
+      user {
+        id
+        name
+        email
+      }
+      token
+    }
+  }
+`);
+
 const RegistrationPage: React.FC = () => {
   const navigate = useNavigate();
 

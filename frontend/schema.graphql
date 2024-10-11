@@ -5,7 +5,7 @@ type AuthInfo {
 
 type Mutation {
   signIn(email: String!, password: String!): AuthInfo!
-  signUp(email: String!, name: String!, password: String!): AuthInfo!
+  login(email: String!, name: String!, password: String!): AuthInfo!
 }
 
 type Query {
