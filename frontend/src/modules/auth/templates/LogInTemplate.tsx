@@ -1,4 +1,4 @@
-import { Box, Center, Link, Paragraph } from '@frontend/shared/design-system';
+import { Center, Link, Paragraph } from '@frontend/shared/design-system';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
@@ -24,15 +24,17 @@ export function LogInTemplate({
         onSubmit={onSubmit}
       >
         <Center>
-          <Link fontSize={'l'} href="/" >Forgotten password?</Link>
-          </Center>
-          <Center>
+          <Link fontSize={'l'} href="/">
+            Forgotten password?
+          </Link>
+        </Center>
+        <Center>
           <Paragraph>
             Don't have account? <Link href="/auth/signup">Sign up</Link>
           </Paragraph>
         </Center>
       </LogInForm>
-      <Footer/>
-      </>
+      <Footer />
+    </>
   );
 }

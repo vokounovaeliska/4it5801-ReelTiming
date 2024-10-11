@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   ErrorBanner,
-  Flex,
   Heading,
   Stack,
 } from '@frontend/shared/design-system';
