@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
-const LoginPage: React.FC = () => {
+export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
@@ -85,5 +85,3 @@ const LoginPage: React.FC = () => {
     </Box>
   );
 };
-
-export default LoginPage;

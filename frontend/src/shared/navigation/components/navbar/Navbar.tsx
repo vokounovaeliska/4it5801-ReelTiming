@@ -13,9 +13,14 @@ import {
   Heading,
   IconButton,
   Image,
+  Stack,
   useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
+
+import { route } from '@frontend/route';
+
+import { RouterNavLink } from '../../atoms';
 
 import logo from './logo/logopng.png';
 
@@ -39,22 +44,21 @@ const Navbar: React.FC = () => {
           ReelTiming
         </Heading>
         {/* Navigation Buttons */}
-        {isDesktop ? (
-          <>
-            <Button
-              colorScheme="orange"
-              bg="orange.600"
-              textColor={'white'}
-              mr={10}
-              ml={20}
-            >
-              My Projects
-            </Button>
-            <Button colorScheme="orange" bg="orange.600" textColor={'white'}>
-              Timesheet
-            </Button>
-          </>
-        ) : (
+        <Stack direction="row" display={{ base: 'none', md: 'flex' }}>
+          <Button
+            as={RouterNavLink}
+            to={route.login()}
+            colorScheme="orange"
+            bg="orange.600"
+            textColor={'white'}
+          >
+            My Projects
+          </Button>
+          <Button colorScheme="orange" bg="orange.600" textColor={'white'}>
+            Timesheet
+          </Button>
+        </Stack>
+        <Box display={{ base: 'block', md: 'none' }}>
           <>
             <IconButton
               ref={btnRef}
@@ -89,7 +93,7 @@ const Navbar: React.FC = () => {
               </DrawerOverlay>
             </Drawer>
           </>
-        )}
+        </Box>
       </Flex>
     </Box>
   );
