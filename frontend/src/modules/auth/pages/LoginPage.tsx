@@ -12,8 +12,7 @@ const SIGNIN_MUTATION = gql(/* GraphQL */ `
       user {
         id
         name
-        userName
-        profileImageUrl
+        email
       }
       token
     }
