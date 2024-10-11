@@ -84,16 +84,17 @@ export function LogInForm({
             />
           </Stack>
           <Button
+            w={'full'}
             size="lg"
             type="submit"
             isLoading={isLoading}
             mt="4"
             mb="2"
             colorScheme="orange"
-            bg="orange.600"
+            bg="orange.500"
             textColor={'white'}
           >
-            Sign In
+            Login
           </Button>
           {children}
         </Form>
