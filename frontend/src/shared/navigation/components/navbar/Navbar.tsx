@@ -10,14 +10,16 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Flex,
-  Heading,
   IconButton,
-  Image,
-  useBreakpointValue,
+  Stack,
   VStack,
 } from '@chakra-ui/react';
 
-import logo from './logo/logopng.png';
+import { route } from '@frontend/route';
+
+import { ReactRouterLink } from '../../atoms';
+import AppHeading from '../AppHeading';
+import Logo from '../logo/Logo';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -27,34 +29,37 @@ const Navbar: React.FC = () => {
     setIsOpen(!isOpen);
   };
 
-  const isDesktop = useBreakpointValue({ base: false, md: true });
-
   return (
     <Box bg="#2D3748" p={4} color="white">
       <Flex align="center" justify={'flex-start'}>
-        {/* Logo */}
-        <Image src={logo} alt="Logo" boxSize="60px" mr={4} />
-        {/* App Name */}
-        <Heading as="h1" size="lg" color="white" mr={4}>
-          ReelTiming
-        </Heading>
-        {/* Navigation Buttons */}
-        {isDesktop ? (
-          <>
-            <Button
-              colorScheme="orange"
-              bg="orange.600"
-              textColor={'white'}
-              mr={10}
-              ml={20}
-            >
-              My Projects
-            </Button>
-            <Button colorScheme="orange" bg="orange.600" textColor={'white'}>
-              Timesheet
-            </Button>
-          </>
-        ) : (
+        <Flex align={'center'}>
+          <Logo />
+          <AppHeading />
+        </Flex>
+
+        <Stack direction="row" display={{ base: 'none', md: 'flex' }}>
+          <Button
+            as={ReactRouterLink}
+            to={route.login()} //todo route to myprojectspage
+            colorScheme="orange"
+            bg="orange.600"
+            textColor={'white'}
+            aria-label="Button going to My Projects page"
+          >
+            My Projects
+          </Button>
+          <Button
+            as={ReactRouterLink}
+            to={route.login()} //todo route to timesheet
+            colorScheme="orange"
+            bg="orange.600"
+            textColor={'white'}
+            aria-label="Button going to Timesheet page"
+          >
+            Timesheet
+          </Button>
+        </Stack>
+        <Box display={{ base: 'block', md: 'none' }}>
           <>
             <IconButton
               ref={btnRef}
@@ -89,7 +94,7 @@ const Navbar: React.FC = () => {
               </DrawerOverlay>
             </Drawer>
           </>
-        )}
+        </Box>
       </Flex>
     </Box>
   );
