@@ -1,5 +1,7 @@
+export { Heading, type HeadingProps } from './Heading';
 export { Link, type LinkProps } from './Link';
 export { NavLink, type NavLinkProps } from './NavLink';
+export { Paragraph, type ParagraphProps } from './Paragraph';
 export {
   Alert,
   AlertDescription,
@@ -60,3 +62,4 @@ export {
   type TextareaProps,
   UnorderedList,
 } from '@chakra-ui/react';
+
