@@ -19,6 +19,7 @@ import { buildSchema } from 'type-graphql';
 import { MOCKS, PORT } from '@backend/config';
 import { getConnection } from '@backend/db/db';
 import { EmptyResolver } from '@backend/graphql/modules/empty/emptyResolver';
+// import { ProjectResolver } from '@backend/graphql/modules/project/projectResolver';
 import { UserResolver } from '@backend/graphql/modules/user/userResolver';
 import { parseAndVerifyJWT } from '@backend/libs/jwt';
 import { mockResolvers } from '@backend/mocks/mocks';
@@ -31,6 +32,7 @@ const init = async () => {
 
   const schema = await buildSchema({
     resolvers: [EmptyResolver, UserResolver],
+    // resolvers: [EmptyResolver, UserResolver, ProjectResolver],
     emitSchemaFile: true,
   });
 

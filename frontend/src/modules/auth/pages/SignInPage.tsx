@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { gql } from '@frontend/gql';
 import { useAuth } from '@frontend/modules/auth';
 import { Box, Button } from '@frontend/shared/design-system';
-import { TopNavigation } from '@frontend/shared/navigation/organisms/TopNavigation';
+// import { TopNavigation } from '@frontend/shared/navigation/organisms/TopNavigation';
 
 const SIGNIN_MUTATION = gql(/* GraphQL */ `
   mutation SignIn($email: String!, $password: String!) {
@@ -33,7 +33,7 @@ export function SignInPage() {
 
   return (
     <Box>
-      <TopNavigation />
+      {/* <TopNavigation /> */}
       <Box p="8">
         <Button
           onClick={() => {

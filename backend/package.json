@@ -14,7 +14,10 @@
     "postbuild": "nodetouch tmp/restart.txt",
     "db:migrations:generate": "drizzle-kit generate",
     "db:migrate": "ts-node -r dotenv-flow/config ./scripts/migrate.ts",
-    "db:seed": "ts-node -r dotenv-flow/config ./scripts/seed.ts"
+    "db:seed": "ts-node -r dotenv-flow/config ./scripts/seed.ts",
+
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@apollo/server": "^4.11.0",
@@ -50,6 +53,8 @@
     "touch": "^3.1.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "~5.5.4"
+    "typescript": "~5.5.4",
+
+    "prettier": "^3.3.3"
   }
 }
