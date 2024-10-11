@@ -18,7 +18,33 @@ const SIGNUP_MUTATION = gql(/* GraphQL */ `
   }
 `);
 
-export function LoginPage() {
+// const SIGNUP_MUTATION = gql(/* GraphQL */ `
+//   mutation SignUp(
+//     $email: String!
+//     $name: String!
+//     $password: String!
+//     $userName: String!
+//     $profileImage: Upload
+//   ) {
+//     signUp(
+//       email: $email
+//       name: $name
+//       password: $password
+//       userName: $userName
+//       profileImage: $profileImage
+//     ) {
+//       user {
+//         id
+//         name
+//         userName
+//         profileImageUrl
+//       }
+//       token
+//     }
+//   }
+// `);
+
+export function SignUpPage() {
   const auth = useAuth();
   const navigate = useNavigate();
   const [loginReques, loginRequestState] = useMutation(SIGNUP_MUTATION, {

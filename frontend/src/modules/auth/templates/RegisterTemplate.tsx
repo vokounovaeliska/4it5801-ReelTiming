@@ -1,28 +1,27 @@
-import { Box, Heading } from '@chakra-ui/react';
+import { Box, Button, Heading, Text } from '@chakra-ui/react';
 
 import { route } from '@frontend/route';
-import { RouterLink } from '@frontend/shared/navigation/atoms';
+import { RouterLink, RouterNavLink } from '@frontend/shared/navigation/atoms';
 import { TopNavigation } from '@frontend/shared/navigation/organisms/TopNavigation';
 
 import { RegisterForm } from '../organisms/RegistrationForm';
 
-export type SignUpTemplateProps = {
+export type RegisterProps = {
   isLoading: boolean;
   error?: Error;
   onSubmit: (data: {
     email: string;
     password: string;
-    userName: string;
     name: string;
-    profileImage: File | null;
+    passwordConfirmation: string;
   }) => void;
 };
 
-export function SignUpTemplate({
+export function RegisterTemplate({
   isLoading,
   error,
   onSubmit,
-}: SignUpTemplateProps) {
+}: RegisterProps) {
   return (
     <>
       <TopNavigation />
@@ -34,7 +33,18 @@ export function SignUpTemplate({
         onSubmit={onSubmit}
       >
         <Box>
-          or <RouterLink to={route.signIn()}>Sign In</RouterLink>
+          <Text textAlign="center" mt={2}>
+            Already have an account?{' '}
+            <Button
+              as={RouterNavLink}
+              to={'auth/login'}
+              variant="link"
+              colorScheme="orange"
+            >
+              Login
+            </Button>
+          </Text>
+          or <RouterLink to={route.login()}>Sign In</RouterLink>
         </Box>
       </RegisterForm>
     </>
