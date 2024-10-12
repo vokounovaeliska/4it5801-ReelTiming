@@ -1,8 +1,7 @@
-import { Box, Button, Heading, Text } from '@chakra-ui/react';
+import { Box, Button, Text } from '@chakra-ui/react';
 
 import { route } from '@frontend/route';
 import { RouterLink, RouterNavLink } from '@frontend/shared/navigation/atoms';
-import { TopNavigation } from '@frontend/shared/navigation/organisms/TopNavigation';
 
 import { RegisterForm } from '../organisms/RegistrationForm';
 
@@ -24,9 +23,6 @@ export function RegisterTemplate({
 }: RegisterProps) {
   return (
     <>
-      <TopNavigation />
-      <Heading mb="4">Sign Up</Heading>
-
       <RegisterForm
         isLoading={isLoading}
         errorMessage={error?.message}

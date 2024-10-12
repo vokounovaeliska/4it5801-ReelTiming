@@ -1,17 +1,21 @@
 import { type ReactNode } from 'react';
-import { Heading } from '@chakra-ui/react';
+import { Heading, HStack, Link } from '@chakra-ui/react';
 
 import { route } from '@frontend/route';
 import {
   Box,
   Button,
-  FormControl,
-  FormLabel,
-  Input,
+  ErrorBanner,
   Stack,
 } from '@frontend/shared/design-system';
-import { CheckboxField, Form, zod } from '@frontend/shared/forms';
-import { RouterLink } from '@frontend/shared/navigation/atoms';
+import {
+  CheckboxField,
+  Form,
+  InputField,
+  zod,
+  zodResolver,
+} from '@frontend/shared/forms';
+import { RouterLink, RouterNavLink } from '@frontend/shared/navigation/atoms';
 
 const schema = zod
   .object({
@@ -21,9 +25,9 @@ const schema = zod
     passwordConfirmation: zod
       .string()
       .nonempty({ message: 'Password confirmation is required' }),
-    // terms: zod.literal<boolean>(true, {
-    //   errorMap: () => ({ message: 'You must accept the terms and conditions' }),
-    // }),
+    terms: zod.literal<boolean>(true, {
+      errorMap: () => ({ message: 'You must accept the terms and conditions' }),
+    }),
   })
   .refine((data) => data.password === data.passwordConfirmation, {
     message: 'Passwords must match',
@@ -37,7 +41,7 @@ const initialValues: FormValues = {
   name: '',
   password: '',
   passwordConfirmation: '',
-  //   terms: false,
+  terms: false,
 };
 
 export type RegisterProps = {
@@ -70,8 +74,8 @@ export function RegisterForm({
       p={4}
     >
       <Box
-        width={{ base: '90%', sm: '400px' }} // Responsive width
-        p={6}
+        width={{ base: '90%', sm: '400px', xl: '50%' }} // Responsive width
+        p={8}
         borderRadius="md"
         boxShadow="lg"
         bg="white"
@@ -79,30 +83,78 @@ export function RegisterForm({
         <Heading as="h2" size="xl" textAlign="center" mb={4}>
           Register
         </Heading>
-        <Form onSubmit={onSubmit}>
+        <Form
+          onSubmit={onSubmit}
+          defaultValues={initialValues}
+          resolver={zodResolver(schema)}
+        >
           <Stack spacing={4}>
-            <FormControl id="email" isRequired>
-              <FormLabel>Email</FormLabel>
-              <Input type="email" placeholder="Enter your email" />
-            </FormControl>
-            <FormControl id="name" isRequired>
-              <FormLabel>Name</FormLabel>
-              <Input type="name" placeholder="Enter your name" />
-            </FormControl>
-            <FormControl id="password" isRequired>
-              <FormLabel>Password</FormLabel>
-              <Input type="password" placeholder="Enter your password" />
-            </FormControl>
-            <FormControl id="passwordConfirmation" isRequired>
-              <FormLabel>Confirm Password</FormLabel>
-              <Input type="password" placeholder="Confirm your password" />
-            </FormControl>
+            {errorMessage && <ErrorBanner title={errorMessage} />}
+
+            <HStack
+              display={{
+                sm: 'block',
+                md: 'block',
+                xl: 'inline-flex',
+              }}
+              spacing={{ base: '2', xl: '4' }}
+            >
+              <InputField
+                name="name"
+                label="Name"
+                type="text"
+                placeholder="John"
+                isRequired
+                autoFocus
+                autoComplete="on"
+                autoCorrect="off"
+                autoCapitalize="off"
+              />
+              <InputField
+                name="surname"
+                label="Surname"
+                type="surname"
+                isRequired
+                placeholder="Doe"
+                autoComplete="on"
+                autoCorrect="off"
+                autoCapitalize="off"
+              />
+            </HStack>
+            <InputField
+              name="email"
+              label="Email"
+              type="email"
+              isRequired
+              placeholder="e.g. john@doe.com"
+              autoComplete="on"
+              autoCorrect="off"
+              autoCapitalize="off"
+            />
+            <InputField
+              name="password"
+              label="Password"
+              type="password"
+              isRequired
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+            />
+            <InputField
+              name="passwordConfirmation"
+              label="Password Confirmation"
+              type="password"
+              isRequired
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+            />
             <CheckboxField
               name="terms"
               label={
                 <>
                   I agree with the{' '}
-                  <RouterLink to={route.terms()}>
+                  <RouterLink to={route.terms()} color="orange.500">
                     terms and conditions
                   </RouterLink>
                 </>
@@ -111,93 +163,21 @@ export function RegisterForm({
             <Button type="submit" colorScheme="orange" width="full" mt={4}>
               Register
             </Button>
+            <Box display="inline" textAlign="center">
+              Already have an account?{' '}
+              <Link
+                as={RouterNavLink}
+                to={route.login()}
+                color="orange.500"
+                fontWeight="bold"
+                display="inline"
+              >
+                Login
+              </Link>
+            </Box>
           </Stack>
         </Form>
       </Box>
     </Box>
   );
 }
-//   return (
-//     <Form
-//       onSubmit={onSubmit}
-//       defaultValues={initialValues}
-//       resolver={zodResolver(schema)}
-//       noValidate
-//     >
-//       <Stack spacing="3" py="4">
-//         {errorMessage && <ErrorBanner title={errorMessage} />}
-//         <InputField
-//           name="name"
-//           label="Name"
-//           type="text"
-//           isRequired
-//           autoFocus
-//           autoComplete="on"
-//           autoCorrect="off"
-//           autoCapitalize="off"
-//         />
-//         <InputField
-//           name="userName"
-//           label="Username"
-//           type="text"
-//           isRequired
-//           autoComplete="on"
-//           autoCorrect="off"
-//           autoCapitalize="off"
-//         />
-//         <InputField
-//           name="email"
-//           label="Email"
-//           type="email"
-//           isRequired
-//           placeholder="e.g. john@doe.com"
-//           autoComplete="on"
-//           autoCorrect="off"
-//           autoCapitalize="off"
-//         />
-//         <InputField
-//           name="password"
-//           label="Password"
-//           type="password"
-//           isRequired
-//           autoComplete="off"
-//           autoCorrect="off"
-//           autoCapitalize="off"
-//         />
-//         <InputField
-//           name="passwordConfirmation"
-//           label="Password Confirmation"
-//           type="password"
-//           isRequired
-//           autoComplete="off"
-//           autoCorrect="off"
-//           autoCapitalize="off"
-//         />
-//         <SingleFileUploadField
-//           name="profileImage"
-//           label="Profile Image"
-//           accept="image/*"
-//         />
-//         <CheckboxField
-//           name="terms"
-//           label={
-//             <>
-//               I agree with the{' '}
-//               <RouterLink to={route.terms()}>terms and conditions</RouterLink>
-//             </>
-//           }
-//         />
-//       </Stack>
-//       <Button
-//         size="lg"
-//         type="submit"
-//         isLoading={isLoading}
-//         colorScheme="green"
-//         mt="4"
-//         mb="2"
-//       >
-//         Sign Up
-//       </Button>
-//       {children}
-//     </Form>
-//   );
