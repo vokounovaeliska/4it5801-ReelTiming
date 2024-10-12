@@ -8,6 +8,7 @@ import {
   Stack,
 } from '@frontend/shared/design-system';
 import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
+import { RouterLink } from '@frontend/shared/navigation/atoms';
 
 const schema = zod.object({
   email: zod.string().email().nonempty(),
@@ -40,15 +41,17 @@ export function LogInForm({
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
-      height="50vh"
       p={4}
     >
       <Box
-        width={{ base: '90%', sm: '400px' }} // Responsive width
+        width={{ base: '100%' }} // Responsive width
         p={6}
         borderRadius="md"
         boxShadow="lg"
         bg="white"
+        border="1px"
+        borderColor="gray.100"
+        overflow="hidden"
       >
         <Heading as="h2" size="xl" textAlign="center" mb={4}>
           Login
@@ -59,18 +62,23 @@ export function LogInForm({
           resolver={zodResolver(schema)}
           noValidate
         >
-          <Stack spacing="3" py="4" maxWidth="500px" justify="center">
+          <Stack
+            py="0"
+            width={{ base: '200px', sm: '300px', md: '400px' }}
+            justify="center"
+          >
             {errorMessage && <ErrorBanner title={errorMessage} />}
             <InputField
               name="email"
               label="Email"
               type="email"
-              placeholder=""
+              placeholder="@"
               isRequired
               autoFocus
               autoComplete="on"
               autoCorrect="off"
               autoCapitalize="off"
+              mb={2}
             />
             <InputField
               name="password"
@@ -81,6 +89,15 @@ export function LogInForm({
               autoCorrect="off"
               autoCapitalize="off"
             />
+
+            <RouterLink
+              alignSelf="end"
+              color={'gray.500'}
+              fontSize={'xs'}
+              to="/"
+            >
+              Forgot your password?
+            </RouterLink>
           </Stack>
           <Button
             w={'full'}

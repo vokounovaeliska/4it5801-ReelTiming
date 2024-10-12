@@ -1,4 +1,6 @@
-import { Box, Center, Link, Paragraph } from '@frontend/shared/design-system';
+import { route } from '@frontend/route';
+import { Box, Center, Paragraph } from '@frontend/shared/design-system';
+import { RouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
@@ -9,7 +11,6 @@ export type LogInTemplateProps = {
   error?: Error;
   onSubmit: (data: { email: string; password: string }) => void;
 };
-// todo - on extreme vertical shrink login window 'hides' behind navbar - fix pls
 export function LogInTemplate({
   isLoading,
   error,
@@ -25,7 +26,6 @@ export function LogInTemplate({
         justifyContent="center"
         overflowY="auto"
         padding={{ base: '4', sm: '6', md: '8' }}
-        maxWidth={{ base: '100%', sm: '80%', md: '60%' }}
         mx="auto"
       >
         <LogInForm
@@ -34,18 +34,11 @@ export function LogInTemplate({
           onSubmit={onSubmit}
         >
           <Center>
-            <Link
-              fontSize={{ base: 'xs', sm: 'sm' }} // todo - tweak those so it looks good
-              href="/"
-            >
-              Forgotten password?
-            </Link>
-          </Center>
-          <Center>
-            <Paragraph
-              fontSize={{ base: 'xs', sm: 'md' }} // tweak those too
-            >
-              Don't have an account? <Link href="/auth/signup">Sign up</Link>
+            <Paragraph>
+              Don't have an account?
+              <RouterLink p={2} to={route.register()} fontWeight={'bold'}>
+                Sign up
+              </RouterLink>
             </Paragraph>
           </Center>
         </LogInForm>
