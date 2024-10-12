@@ -25,6 +25,7 @@ def main():
 
     commands = [
         ("yarn install", "Yarn Install"),
+        ("yarn format", "Yarn Format"),
         ("yarn format:check", "Yarn Format Check"),
         ("yarn lint", "Yarn Lint"),
         ("yarn frontend test --run", "Yarn Frontend Test"),
