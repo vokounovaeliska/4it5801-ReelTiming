@@ -21,10 +21,10 @@ const schema = zod
   .object({
     email: zod.string().email().nonempty({ message: 'Email is required!' }),
     name: zod.string().nonempty({ message: 'Name is required' }),
-    password: zod.string().nonempty({ message: 'Password is required' }),
+    password: zod.string().min(10, { message: 'Password is required' }),
     passwordConfirmation: zod
       .string()
-      .nonempty({ message: 'Password confirmation is required' }),
+      .min(10, { message: 'Password confirmation is required' }),
     terms: zod.literal<boolean>(true, {
       errorMap: () => ({ message: 'You must accept the terms and conditions' }),
     }),
@@ -145,7 +145,12 @@ export function RegisterForm({
             label={
               <>
                 I agree with the{' '}
-                <RouterLink to={route.terms()} color="orange.500">
+                <RouterLink
+                  to={route.terms()}
+                  color="orange.500"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   terms and conditions
                 </RouterLink>
               </>
