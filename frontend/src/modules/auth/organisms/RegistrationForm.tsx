@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { Heading, HStack, Link } from '@chakra-ui/react';
+import { Heading, HStack } from '@chakra-ui/react';
 
 import { route } from '@frontend/route';
 import {
@@ -15,7 +15,7 @@ import {
   zod,
   zodResolver,
 } from '@frontend/shared/forms';
-import { RouterLink, RouterNavLink } from '@frontend/shared/navigation/atoms';
+import { RouterLink } from '@frontend/shared/navigation/atoms';
 
 const schema = zod
   .object({
@@ -65,119 +65,104 @@ export function RegisterForm({
 }: RegisterProps) {
   return (
     <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      height="100vh"
-      bg="#F7FAFC"
+      width={{ base: '90%', sm: '400px', md: '600px', xl: '800px' }} // Responsive width
       p={4}
+      borderRadius="md"
+      boxShadow="lg"
+      bg="white"
     >
-      <Box
-        width={{ base: '90%', sm: '400px', xl: '50%' }} // Responsive width
-        p={8}
-        borderRadius="md"
-        boxShadow="lg"
-        bg="white"
+      <Heading as="h2" size="xl" textAlign="center" mb={4}>
+        Register
+      </Heading>
+      <Form
+        onSubmit={onSubmit}
+        defaultValues={initialValues}
+        resolver={zodResolver(schema)}
       >
-        <Heading as="h2" size="xl" textAlign="center" mb={4}>
-          Register
-        </Heading>
-        <Form
-          onSubmit={onSubmit}
-          defaultValues={initialValues}
-          resolver={zodResolver(schema)}
-        >
-          <Stack spacing={4}>
-            {errorMessage && <ErrorBanner title={errorMessage} />}
+        <Stack spacing={4} mb="2">
+          {errorMessage && <ErrorBanner title={errorMessage} />}
 
-            <HStack
-              display={{
-                sm: 'block',
-                md: 'block',
-                xl: 'inline-flex',
-              }}
-              spacing={{ base: '2', xl: '4' }}
-            >
-              <InputField
-                name="name"
-                label="Name"
-                type="text"
-                placeholder="John"
-                isRequired
-                autoFocus
-                autoComplete="on"
-                autoCorrect="off"
-                autoCapitalize="off"
-              />
-              <InputField
-                name="surname"
-                label="Surname"
-                type="surname"
-                isRequired
-                placeholder="Doe"
-                autoComplete="on"
-                autoCorrect="off"
-                autoCapitalize="off"
-              />
-            </HStack>
+          <HStack
+            display={{
+              sm: 'block',
+              md: 'block',
+              xl: 'inline-flex',
+            }}
+            spacing={{ base: '2', xl: '4' }}
+          >
             <InputField
-              name="email"
-              label="Email"
-              type="email"
+              name="name"
+              label="Name"
+              type="text"
+              placeholder="John"
               isRequired
-              placeholder="e.g. john@doe.com"
+              autoFocus
               autoComplete="on"
               autoCorrect="off"
               autoCapitalize="off"
             />
             <InputField
-              name="password"
-              label="Password"
-              type="password"
+              name="surname"
+              label="Surname"
+              type="surname"
               isRequired
-              autoComplete="off"
+              placeholder="Doe"
+              autoComplete="on"
               autoCorrect="off"
               autoCapitalize="off"
             />
-            <InputField
-              name="passwordConfirmation"
-              label="Password Confirmation"
-              type="password"
-              isRequired
-              autoComplete="off"
-              autoCorrect="off"
-              autoCapitalize="off"
-            />
-            <CheckboxField
-              name="terms"
-              label={
-                <>
-                  I agree with the{' '}
-                  <RouterLink to={route.terms()} color="orange.500">
-                    terms and conditions
-                  </RouterLink>
-                </>
-              }
-            />
-            <Button type="submit" colorScheme="orange" width="full" mt={4}>
-              Register
-            </Button>
-            <Box display="inline" textAlign="center">
-              Already have an account?{' '}
-              <Link
-                as={RouterNavLink}
-                to={route.login()}
-                color="orange.500"
-                fontWeight="bold"
-                display="inline"
-              >
-                Login
-              </Link>
-            </Box>
-          </Stack>
-        </Form>
-      </Box>
+          </HStack>
+          <InputField
+            name="email"
+            label="Email"
+            type="email"
+            isRequired
+            placeholder="e.g. john@doe.com"
+            autoComplete="on"
+            autoCorrect="off"
+            autoCapitalize="off"
+          />
+          <InputField
+            name="password"
+            label="Password"
+            type="password"
+            isRequired
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+          />
+          <InputField
+            name="passwordConfirmation"
+            label="Password Confirmation"
+            type="password"
+            isRequired
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+          />
+          <CheckboxField
+            name="terms"
+            label={
+              <>
+                I agree with the{' '}
+                <RouterLink to={route.terms()} color="orange.500">
+                  terms and conditions
+                </RouterLink>
+              </>
+            }
+          />
+          <Button
+            type="submit"
+            colorScheme="orange"
+            width="full"
+            mt={4}
+            isLoading={isLoading}
+          >
+            Register
+          </Button>
+        </Stack>
+        {children}
+      </Form>
     </Box>
   );
 }

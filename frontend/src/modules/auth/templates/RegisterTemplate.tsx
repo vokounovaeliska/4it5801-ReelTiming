@@ -1,7 +1,7 @@
-import { Box, Button, Text } from '@chakra-ui/react';
+import { Box, Link } from '@chakra-ui/react';
 
 import { route } from '@frontend/route';
-import { RouterLink, RouterNavLink } from '@frontend/shared/navigation/atoms';
+import { RouterNavLink } from '@frontend/shared/navigation/atoms';
 
 import { RegisterForm } from '../organisms/RegistrationForm';
 
@@ -23,26 +23,36 @@ export function RegisterTemplate({
 }: RegisterProps) {
   return (
     <>
-      <RegisterForm
-        isLoading={isLoading}
-        errorMessage={error?.message}
-        onSubmit={onSubmit}
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        height="100vh"
+        bg="#F7FAFC"
+        p={4}
       >
-        <Box>
-          <Text textAlign="center" mt={2}>
-            Already have an account?{' '}
-            <Button
-              as={RouterNavLink}
-              to={'auth/login'}
-              variant="link"
-              colorScheme="orange"
-            >
-              Login
-            </Button>
-          </Text>
-          or <RouterLink to={route.login()}>Sign In</RouterLink>
+        <Box textAlign="center">
+          <RegisterForm
+            isLoading={isLoading}
+            errorMessage={error?.message}
+            onSubmit={onSubmit}
+          >
+            <Box display="inline" textAlign="center">
+              Already have an account?{' '}
+              <Link
+                as={RouterNavLink}
+                to={route.login()}
+                color="orange.500"
+                fontWeight="bold"
+                display="inline"
+              >
+                Login
+              </Link>
+            </Box>
+          </RegisterForm>
         </Box>
-      </RegisterForm>
+      </Box>
     </>
   );
 }
