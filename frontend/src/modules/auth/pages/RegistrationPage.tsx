@@ -6,9 +6,9 @@ import { useAuth } from '@frontend/modules/auth';
 
 import { RegisterTemplate } from '../templates/RegisterTemplate';
 
-const LOGIN_MUTATION = gql(/* GraphQL */ `
+const SIGNUP_MUTATION = gql(/* GraphQL */ `
   mutation SignUp($email: String!, $name: String!, $password: String!) {
-    login(email: $email, name: $name, password: $password) {
+    signUp(email: $email, name: $name, password: $password) {
       user {
         id
         name
@@ -21,7 +21,7 @@ const LOGIN_MUTATION = gql(/* GraphQL */ `
 export function RegistrationPage() {
   const auth = useAuth();
   const navigate = useNavigate();
-  const [signupRequest, signupRequestState] = useMutation(LOGIN_MUTATION, {
+  const [signupRequest, signupRequestState] = useMutation(SIGNUP_MUTATION, {
     onCompleted: ({ signUp: { user, token } }) => {
       auth.signIn({ token, user });
       navigate('/');
