@@ -28,7 +28,7 @@ export function EnhancedApolloProvider({ children }: Props) {
 
   const handleSignOut = useCallback(() => {
     signOut();
-    navigate(route.signIn());
+    navigate(route.login());
     window.location.reload();
   }, [signOut, navigate]);
 
