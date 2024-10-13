@@ -12,8 +12,8 @@ export function TopNavigation() {
       {user === null ? (
         <>
           <RouterNavLink to={route.hello()}>HelloWorld</RouterNavLink>
-          <RouterNavLink to={route.signIn()}>Sign In</RouterNavLink>
-          <RouterNavLink to={route.signUp()}>Sign Up</RouterNavLink>
+          <RouterNavLink to={route.login()}>Login</RouterNavLink>
+          <RouterNavLink to={route.register()}>Register</RouterNavLink>
         </>
       ) : (
         <Button ml="2" onClick={() => signOut()}>
