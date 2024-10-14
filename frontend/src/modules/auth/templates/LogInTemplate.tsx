@@ -4,6 +4,7 @@ import { RouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 import UserNavbar from '@frontend/shared/navigation/components/navbar/UserNavbar';
+import UserNavbarMobile from '@frontend/shared/navigation/components/navbar/UserNavbarMobile';
 
 import { LogInForm } from '../organisms/LogInForm';
 
@@ -19,9 +20,7 @@ export function LogInTemplate({
 }: LogInTemplateProps) {
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
-      <Navbar>
-        <UserNavbar />
-      </Navbar>
+      <Navbar children1={<UserNavbar />} children2={<UserNavbarMobile />} />
       <Box
         flex="1"
         display="flex"
