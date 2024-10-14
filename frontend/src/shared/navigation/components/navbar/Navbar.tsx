@@ -15,18 +15,18 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
-import { AvatarPhoto } from '@frontend/shared/design-system';
 
-import { ReactRouterLink, RouterNavLink } from '../../atoms';
+import { ReactRouterLink } from '../../atoms';
 import AppHeading from '../AppHeading';
 import Logo from '../logo/Logo';
 
-const Navbar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+const Navbar: React.FC<{
+  children1?: React.ReactNode;
+  children2?: React.ReactNode;
+}> = ({ children1, children2 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const btnRef = React.useRef<HTMLButtonElement>(null);
-  const { user } = useAuth();
 
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
@@ -67,7 +67,7 @@ const Navbar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
               Timesheet
             </Button>
           </Stack>
-          <Box display={{ base: 'block', md: 'none' }}>
+          <Box display={{ base: 'block', md: 'none' }} alignSelf={'center'}>
             <>
               <IconButton
                 ref={btnRef}
@@ -90,29 +90,7 @@ const Navbar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
                     </DrawerHeader>
                     <DrawerBody>
                       <VStack spacing={4} align="stretch">
-                        <Button
-                          rounded={'md'}
-                          height={'6em'}
-                          as={RouterNavLink}
-                          onClick={toggleDrawer}
-                          colorScheme="orange"
-                          to={'/'}
-                          py="4"
-                        >
-                          {
-                            //user.profileImageUrl &&
-                            <AvatarPhoto
-                              src={
-                                user?.profileImageUrl === null
-                                  ? ''
-                                  : user?.profileImageUrl
-                              }
-                            />
-                          }
-                          <Box ml="2" display={{ base: 'none', sm: 'block' }}>
-                            {user?.name}
-                          </Box>
-                        </Button>
+                        {children2}
                         <Button colorScheme="orange" onClick={toggleDrawer}>
                           My Projects
                         </Button>
@@ -129,7 +107,13 @@ const Navbar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
         </Flex>
 
         <Flex></Flex>
-        {children}
+        <Stack
+          direction="row"
+          display={{ base: 'none', md: 'flex' }}
+          alignSelf={'center'}
+        >
+          {children1}
+        </Stack>
       </Flex>
     </Box>
   );
