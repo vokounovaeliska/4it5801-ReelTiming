@@ -3,6 +3,7 @@ import { Box, Center, Paragraph } from '@frontend/shared/design-system';
 import { RouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
+import UserNavbar from '@frontend/shared/navigation/components/navbar/UserNavbar';
 
 import { LogInForm } from '../organisms/LogInForm';
 
@@ -18,7 +19,9 @@ export function LogInTemplate({
 }: LogInTemplateProps) {
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
-      <Navbar />
+      <Navbar>
+        <UserNavbar />
+      </Navbar>
       <Box
         flex="1"
         display="flex"
