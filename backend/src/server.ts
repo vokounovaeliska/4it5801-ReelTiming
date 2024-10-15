@@ -4,8 +4,8 @@ import 'reflect-metadata';
 
 import { ApolloServer } from '@apollo/server';
 import {
-  ExpressContextFunctionArgument,
-  expressMiddleware,
+   ExpressContextFunctionArgument,
+   expressMiddleware,
 } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { addMocksToSchema } from '@graphql-tools/mock';
@@ -19,70 +19,70 @@ import { buildSchema } from 'type-graphql';
 import { MOCKS, PORT } from '@backend/config';
 import { getConnection } from '@backend/db/db';
 import { EmptyResolver } from '@backend/graphql/modules/empty/emptyResolver';
-// import { ProjectResolver } from '@backend/graphql/modules/project/projectResolver';
+import { ProjectResolver } from '@backend/graphql/modules/project/projectResolver';
 import { UserResolver } from '@backend/graphql/modules/user/userResolver';
 import { parseAndVerifyJWT } from '@backend/libs/jwt';
 import { mockResolvers } from '@backend/mocks/mocks';
 import { CustomContext } from '@backend/types/types';
 
 const init = async () => {
-  const app = express();
+   const app = express();
 
-  const httpServer = http.createServer(app);
+   const httpServer = http.createServer(app);
 
-  const schema = await buildSchema({
-    resolvers: [EmptyResolver, UserResolver],
-    // resolvers: [EmptyResolver, UserResolver, ProjectResolver],
-    emitSchemaFile: true,
-  });
+   const schema = await buildSchema({
+      //resolvers: [EmptyResolver, UserResolver],
+      resolvers: [EmptyResolver, UserResolver, ProjectResolver],
+      emitSchemaFile: true,
+   });
 
-  const server = new ApolloServer({
-    schema: MOCKS
-      ? addMocksToSchema({
-          schema,
-          resolvers: mockResolvers,
-        })
-      : schema,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-  });
+   const server = new ApolloServer({
+      schema: MOCKS
+         ? addMocksToSchema({
+            schema,
+            resolvers: mockResolvers,
+         })
+         : schema,
+      plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+   });
 
-  await server.start();
+   await server.start();
 
-  const customContext = async ({
-    req,
-    res,
-  }: ExpressContextFunctionArgument): Promise<CustomContext> => {
-    const drizzle = MOCKS ? null : await getConnection();
-    const authToken = req.headers.authorization ?? '';
-    const authUser = parseAndVerifyJWT(authToken);
+   const customContext = async ({
+      req,
+      res,
+   }: ExpressContextFunctionArgument): Promise<CustomContext> => {
+      const drizzle = MOCKS ? null : await getConnection();
+      const authToken = req.headers.authorization ?? '';
+      const authUser = parseAndVerifyJWT(authToken);
 
-    res.on('close', () => {
-      drizzle?.connection.end();
-    });
+      res.on('close', () => {
+         drizzle?.connection.end();
+      });
 
-    return {
-      db: drizzle?.db as unknown as MySql2Database,
-      authUser,
-    };
-  };
+      return {
+         db: drizzle?.db as unknown as MySql2Database,
+         authUser,
+      };
+   };
 
-  app.use(
-    '/graphql',
-    cors<cors.CorsRequest>(), // accepts all origins ('*'), not support cookies
-    express.json(),
-    graphqlUploadExpress(),
-    expressMiddleware(server, {
-      context: customContext,
-    }),
-  );
+   app.use(
+      '/graphql',
+      cors<cors.CorsRequest>(), // accepts all origins ('*'), not support cookies
+      express.json(),
+      graphqlUploadExpress(),
+      expressMiddleware(server, {
+         context: customContext,
+      }),
+   );
 
-  app.get('/', (_req, res) => {
-    res.redirect('/graphql');
-  });
+   app.get('/', (_req, res) => {
+      res.redirect('/graphql');
+   });
 
-  httpServer.listen({ port: PORT }, () => {
-    console.log('Server listening on port: ' + PORT);
-  });
+   httpServer.listen({ port: PORT }, () => {
+      console.log('Server listening on port: ' + PORT);
+   });
 };
 
 init();

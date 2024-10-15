@@ -1,34 +1,34 @@
-import { Field, ObjectType } from 'type-graphql';
+import { Field, ObjectType, ID } from 'type-graphql';
 
 @ObjectType()
 export class Project {
-  @Field()
-  id: string | undefined;
+   @Field(() => ID)
+   id: number | undefined;
 
-  @Field()
-  name: string | undefined;
+   @Field(() => String)
+   name: string | undefined;
 
-  @Field({ nullable: true })
-  production_company?: string | null;
+   @Field({ nullable: true })
+   production_company?: string;
 
-  @Field({ nullable: true })
-  start_date?: Date | null;
+   @Field(() => Date, { nullable: true })
+   start_date: Date | null = null;
 
-  @Field({ nullable: true })
-  end_date?: Date | null;
+   @Field(() => Date, { nullable: true })
+   end_date: Date | null = null;
 
-  @Field()
-  create_date: Date | undefined;
+   @Field(() => Date)
+   create_date: Date | undefined;
 
-  @Field()
-  create_user_id: string | undefined;
+   @Field(() => String)
+   create_user_id: string | undefined;
 
-  @Field()
-  last_update_user_id: string | undefined;
+   @Field(() => String)
+   last_update_user_id: string | undefined;
 
-  @Field()
-  last_update_date: Date | undefined;
+   @Field(() => Date)
+   last_update_date: Date | undefined;
 
-  @Field()
-  is_active: boolean | undefined;
+   @Field(() => Boolean)
+   is_active: boolean | undefined;
 }

@@ -14,7 +14,7 @@ export const user = mysqlTable('user', {
 });
 
 export const project = mysqlTable('project', {
-   id: varchar('id', { length: 36 }).primaryKey(),
+   id: int('id').primaryKey().autoincrement(),
    name: varchar('name', { length: 255 }).notNull(),
    production_company: varchar('production_company', { length: 255 }).notNull(),
    start_date: timestamp('start_date').default(new Date()),
