@@ -11,7 +11,7 @@ import {
 import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
 
 const schema = zod.object({
-  email: zod.string().email().nonempty(),
+  email: zod.string().email().min(1),
 });
 
 type FormValues = zod.infer<typeof schema>;
