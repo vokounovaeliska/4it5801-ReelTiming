@@ -12,8 +12,8 @@ import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
 import { RouterLink } from '@frontend/shared/navigation/atoms';
 
 const schema = zod.object({
-  email: zod.string().email().nonempty(),
-  password: zod.string().nonempty({ message: 'Password is required' }),
+  email: zod.string().email().min(1),
+  password: zod.string().min(1, { message: 'Password is required' }),
 });
 
 type FormValues = zod.infer<typeof schema>;
