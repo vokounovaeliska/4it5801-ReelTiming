@@ -15,6 +15,7 @@ type AuthState = {
 export type AuthUser = {
   id: string;
   name: string;
+  profileImageUrl?: string | null;
 };
 
 const LOCAL_STORAGE_AUTH_KEY = 'project-auth';
