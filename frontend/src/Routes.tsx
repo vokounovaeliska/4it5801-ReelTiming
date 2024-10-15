@@ -16,7 +16,6 @@ export function Routes() {
     <RouterRoutes>
       <Route path={route.home()} element={<HomePage />} />
       <Route path={route.hello()} element={<HelloPage />} />
-      {/* <Route path={route.signUp()} element={<SignUpPage />} /> */}
       <Route path={route.login()} element={<LogInPage />} />
       <Route path={route.register()} element={<RegistrationPage />} />
       <Route path={route.forgotPassword()} element={<ForgotPasswordPage />} />

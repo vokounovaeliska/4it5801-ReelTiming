@@ -4,6 +4,7 @@ export const route = {
   signUp: () => `/auth/signup`,
   login: () => `/auth/login`,
   register: () => `/auth/register`,
+  forgotPassword: () => `/auth/forgot-password`,
   terms: () => `/term`,
   forgotPassword: () => `/auth/forgot-password`,
 };
