@@ -7,11 +7,22 @@ import { useAuth } from '@frontend/modules/auth';
 import { RegisterTemplate } from '../templates/RegisterTemplate';
 
 const SIGNUP_MUTATION = gql(/* GraphQL */ `
-  mutation SignUp($email: String!, $name: String!, $password: String!) {
-    signUp(email: $email, name: $name, password: $password) {
+  mutation SignUp(
+    $email: String!
+    $name: String!
+    $password: String!
+    $username: String!
+  ) {
+    signUp(
+      email: $email
+      name: $name
+      password: $password
+      username: $username
+    ) {
       user {
         id
         name
+        surname
       }
       token
     }
@@ -37,10 +48,12 @@ export function RegistrationPage() {
   );
 
   return (
-    <RegisterTemplate
-      isLoading={signupRequestState.loading}
-      error={signupRequestState.error}
-      onSubmit={handleSignUpFormSubmit}
-    />
+    <>
+      <RegisterTemplate
+        isLoading={signupRequestState.loading}
+        error={signupRequestState.error}
+        onSubmit={handleSignUpFormSubmit}
+      />
+    </>
   );
 }
