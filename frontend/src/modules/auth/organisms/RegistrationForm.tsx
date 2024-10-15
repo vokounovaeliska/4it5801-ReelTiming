@@ -19,17 +19,28 @@ import { RouterLink } from '@frontend/shared/navigation/atoms';
 
 const schema = zod
   .object({
-    email: zod.string().min(1, { message: 'Email is required!' }).email({
-      message:
-        'Invalid email format. It must be in the format example@domain.com',
-    }),
+    email: zod
+      .string()
+      .email()
+      .min(1, { message: 'Email is required!' })
+      .email({
+        message:
+          'Invalid email format. It must be in the format example@domain.com',
+      }),
     name: zod.string().min(1, { message: 'Name is required' }),
-    password: zod.string().min(10, {
-      message: 'Password is too short. It must be at least 10 characters long',
-    }),
+    password: zod
+      .string()
+      .min(10, { message: 'Password must be at least 10 characters long ' })
+      .regex(/[a-z]/, {
+        message: 'Password must contain at least one lowercase letter',
+      })
+      .regex(/[A-Z]/, {
+        message: 'Password must contain at least one uppercase letter',
+      })
+      .regex(/[0-9]/, { message: 'Password must contain at least one number' }),
     passwordConfirmation: zod
       .string()
-      .min(1, { message: 'Password confirmation is required' }),
+      .min(10, { message: 'Password must be at least 10 characters long' }),
     terms: zod.literal<boolean>(true, {
       errorMap: () => ({ message: 'You must accept the terms and conditions' }),
     }),
