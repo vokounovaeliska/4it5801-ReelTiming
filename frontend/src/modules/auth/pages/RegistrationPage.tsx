@@ -3,6 +3,7 @@ import { gql, useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
+import { route } from '@frontend/route';
 
 import { RegisterTemplate } from '../templates/RegisterTemplate';
 
@@ -35,7 +36,7 @@ export function RegistrationPage() {
   const [signupRequest, signupRequestState] = useMutation(SIGNUP_MUTATION, {
     onCompleted: ({ signUp: { user, token } }) => {
       auth.signIn({ token, user });
-      navigate('/');
+      navigate(route.myprojects());
     },
     onError: () => {},
   });

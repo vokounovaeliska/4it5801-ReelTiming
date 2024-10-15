@@ -11,7 +11,7 @@ export function NotFoundPage() {
       <Box p="8">
         <Box>
           Page not found, please return to{' '}
-          <RouterLink to={route.home()}>Home</RouterLink>.
+          <RouterLink to={route.landingPage()}>Home</RouterLink>.
         </Box>
       </Box>
     </Box>
