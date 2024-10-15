@@ -6,5 +6,4 @@ export const route = {
   register: () => `/auth/register`,
   forgotPassword: () => `/auth/forgot-password`,
   terms: () => `/term`,
-  forgotPassword: () => `/auth/forgot-password`,
 };
