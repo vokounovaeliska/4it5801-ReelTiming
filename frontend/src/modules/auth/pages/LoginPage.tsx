@@ -26,7 +26,7 @@ export function LogInPage() {
   const [loginRequest, loginRequestState] = useMutation(SIGNIN_MUTATION, {
     onCompleted: ({ signIn: { user, token } }) => {
       auth.signIn({ token, user });
-      navigate(route.hello()); //TODO doplnit route.myproject()
+      navigate(route.myprojects());
     },
     onError: () => {},
   });

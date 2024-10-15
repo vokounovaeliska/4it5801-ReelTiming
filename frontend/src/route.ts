@@ -1,5 +1,5 @@
 export const route = {
-  home: () => `/`,
+  landingPage: () => `/`,
   hello: () => `/helloworld`,
   signUp: () => `/auth/signup`,
   login: () => `/auth/login`,

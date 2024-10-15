@@ -48,7 +48,7 @@ const Navbar: React.FC<{
           >
             <Button
               as={ReactRouterLink}
-              to={route.login()} //todo route to myprojectspage
+              to={route.myprojects()} //todo route to myprojectspage
               colorScheme="orange"
               bg="orange.600"
               textColor={'white'}
@@ -58,7 +58,7 @@ const Navbar: React.FC<{
             </Button>
             <Button
               as={ReactRouterLink}
-              to={route.login()} //todo route to timesheet
+              to={route.myprojects()} //todo route to timesheet
               colorScheme="orange"
               bg="orange.600"
               textColor={'white'}

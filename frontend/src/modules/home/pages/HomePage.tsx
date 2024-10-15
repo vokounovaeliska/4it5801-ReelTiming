@@ -99,6 +99,27 @@ export function HomePage() {
       </Box>
       {/* <TopNavigation /> */}
       <Box p="8">
+        <Box>
+          TEMP NON-LOGGED IN USER LANDING PAGE UNTIL WE MAKE SOMETHING ULTRACOOL
+        </Box>
+        <Button
+          as={ReactRouterLink}
+          to={route.login()}
+          colorScheme="orange"
+          bg="orange.600"
+          textColor={'white'}
+        >
+          Login
+        </Button>
+        <Button
+          as={ReactRouterLink}
+          to={route.register()}
+          colorScheme="orange"
+          bg="orange.600"
+          textColor={'white'}
+        >
+          Register
+        </Button>
         <Box>Hello: {user ? user.name : '(not logged in)'}</Box>
         <Box pt="4">GraphQL query result:</Box>
         <Box as="pre" fontFamily="mono">

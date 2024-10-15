@@ -8,7 +8,7 @@ export function TopNavigation() {
   const { user, signOut } = useAuth();
   return (
     <Stack bg="gray.200" p="4" direction="row" spacing="0" alignItems="center">
-      <RouterNavLink to={route.home()}>Home</RouterNavLink>
+      <RouterNavLink to={route.landingPage()}>Home</RouterNavLink>
       {user === null ? (
         <>
           <RouterNavLink to={route.hello()}>HelloWorld</RouterNavLink>
