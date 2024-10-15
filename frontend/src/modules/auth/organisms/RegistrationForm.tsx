@@ -19,19 +19,36 @@ import { RouterLink } from '@frontend/shared/navigation/atoms';
 
 const schema = zod
   .object({
-    email: zod.string().email().nonempty({ message: 'Email is required!' }),
-    name: zod.string().nonempty({ message: 'Name is required' }),
-    password: zod.string().min(10, { message: 'Password is required' }),
+    email: zod.string().min(1, { message: 'Email is required!' }).email({
+      message:
+        'Invalid email format. It must be in the format example@domain.com',
+    }),
+    name: zod.string().min(1, { message: 'Name is required' }),
+    password: zod.string().min(10, {
+      message: 'Password is too short. It must be at least 10 characters long',
+    }),
     passwordConfirmation: zod
       .string()
-      .min(10, { message: 'Password confirmation is required' }),
+      .min(1, { message: 'Password confirmation is required' }),
     terms: zod.literal<boolean>(true, {
       errorMap: () => ({ message: 'You must accept the terms and conditions' }),
     }),
   })
-  .refine((data) => data.password === data.passwordConfirmation, {
-    message: 'Passwords must match',
-    path: ['passwordConfirmation'],
+  .superRefine((data, ctx) => {
+    if (data.password !== data.passwordConfirmation) {
+      ctx.addIssue({
+        code: zod.ZodIssueCode.custom,
+        path: ['passwordConfirmation'],
+        message: 'Passwords must match',
+      });
+    }
+    if (data.password && data.password.length < 10) {
+      ctx.addIssue({
+        code: zod.ZodIssueCode.custom,
+        path: ['password'],
+        message: 'Password is too short',
+      });
+    }
   });
 
 type FormValues = zod.infer<typeof schema>;
