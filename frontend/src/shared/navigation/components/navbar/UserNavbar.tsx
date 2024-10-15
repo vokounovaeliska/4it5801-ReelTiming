@@ -8,6 +8,12 @@ import { AvatarPhoto, Link } from '@frontend/shared/design-system';
 
 import { RouterNavLink } from '../../atoms';
 
+// UserNavbar component displays the user interface for a logged-in user in the navigation bar.
+// This component can be inserted into navbar.tsx and provides the following functionalities:
+// 1. Displays the user's profile picture and name if they are logged in.
+// 2. Offers options to log in or register if the user is not logged in.
+// 3. Allows users to log out and navigate to the login page.
+// This is the DESKTOP view of the component.
 const UserNavbar: React.FC = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
