@@ -1,20 +1,21 @@
 import {
   boolean,
-  int,
   mysqlTable,
   timestamp,
   varchar,
 } from 'drizzle-orm/mysql-core';
 
+import { v4 as uuid } from 'uuid';
+
 export const user = mysqlTable('user', {
-  id: int('id').primaryKey().autoincrement(),
+  id: varchar('id', { length: 36 }).$defaultFn(() => uuid()).primaryKey(),
   email: varchar('email', { length: 255 }).notNull(),
   password: varchar('password', { length: 255 }).notNull(),
   name: varchar('name', { length: 255 }).notNull(),
 });
 
 export const project = mysqlTable('project', {
-  id: int('id').primaryKey().autoincrement(),
+  id: varchar('id', { length: 36 }).$defaultFn(() => uuid()).primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
   production_company: varchar('production_company', { length: 255 }).notNull(),
   start_date: timestamp('start_date'),

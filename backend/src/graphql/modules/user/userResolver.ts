@@ -13,10 +13,9 @@ import { AuthInfo, User } from './userType';
 export class UserResolver {
   @Query(() => User, { nullable: true })
   async user(
-    @Arg('id') stringId: string,
+    @Arg('id') id: string,
     @Ctx() { db }: CustomContext,
   ): Promise<User | null> {
-    const id = parseInt(stringId, 10);
     const userRecord = await db.select().from(user).where(eq(user.id, id));
 
     if (userRecord.length === 0) {

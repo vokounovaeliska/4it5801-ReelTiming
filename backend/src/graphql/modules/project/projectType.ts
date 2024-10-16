@@ -3,7 +3,7 @@ import { Field, ObjectType, ID } from 'type-graphql';
 @ObjectType()
 export class Project {
    @Field(() => ID)
-   id: number | undefined;
+   id!: string;
 
    @Field(() => String)
    name: string | undefined;

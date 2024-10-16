@@ -10,91 +10,90 @@ import { GraphQLError } from 'graphql/error';
 
 @Resolver(() => Project)
 export class ProjectResolver {
-  @Query(() => [Project])
-  async projects(@Ctx() { db }: CustomContext): Promise<Project[]> {
-    const projects = await db
-      .select()
-      .from(project)
-      .orderBy(project.create_date);
+   @Query(() => [Project])
+   async projects(@Ctx() { db }: CustomContext): Promise<Project[]> {
+      const projects = await db
+         .select()
+         .from(project)
+         .orderBy(project.create_date);
 
-    return projects.map((proj) => ({
-      ...proj,
-      create_date: new Date(proj.create_date),
-      start_date: proj.start_date ? new Date(proj.start_date) : null,
-      end_date: proj.end_date ? new Date(proj.end_date) : null,
-      is_active: !!proj.is_active,
-    }));
-  }
+      return projects.map((proj) => ({
+         ...proj,
+         create_date: new Date(proj.create_date),
+         start_date: proj.start_date ? new Date(proj.start_date) : null,
+         end_date: proj.end_date ? new Date(proj.end_date) : null,
+         is_active: !!proj.is_active,
+      }));
+   }
 
-  @Query(() => Project, { nullable: true })
-  async project(
-    @Arg('id') stringId: string,
-    @Ctx() { db }: CustomContext,
-  ): Promise<Project | null> {
-    const id = parseInt(stringId, 10);
-    const projectRecord = await db.select().from(project).where(eq(project.id, id));
+   @Query(() => Project, { nullable: true })
+   async project(
+      @Arg('id') id: string,
+      @Ctx() { db }: CustomContext,
+   ): Promise<Project | null> {
+      const projectRecord = await db.select().from(project).where(eq(project.id, id));
 
-    if (projectRecord.length === 0) {
-      return null;
-    }
+      if (projectRecord.length === 0) {
+         return null;
+      }
 
-    return {
-      ...projectRecord[0],
-      is_active: projectRecord[0].is_active ?? true
-    };
-  }
+      return {
+         ...projectRecord[0],
+         is_active: projectRecord[0].is_active ?? true
+      };
+   }
 
-  @Mutation(() => Project)
-  async addProject(
-    @Arg('name') name: string,
-    @Arg('production_company') productionCompany: string,
-    @Arg('start_date', { nullable: true }) startDate: Date,
-    @Arg('end_date', { nullable: true }) endDate: Date,
-    @Ctx() { db }: CustomContext
-  ): Promise<Project> {
-    const createdAt: Date = new Date();
+   @Mutation(() => Project)
+   async addProject(
+      @Arg('name') name: string,
+      @Arg('production_company') productionCompany: string,
+      @Arg('start_date', { nullable: true }) startDate: Date,
+      @Arg('end_date', { nullable: true }) endDate: Date,
+      @Ctx() { db }: CustomContext
+   ): Promise<Project> {
+      const createdAt: Date = new Date();
 
-    const newProject = await db
-      .insert(project)
-      .values({
-        name,
-        production_company: productionCompany,
-        start_date: startDate,
-        end_date: endDate,
-        create_date: createdAt,
-        create_user_id: 'user-id', // Replace with actual user ID
-        last_update_user_id: 'user-id', // Replace with actual user ID
-        last_update_date: createdAt,
-      })
-      .$returningId();
+      const newProject = await db
+         .insert(project)
+         .values({
+            name,
+            production_company: productionCompany,
+            start_date: startDate,
+            end_date: endDate,
+            create_date: createdAt,
+            create_user_id: 'user-id', // Replace with actual user ID
+            last_update_user_id: 'user-id', // Replace with actual user ID
+            last_update_date: createdAt,
+         })
+         .$returningId();
 
-    const id = newProject[0].id;
-    const result = await db
-      .select()
-      .from(project)
-      .where(eq(project.id, id));
+      const id = newProject[0].id;
+      const result = await db
+         .select()
+         .from(project)
+         .where(eq(project.id, id));
 
-    if (result.length === 0) {
-      throw new GraphQLError('Project not found');
-    }
+      if (result.length === 0) {
+         throw new GraphQLError('Project not found');
+      }
 
-    const proj = result[0];
+      const proj = result[0];
 
-    return {
-      ...proj,
-      create_date: new Date(proj.create_date),
-      start_date: proj.start_date ? new Date(proj.start_date) : null,
-      end_date: proj.end_date ? new Date(proj.end_date) : null,
-      is_active: !!proj.is_active,
-    } as Project;
-  }
+      return {
+         ...proj,
+         create_date: new Date(proj.create_date),
+         start_date: proj.start_date ? new Date(proj.start_date) : null,
+         end_date: proj.end_date ? new Date(proj.end_date) : null,
+         is_active: !!proj.is_active,
+      } as Project;
+   }
 
-  @Mutation(() => Boolean)
-  async deleteProject(
-    @Arg('projectId') projectId: number,
-    @Ctx() { db }: CustomContext,
-  ): Promise<boolean> {
-    await db.delete(project).where(eq(project.id, projectId));
-    return true;
-  }
+   @Mutation(() => Boolean)
+   async deleteProject(
+      @Arg('projectId') id: string,
+      @Ctx() { db }: CustomContext,
+   ): Promise<boolean> {
+      await db.delete(project).where(eq(project.id, id));
+      return true;
+   }
 }

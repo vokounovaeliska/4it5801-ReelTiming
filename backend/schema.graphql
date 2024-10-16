@@ -15,7 +15,7 @@ scalar DateTimeISO
 
 type Mutation {
   addProject(end_date: DateTimeISO, name: String!, production_company: String!, start_date: DateTimeISO): Project!
-  deleteProject(projectId: Float!): Boolean!
+  deleteProject(projectId: String!): Boolean!
   signIn(email: String!, password: String!): AuthInfo!
   signUp(email: String!, name: String!, password: String!): AuthInfo!
 }
