@@ -42,7 +42,14 @@ type Query {
 }
 
 type User {
+  app_role_id: String
+  create_date: DateTimeISO!
+  create_user_id: String!
   email: String!
   id: ID!
+  is_active: Boolean!
+  last_update_date: DateTimeISO!
+  last_update_user_id: String!
   name: String!
+  phone_number: String
 }

@@ -27,7 +27,16 @@ export class UserResolver {
 
   @Query(() => [User])
   async users(@Ctx() { db }: CustomContext): Promise<User[]> {
-    return await db.select().from(user);
+    const users = await db
+      .select()
+      .from(user)
+      .orderBy(user.create_date);
+
+    return users.map((user) => ({
+      ...user,
+      create_date: new Date(user.create_date),
+      is_active: !!user.is_active,
+    }));
   }
 
   @Mutation(() => AuthInfo)
@@ -81,6 +90,7 @@ export class UserResolver {
     const passwordHash = await argon2.hash(password);
 
     /* DATABASE INSERT */
+    const createdAt = new Date();
 
     const insertResult = await db
       .insert(user)
@@ -88,6 +98,11 @@ export class UserResolver {
         email,
         password: passwordHash,
         name,
+        create_date: createdAt,
+        create_user_id: 'user-id', // Replace with actual user ID
+        last_update_date: createdAt,
+        last_update_user_id: 'user-id', // Replace with actual user ID
+        is_active: true,
       })
       .$returningId();
 
@@ -97,12 +112,16 @@ export class UserResolver {
 
     const token = createToken({ id });
 
-    const userObject = {
-      id,
-      email,
-      name,
-    };
+    const userObject = await db
+      .select()
+      .from(user)
+      .where(eq(user.id, id));
 
-    return { user: userObject, token: token };
+    if (userObject.length === 0) {
+      throw new GraphQLError('User not created.');
+    }
+
+
+    return { user: userObject[0], token: token };
   }
 }
