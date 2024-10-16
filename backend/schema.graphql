@@ -35,6 +35,7 @@ type Project {
 
 type Query {
   _empty: String!
+  project(id: String!): Project
   projects: [Project!]!
   user(id: String!): User
   users: [User!]!

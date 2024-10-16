@@ -30,5 +30,5 @@ export class Project {
    last_update_date: Date | undefined;
 
    @Field(() => Boolean)
-   is_active: boolean | undefined;
+   is_active: boolean = true;
 }

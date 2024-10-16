@@ -26,6 +26,24 @@ export class ProjectResolver {
     }));
   }
 
+  @Query(() => Project, { nullable: true })
+  async project(
+    @Arg('id') stringId: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<Project | null> {
+    const id = parseInt(stringId, 10);
+    const projectRecord = await db.select().from(project).where(eq(project.id, id));
+
+    if (projectRecord.length === 0) {
+      return null;
+    }
+
+    return {
+      ...projectRecord[0],
+      is_active: projectRecord[0].is_active ?? true
+    };
+  }
+
   @Mutation(() => Project)
   async addProject(
     @Arg('name') name: string,
@@ -47,7 +65,6 @@ export class ProjectResolver {
         create_user_id: 'user-id', // Replace with actual user ID
         last_update_user_id: 'user-id', // Replace with actual user ID
         last_update_date: createdAt,
-        is_active: true,
       })
       .$returningId();
 
