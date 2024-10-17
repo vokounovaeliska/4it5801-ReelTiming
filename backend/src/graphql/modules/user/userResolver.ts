@@ -43,7 +43,9 @@ export class UserResolver {
       .where(eq(user.email, email));
 
     if (userRecord.length === 0) {
-      throw new GraphQLError('Unauthorized.');
+      throw new GraphQLError(
+        "Incorrect password or user with this email doesn't exist.",
+      );
     }
 
     const foundUser = userRecord[0];
@@ -55,7 +57,9 @@ export class UserResolver {
         token,
       };
     } else {
-      throw new GraphQLError('Unauthorized.');
+      throw new GraphQLError(
+        "Incorrect password or user with this email doesn't exist.",
+      );
     }
   }
 
