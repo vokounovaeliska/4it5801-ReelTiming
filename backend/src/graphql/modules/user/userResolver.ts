@@ -27,10 +27,7 @@ export class UserResolver {
 
   @Query(() => [User])
   async users(@Ctx() { db }: CustomContext): Promise<User[]> {
-    const users = await db
-      .select()
-      .from(user)
-      .orderBy(user.create_date);
+    const users = await db.select().from(user).orderBy(user.create_date);
 
     return users.map((user) => ({
       ...user,
@@ -112,15 +109,11 @@ export class UserResolver {
 
     const token = createToken({ id });
 
-    const userObject = await db
-      .select()
-      .from(user)
-      .where(eq(user.id, id));
+    const userObject = await db.select().from(user).where(eq(user.id, id));
 
     if (userObject.length === 0) {
       throw new GraphQLError('User not created.');
     }
-
 
     return { user: userObject[0], token: token };
   }
@@ -138,26 +131,27 @@ export class UserResolver {
   async updateUser(
     @Arg('userId') id: string,
     @Arg('data') data: UserInput,
-    @Ctx() { db }: CustomContext
+    @Ctx() { db }: CustomContext,
   ): Promise<User | null> {
-    const userObject = await db
-      .select()
-      .from(user)
-      .where(eq(user.id, id));
+    const userObject = await db.select().from(user).where(eq(user.id, id));
 
     if (userObject.length === 0) {
       return null;
     }
 
     const cleanData = Object.fromEntries(
-      Object.entries(data).filter(([_, v]) => v !== undefined)
+      Object.entries(data).filter(([_, v]) => v !== undefined),
     );
 
     const updatedUser = {
       ...userObject[0],
       ...cleanData,
-      create_date: data.create_date ? new Date(data.create_date) : userObject[0].create_date,
-      last_update_date: data.last_update_date ? new Date(data.last_update_date) : userObject[0].last_update_date,
+      create_date: data.create_date
+        ? new Date(data.create_date)
+        : userObject[0].create_date,
+      last_update_date: data.last_update_date
+        ? new Date(data.last_update_date)
+        : userObject[0].last_update_date,
     };
 
     await db.update(user).set(updatedUser).where(eq(user.id, id));
