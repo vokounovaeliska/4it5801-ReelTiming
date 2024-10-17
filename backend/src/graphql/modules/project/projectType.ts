@@ -1,4 +1,4 @@
-import { Field, ObjectType, ID, InputType } from 'type-graphql';
+import { Field, ID, InputType, ObjectType } from 'type-graphql';
 
 @ObjectType()
 export class Project {

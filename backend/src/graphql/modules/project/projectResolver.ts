@@ -1,4 +1,5 @@
 import { eq } from 'drizzle-orm';
+import { GraphQLError } from 'graphql/error';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { project } from '@backend/db/schema';
@@ -6,7 +7,6 @@ import { project } from '@backend/db/schema';
 import { CustomContext } from '../../../types/types';
 
 import { Project, ProjectInput } from './projectType';
-import { GraphQLError } from 'graphql/error';
 
 @Resolver(() => Project)
 export class ProjectResolver {

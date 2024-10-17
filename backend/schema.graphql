@@ -14,12 +14,7 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 scalar DateTimeISO
 
 type Mutation {
-  addProject(
-    end_date: DateTimeISO
-    name: String!
-    production_company: String!
-    start_date: DateTimeISO
-  ): Project!
+  addProject(end_date: DateTimeISO, name: String!, production_company: String!, start_date: DateTimeISO): Project!
   deleteProject(projectId: String!): Boolean!
   deleteUser(userId: String!): Boolean!
   signIn(email: String!, password: String!): AuthInfo!
