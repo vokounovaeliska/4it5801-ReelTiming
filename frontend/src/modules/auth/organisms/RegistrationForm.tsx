@@ -28,6 +28,7 @@ const schema = zod
           'Invalid email format. It must be in the format example@domain.com',
       }),
     name: zod.string().min(1, { message: 'Name is required' }),
+    surname: zod.string().min(1, { message: 'Name is required' }),
     password: zod
       .string()
       .min(10, { message: 'Password must be at least 10 characters long ' })
@@ -67,6 +68,7 @@ type FormValues = zod.infer<typeof schema>;
 const initialValues: FormValues = {
   email: '',
   name: '',
+  surname: '',
   password: '',
   passwordConfirmation: '',
   terms: false,
@@ -80,6 +82,7 @@ export type RegisterProps = {
     email: string;
     password: string;
     name: string;
+    surname: string;
     passwordConfirmation: string;
     // terms: boolean;
   }) => void;
@@ -132,7 +135,7 @@ export function RegisterForm({
             <InputField
               name="surname"
               label="Surname"
-              type="surname"
+              type="text"
               isRequired
               placeholder="Doe"
               autoComplete="on"

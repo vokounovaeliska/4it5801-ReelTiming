@@ -95,7 +95,13 @@ export type SignUpMutation = {
   signUp: {
     __typename?: 'AuthInfo';
     token: string;
-    user: { __typename?: 'User'; id: string; name: string; email: string };
+    user: {
+      __typename?: 'User';
+      id: string;
+      name: string;
+      surname: string;
+      email: string;
+    };
   };
 };
 
@@ -225,6 +231,20 @@ export const SignUpDocument = {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
+            name: { kind: 'Name', value: 'surname' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
             name: { kind: 'Name', value: 'password' },
           },
           type: {
@@ -261,6 +281,14 @@ export const SignUpDocument = {
               },
               {
                 kind: 'Argument',
+                name: { kind: 'Name', value: 'surname' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'surname' },
+                },
+              },
+              {
+                kind: 'Argument',
                 name: { kind: 'Name', value: 'password' },
                 value: {
                   kind: 'Variable',
@@ -279,6 +307,10 @@ export const SignUpDocument = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'surname' },
+                      },
                       { kind: 'Field', name: { kind: 'Name', value: 'email' } },
                     ],
                   },
