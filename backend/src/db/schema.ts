@@ -5,11 +5,11 @@ import {
   varchar,
 } from 'drizzle-orm/mysql-core';
 
-import { v4 as uuid } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 export const user = mysqlTable('user', {
   id: varchar('id', { length: 36 })
-    .$defaultFn(() => uuid())
+    .$defaultFn(() => uuidv4())
     .primaryKey(),
   email: varchar('email', { length: 255 }).notNull(),
   password: varchar('password', { length: 255 }).notNull(),
@@ -25,7 +25,7 @@ export const user = mysqlTable('user', {
 
 export const project = mysqlTable('project', {
   id: varchar('id', { length: 36 })
-    .$defaultFn(() => uuid())
+    .$defaultFn(() => uuidv4())
     .primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
   production_company: varchar('production_company', { length: 255 }).notNull(),
