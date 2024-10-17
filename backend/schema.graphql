@@ -19,6 +19,7 @@ type Mutation {
   deleteUser(userId: String!): Boolean!
   signIn(email: String!, password: String!): AuthInfo!
   signUp(email: String!, name: String!, password: String!): AuthInfo!
+  updateProject(data: ProjectInput!, projectId: String!): Project!
   updateUser(data: UserInput!, userId: String!): User!
 }
 
@@ -31,6 +32,18 @@ type Project {
   last_update_date: DateTimeISO!
   last_update_user_id: String!
   name: String!
+  production_company: String!
+  start_date: DateTimeISO
+}
+
+input ProjectInput {
+  create_date: DateTimeISO
+  create_user_id: String
+  end_date: DateTimeISO
+  is_active: Boolean
+  last_update_date: DateTimeISO
+  last_update_user_id: String
+  name: String
   production_company: String
   start_date: DateTimeISO
 }

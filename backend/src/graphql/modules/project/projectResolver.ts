@@ -5,7 +5,7 @@ import { project } from '@backend/db/schema';
 
 import { CustomContext } from '../../../types/types';
 
-import { Project } from './projectType';
+import { Project, ProjectInput } from './projectType';
 import { GraphQLError } from 'graphql/error';
 
 @Resolver(() => Project)
@@ -95,5 +95,39 @@ export class ProjectResolver {
    ): Promise<boolean> {
       await db.delete(project).where(eq(project.id, id));
       return true;
+   }
+
+   @Mutation(() => Project)
+   async updateProject(
+      @Arg('projectId') id: string,
+      @Arg('data') data: ProjectInput,
+      @Ctx() { db }: CustomContext
+   ): Promise<Project | null> {
+      const projectObject = await db
+         .select()
+         .from(project)
+         .where(eq(project.id, id));
+
+      if (projectObject.length === 0) {
+         return null;
+      }
+
+      const cleanData = Object.fromEntries(
+         Object.entries(data).filter(([_, v]) => v !== undefined)
+      );
+      const is_active: boolean = cleanData.is_active ? cleanData.is_active : projectObject[0].is_active;
+      const updatedProject = {
+         ...projectObject[0],
+         ...cleanData,
+         start_date: data.start_date ? new Date(data.start_date) : projectObject[0].start_date,
+         end_date: data.end_date ? new Date(data.end_date) : projectObject[0].end_date,
+         create_date: data.create_date ? new Date(data.create_date) : projectObject[0].create_date,
+         last_update_date: data.last_update_date ? new Date(data.last_update_date) : projectObject[0].last_update_date,
+         is_active,
+      };
+
+      await db.update(project).set(updatedProject).where(eq(project.id, id));
+
+      return updatedProject;
    }
 }

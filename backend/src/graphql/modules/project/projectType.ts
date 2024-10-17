@@ -1,4 +1,4 @@
-import { Field, ObjectType, ID } from 'type-graphql';
+import { Field, ObjectType, ID, InputType } from 'type-graphql';
 
 @ObjectType()
 export class Project {
@@ -6,10 +6,10 @@ export class Project {
    id!: string;
 
    @Field(() => String)
-   name: string | undefined;
+   name!: string;
 
-   @Field({ nullable: true })
-   production_company?: string;
+   @Field(() => String)
+   production_company!: string
 
    @Field(() => Date, { nullable: true })
    start_date: Date | null = null;
@@ -31,4 +31,34 @@ export class Project {
 
    @Field(() => Boolean)
    is_active: boolean = true;
+}
+
+@InputType()
+export class ProjectInput {
+   @Field(() => String, { nullable: true })
+   name?: string;
+
+   @Field(() => String, { nullable: true })
+   production_company?: string;
+
+   @Field(() => Date, { nullable: true })
+   start_date?: Date | null;
+
+   @Field(() => Date, { nullable: true })
+   end_date?: Date | null;
+
+   @Field(() => Date, { nullable: true })
+   create_date?: Date;
+
+   @Field(() => String, { nullable: true })
+   create_user_id?: string;
+
+   @Field(() => String, { nullable: true })
+   last_update_user_id?: string;
+
+   @Field(() => Date, { nullable: true })
+   last_update_date?: Date;
+
+   @Field(() => Boolean, { nullable: true })
+   is_active?: boolean;
 }
