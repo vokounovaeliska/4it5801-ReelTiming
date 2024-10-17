@@ -7,7 +7,7 @@ import { user } from '@backend/db/schema';
 import { createToken } from '@backend/libs/jwt';
 import { type CustomContext } from '@backend/types/types';
 
-import { AuthInfo, User } from './userType';
+import { AuthInfo, User, UserInput } from './userType';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -123,5 +123,45 @@ export class UserResolver {
 
 
     return { user: userObject[0], token: token };
+  }
+
+  @Mutation(() => Boolean)
+  async deleteUser(
+    @Arg('userId') id: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<boolean> {
+    await db.delete(user).where(eq(user.id, id));
+    return true;
+  }
+
+  @Mutation(() => User)
+  async updateUser(
+    @Arg('userId') id: string,
+    @Arg('data') data: UserInput,
+    @Ctx() { db }: CustomContext
+  ): Promise<User | null> {
+    const userObject = await db
+      .select()
+      .from(user)
+      .where(eq(user.id, id));
+
+    if (userObject.length === 0) {
+      return null;
+    }
+
+    const cleanData = Object.fromEntries(
+      Object.entries(data).filter(([_, v]) => v !== undefined)
+    );
+
+    const updatedUser = {
+      ...userObject[0],
+      ...cleanData,
+      create_date: data.create_date ? new Date(data.create_date) : userObject[0].create_date,
+      last_update_date: data.last_update_date ? new Date(data.last_update_date) : userObject[0].last_update_date,
+    };
+
+    await db.update(user).set(updatedUser).where(eq(user.id, id));
+
+    return updatedUser;
   }
 }

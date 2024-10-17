@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, InputType, ObjectType } from 'type-graphql';
 
 @ObjectType()
 export class User {
@@ -40,4 +40,34 @@ export class AuthInfo {
 
    @Field()
    token!: string;
+}
+
+@InputType()
+export class UserInput {
+   @Field(() => String, { nullable: true })
+   name?: string;
+
+   @Field(() => String, { nullable: true })
+   email?: string;
+
+   @Field(() => String, { nullable: true })
+   app_role_id?: string | null;
+
+   @Field(() => String, { nullable: true })
+   phone_number?: string | null;
+
+   @Field(() => Date, { nullable: true })
+   create_date?: Date;
+
+   @Field(() => String, { nullable: true })
+   create_user_id?: string;
+
+   @Field(() => String, { nullable: true })
+   last_update_user_id?: string;
+
+   @Field(() => Date, { nullable: true })
+   last_update_date?: Date;
+
+   @Field(() => Boolean, { nullable: true })
+   is_active?: boolean;
 }
