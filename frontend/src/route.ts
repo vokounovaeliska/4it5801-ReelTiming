@@ -5,6 +5,7 @@ export const route = {
   login: () => `/auth/login`,
   register: () => `/auth/register`,
   forgotPassword: () => `/auth/forgot-password`,
+  newPassword: () => `/auth/new-password`, //TODO, mozna tento odkaz nepotrebujeme, bude se generovat jen do emailu
   terms: () => `/term`,
   myprojects: () => `/myprojects`,
 };

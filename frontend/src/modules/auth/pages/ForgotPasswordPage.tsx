@@ -9,7 +9,7 @@ import { ForgotPasswordTemplate } from '../templates/ForgotPasswordTemplate';
 const FORGOT_PASSWORD_MUTATION = gql(/* GraphQL */ `
   mutation ForgotPassword($email: String!) {
     forgotPassword(email: $email) {
-      message
+      reset_token
     }
   }
 `);

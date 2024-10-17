@@ -8,6 +8,7 @@ import { MyProjectsPage } from '@frontend/modules/myprojects/MyProjectsPage';
 import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 
 import { ForgotPasswordPage } from './modules/auth/pages/ForgotPasswordPage';
+import { NewPasswordPage } from './modules/auth/pages/NewPasswordPage';
 import { ToCPage } from './modules/toc/TocPage';
 import { route } from './route';
 
@@ -22,6 +23,7 @@ export function Routes() {
       <Route path={route.myprojects()} element={<MyProjectsPage />} />
       <Route path="*" element={<NotFoundPage />} />
       <Route path={route.terms()} element={<ToCPage />} />
+      <Route path={route.newPassword()} element={<NewPasswordPage />} />
     </RouterRoutes>
   );
 }

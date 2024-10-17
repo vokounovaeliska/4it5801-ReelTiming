@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import {
   Box,
@@ -11,31 +12,53 @@ import {
 import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
 
 const schema = zod.object({
-  email: zod.string().min(1, { message: 'Email is required!' }).email({
-    message:
-      'Invalid email format. It must be in the format example@domain.com',
+  password: zod.string().min(10, {
+    message: 'Password is too short. It must be at least 10 characters long',
   }),
+  passwordConfirmation: zod
+    .string()
+    .min(1, { message: 'Password confirmation is required' }),
 });
 
 type FormValues = zod.infer<typeof schema>;
 
 const initialValues: FormValues = {
-  email: '@',
+  password: '',
+  passwordConfirmation: '',
 };
 
-export type ForgotPasswordFormProps = {
+export type NewPasswordFormProps = {
   children?: ReactNode;
   isLoading: boolean;
   errorMessage?: string;
-  onSubmit: (data: { email: string }) => void;
+  onSubmit: (data: {
+    token: string;
+    password: string;
+    passwordConfirmation: string;
+  }) => void;
 };
 
-export function ForgotPasswordForm({
+export function NewPasswordForm({
   isLoading,
   errorMessage,
   onSubmit,
   children,
-}: ForgotPasswordFormProps) {
+}: NewPasswordFormProps) {
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token'); // Get the token from query parameters
+
+  const handleSubmit = (data: FormValues) => {
+    if (token) {
+      onSubmit({
+        token,
+        password: data.password,
+        passwordConfirmation: data.passwordConfirmation,
+      });
+    } else {
+      console.error('Token is missing from the query parameters');
+    }
+  };
+
   return (
     <Box
       display="flex"
@@ -55,13 +78,14 @@ export function ForgotPasswordForm({
         overflow="hidden"
       >
         <Heading as="h2" size="xl" textAlign="center" mb={4}>
-          Reset Your Password
+          Choose New Password
         </Heading>
         <Paragraph textAlign="center">
-          Type in your email and we'll send you a link to reset your password.
+          Please create a new, secure password for your account (at least 10
+          characters long).
         </Paragraph>
         <Form
-          onSubmit={onSubmit}
+          onSubmit={handleSubmit}
           defaultValues={initialValues}
           resolver={zodResolver(schema)}
           noValidate
@@ -69,13 +93,20 @@ export function ForgotPasswordForm({
           <Stack spacing={6} pt={2} pb={6} justify="center">
             {errorMessage && <ErrorBanner title={errorMessage} />}{' '}
             <InputField
-              name="email"
-              label="Email"
-              type="email"
-              placeholder="Enter your email"
+              name="password"
+              label="Password"
+              type="password"
               isRequired
-              autoFocus
-              autoComplete="on"
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+            />
+            <InputField
+              name="passwordConfirmation"
+              label="Confirm password"
+              type="password"
+              isRequired
+              autoComplete="off"
               autoCorrect="off"
               autoCapitalize="off"
             />
@@ -88,7 +119,7 @@ export function ForgotPasswordForm({
               bg="orange.500"
               textColor="white"
             >
-              Send reset email
+              Set new password
             </Button>
           </Stack>
           {children}
