@@ -7,16 +7,15 @@ import { user } from '@backend/db/schema';
 import { createToken } from '@backend/libs/jwt';
 import { type CustomContext } from '@backend/types/types';
 
-import { AuthInfo, User } from './userType';
+import { AuthInfo, User, UserInput } from './userType';
 
 @Resolver(() => User)
 export class UserResolver {
   @Query(() => User, { nullable: true })
   async user(
-    @Arg('id') stringId: string,
+    @Arg('id') id: string,
     @Ctx() { db }: CustomContext,
   ): Promise<User | null> {
-    const id = parseInt(stringId, 10);
     const userRecord = await db.select().from(user).where(eq(user.id, id));
 
     if (userRecord.length === 0) {
@@ -28,7 +27,13 @@ export class UserResolver {
 
   @Query(() => [User])
   async users(@Ctx() { db }: CustomContext): Promise<User[]> {
-    return await db.select().from(user);
+    const users = await db.select().from(user).orderBy(user.create_date);
+
+    return users.map((user) => ({
+      ...user,
+      create_date: new Date(user.create_date),
+      is_active: !!user.is_active,
+    }));
   }
 
   @Mutation(() => AuthInfo)
@@ -64,6 +69,7 @@ export class UserResolver {
     @Arg('email') email: string,
     @Arg('password') password: string,
     @Arg('name') name: string,
+    @Arg('surname') surname: string,
     @Ctx() { db }: CustomContext,
   ): Promise<AuthInfo> {
     /* VALIDATION */
@@ -82,6 +88,7 @@ export class UserResolver {
     const passwordHash = await argon2.hash(password);
 
     /* DATABASE INSERT */
+    const createdAt = new Date();
 
     const insertResult = await db
       .insert(user)
@@ -89,6 +96,12 @@ export class UserResolver {
         email,
         password: passwordHash,
         name,
+        surname,
+        create_date: createdAt,
+        create_user_id: 'user-id', // Replace with actual user ID
+        last_update_date: createdAt,
+        last_update_user_id: 'user-id', // Replace with actual user ID
+        is_active: true,
       })
       .$returningId();
 
@@ -98,12 +111,53 @@ export class UserResolver {
 
     const token = createToken({ id });
 
-    const userObject = {
-      id,
-      email,
-      name,
+    const userObject = await db.select().from(user).where(eq(user.id, id));
+
+    if (userObject.length === 0) {
+      throw new GraphQLError('User not created.');
+    }
+
+    return { user: userObject[0], token: token };
+  }
+
+  @Mutation(() => Boolean)
+  async deleteUser(
+    @Arg('userId') id: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<boolean> {
+    await db.delete(user).where(eq(user.id, id));
+    return true;
+  }
+
+  @Mutation(() => User)
+  async updateUser(
+    @Arg('userId') id: string,
+    @Arg('data') data: UserInput,
+    @Ctx() { db }: CustomContext,
+  ): Promise<User | null> {
+    const userObject = await db.select().from(user).where(eq(user.id, id));
+
+    if (userObject.length === 0) {
+      return null;
+    }
+
+    const cleanData = Object.fromEntries(
+      Object.entries(data).filter(([_, v]) => v !== undefined),
+    );
+
+    const updatedUser = {
+      ...userObject[0],
+      ...cleanData,
+      create_date: data.create_date
+        ? new Date(data.create_date)
+        : userObject[0].create_date,
+      last_update_date: data.last_update_date
+        ? new Date(data.last_update_date)
+        : userObject[0].last_update_date,
     };
 
-    return { user: userObject, token: token };
+    await db.update(user).set(updatedUser).where(eq(user.id, id));
+
+    return updatedUser;
   }
 }

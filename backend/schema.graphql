@@ -8,19 +8,76 @@ type AuthInfo {
   user: User!
 }
 
+"""
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.This scalar is serialized to a string in ISO 8601 format and parsed from a string in ISO 8601 format.
+"""
+scalar DateTimeISO
+
 type Mutation {
+  addProject(end_date: DateTimeISO, name: String!, production_company: String!, start_date: DateTimeISO): Project!
+  deleteProject(projectId: String!): Boolean!
+  deleteUser(userId: String!): Boolean!
   signIn(email: String!, password: String!): AuthInfo!
-  signUp(email: String!, name: String!, password: String!): AuthInfo!
+  signUp(email: String!, name: String!, password: String!, surname: String!): AuthInfo!
+  updateProject(data: ProjectInput!, projectId: String!): Project!
+  updateUser(data: UserInput!, userId: String!): User!
+}
+
+type Project {
+  create_date: DateTimeISO!
+  create_user_id: String!
+  end_date: DateTimeISO
+  id: ID!
+  is_active: Boolean!
+  last_update_date: DateTimeISO!
+  last_update_user_id: String!
+  name: String!
+  production_company: String!
+  start_date: DateTimeISO
+}
+
+input ProjectInput {
+  create_date: DateTimeISO
+  create_user_id: String
+  end_date: DateTimeISO
+  is_active: Boolean
+  last_update_date: DateTimeISO
+  last_update_user_id: String
+  name: String
+  production_company: String
+  start_date: DateTimeISO
 }
 
 type Query {
   _empty: String!
+  project(id: String!): Project
+  projects: [Project!]!
   user(id: String!): User
   users: [User!]!
 }
 
 type User {
+  app_role_id: String
+  create_date: DateTimeISO!
+  create_user_id: String!
   email: String!
   id: ID!
+  is_active: Boolean!
+  last_update_date: DateTimeISO!
+  last_update_user_id: String!
   name: String!
+  phone_number: String
+  surname: String!
+}
+
+input UserInput {
+  app_role_id: String
+  create_date: DateTimeISO
+  create_user_id: String
+  email: String
+  is_active: Boolean
+  last_update_date: DateTimeISO
+  last_update_user_id: String
+  name: String
+  phone_number: String
 }

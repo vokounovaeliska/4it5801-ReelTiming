@@ -11,18 +11,14 @@ const SIGNUP_MUTATION = gql(/* GraphQL */ `
   mutation SignUp(
     $email: String!
     $name: String!
+    $surname: String!
     $password: String!
-    $username: String!
   ) {
-    signUp(
-      email: $email
-      name: $name
-      password: $password
-      username: $username
-    ) {
+    signUp(email: $email, name: $name, surname: $surname, password: $password) {
       user {
         id
         name
+        email
         surname
       }
       token
@@ -42,7 +38,12 @@ export function RegistrationPage() {
   });
 
   const handleSignUpFormSubmit = useCallback(
-    (variables: { email: string; name: string; password: string }) => {
+    (variables: {
+      email: string;
+      name: string;
+      surname: string;
+      password: string;
+    }) => {
       signupRequest({ variables });
     },
     [signupRequest],

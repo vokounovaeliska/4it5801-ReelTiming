@@ -11,6 +11,7 @@ export type RegisterProps = {
     email: string;
     password: string;
     name: string;
+    surname: string;
     passwordConfirmation: string;
   }) => void;
 };
