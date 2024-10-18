@@ -27,10 +27,6 @@ export function MyProjectsPage() {
     }
   }, [auth.user, navigate]);
 
-  if (!auth.user) {
-    return null;
-  }
-
   if (loading) {
     return <p>Loading projects...</p>;
   }
@@ -40,7 +36,10 @@ export function MyProjectsPage() {
   }
 
   const projects =
-    data?.projects?.map((project: { id: string; name: string }) => project) || [];
+    data?.projects?.map((project: { id: string; name: string }) => ({
+      id: project.id,
+      name: project.name,
+    })) || [];
 
   const handleAddProject = () => {
     navigate(route.createProject());
