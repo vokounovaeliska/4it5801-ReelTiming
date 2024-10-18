@@ -1,9 +1,16 @@
 import React from 'react';
-import { HamburgerIcon } from '@chakra-ui/icons';
 import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  HamburgerIcon,
+} from '@chakra-ui/icons';
+import {
+  Avatar,
   Box,
   Button,
   CloseButton,
+  Collapse,
+  Divider,
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -12,9 +19,12 @@ import {
   Flex,
   IconButton,
   Stack,
+  Text,
   VStack,
 } from '@chakra-ui/react';
+import { useLocation } from 'react-router-dom';
 
+import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
 
 import { ReactRouterLink } from '../../atoms';
@@ -23,97 +33,264 @@ import Logo from '../logo/Logo';
 
 const Navbar: React.FC<{
   children1?: React.ReactNode;
-  children2?: React.ReactNode;
-}> = ({ children1, children2 }) => {
+}> = ({ children1 }) => {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = React.useState(false);
+  const [isUserSettingsOpen, setUserSettingsOpen] = React.useState(false);
   const btnRef = React.useRef<HTMLButtonElement>(null);
+  const location = useLocation();
 
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
+    setUserSettingsOpen(false);
+  };
+
+  const toggleUserSettings = () => {
+    setUserSettingsOpen((prev) => !prev);
   };
 
   return (
-    <Box bg="#2D3748" p={4} color="white">
-      <Flex align="center" justify={'space-between'}>
-        <Flex>
-          <Flex align={'center'}>
-            <Logo />
-            <AppHeading />
-          </Flex>
-
+    <Box bg="#2D3748" color="white">
+      <Flex align="center" justify="space-between" px={4} py={2}>
+        <Flex align="center">
+          <Logo />
+          <AppHeading />
           <Stack
             direction="row"
             display={{ base: 'none', md: 'flex' }}
-            alignSelf={'center'}
+            alignSelf="center"
+            spacing={4}
+            ml={4}
           >
-            <Button
-              as={ReactRouterLink}
-              to={route.myprojects()} //todo route to myprojectspage
-              colorScheme="orange"
-              bg="orange.600"
-              textColor={'white'}
-              aria-label="Button going to My Projects page"
-            >
-              My Projects
-            </Button>
-            <Button
-              as={ReactRouterLink}
-              to={route.myprojects()} //todo route to timesheet
-              colorScheme="orange"
-              bg="orange.600"
-              textColor={'white'}
-              aria-label="Button going to Timesheet page"
-            >
-              Timesheet
-            </Button>
+            {user ? (
+              <>
+                <Button
+                  as={ReactRouterLink}
+                  to={route.myprojects()}
+                  variant="ghost"
+                  colorScheme="orange"
+                  textColor="white"
+                  aria-label="Button going to My Projects page"
+                  bg={
+                    location.pathname === route.myprojects()
+                      ? 'orange.600'
+                      : 'transparent'
+                  }
+                  color="white"
+                  _hover={{
+                    bg: 'orange.700',
+                    color: 'white',
+                    boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.2)',
+                  }}
+                  _active={{
+                    bg: 'orange.600',
+                    color: 'white',
+                    boxShadow: 'inset 0 0 15px rgba(0, 0, 0, 0.3)',
+                  }}
+                >
+                  My Projects
+                </Button>
+                <Button
+                  as={ReactRouterLink}
+                  to={route.test()}
+                  variant="ghost"
+                  colorScheme="orange"
+                  textColor="white"
+                  aria-label="Button going to My test page"
+                  bg={
+                    location.pathname === route.test()
+                      ? 'orange.600'
+                      : 'transparent'
+                  }
+                  color="white"
+                  _hover={{
+                    bg: 'orange.700',
+                    color: 'white',
+                    boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.2)',
+                  }}
+                  _active={{
+                    bg: 'orange.600',
+                    color: 'white',
+                    boxShadow: 'inset 0 0 15px rgba(0, 0, 0, 0.3)',
+                  }}
+                >
+                  Test for button effects
+                </Button>
+                {/* <Button
+                  as={ReactRouterLink}
+                  to={route.myprojects()} // change when timesheet done
+                  variant="ghost"
+                  colorScheme="orange"
+                  textColor="white"
+                  aria-label="Button going to Timesheet page"
+                  bg={
+                    location.pathname === route.myprojects()
+                      ? 'orange.600'
+                      : 'transparent'
+                  }
+                  color="white"
+                  _hover={{
+                    bg: 'orange.700',
+                    color: 'white',
+                    boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.2)',
+                  }}
+                  _active={{
+                    bg: 'orange.600',
+                    color: 'white',
+                    boxShadow: 'inset 0 0 15px rgba(0, 0, 0, 0.3)',
+                  }}
+                >
+                  Timesheet
+                </Button> */}
+              </>
+            ) : null}
           </Stack>
-          <Box display={{ base: 'block', md: 'none' }} alignSelf={'center'}>
-            <>
-              <IconButton
-                ref={btnRef}
-                icon={<HamburgerIcon />}
-                onClick={toggleDrawer}
-                aria-label="Open Menu"
-                colorScheme="orange"
-                ml={'auto'}
-              />
-              <Drawer
-                isOpen={isOpen}
-                placement="right"
-                onClose={toggleDrawer}
-                finalFocusRef={btnRef}
-              >
-                <DrawerOverlay>
-                  <DrawerContent bg="#2D3748">
-                    <DrawerHeader>
-                      <CloseButton onClick={toggleDrawer} />
-                    </DrawerHeader>
-                    <DrawerBody>
-                      <VStack spacing={4} align="stretch">
-                        {children2}
-                        <Button colorScheme="orange" onClick={toggleDrawer}>
+        </Flex>
+        <Box display={{ base: 'block', md: 'none' }}>
+          <IconButton
+            ref={btnRef}
+            icon={<HamburgerIcon />}
+            onClick={toggleDrawer}
+            aria-label="Open Menu"
+            colorScheme="orange"
+            ml="auto"
+          />
+          <Drawer
+            isOpen={isOpen}
+            placement="right"
+            onClose={toggleDrawer}
+            finalFocusRef={btnRef}
+          >
+            <DrawerOverlay>
+              <DrawerContent bg="#2D3748">
+                <DrawerHeader>
+                  <CloseButton onClick={toggleDrawer} color={'orange.500'} />
+                </DrawerHeader>
+                <DrawerBody display="flex" flexDirection="column" height="full">
+                  <VStack spacing={2} flexGrow={1}>
+                    {user ? (
+                      <>
+                        <Button
+                          as={ReactRouterLink}
+                          to={route.myprojects()}
+                          colorScheme="orange"
+                          onClick={toggleDrawer}
+                          width="full"
+                          mb={6}
+                        >
                           My Projects
                         </Button>
-                        <Button colorScheme="orange" onClick={toggleDrawer}>
+                        <Button
+                          as={ReactRouterLink}
+                          to={route.test()}
+                          colorScheme="orange"
+                          onClick={toggleDrawer}
+                          width="full"
+                        >
                           Timesheet
                         </Button>
+                      </>
+                    ) : (
+                      <VStack spacing={4} align="center">
+                        <Button
+                          as={ReactRouterLink}
+                          to={route.login()}
+                          colorScheme="orange"
+                          onClick={toggleDrawer}
+                          width="full"
+                        >
+                          Login
+                        </Button>
+                        <Button
+                          as={ReactRouterLink}
+                          to={route.register()}
+                          colorScheme="orange"
+                          onClick={toggleDrawer}
+                          width="full"
+                        >
+                          Register
+                        </Button>
                       </VStack>
-                    </DrawerBody>
-                  </DrawerContent>
-                </DrawerOverlay>
-              </Drawer>
-            </>
-          </Box>
-        </Flex>
+                    )}
+                  </VStack>
 
-        <Flex></Flex>
-        <Stack
-          direction="row"
-          display={{ base: 'none', md: 'flex' }}
-          alignSelf={'center'}
-        >
+                  <Flex flexDirection="column" mt="auto">
+                    {user && (
+                      <>
+                        <Button
+                          onClick={toggleUserSettings}
+                          width="full"
+                          variant="ghost"
+                          rightIcon={
+                            isUserSettingsOpen ? (
+                              <ChevronUpIcon color={'orange'} />
+                            ) : (
+                              <ChevronDownIcon color={'orange'} />
+                            )
+                          }
+                          colorScheme="orange"
+                          _hover={{
+                            bg: 'orange.700',
+                            color: 'white',
+                          }}
+                        >
+                          <Flex align="center">
+                            <Avatar
+                              src={user.profileImageUrl || ''}
+                              name={user.name || 'Guest'}
+                              size="30px"
+                              boxSize={25}
+                              bg={'orange.400'}
+                              mr={2}
+                            />
+                            <Text fontSize="sm" fontWeight="bold" color="white">
+                              {user.name || 'Guest'}
+                            </Text>
+                          </Flex>
+                        </Button>
+                        <Collapse in={isUserSettingsOpen}>
+                          <VStack spacing={2} mt={2} align="stretch">
+                            <Button
+                              as={ReactRouterLink}
+                              to={route.myprojects()}
+                              colorScheme="orange"
+                              onClick={toggleDrawer}
+                            >
+                              Settings
+                            </Button>
+                            <Button
+                              as={ReactRouterLink}
+                              to={route.myprojects()}
+                              colorScheme="orange"
+                              onClick={toggleDrawer}
+                            >
+                              Some other option
+                            </Button>
+                            <Divider />
+                            <Button
+                              as={ReactRouterLink}
+                              to={route.myprojects()}
+                              colorScheme="orange"
+                              bgColor={'orange.700'}
+                              _hover={{ bg: 'orange.800' }}
+                              onClick={toggleDrawer}
+                            >
+                              Logout
+                            </Button>
+                          </VStack>
+                        </Collapse>
+                      </>
+                    )}
+                  </Flex>
+                </DrawerBody>
+              </DrawerContent>
+            </DrawerOverlay>
+          </Drawer>
+        </Box>
+
+        <Flex display={{ base: 'none', md: 'flex' }} alignItems="center">
           {children1}
-        </Stack>
+        </Flex>
       </Flex>
     </Box>
   );

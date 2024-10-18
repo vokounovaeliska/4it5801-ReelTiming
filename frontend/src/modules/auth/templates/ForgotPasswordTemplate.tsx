@@ -3,9 +3,9 @@ import { Box, Center, Paragraph } from '@frontend/shared/design-system';
 import { RouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
-import UserNavbar from '@frontend/shared/navigation/components/navbar/UserNavbar';
-import UserNavbarMobile from '@frontend/shared/navigation/components/navbar/UserNavbarMobile';
 
+// import UserNavbar from '@frontend/shared/navigation/components/navbar/UserNavbar';
+// import UserNavbarMobile from '@frontend/shared/navigation/components/navbar/UserNavbarMobile';
 import { ForgotPasswordForm } from '../organisms/ForgotPasswordForm';
 
 export type ForgotPasswordTemplateProps = {
@@ -19,8 +19,14 @@ export function ForgotPasswordTemplate({
   onSubmit,
 }: ForgotPasswordTemplateProps) {
   return (
-    <Box display="flex" flexDirection="column" minHeight="100vh">
-      <Navbar children1={<UserNavbar />} children2={<UserNavbarMobile />} />
+    <Box
+      display="flex"
+      flexDirection="column"
+      minHeight="100vh"
+      bgColor={'gray.50'}
+    >
+      {/* <Navbar children1={<UserNavbar />} children2={<UserNavbarMobile />} /> */}
+      <Navbar />
       <Box
         flex="1"
         display="flex"
@@ -29,6 +35,8 @@ export function ForgotPasswordTemplate({
         overflowY="auto"
         padding={{ base: '4', sm: '6', md: '8' }}
         mx="auto"
+        width="100%"
+        maxWidth="600px"
       >
         <ForgotPasswordForm
           isLoading={isLoading}
