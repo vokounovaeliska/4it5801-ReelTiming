@@ -17,7 +17,14 @@ export function InputField({
       label={label}
       isRequired={inputProps.isRequired}
     >
-      {(field) => <Input {...inputProps} {...field} />}
+      {(field) => (
+        <Input
+          borderColor={'gray.400'}
+          borderWidth={1}
+          {...inputProps}
+          {...field}
+        />
+      )}
     </FormField>
   );
 }

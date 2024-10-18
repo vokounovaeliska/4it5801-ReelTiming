@@ -1,5 +1,7 @@
 import React from 'react';
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Link, Text } from '@chakra-ui/react';
+
+import { route } from '@frontend/route';
 
 const Footer: React.FC = () => {
   return (
@@ -7,14 +9,21 @@ const Footer: React.FC = () => {
       as="footer"
       width="100%"
       textAlign="center"
-      py={1}
+      py={0.1}
       bg="gray.800"
       color="white"
       position="relative"
     >
-      <Text fontSize="sm">
-        &copy; {new Date().getFullYear()} ReelTiming. All rights reserved.
-      </Text>
+      <Link
+        href={route.terms()}
+        color="white"
+        textDecoration="none"
+        _hover={{ textDecoration: 'underline' }}
+      >
+        <Text fontSize="sm">
+          &copy; {new Date().getFullYear()} ReelTiming. All rights reserved.
+        </Text>
+      </Link>
     </Box>
   );
 };

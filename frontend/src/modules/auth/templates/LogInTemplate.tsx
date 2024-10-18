@@ -19,7 +19,12 @@ export function LogInTemplate({
   onSubmit,
 }: LogInTemplateProps) {
   return (
-    <Box display="flex" flexDirection="column" minHeight="100vh">
+    <Box
+      display="flex"
+      flexDirection="column"
+      minHeight="100vh"
+      bgColor={'gray.50'}
+    >
       {/* <Navbar children1={<UserNavbar />} children2={<UserNavbarMobile />} /> */}
       <Navbar />
       <Box
@@ -30,6 +35,8 @@ export function LogInTemplate({
         overflowY="auto"
         padding={{ base: '4', sm: '6', md: '8' }}
         mx="auto"
+        width="100%"
+        maxWidth="600px"
       >
         <LogInForm
           isLoading={isLoading}
