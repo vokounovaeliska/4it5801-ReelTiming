@@ -7,5 +7,5 @@ export const route = {
   forgotPassword: () => `/auth/forgot-password`,
   terms: () => `/term`,
   myprojects: () => `/myprojects`,
-  test: () => `/test`,
+  createProject: () => `/create-project`,
 };

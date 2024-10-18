@@ -50,6 +50,7 @@ export class ProjectResolver {
   async addProject(
     @Arg('name') name: string,
     @Arg('production_company') productionCompany: string,
+    @Arg('description', { nullable: true }) description: string,
     @Arg('start_date', { nullable: true }) startDate: Date,
     @Arg('end_date', { nullable: true }) endDate: Date,
     @Ctx() { db }: CustomContext,
@@ -61,6 +62,7 @@ export class ProjectResolver {
       .values({
         name,
         production_company: productionCompany,
+        description: description ? description : '',
         start_date: startDate,
         end_date: endDate,
         create_date: createdAt,

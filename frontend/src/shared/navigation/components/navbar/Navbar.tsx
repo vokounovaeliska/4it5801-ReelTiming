@@ -90,32 +90,6 @@ const Navbar: React.FC<{
                 >
                   My Projects
                 </Button>
-                <Button
-                  as={ReactRouterLink}
-                  to={route.test()}
-                  variant="ghost"
-                  colorScheme="orange"
-                  textColor="white"
-                  aria-label="Button going to My test page"
-                  bg={
-                    location.pathname === route.test()
-                      ? 'orange.600'
-                      : 'transparent'
-                  }
-                  color="white"
-                  _hover={{
-                    bg: 'orange.700',
-                    color: 'white',
-                    boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.2)',
-                  }}
-                  _active={{
-                    bg: 'orange.600',
-                    color: 'white',
-                    boxShadow: 'inset 0 0 15px rgba(0, 0, 0, 0.3)',
-                  }}
-                >
-                  Test for button effects
-                </Button>
                 {/* <Button
                   as={ReactRouterLink}
                   to={route.myprojects()} // change when timesheet done
@@ -182,7 +156,7 @@ const Navbar: React.FC<{
                         </Button>
                         <Button
                           as={ReactRouterLink}
-                          to={route.test()}
+                          to={route.landingPage()}
                           colorScheme="orange"
                           onClick={toggleDrawer}
                           width="full"

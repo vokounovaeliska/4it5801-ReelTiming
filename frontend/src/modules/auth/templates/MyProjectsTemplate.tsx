@@ -2,6 +2,8 @@ import { AddIcon } from '@chakra-ui/icons';
 import { Box, Center, Heading, IconButton, SimpleGrid } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
+import { route } from '@frontend/route';
+import { RouterNavLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 import UserNavbar from '@frontend/shared/navigation/components/navbar/UserNavbar';
@@ -57,6 +59,8 @@ export function MyProjectsTemplate({
           <IconButton
             aria-label="Add project"
             colorScheme="orange"
+            as={RouterNavLink}
+            to={route.createProject()}
             size="lg"
             icon={<AddIcon />}
             onClick={onAddProject}
