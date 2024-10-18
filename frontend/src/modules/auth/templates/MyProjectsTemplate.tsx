@@ -9,7 +9,7 @@ import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 import UserNavbar from '@frontend/shared/navigation/components/navbar/UserNavbar';
 
 export type MyProjectsTemplateProps = {
-  projects: string[];
+  projects: { id: string; name: string }[];
   onAddProject: () => void;
 };
 
@@ -29,12 +29,11 @@ export function MyProjectsTemplate({
         <Heading as="h1" size="lg" mb={6} textAlign="left">
           My Projects
         </Heading>
-
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6} mb={8}>
-          {projects.map((project, index) => (
+          {projects.map((project) => (
             <Link
-              key={index}
-              to={`/projects/${index}`}
+              key={project.id}
+              to={`/projects/${project.id}`}
               style={{ textDecoration: 'none' }}
             >
               <Box
@@ -49,12 +48,11 @@ export function MyProjectsTemplate({
                 justifyContent="center"
                 _hover={{ bg: 'gray.200', cursor: 'pointer' }}
               >
-                {project}
+                {project.name}
               </Box>
             </Link>
           ))}
         </SimpleGrid>
-
         <Center>
           <IconButton
             aria-label="Add project"
