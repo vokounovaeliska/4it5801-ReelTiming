@@ -1,15 +1,15 @@
-import { Input, type InputProps } from '@frontend/shared/design-system';
+import { Textarea, type TextareaProps } from '@frontend/shared/design-system';
 
 import { FormField, type FormFieldBaseProps } from '../FormField';
 
-export type InputFieldProps = FormFieldBaseProps<InputProps>;
+export type TextAreaFieldProps = FormFieldBaseProps<TextareaProps>;
 
-export function InputField({
+export function TextAreaField({
   id,
   name,
   label,
   ...inputProps
-}: InputFieldProps) {
+}: TextAreaFieldProps) {
   return (
     <FormField
       id={id}
@@ -18,7 +18,7 @@ export function InputField({
       isRequired={inputProps.isRequired}
     >
       {(field) => (
-        <Input
+        <Textarea
           borderColor={'gray.400'}
           borderWidth={1}
           {...inputProps}

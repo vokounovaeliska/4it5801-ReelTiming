@@ -45,13 +45,19 @@ export function ForgotPasswordForm({
       p={4}
     >
       <Box
-        width={{ base: '100%' }}
-        p={6}
+        // width={{ base: '100%' }}
+        // p={6}
+        width={{ base: '100%', sm: '110%', md: '500px', lg: '500px' }}
+        maxWidth={'600px'}
+        pt={6}
+        pb={6}
+        pl={4}
+        pr={4}
         borderRadius="md"
         boxShadow="lg"
         bg="white"
-        border="1px"
-        borderColor="gray.100"
+        border="2px"
+        borderColor="gray.300"
         overflow="hidden"
       >
         <Heading as="h2" size="xl" textAlign="center" mb={4}>

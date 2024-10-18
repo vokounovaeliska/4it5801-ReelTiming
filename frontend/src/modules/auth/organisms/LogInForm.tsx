@@ -45,13 +45,17 @@ export function LogInForm({
       p={4}
     >
       <Box
-        width={{ base: '100%' }}
-        p={6}
+        width={{ base: '100%', sm: '170%', md: '400px', lg: '400px' }}
+        maxWidth={'500px'}
+        pt={6}
+        pb={6}
+        pl={4}
+        pr={4}
         borderRadius="md"
         boxShadow="lg"
         bg="white"
-        border="1px"
-        borderColor="gray.100"
+        border="2px"
+        borderColor="gray.300"
         overflow="hidden"
       >
         <Heading as="h2" size="xl" textAlign="center" mb={4}>
@@ -65,7 +69,8 @@ export function LogInForm({
         >
           <Stack
             py="0"
-            width={{ base: '200px', sm: '300px', md: '400px' }}
+            // width={{ base: '200px', sm: '300px', md: '400px' }}
+            width="full"
             justify="center"
           >
             {errorMessage && <ErrorBanner title={errorMessage} />}

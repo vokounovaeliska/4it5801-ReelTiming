@@ -1,34 +1,67 @@
-import { Field, ObjectType } from 'type-graphql';
+import { Field, ID, InputType, ObjectType } from 'type-graphql';
 
 @ObjectType()
 export class Project {
-  @Field()
-  id: string | undefined;
+  @Field(() => ID)
+  id!: string;
 
-  @Field()
-  name: string | undefined;
+  @Field(() => String)
+  name!: string;
 
-  @Field({ nullable: true })
-  production_company?: string | null;
+  @Field(() => String)
+  production_company!: string;
 
-  @Field({ nullable: true })
-  start_date?: Date | null;
+  @Field(() => String)
+  description?: string;
 
-  @Field({ nullable: true })
-  end_date?: Date | null;
+  @Field(() => Date, { nullable: true })
+  start_date: Date | null = null;
 
-  @Field()
+  @Field(() => Date, { nullable: true })
+  end_date: Date | null = null;
+
+  @Field(() => Date)
   create_date: Date | undefined;
 
-  @Field()
+  @Field(() => String)
   create_user_id: string | undefined;
 
-  @Field()
+  @Field(() => String)
   last_update_user_id: string | undefined;
 
-  @Field()
+  @Field(() => Date)
   last_update_date: Date | undefined;
 
-  @Field()
-  is_active: boolean | undefined;
+  @Field(() => Boolean)
+  is_active: boolean = true;
+}
+
+@InputType()
+export class ProjectInput {
+  @Field(() => String, { nullable: true })
+  name?: string;
+
+  @Field(() => String, { nullable: true })
+  production_company?: string;
+
+  @Field(() => Date, { nullable: true })
+  start_date?: Date | null;
+
+  @Field(() => Date, { nullable: true })
+  end_date?: Date | null;
+
+  @Field(() => Date, { nullable: true })
+  create_date?: Date;
+
+  @Field(() => String, { nullable: true })
+  create_user_id?: string;
+
+  @Field(() => String, { nullable: true })
+  last_update_user_id?: string;
+
+  @Field(() => Date, { nullable: true })
+  last_update_date?: Date;
+
+  @Field(() => Boolean, { nullable: true })
+  is_active?: boolean;
 }

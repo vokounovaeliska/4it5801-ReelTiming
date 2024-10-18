@@ -8,4 +8,5 @@ export const route = {
   newPassword: () => `/auth/new-password`, //TODO, mozna tento odkaz nepotrebujeme, bude se generovat jen do emailu
   terms: () => `/term`,
   myprojects: () => `/myprojects`,
+  createProject: () => `/create-project`,
 };

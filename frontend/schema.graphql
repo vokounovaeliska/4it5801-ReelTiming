@@ -5,7 +5,7 @@ type AuthInfo {
 
 type Mutation {
   signIn(email: String!, password: String!): AuthInfo!
-  register(
+  signUp(
     email: String!
     name: String!
     surname: String!

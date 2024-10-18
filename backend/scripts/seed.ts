@@ -13,19 +13,22 @@ async function seed() {
       await db.insert(user).values([
         {
           id: 1,
-          name: 'Young Gatchell',
+          name: 'Young',
+          surname: 'Gatchell',
           email: 'yg123@quacker.cz',
           password: 'notHashedPassword1',
         },
         {
           id: 2,
-          name: 'Gatchell Young',
+          name: 'Gatchell',
+          surname: 'Young',
           email: 'gyoung@quacker.cz',
           password: 'notHashedPassword2',
         },
         {
           id: 3,
-          name: 'Mitchel Old',
+          name: 'Mitchel',
+          surname: 'Old',
           email: 'oldmit@quacker.cz',
           password: 'notHashedPassword3',
         },

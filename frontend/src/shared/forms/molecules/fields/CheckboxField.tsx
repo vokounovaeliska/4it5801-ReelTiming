@@ -13,7 +13,12 @@ export function CheckboxField({
   return (
     <FormField id={id} name={name}>
       {({ value, ...restField }) => (
-        <Checkbox {...restProps} {...restField} isChecked={value}>
+        <Checkbox
+          borderColor={'gray.300'}
+          {...restProps}
+          {...restField}
+          isChecked={value}
+        >
           {label}
         </Checkbox>
       )}
