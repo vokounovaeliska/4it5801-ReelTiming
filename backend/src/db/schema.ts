@@ -29,6 +29,7 @@ export const project = mysqlTable('project', {
     .primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
   production_company: varchar('production_company', { length: 255 }).notNull(),
+  description: varchar('description', { length: 255 }).notNull().default(''),
   start_date: timestamp('start_date'),
   end_date: timestamp('end_date'),
   create_date: timestamp('create_date').notNull(),

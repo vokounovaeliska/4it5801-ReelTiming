@@ -11,6 +11,9 @@ export class Project {
   @Field(() => String)
   production_company!: string;
 
+  @Field(() => String)
+  description?: string;
+
   @Field(() => Date, { nullable: true })
   start_date: Date | null = null;
 
