@@ -24,6 +24,7 @@ import { UserResolver } from '@backend/graphql/modules/user/userResolver';
 import { parseAndVerifyJWT } from '@backend/libs/jwt';
 import { mockResolvers } from '@backend/mocks/mocks';
 import { CustomContext } from '@backend/types/types';
+import { ProjectUserResolver } from './graphql/modules/projectUser/projectUserResolver';
 
 const init = async () => {
   const app = express();
@@ -32,7 +33,12 @@ const init = async () => {
 
   const schema = await buildSchema({
     //resolvers: [EmptyResolver, UserResolver],
-    resolvers: [EmptyResolver, UserResolver, ProjectResolver],
+    resolvers: [
+      EmptyResolver,
+      UserResolver,
+      ProjectResolver,
+      ProjectUserResolver,
+    ],
     emitSchemaFile: true,
   });
 
