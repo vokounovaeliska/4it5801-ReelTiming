@@ -51,6 +51,8 @@ export function MyProjectsTemplate({
               <Box
                 bg={boxBg}
                 borderRadius="md"
+                borderWidth={2}
+                borderColor="gray.300"
                 p={6}
                 boxShadow="lg"
                 height="150px"
@@ -64,7 +66,15 @@ export function MyProjectsTemplate({
                 <Text fontWeight="bold" fontSize="xl" color="gray.800" mb={2}>
                   {project.name}
                 </Text>
-                <Text fontSize="sm" color="gray.800" textAlign="center">
+                <Text
+                  fontSize="sm"
+                  color="gray.800"
+                  textAlign="center"
+                  overflow="hidden"
+                  whiteSpace=""
+                  textOverflow="ellipsis"
+                  maxW="100%"
+                >
                   {project.description}
                 </Text>
               </Box>
