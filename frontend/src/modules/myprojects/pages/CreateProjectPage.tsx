@@ -2,12 +2,10 @@ import { useCallback } from 'react';
 import { gql, useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 
-import { route } from '@frontend/route';
-
 import { FormValues } from '../organisms/CreateProjectForm';
 import { CreateProjectTemplate } from '../templates/CreateProjectTemplate';
 
-const CREATE_PROJECT_MUTATION = gql(/* GraphQL */ //TODO add description
+const CREATE_PROJECT_MUTATION = gql(/* GraphQL */
 `
   mutation Mutation(
     $productionCompany: String!
@@ -43,8 +41,11 @@ export function CreateProjectPage() {
   const [createRequest, createRequestState] = useMutation(
     CREATE_PROJECT_MUTATION,
     {
-      onCompleted: () => {
-        navigate(route.myprojects()); //TODO project dashboard page
+      onCompleted: (data) => {
+        const projectId = data?.addProject?.id;
+        if (projectId) {
+          navigate(`/projects/${projectId}`);
+        }
       },
       onError: () => {},
     },
