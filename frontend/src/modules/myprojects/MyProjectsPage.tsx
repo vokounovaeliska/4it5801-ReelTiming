@@ -11,6 +11,7 @@ const GET_PROJECTS = gql`
     projects {
       id
       name
+      description
     }
   }
 `;
@@ -36,10 +37,13 @@ export function MyProjectsPage() {
   }
 
   const projects =
-    data?.projects?.map((project: { id: string; name: string }) => ({
-      id: project.id,
-      name: project.name,
-    })) || [];
+    data?.projects?.map(
+      (project: { id: string; name: string; description: string }) => ({
+        id: project.id,
+        name: project.name,
+        description: project.description,
+      }),
+    ) || [];
 
   const handleAddProject = () => {
     navigate(route.createProject());
