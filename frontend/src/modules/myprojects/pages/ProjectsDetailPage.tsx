@@ -1,6 +1,13 @@
 import React from 'react';
 import { gql, useQuery } from '@apollo/client';
-import { Box, Heading, Spinner, Text } from '@chakra-ui/react';
+import {
+  AbsoluteCenter,
+  Box,
+  Divider,
+  Heading,
+  Spinner,
+  Text,
+} from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
@@ -52,45 +59,156 @@ export function MyProjectDetailPage() {
       bgColor="gray.50"
     >
       <Navbar children1={<UserNavbar />} />
-      <MyProjectNavbar />
-      <Box flex="1" p={6}>
-        <Heading as="h2" size="xl" mb={4}>
-          {project?.name}
-        </Heading>
-        <Text fontSize="lg" mb={6}>
-          {project?.description || 'No description available'}
-        </Text>
-        <Text fontSize="md" mb={2}>
-          <strong>Production Company:</strong> {project?.production_company}
-        </Text>
-        <Text fontSize="md" mb={2}>
-          <strong>Start Date:</strong>{' '}
-          {new Date(project?.start_date).toLocaleDateString() || 'N/A'}
-        </Text>
-        <Text fontSize="md" mb={2}>
-          <strong>End Date:</strong>{' '}
-          {project?.end_date
-            ? new Date(project?.end_date).toLocaleDateString()
-            : 'N/A'}
-        </Text>
-        <Text fontSize="md" mb={2}>
-          <strong>Created On:</strong>{' '}
-          {new Date(project?.create_date).toLocaleDateString()}
-        </Text>
-        <Text fontSize="md" mb={2}>
-          <strong>Created By:</strong> {project?.create_user_id}
-        </Text>
-        <Text fontSize="md" mb={2}>
-          <strong>Last Updated On:</strong>{' '}
-          {new Date(project?.last_update_date).toLocaleDateString()}
-        </Text>
-        <Text fontSize="md" mb={2}>
-          <strong>Last Updated By:</strong> {project?.last_update_user_id}
-        </Text>
-        <Text fontSize="md" mb={6}>
-          <strong>Is Active:</strong> {project?.is_active ? 'Yes' : 'No'}
-        </Text>
+
+      <Box
+        flex="1"
+        pt={4}
+        pl={8}
+        pr={8}
+        width={{
+          base: '1200px',
+          xl: '1200px',
+          md: '800px',
+          sm: 'sm',
+        }}
+        mx="auto"
+        mt="8"
+        bg="white"
+        boxShadow="md"
+        borderRadius="md"
+      >
+        <MyProjectNavbar />
+        <Box
+          display={{
+            base: 'flex',
+            xl: 'flex',
+            md: 'flex',
+            sm: 'grid',
+          }}
+          justifyContent="space-between"
+          alignItems="center"
+          p={6}
+          bg="white"
+          boxShadow="lg"
+          borderRadius="md"
+          mb={6}
+          textAlign="center"
+        >
+          <Heading as="h2" size="2xl" color="orange.400">
+            {project?.name}
+          </Heading>
+
+          <Box
+            textAlign={{ base: 'right', xl: 'right', sm: 'center' }}
+            p={{ base: '0', sm: '4' }}
+          >
+            <Text fontSize="lg" fontWeight="bold" color="gray.700" mb={2}>
+              <Box as="span" mr={2} color="teal.500">
+                📅
+              </Box>
+              <strong>Start Date:</strong>{' '}
+              {new Date(project?.start_date).toLocaleDateString() || 'N/A'}
+            </Text>
+
+            <Text fontSize="lg" fontWeight="bold" color="gray.700">
+              <Box as="span" mr={2} color="red.500">
+                ⏳
+              </Box>
+              <strong>End Date:</strong>{' '}
+              {project?.end_date
+                ? new Date(project?.end_date).toLocaleDateString()
+                : 'N/A'}
+            </Text>
+          </Box>
+        </Box>
+
+        <Box p={6} bg="white" borderRadius="md" boxShadow="md">
+          <Text fontSize="lg" mb={4} color="2D3748" fontWeight="bold">
+            <Box as="span" mr={2} color="orange.400">
+              🏢
+            </Box>
+            <strong>Production Company:</strong>{' '}
+            {project?.production_company || 'N/A'}
+          </Text>
+
+          <Text fontSize="md" mb={6} color="gray.700" fontStyle="italic">
+            {project?.description || 'No description available'}
+          </Text>
+
+          <Box position="relative" padding="10">
+            <Divider />
+            <AbsoluteCenter bg="white" px="4">
+              Origin
+            </AbsoluteCenter>
+          </Box>
+
+          <Box
+            display={{
+              base: 'flex',
+              xl: 'flex',
+              md: 'flex',
+              sm: 'grid',
+            }}
+            justifyContent="center"
+            mb={6}
+            alignItems="center"
+          >
+            <Box flex="1" mr={4} textAlign="center" p={{ base: '0', sm: '4' }}>
+              <Text fontSize="md" color="gray.600" mb={2}>
+                <Box as="span" mr={2} color="green.500">
+                  🗓️
+                </Box>
+                <strong>Created On:</strong>{' '}
+                {new Date(project?.create_date).toLocaleDateString()}
+              </Text>
+
+              <Text fontSize="md" color="gray.600">
+                <Box as="span" mr={2} color="blue.500">
+                  🧑‍💻
+                </Box>
+                <strong>Created By:</strong>{' '}
+                {project?.create_user_id || 'Unknown'}
+              </Text>
+            </Box>
+            <Box textAlign="center" flex="1">
+              <Text fontSize="md" color="gray.600" mb={2}>
+                <Box as="span" mr={2} color="red.500">
+                  ⏰
+                </Box>
+                <strong>Last Updated On:</strong>{' '}
+                {new Date(project?.last_update_date).toLocaleDateString()}
+              </Text>
+
+              <Text fontSize="md" color="gray.600">
+                <Box as="span" mr={2} color="purple.500">
+                  🖋️
+                </Box>
+                <strong>Last Updated By:</strong>{' '}
+                {project?.last_update_user_id || 'Unknown'}
+              </Text>
+            </Box>
+          </Box>
+
+          <Box position="relative" padding="10">
+            <Divider />
+            <AbsoluteCenter bg="white" px="4">
+              Status
+            </AbsoluteCenter>
+          </Box>
+
+          <Text
+            fontSize="md"
+            color={project?.is_active ? 'green.500' : 'red.500'}
+            fontWeight="bold"
+          >
+            <Box as="span" mr={2}>
+              {project?.is_active ? '✅' : '❌'}
+            </Box>
+            <strong>Is Active:</strong> {project?.is_active ? 'Yes' : 'No'}
+          </Text>
+        </Box>
       </Box>
+
       <Footer />
     </Box>
   );
