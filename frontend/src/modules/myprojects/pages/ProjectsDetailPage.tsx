@@ -21,7 +21,7 @@ const GET_PROJECT_DETAIL = gql`
   }
 `;
 
-export function ProjectDetailPage() {
+export function MyProjectDetailPage() {
   const { id } = useParams<{ id: string }>();
 
   const { data, loading, error } = useQuery(GET_PROJECT_DETAIL, {
