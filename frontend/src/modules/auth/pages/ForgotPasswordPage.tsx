@@ -24,7 +24,7 @@ export function ForgotPasswordPage() {
         toast({
           title: 'Email Sent',
           description:
-            'An email with instructions to reset your password has been sent. TODO',
+            'An email with instructions to reset your password has been sent.',
           status: 'success',
           duration: 5000,
           isClosable: true,
