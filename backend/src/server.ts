@@ -27,6 +27,7 @@ import { CustomContext } from '@backend/types/types';
 
 import { ProjectUserResolver } from './graphql/modules/projectUser/projectUserResolver';
 import { PasswordResolver } from './graphql/modules/user/PasswordResolver';
+import { sendMail } from './mailer/mailer';
 
 const init = async () => {
   const app = express();
@@ -73,6 +74,19 @@ const init = async () => {
       authUser,
     };
   };
+
+  app.use(express.json());
+
+  app.post('/send-email', async (req, res) => {
+    const { to, subject, text } = req.body;
+
+    try {
+      const info = await sendMail(to, subject, text);
+      res.status(200).json({ message: 'Email sent successfully', info });
+    } catch (error) {
+      res.status(500).json({ message: 'Error sending email', error });
+    }
+  });
 
   app.use(
     '/graphql',

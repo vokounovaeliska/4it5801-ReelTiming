@@ -1,12 +1,15 @@
 import * as argon2 from 'argon2';
 import { randomBytes } from 'crypto';
 import { eq } from 'drizzle-orm';
+import { promises as fs } from 'fs';
 import { GraphQLError } from 'graphql/error';
+import path from 'path';
 import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 
-//import { APP_LINK } from '@backend/config';
+import { APP_LINK } from '@backend/config';
 import { user } from '@backend/db/schema';
 import { createToken } from '@backend/libs/jwt';
+import { sendMail } from '@backend/mailer/mailer';
 import { CustomContext } from '@backend/types/types';
 
 import { AuthInfo } from './userType';
@@ -38,14 +41,29 @@ export class PasswordResolver {
       })
       .where(eq(user.email, email));
 
-    //const resetLink = APP_LINK + `/auth/new-password?token=${token}`;
+    const resetLink = APP_LINK + `/auth/new-password?token=${token}`;
+    try {
+      // Read the HTML template
+      const templatePath = path.join(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        'mailer',
+        'password-reset-email.html',
+      );
 
-    // TODO Send email
-    /*     await sendEmail({
-      to: email,
-      subject: 'Password Reset',
-      text: `You requested a password reset. Use the following link: ${resetLink}`,
-    }); */
+      let htmlContent = await fs.readFile(templatePath, 'utf-8');
+
+      // Replace the placeholder in the template with the reset link
+      htmlContent = htmlContent.replace('{{resetLink}}', resetLink);
+
+      // Send the email with the HTML content
+      await sendMail(email, 'Password Reset', htmlContent);
+    } catch (error) {
+      console.error('Error sending email:', error);
+      throw new GraphQLError('Failed to send password reset email.');
+    }
 
     return true;
   }
