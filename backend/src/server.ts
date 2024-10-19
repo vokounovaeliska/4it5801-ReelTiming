@@ -26,6 +26,7 @@ import { mockResolvers } from '@backend/mocks/mocks';
 import { CustomContext } from '@backend/types/types';
 
 import { ProjectUserResolver } from './graphql/modules/projectUser/projectUserResolver';
+import { PasswordResolver } from './graphql/modules/user/PasswordResolver';
 
 const init = async () => {
   const app = express();
@@ -33,12 +34,12 @@ const init = async () => {
   const httpServer = http.createServer(app);
 
   const schema = await buildSchema({
-    //resolvers: [EmptyResolver, UserResolver],
     resolvers: [
       EmptyResolver,
       UserResolver,
       ProjectResolver,
       ProjectUserResolver,
+      PasswordResolver,
     ],
     emitSchemaFile: true,
   });

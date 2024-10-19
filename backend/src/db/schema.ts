@@ -22,6 +22,8 @@ export const user = mysqlTable('user', {
   last_update_user_id: varchar('last_update_user_id', { length: 36 }).notNull(),
   last_update_date: timestamp('last_update_date').notNull(),
   is_active: boolean('is_active').default(true).notNull(),
+  password_reset_token: varchar('password_reset_token', { length: 255 }),
+  password_reset_expiration_time: timestamp('password_reset_expiration_time'),
 });
 
 export const project = mysqlTable('project', {

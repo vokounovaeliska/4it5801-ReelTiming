@@ -1,29 +1,35 @@
 import { useCallback } from 'react';
 import { gql, useMutation } from '@apollo/client';
+import { useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 import { route } from '@frontend/route';
 
 import { ForgotPasswordTemplate } from '../templates/ForgotPasswordTemplate';
 
+
 const FORGOT_PASSWORD_MUTATION = gql(/* GraphQL */ `
   mutation ForgotPassword($email: String!) {
-    forgotPassword(email: $email) {
-      reset_token
-    }
+    forgotPassword(email: $email)
   }
 `);
 
 export function ForgotPasswordPage() {
   const navigate = useNavigate();
+  const toast = useToast(); // Chakra UI's toast hook
+
   const [forgotPasswordRequest, forgotPasswordRequestState] = useMutation(
     FORGOT_PASSWORD_MUTATION,
     {
       onCompleted: () => {
-        // Optionally navigate or show a success message
-        alert(
-          'An email has been sent with instructions to reset your password.',
-        );
+        toast({
+          title: 'Email Sent',
+          description: 'An email with instructions to reset your password has been sent. TODO',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+          position: 'top',
+        });
         navigate(route.login());
       },
       onError: () => {
@@ -31,7 +37,14 @@ export function ForgotPasswordPage() {
           'Error sending forgot password request:',
           forgotPasswordRequestState.error,
         );
-        // Handle error case, show error message to the user
+        toast({
+          title: 'Error',
+          description: 'There was an error sending the password reset request.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+          position: 'top',
+        });
       },
     },
   );

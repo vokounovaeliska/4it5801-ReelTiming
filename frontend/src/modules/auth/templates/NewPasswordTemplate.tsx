@@ -11,8 +11,8 @@ export type NewPasswordTemplateProps = {
   error?: Error;
   onSubmit: (data: {
     token: string;
-    password: string;
-    passwordConfirmation: string;
+    newPassword: string;
+    newPasswordConfirmation: string;
   }) => void;
 };
 export function NewPasswordTemplate({

@@ -11,20 +11,37 @@ import {
 } from '@frontend/shared/design-system';
 import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
 
-const schema = zod.object({
-  password: zod.string().min(10, {
-    message: 'Password is too short. It must be at least 10 characters long',
-  }),
-  passwordConfirmation: zod
-    .string()
-    .min(1, { message: 'Password confirmation is required' }),
-});
+const schema = zod
+  .object({
+    newPassword: zod.string().min(10, {
+      message: 'Password is too short. It must be at least 10 characters long',
+    }),
+    newPasswordConfirmation: zod
+      .string()
+      .min(1, { message: 'Password confirmation is required' }),
+  })
+  .superRefine((data, ctx) => {
+    if (data.newPassword !== data.newPasswordConfirmation) {
+      ctx.addIssue({
+        code: zod.ZodIssueCode.custom,
+        path: ['passwordConfirmation'],
+        message: 'Passwords must match',
+      });
+    }
+    if (data.newPassword && data.newPassword.length < 10) {
+      ctx.addIssue({
+        code: zod.ZodIssueCode.custom,
+        path: ['password'],
+        message: 'Password is too short',
+      });
+    }
+  });
 
 type FormValues = zod.infer<typeof schema>;
 
 const initialValues: FormValues = {
-  password: '',
-  passwordConfirmation: '',
+  newPassword: '',
+  newPasswordConfirmation: '',
 };
 
 export type NewPasswordFormProps = {
@@ -33,8 +50,8 @@ export type NewPasswordFormProps = {
   errorMessage?: string;
   onSubmit: (data: {
     token: string;
-    password: string;
-    passwordConfirmation: string;
+    newPassword: string;
+    newPasswordConfirmation: string;
   }) => void;
 };
 
@@ -51,8 +68,8 @@ export function NewPasswordForm({
     if (token) {
       onSubmit({
         token,
-        password: data.password,
-        passwordConfirmation: data.passwordConfirmation,
+        newPassword: data.newPassword,
+        newPasswordConfirmation: data.newPassword,
       });
     } else {
       console.error('Token is missing from the query parameters');
@@ -93,7 +110,7 @@ export function NewPasswordForm({
           <Stack spacing={6} pt={2} pb={6} justify="center">
             {errorMessage && <ErrorBanner title={errorMessage} />}{' '}
             <InputField
-              name="password"
+              name="newPassword"
               label="Password"
               type="password"
               isRequired
@@ -102,7 +119,7 @@ export function NewPasswordForm({
               autoCapitalize="off"
             />
             <InputField
-              name="passwordConfirmation"
+              name="newPasswordConfirmation"
               label="Confirm password"
               type="password"
               isRequired

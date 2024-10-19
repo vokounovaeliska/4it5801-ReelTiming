@@ -4,31 +4,31 @@ import { useNavigate } from 'react-router-dom';
 
 import { route } from '@frontend/route';
 
+import { useAuth } from '../auth-core';
 import { NewPasswordTemplate } from '../templates/NewPasswordTemplate';
 
 const NEW_PASSWORD_MUTATION = gql(/* GraphQL */ `
-  mutation ResetPassword(
-    $token: String!
-    $password: String!
-    $passwordConfirmation: String!
-  ) {
-    resetPassword(
-      token: $token
-      password: $password
-      passwordConfirmation: $passwordConfirmation
-    ) {
-      success
+  mutation ResetPassword($newPassword: String!, $token: String!) {
+    resetPassword(newPassword: $newPassword, token: $token) {
+      user {
+        id
+        name
+        surname
+        email
+      }
+      token
     }
   }
 `);
 
 export function NewPasswordPage() {
+  const auth = useAuth();
   const navigate = useNavigate();
   const [newPasswordRequest, newPasswordRequestState] = useMutation(
     NEW_PASSWORD_MUTATION,
     {
-      onCompleted: () => {
-        alert('Your password has been reset successfully.');
+      onCompleted: ({ resetPassword: { user, token } }) => {
+        auth.signIn({ token, user });
         navigate(route.myprojects());
       },
       onError: () => {
@@ -41,11 +41,7 @@ export function NewPasswordPage() {
   );
 
   const handleNewPasswordFormSubmit = useCallback(
-    (variables: {
-      token: string;
-      password: string;
-      passwordConfirmation: string;
-    }) => {
+    (variables: { token: string; newPassword: string }) => {
       newPasswordRequest({ variables });
     },
     [newPasswordRequest],
