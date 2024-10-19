@@ -7,7 +7,6 @@ import { route } from '@frontend/route';
 
 import { ForgotPasswordTemplate } from '../templates/ForgotPasswordTemplate';
 
-
 const FORGOT_PASSWORD_MUTATION = gql(/* GraphQL */ `
   mutation ForgotPassword($email: String!) {
     forgotPassword(email: $email)
@@ -24,7 +23,8 @@ export function ForgotPasswordPage() {
       onCompleted: () => {
         toast({
           title: 'Email Sent',
-          description: 'An email with instructions to reset your password has been sent. TODO',
+          description:
+            'An email with instructions to reset your password has been sent. TODO',
           status: 'success',
           duration: 5000,
           isClosable: true,
