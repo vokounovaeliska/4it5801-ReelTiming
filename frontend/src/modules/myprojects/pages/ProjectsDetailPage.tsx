@@ -66,13 +66,15 @@ export function MyProjectDetailPage() {
         pl={8}
         pr={8}
         width={{
-          base: '1200px',
-          xl: '1200px',
-          md: '800px',
-          sm: 'sm',
+          base: '100%', // Full width on small screens (mobile)
+          sm: '90%', // Slightly narrower on small screens
+          md: '80%', // Medium screens get 80% width
+          xl: '70%', // Large screens get 70% width
+          '2xl': '60%', // Extra-large screens get 60% width
         }}
+        maxWidth="1200px" // Max width of the Box
         mx="auto"
-        mt="8"
+        mt={8}
         bg="white"
         boxShadow="md"
         borderRadius="md"
@@ -85,7 +87,7 @@ export function MyProjectDetailPage() {
             md: 'flex',
             sm: 'grid',
           }}
-          justifyContent="space-between"
+          justifyContent={{ base: 'center', md: 'space-between', sm: 'center' }}
           alignItems="center"
           p={6}
           bg="white"
