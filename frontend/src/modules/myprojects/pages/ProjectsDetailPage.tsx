@@ -6,6 +6,8 @@ import { useParams } from 'react-router-dom';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 import UserNavbar from '@frontend/shared/navigation/components/navbar/UserNavbar';
 
+import { MyProjectNavbar } from '../MyProjectNavbar';
+
 const GET_PROJECT_DETAIL = gql`
   query GetProjectDetail($id: String!) {
     project(id: $id) {
@@ -49,6 +51,7 @@ export function MyProjectDetailPage() {
       bgColor="gray.50"
     >
       <Navbar children1={<UserNavbar />} />
+      <MyProjectNavbar />
       <Box flex="1" p={6}>
         <Heading as="h2" size="xl" mb={4}>
           {project?.name}
