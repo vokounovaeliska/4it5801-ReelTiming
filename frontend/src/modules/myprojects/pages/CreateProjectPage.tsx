@@ -1,7 +1,8 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { gql, useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 
+import { useAuth } from '@frontend/modules/auth'; // Import the useAuth hook
 import { route } from '@frontend/route';
 
 import { FormValues } from '../organisms/CreateProjectForm';
@@ -40,6 +41,7 @@ const CREATE_PROJECT_MUTATION = gql(/* GraphQL */ //TODO add description
 
 export function CreateProjectPage() {
   const navigate = useNavigate();
+  const auth = useAuth();
   const [createRequest, createRequestState] = useMutation(
     CREATE_PROJECT_MUTATION,
     {
@@ -56,6 +58,16 @@ export function CreateProjectPage() {
     },
     [createRequest],
   );
+
+  useEffect(() => {
+    if (!auth.user) {
+      navigate('/');
+    }
+  }, [auth.user, navigate]);
+
+  if (!auth.user) {
+    return null;
+  }
 
   return (
     <CreateProjectTemplate
