@@ -1,5 +1,14 @@
 import { AddIcon } from '@chakra-ui/icons';
-import { Box, Center, Heading, IconButton, SimpleGrid } from '@chakra-ui/react';
+import {
+  Box,
+  Center,
+  Heading,
+  IconButton,
+  SimpleGrid,
+  Text,
+  useColorModeValue,
+  VStack,
+} from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
 import { route } from '@frontend/route';
@@ -9,7 +18,7 @@ import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 import UserNavbar from '@frontend/shared/navigation/components/navbar/UserNavbar';
 
 export type MyProjectsTemplateProps = {
-  projects: { id: string; name: string }[];
+  projects: { id: string; name: string; description: string }[];
   onAddProject: () => void;
 };
 
@@ -17,19 +26,22 @@ export function MyProjectsTemplate({
   projects,
   onAddProject,
 }: MyProjectsTemplateProps) {
+  const boxBg = useColorModeValue('white', 'gray.700');
+  const hoverBg = useColorModeValue('orange.100', 'orange.600');
+
   return (
     <Box
       display="flex"
       flexDirection="column"
       minHeight="100vh"
-      bgColor={'gray.50'}
+      bgColor={useColorModeValue('gray.50', 'gray.800')}
     >
       <Navbar children1={<UserNavbar />} />
       <Box flex="1" p={{ base: 4, md: 6 }}>
         <Heading as="h1" size="lg" mb={6} textAlign="left">
           My Projects
         </Heading>
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6} mb={8}>
+        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} mb={8}>
           {projects.map((project) => (
             <Link
               key={project.id}
@@ -37,36 +49,48 @@ export function MyProjectsTemplate({
               style={{ textDecoration: 'none' }}
             >
               <Box
-                bg="gray.100"
+                bg={boxBg}
                 borderRadius="md"
-                p={4}
-                boxShadow="md"
-                textAlign="center"
-                height="100px"
+                p={6}
+                boxShadow="lg"
+                height="150px"
                 display="flex"
-                alignItems="center"
+                flexDirection="column"
                 justifyContent="center"
-                _hover={{ bg: 'gray.200', cursor: 'pointer' }}
+                alignItems="center"
+                transition="background 0.2s ease"
+                _hover={{ bg: hoverBg, transform: 'translateY(-5px)' }}
               >
-                {project.name}
+                <Text fontWeight="bold" fontSize="xl" color="gray.800" mb={2}>
+                  {project.name}
+                </Text>
+                <Text fontSize="sm" color="gray.800" textAlign="center">
+                  {project.description}
+                </Text>
               </Box>
             </Link>
           ))}
         </SimpleGrid>
         <Center>
-          <IconButton
-            aria-label="Add project"
-            colorScheme="orange"
-            as={RouterNavLink}
-            to={route.createProject()}
-            size="lg"
-            icon={<AddIcon />}
-            onClick={onAddProject}
-            borderRadius="full"
-          />
-          <Box mt={2} fontSize="sm" color="gray.500">
-            Add Project
-          </Box>
+          <VStack spacing={3}>
+            <IconButton
+              aria-label="Add project"
+              colorScheme="orange"
+              as={RouterNavLink}
+              to={route.createProject()}
+              size="lg"
+              icon={<AddIcon />}
+              onClick={onAddProject}
+              borderRadius="full"
+              boxShadow="md"
+            />
+            <Box
+              fontSize="sm"
+              color={useColorModeValue('gray.500', 'gray.400')}
+            >
+              Add Project
+            </Box>
+          </VStack>
         </Center>
       </Box>
       <Footer />
