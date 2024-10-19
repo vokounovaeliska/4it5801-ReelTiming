@@ -3,6 +3,7 @@ import { gql, useQuery } from '@apollo/client';
 import { Box, Heading, Spinner, Text } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 
+import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 import UserNavbar from '@frontend/shared/navigation/components/navbar/UserNavbar';
 
@@ -90,6 +91,7 @@ export function MyProjectDetailPage() {
           <strong>Is Active:</strong> {project?.is_active ? 'Yes' : 'No'}
         </Text>
       </Box>
+      <Footer />
     </Box>
   );
 }
