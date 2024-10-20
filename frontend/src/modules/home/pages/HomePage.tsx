@@ -1,131 +1,90 @@
-import React from 'react';
-import { useQuery } from '@apollo/client';
-import { HamburgerIcon } from '@chakra-ui/icons';
-import {
-  Button,
-  CloseButton,
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
-  Flex,
-  IconButton,
-  VStack,
-} from '@chakra-ui/react';
+import { useEffect } from 'react';
+import { Button, Grid, Heading, HStack, Image, Text } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
-import { gql } from '@frontend/gql';
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
 import { Box } from '@frontend/shared/design-system';
 import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
-import AppHeading from '@frontend/shared/navigation/components/AppHeading';
-import Logo from '@frontend/shared/navigation/components/logo/Logo';
-// import { TopNavigation } from '@frontend/shared/navigation/organisms/TopNavigation';
+import Footer from '@frontend/shared/navigation/components/footer/Footer';
 
-const EMPTY_QUERY = gql(/* GraphQL */ `
-  query Quacks {
-    _empty
-  }
-`);
-// implemented to showcase navbar transformation after login showing username
+// const EMPTY_QUERY = gql(/* GraphQL */ `
+//   query Quacks {
+//     _empty
+//   }
+// `);
+
 export function HomePage() {
   const { user } = useAuth();
-  const queryState = useQuery(EMPTY_QUERY);
+  const navigate = useNavigate();
 
-  const [isOpen, setIsOpen] = React.useState(false);
-  const btnRef = React.useRef<HTMLButtonElement>(null);
-  const toggleDrawer = () => setIsOpen(!isOpen);
+  useEffect(() => {
+    if (user) {
+      navigate(route.myprojects());
+    }
+  }, [user, navigate]);
+
+  if (user) return null;
 
   return (
-    <Box>
-      <Box bg="#2D3748" p={4} color="white">
-        <Flex align="center" justify={'flex-start'}>
-          <Flex align={'center'}>
-            <Logo />
-            <AppHeading />
-          </Flex>
-          <Box
-            ml="auto"
-            display={{ base: 'none', md: 'block' }}
-            textAlign="right"
-          >
-            {user ? <span>{user.name}</span> : <span>(not logged in)</span>}
-          </Box>
-
-          <Box display={{ base: 'block', md: 'none' }}>
-            <IconButton
-              ref={btnRef}
-              icon={<HamburgerIcon />}
-              onClick={toggleDrawer}
-              aria-label="Open Menu"
+    <Box bg="#2D3748" color="white">
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        textAlign="center"
+        flex="1"
+        px={8}
+        minHeight="100vh"
+      >
+        <Box boxSize={{ base: '150px', md: '150px' }} mb="50">
+          <Image src="/faviconlogo.png" alt="ReelTiming Logo" />
+        </Box>
+        <Heading
+          as="h1"
+          fontSize={{ base: '3xl', md: '5xl' }}
+          mb={4}
+          fontWeight="extrabold"
+          color="orange.400"
+        >
+          Simplify Your Production Workflow
+        </Heading>
+        <Text
+          fontSize={{ base: 'md', md: 'xl' }}
+          maxW="600px"
+          mb={6}
+          color="gray.300"
+        >
+          Welcome to Reeltiming — the ultimate tool for film professionals to
+          track work hours, manage crews, and streamline the production process.
+          Focus on the art while we handle the logistics.
+        </Text>
+        <Grid>
+          <HStack spacing={4}>
+            <Button
+              as={ReactRouterLink}
+              to={route.register()}
               colorScheme="orange"
-              ml={'auto'}
-            />
-            <Drawer
-              isOpen={isOpen}
-              placement="right"
-              onClose={toggleDrawer}
-              finalFocusRef={btnRef}
+              bg="orange.600"
+              size="lg"
+              _hover={{ bg: 'orange.500', transform: 'scale(1.1)' }}
             >
-              <DrawerOverlay>
-                <DrawerContent bg="#2D3748">
-                  <DrawerHeader>
-                    <CloseButton onClick={toggleDrawer} />
-                  </DrawerHeader>
-                  <DrawerBody>
-                    <VStack spacing={4} align="stretch">
-                      <Button
-                        as={ReactRouterLink}
-                        to={route.login()} //todo route to myprojectspage
-                        colorScheme="orange"
-                      >
-                        My Projects
-                      </Button>
-                      <Button
-                        as={ReactRouterLink}
-                        to={route.login()} //todo route to timesheet
-                        colorScheme="orange"
-                      >
-                        Timesheet
-                      </Button>
-                    </VStack>
-                  </DrawerBody>
-                </DrawerContent>
-              </DrawerOverlay>
-            </Drawer>
-          </Box>
-        </Flex>
+              Sign Up for Free
+            </Button>
+          </HStack>
+          <Button
+            as={ReactRouterLink}
+            to={route.login()}
+            variant="link"
+            color="orange.400"
+            p="4"
+          >
+            Login
+          </Button>
+        </Grid>
       </Box>
-      {/* <TopNavigation /> */}
-      <Box p="8">
-        <Box>
-          TEMP NON-LOGGED IN USER LANDING PAGE UNTIL WE MAKE SOMETHING ULTRACOOL
-        </Box>
-        <Button
-          as={ReactRouterLink}
-          to={route.login()}
-          colorScheme="orange"
-          bg="orange.600"
-          textColor={'white'}
-        >
-          Login
-        </Button>
-        <Button
-          as={ReactRouterLink}
-          to={route.register()}
-          colorScheme="orange"
-          bg="orange.600"
-          textColor={'white'}
-        >
-          Register
-        </Button>
-        <Box>Hello: {user ? user.name : '(not logged in)'}</Box>
-        <Box pt="4">GraphQL query result:</Box>
-        <Box as="pre" fontFamily="mono">
-          {JSON.stringify(queryState.data)}
-        </Box>
-      </Box>
+      <Footer />
     </Box>
   );
 }

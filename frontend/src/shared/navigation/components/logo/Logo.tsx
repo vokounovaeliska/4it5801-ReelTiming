@@ -7,11 +7,16 @@ import { route } from '@frontend/route';
 
 import logo from './logopng.png';
 
-const Logo: React.FC = () => {
+interface LogoProps {
+  size?: string; // Optional size prop
+}
+
+const Logo: React.FC<LogoProps> = ({ size = '50px' }) => {
   const { user } = useAuth();
+
   return (
     <ReactRouterLink to={user ? route.myprojects() : route.landingPage()}>
-      <Image src={logo} alt="Logo" boxSize="50px" mr={2} />
+      <Image src={logo} alt="Logo" boxSize={size} mr={2} />
     </ReactRouterLink>
   );
 };
