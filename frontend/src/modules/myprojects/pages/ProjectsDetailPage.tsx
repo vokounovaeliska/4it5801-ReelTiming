@@ -3,10 +3,10 @@ import { ArrowBackIcon } from '@chakra-ui/icons';
 import {
   AbsoluteCenter,
   Box,
+  Button,
   Center,
   Divider,
   Heading,
-  IconButton,
   Spinner,
   Text,
 } from '@chakra-ui/react';
@@ -91,36 +91,55 @@ export function MyProjectDetailPage() {
         bg="white"
         boxShadow="md"
         borderRadius="md"
+        borderWidth={1}
       >
         {/* <MyProjectNavbar /> */}
         <Box
           display="flex"
-          justifyContent="space-between"
-          alignItems="center"
+          flexDirection="column"
+          alignItems="flex-start"
           p={6}
           bg="white"
-          boxShadow="lg"
+          boxShadow="base"
           borderRadius="md"
           mb={6}
-          textAlign="center"
         >
-          <Heading as="h2" size="2xl" color="orange.400">
-            <IconButton
-              as={ReactRouterLink}
-              to={route.myprojects()}
-              aria-label="Go back btn"
-              icon={<ArrowBackIcon />}
-              size="sm"
-              borderRadius="full"
-              colorScheme="orange"
-              mr={3}
-              _hover={{ bg: 'orange.600' }}
-            />
+          <Button
+            as={ReactRouterLink}
+            to={route.myprojects()}
+            aria-label="Go back"
+            leftIcon={<ArrowBackIcon />}
+            size="sm"
+            borderRadius="full"
+            variant={'outline'}
+            colorScheme="orange"
+            _hover={{ bg: 'orange.600', color: 'white' }}
+            mb={4}
+          >
+            Back to my projects
+          </Button>
+
+          <Heading
+            as="h2"
+            size={{ base: 'xl', md: '2xl' }}
+            color="orange.500"
+            mb={4} // Margin below the title for spacing
+            textAlign={{ base: 'center', md: 'left' }}
+          >
             {project?.name}
           </Heading>
 
-          <Box textAlign="right" p={4}>
-            <Text fontSize="lg" fontWeight="bold" color="gray.700" mb={2}>
+          <Box
+            display="flex" // Flexbox for dates
+            flexDirection={{ base: 'column', md: 'row' }} // Stack on mobile, side by side on desktop
+            textAlign={{ base: 'center', md: 'left' }} // Centered text on mobile
+          >
+            <Text
+              fontSize={{ base: 'md', md: 'lg' }}
+              color="gray.700"
+              mb={{ base: 2, md: 0 }} // Margin bottom on mobile
+              mr={{ md: 4 }} // Margin right on desktop
+            >
               <Box as="span" mr={2} color="teal.500">
                 📅
               </Box>
@@ -128,7 +147,7 @@ export function MyProjectDetailPage() {
               {new Date(project.start_date).toLocaleDateString() || 'N/A'}
             </Text>
 
-            <Text fontSize="lg" fontWeight="bold" color="gray.700">
+            <Text fontSize={{ base: 'md', md: 'lg' }} color="gray.700">
               <Box as="span" mr={2} color="red.500">
                 ⏳
               </Box>
@@ -140,7 +159,7 @@ export function MyProjectDetailPage() {
           </Box>
         </Box>
 
-        <Box p={6} bg="white" borderRadius="md" boxShadow="md">
+        <Box p={6} bg="white" borderRadius="md" boxShadow="base">
           <Text fontSize="lg" mb={4} color="2D3748" fontWeight="bold">
             <Box as="span" mr={2} color="orange.400">
               🏢
