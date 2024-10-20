@@ -17,6 +17,8 @@ type Mutation {
   addProject(description: String, end_date: DateTimeISO, name: String!, production_company: String!, start_date: DateTimeISO): Project!
   deleteProject(projectId: String!): Boolean!
   deleteUser(userId: String!): Boolean!
+  forgotPassword(email: String!): Boolean!
+  resetPassword(newPassword: String!, token: String!): AuthInfo!
   signIn(email: String!, password: String!): AuthInfo!
   signUp(email: String!, name: String!, password: String!, surname: String!): AuthInfo!
   updateProject(data: ProjectInput!, projectId: String!): Project!
@@ -40,6 +42,7 @@ type Project {
 input ProjectInput {
   create_date: DateTimeISO
   create_user_id: String
+  description: String!
   end_date: DateTimeISO
   is_active: Boolean
   last_update_date: DateTimeISO
@@ -49,9 +52,28 @@ input ProjectInput {
   start_date: DateTimeISO
 }
 
+type ProjectUser {
+  car_numberplate: Float
+  create_date: DateTimeISO!
+  create_user_id: String!
+  group_id: String
+  id: ID!
+  is_active: Boolean!
+  is_team_leader: Boolean!
+  last_update_date: DateTimeISO!
+  last_update_user_id: String!
+  number_of_people: Float
+  position: String
+  project_id: String!
+  rate_id: String!
+  user_id: String!
+}
+
 type Query {
   _empty: String!
   project(id: String!): Project
+  projectUser(id: String!): ProjectUser
+  project_users: [ProjectUser!]!
   projects: [Project!]!
   user(id: String!): User
   users: [User!]!
@@ -67,6 +89,8 @@ type User {
   last_update_date: DateTimeISO!
   last_update_user_id: String!
   name: String!
+  password_reset_expiration_time: DateTimeISO
+  password_reset_token: String
   phone_number: String
   surname: String!
 }
@@ -80,5 +104,7 @@ input UserInput {
   last_update_date: DateTimeISO
   last_update_user_id: String
   name: String
+  password_reset_expiration_time: DateTimeISO
+  password_reset_token: String
   phone_number: String
 }

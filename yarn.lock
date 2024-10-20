@@ -4325,6 +4325,16 @@
     "@types/range-parser" "*"
     "@types/send" "*"
 
+"@types/express-serve-static-core@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-5.0.0.tgz#91f06cda1049e8f17eeab364798ed79c97488a1c"
+  integrity sha512-AbXMTZGt40T+KON9/Fdxx0B2WK5hsgxcfXJLr5bFpZ7b4JCex2WyQPTEKdXqfHiY5nKKBScZ7yCoO6Pvgxfvnw==
+  dependencies:
+    "@types/node" "*"
+    "@types/qs" "*"
+    "@types/range-parser" "*"
+    "@types/send" "*"
+
 "@types/express@*", "@types/express@^4.17.13":
   version "4.17.21"
   resolved "https://registry.npmjs.org/@types/express/-/express-4.17.21.tgz"
@@ -4332,6 +4342,16 @@
   dependencies:
     "@types/body-parser" "*"
     "@types/express-serve-static-core" "^4.17.33"
+    "@types/qs" "*"
+    "@types/serve-static" "*"
+
+"@types/express@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@types/express/-/express-5.0.0.tgz#13a7d1f75295e90d19ed6e74cab3678488eaa96c"
+  integrity sha512-DvZriSMehGHL1ZNLzi6MidnsDhUZM/x2pRdDIKdwbUNqqwHxMlRdkxtn6/EPKyqKpHqTl/4nRZsRNLpZxZRpPQ==
+  dependencies:
+    "@types/body-parser" "*"
+    "@types/express-serve-static-core" "^5.0.0"
     "@types/qs" "*"
     "@types/serve-static" "*"
 
@@ -4485,6 +4505,13 @@
   integrity sha512-y+cTCACu92FyA5fgQSAI8A1H429g7aSK2HsO7K4XYUWc4dY5IUz55JSDIYT6/VsOLfGy8vmvQYC2hfb0iF16Uw==
   dependencies:
     undici-types "~6.19.2"
+
+"@types/nodemailer@^6.4.16":
+  version "6.4.16"
+  resolved "https://registry.yarnpkg.com/@types/nodemailer/-/nodemailer-6.4.16.tgz#db006abcb1e1c8e6ea2fb53b27fefec3c03eaa6c"
+  integrity sha512-uz6hN6Pp0upXMcilM61CoKyjT7sskBoOWpptkjjJp8jIMlTdc3xG01U7proKkXzruMS4hS0zqtHNkNPFB20rKQ==
+  dependencies:
+    "@types/node" "*"
 
 "@types/object-path@^0.11.1":
   version "0.11.4"
@@ -5951,6 +5978,11 @@ cookie@0.6.0:
   resolved "https://registry.npmjs.org/cookie/-/cookie-0.6.0.tgz"
   integrity sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==
 
+cookie@0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.7.1.tgz#2f73c42142d5d5cf71310a74fc4ae61670e5dbc9"
+  integrity sha512-6DnInpx7SJ2AK3+CTUE/ZM0vWTUboZCegxhC2xiIydHR9jNuTAASBrfEpHhiGOZw/nX51bHt6YQl8jsGo4y/0w==
+
 copy-to-clipboard@3.3.3:
   version "3.3.3"
   resolved "https://registry.npmjs.org/copy-to-clipboard/-/copy-to-clipboard-3.3.3.tgz"
@@ -6385,7 +6417,7 @@ dotenv-flow@^4.1.0:
   dependencies:
     dotenv "^16.0.0"
 
-dotenv@^16.0.0:
+dotenv@^16.0.0, dotenv@^16.4.5:
   version "16.4.5"
   resolved "https://registry.npmjs.org/dotenv/-/dotenv-16.4.5.tgz"
   integrity sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==
@@ -7131,7 +7163,7 @@ execa@^8.0.1:
     signal-exit "^4.1.0"
     strip-final-newline "^3.0.0"
 
-express@^4.17.1, express@^4.21.0:
+express@^4.17.1:
   version "4.21.0"
   resolved "https://registry.npmjs.org/express/-/express-4.21.0.tgz"
   integrity sha512-VqcNGcj/Id5ZT1LZ/cfihi3ttTn+NJmkli2eZADigjq29qTlWi/hAQ43t/VLPq8+UX06FCEx3ByOYet6ZFblng==
@@ -7142,6 +7174,43 @@ express@^4.17.1, express@^4.21.0:
     content-disposition "0.5.4"
     content-type "~1.0.4"
     cookie "0.6.0"
+    cookie-signature "1.0.6"
+    debug "2.6.9"
+    depd "2.0.0"
+    encodeurl "~2.0.0"
+    escape-html "~1.0.3"
+    etag "~1.8.1"
+    finalhandler "1.3.1"
+    fresh "0.5.2"
+    http-errors "2.0.0"
+    merge-descriptors "1.0.3"
+    methods "~1.1.2"
+    on-finished "2.4.1"
+    parseurl "~1.3.3"
+    path-to-regexp "0.1.10"
+    proxy-addr "~2.0.7"
+    qs "6.13.0"
+    range-parser "~1.2.1"
+    safe-buffer "5.2.1"
+    send "0.19.0"
+    serve-static "1.16.2"
+    setprototypeof "1.2.0"
+    statuses "2.0.1"
+    type-is "~1.6.18"
+    utils-merge "1.0.1"
+    vary "~1.1.2"
+
+express@^4.21.1:
+  version "4.21.1"
+  resolved "https://registry.yarnpkg.com/express/-/express-4.21.1.tgz#9dae5dda832f16b4eec941a4e44aa89ec481b281"
+  integrity sha512-YSFlK1Ee0/GC8QaO91tHcDxJiE/X4FbpAyQWkxAvG6AXCuR65YzK8ua6D9hvi/TzUfZMpc+BwuM1IPw8fmQBiQ==
+  dependencies:
+    accepts "~1.3.8"
+    array-flatten "1.1.1"
+    body-parser "1.20.3"
+    content-disposition "0.5.4"
+    content-type "~1.0.4"
+    cookie "0.7.1"
     cookie-signature "1.0.6"
     debug "2.6.9"
     depd "2.0.0"
@@ -9159,6 +9228,11 @@ node-releases@^2.0.18:
   version "2.0.18"
   resolved "https://registry.npmjs.org/node-releases/-/node-releases-2.0.18.tgz"
   integrity sha512-d9VeXT4SJ7ZeOqGX6R5EM022wpL+eWPooLI+5UpWn2jCT1aosUQEhQP214x33Wkwx3JQMvIm+tIoVOdodFS40g==
+
+nodemailer@^6.9.15:
+  version "6.9.15"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.9.15.tgz#57b79dc522be27e0e47ac16cc860aa0673e62e04"
+  integrity sha512-AHf04ySLC6CIfuRtRiEYtGEXgRfa6INgWGluDhnxTZhHSKvrBu7lc1VVchQ0d8nPc4cFaZoPq8vkyNoZr0TpGQ==
 
 nodemon@^3.1.4:
   version "3.1.4"

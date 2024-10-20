@@ -34,6 +34,12 @@ export class User {
 
   @Field(() => Boolean)
   is_active: boolean = true;
+
+  @Field(() => String, { nullable: true })
+  password_reset_token?: string | null;
+
+  @Field(() => Date, { nullable: true })
+  password_reset_expiration_time?: Date | null;
 }
 
 @ObjectType()
@@ -73,4 +79,10 @@ export class UserInput {
 
   @Field(() => Boolean, { nullable: true })
   is_active?: boolean;
+
+  @Field(() => String, { nullable: true })
+  password_reset_token?: string | null;
+
+  @Field(() => Date, { nullable: true })
+  password_reset_expiration_time?: Date | null;
 }

@@ -25,14 +25,23 @@ import { parseAndVerifyJWT } from '@backend/libs/jwt';
 import { mockResolvers } from '@backend/mocks/mocks';
 import { CustomContext } from '@backend/types/types';
 
+import { ProjectUserResolver } from './graphql/modules/projectUser/projectUserResolver';
+import { PasswordResolver } from './graphql/modules/user/PasswordResolver';
+import { sendMail } from './mailer/mailer';
+
 const init = async () => {
   const app = express();
 
   const httpServer = http.createServer(app);
 
   const schema = await buildSchema({
-    //resolvers: [EmptyResolver, UserResolver],
-    resolvers: [EmptyResolver, UserResolver, ProjectResolver],
+    resolvers: [
+      EmptyResolver,
+      UserResolver,
+      ProjectResolver,
+      ProjectUserResolver,
+      PasswordResolver,
+    ],
     emitSchemaFile: true,
   });
 
@@ -65,6 +74,19 @@ const init = async () => {
       authUser,
     };
   };
+
+  app.use(express.json());
+
+  app.post('/send-email', async (req, res) => {
+    const { to, subject, text } = req.body;
+
+    try {
+      const info = await sendMail(to, subject, text);
+      res.status(200).json({ message: 'Email sent successfully', info });
+    } catch (error) {
+      res.status(500).json({ message: 'Error sending email', error });
+    }
+  });
 
   app.use(
     '/graphql',
