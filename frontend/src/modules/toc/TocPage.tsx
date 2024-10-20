@@ -1,73 +1,113 @@
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Divider, Heading, Text } from '@chakra-ui/react';
+
+import Footer from '@frontend/shared/navigation/components/footer/Footer';
+import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
+import UserNavbar from '@frontend/shared/navigation/components/navbar/UserNavbar';
 
 export function ToCPage() {
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      //   height="100vh"
-      bg="#F7FAFC"
-      p={4}
-    >
+    <Box>
+      <Navbar children1={<UserNavbar />} />
       <Box
-        width={{ base: '90%', sm: '400px', md: '600px', xl: '800px' }} // Responsive width
-        p={4}
-        borderRadius="md"
-        boxShadow="lg"
-        bg="white"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        //   height="100vh"
+        bg="#F7FAFC"
+        p={8}
       >
-        <Text>
-          <h1>
-            Podmínky užívání aplikace pro reportování pracovní doby filmových
-            štábů
-          </h1>
-          Účinnost od: 12.10.2024
-          <h2>1. Přijetí podmínek</h2>
-          Používáním, přístupem k aplikaci nebo jakýmkoli zapojením do procesu
-          reportování pracovní doby prostřednictvím aplikace pro filmové štáby
-          (dále jen "Aplikace") souhlasíte, že bezpodmínečně přijímáte
-          následující podmínky užívání (dále jen "Smlouva"), a to bez ohledu na
-          jejich pochopení, přečtení, nebo přehlednost jednotlivých ustanovení.
-          Pokračováním v používání Aplikace potvrzujete svůj neodvolatelný
-          souhlas s aktuální verzí těchto podmínek, které mohou být kdykoli
-          upraveny, změněny či revidovány na základě výhradního uvážení
-          provozovatele Aplikace.
-          <h2>2. Reportování dat a jejich přesnost</h2>
-          Uživatelé (dále jen "Vy" nebo "Uživatel") berou na vědomí, že všechny
-          záznamy o pracovní době, hlášení, zadávání dat nebo jakékoli jiné
-          informace vložené do Aplikace jsou výhradní odpovědností uživatele.
-          Aplikace nijak neověřuje, nepotvrzuje, negarantuje ani nezaručuje
-          přesnost, včasnost nebo úplnost zadávaných dat. Jakékoli chyby,
-          opomenutí či nesprávné reportování pracovní doby jsou výhradní
-          odpovědností Uživatele, a Aplikace nepřebírá žádnou odpovědnost za
-          řešení nesrovnalostí či sporů vzniklých v této souvislosti.
-          <h2>Vyloučení odpovědnosti vůči třetím stranám</h2>
-          Aplikace, její vlastníci, provozovatelé ani přidružené osoby nenesou
-          odpovědnost za jakékoli přímé, nepřímé, náhodné, následné nebo
-          speciální škody včetně, ale nikoli výhradně, sporů vyplývajících ze
-          smluvních závazků, pracovněprávních vztahů, právních kroků nebo
-          finančních důsledků, které vzniknou v důsledku používání Aplikace nebo
-          v souvislosti s ní. Aplikace nijak neručí za jakékoli problémy, škody
-          či komplikace způsobené třetími stranami, a to včetně, ale nikoli
-          výhradně, externích poskytovatelů služeb, zaměstnavatelů, objednatelů
-          nebo jiných subjektů mimo přímou kontrolu Aplikace.
-          <h2>4. Změny podmínek</h2>
-          Provozovatel Aplikace si vyhrazuje právo kdykoli bez předchozího
-          upozornění změnit, upravit nebo doplnit tyto Podmínky užívání dle
-          svého uvážení. Uživatel je povinen pravidelně kontrolovat aktuální
-          znění těchto podmínek a jakékoli pokračování v používání Aplikace po
-          změnách bude považováno za výslovný souhlas s těmito změnami. Aplikace
-          nenese odpovědnost za to, že Uživatel nebyl informován o změnách,
-          pokud se s nimi řádně neseznámil.
-          <h2>5. Řešení sporů</h2>
-          Jakékoli spory vzniklé na základě těchto podmínek nebo v souvislosti s
-          používáním Aplikace budou řešeny výhradně podle platného práva České
-          republiky u příslušných soudů, přičemž Uživatel souhlasí s místní
-          příslušností soudů v místě sídla provozovatele Aplikace.
-        </Text>
+        <Box
+          width={{ base: '90%', sm: '400px', md: '600px', xl: '800px' }} // Responsive width
+          p={6}
+          borderRadius="md"
+          boxShadow="lg"
+          bg="white"
+        >
+          <Text textAlign="justify">
+            <Heading as="h1" size="xl" mt="5px" mb="10px" textAlign="left">
+              Terms of Use for the Reeltiming Application
+            </Heading>
+            <Text fontSize="md" color="gray.600" mb="4">
+              Effective from October 12, 2024
+            </Text>
+            <Divider mb="4" />
+
+            <Heading as="h2" size="md" mt="10px" mb="5px">
+              1. Acceptance of Terms
+            </Heading>
+            <Text>
+              By using, accessing the application, or any involvement in the
+              process of reporting work hours through the film crew application
+              (hereinafter referred to as "Application"), you agree that you
+              unconditionally accept the following terms of use (hereinafter
+              referred to as "Agreement"), regardless of your understanding,
+              reading, or clarity of individual provisions. By continuing to use
+              the Application, you confirm your irrevocable consent to the
+              current version of these terms, which may be amended, changed, or
+              revised at the sole discretion of the operator of the Application
+              at any time.
+            </Text>
+
+            <Heading as="h2" size="md" mt="10px" mb="5px">
+              2. Reporting Data and Its Accuracy
+            </Heading>
+            <Text>
+              Users (hereinafter referred to as "You" or "User") acknowledge
+              that all records of work hours, reports, data entries, or any
+              other information entered into the Application are the sole
+              responsibility of the user. The Application does not verify,
+              confirm, guarantee, or ensure the accuracy, timeliness, or
+              completeness of the entered data. Any errors, omissions, or
+              incorrect reporting of work hours are the sole responsibility of
+              the User, and the Application assumes no responsibility for
+              resolving discrepancies or disputes arising in this regard.
+            </Text>
+
+            <Heading as="h2" size="md" mt="10px" mb="5px">
+              3. Exclusion of Liability to Third Parties
+            </Heading>
+            <Text>
+              The Application, its owners, operators, or affiliates shall not be
+              liable for any direct, indirect, incidental, consequential, or
+              special damages, including but not limited to disputes arising
+              from contractual obligations, employment relationships, legal
+              actions, or financial consequences that arise from the use of the
+              Application or in connection with it. The Application does not
+              guarantee any problems, damages, or complications caused by third
+              parties, including but not limited to external service providers,
+              employers, clients, or other entities outside the direct control
+              of the Application.
+            </Text>
+
+            <Heading as="h2" size="md" mt="10px" mb="5px">
+              4. Changes to Terms
+            </Heading>
+            <Text>
+              The operator of the Application reserves the right to change,
+              modify, or supplement these Terms of Use at any time without prior
+              notice at its discretion. The User is obligated to regularly check
+              the current wording of these terms, and any continued use of the
+              Application after changes will be considered explicit consent to
+              these changes. The Application is not responsible for the User not
+              being informed about changes if they do not familiarize themselves
+              properly with them.
+            </Text>
+
+            <Heading as="h2" size="md" mt="10px" mb="5px">
+              5. Dispute Resolution
+            </Heading>
+            <Text>
+              Any disputes arising under these terms or in connection with the
+              use of the Application shall be resolved exclusively according to
+              the valid law of the Czech Republic at the competent courts, with
+              the User agreeing to the local jurisdiction of the courts in the
+              place of residence of the operator of the Application.
+            </Text>
+          </Text>
+        </Box>
       </Box>
+      <Footer />
     </Box>
   );
 }

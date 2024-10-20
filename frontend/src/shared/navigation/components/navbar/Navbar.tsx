@@ -22,7 +22,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
@@ -34,11 +34,12 @@ import Logo from '../logo/Logo';
 const Navbar: React.FC<{
   children1?: React.ReactNode;
 }> = ({ children1 }) => {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const [isOpen, setIsOpen] = React.useState(false);
   const [isUserSettingsOpen, setUserSettingsOpen] = React.useState(false);
   const btnRef = React.useRef<HTMLButtonElement>(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
@@ -154,18 +155,9 @@ const Navbar: React.FC<{
                         >
                           My Projects
                         </Button>
-                        <Button
-                          as={ReactRouterLink}
-                          to={route.landingPage()}
-                          colorScheme="orange"
-                          onClick={toggleDrawer}
-                          width="full"
-                        >
-                          Timesheet
-                        </Button>
                       </>
                     ) : (
-                      <VStack spacing={4} align="center">
+                      <VStack spacing={4} align="center" width={'100%'}>
                         <Button
                           as={ReactRouterLink}
                           to={route.login()}
@@ -247,7 +239,10 @@ const Navbar: React.FC<{
                               colorScheme="orange"
                               bgColor={'orange.700'}
                               _hover={{ bg: 'orange.800' }}
-                              onClick={toggleDrawer}
+                              onClick={() => {
+                                signOut();
+                                navigate(route.login());
+                              }}
                             >
                               Logout
                             </Button>
