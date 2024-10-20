@@ -33,7 +33,9 @@ import Logo from '../logo/Logo';
 
 const Navbar: React.FC<{
   children1?: React.ReactNode;
-}> = ({ children1 }) => {
+  children2?: React.ReactNode;
+  drawerChildren?: React.ReactNode;
+}> = ({ children1, children2, drawerChildren }) => {
   const { user, signOut } = useAuth();
   const [isOpen, setIsOpen] = React.useState(false);
   const [isUserSettingsOpen, setUserSettingsOpen] = React.useState(false);
@@ -91,10 +93,12 @@ const Navbar: React.FC<{
                 >
                   My Projects
                 </Button>
+                {children2}
               </>
             ) : null}
           </Stack>
         </Flex>
+
         <Box display={{ base: 'block', md: 'none' }}>
           <IconButton
             ref={btnRef}
@@ -125,10 +129,12 @@ const Navbar: React.FC<{
                           colorScheme="orange"
                           onClick={toggleDrawer}
                           width="full"
-                          mb={6}
+                          mb={4}
                         >
                           My Projects
                         </Button>
+                        {drawerChildren && <Divider />}
+                        {drawerChildren}
                       </>
                     ) : (
                       <VStack spacing={4} align="center" width={'100%'}>

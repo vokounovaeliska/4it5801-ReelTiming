@@ -1,19 +1,24 @@
 import { gql, useQuery } from '@apollo/client';
+import { ArrowBackIcon } from '@chakra-ui/icons';
 import {
   AbsoluteCenter,
   Box,
   Divider,
   Heading,
+  IconButton,
   Spinner,
   Text,
 } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 
+import { route } from '@frontend/route';
+import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 import UserNavbar from '@frontend/shared/navigation/components/navbar/UserNavbar';
 
-import { MyProjectNavbar } from '../MyProjectNavbar';
+// import { MyProjectNavbar } from '../MyProjectNavbar';
+import ProjectButtons from '../ProjectButtons';
 
 const GET_PROJECT_DETAIL = gql`
   query GetProjectDetail($id: String!) {
@@ -57,8 +62,11 @@ export function MyProjectDetailPage() {
       minHeight="100vh"
       bgColor="gray.50"
     >
-      <Navbar children1={<UserNavbar />} />
-
+      <Navbar
+        children1={<UserNavbar />}
+        children2={<ProjectButtons />}
+        drawerChildren={<ProjectButtons />}
+      />
       <Box
         flex="1"
         pt={4}
@@ -78,7 +86,7 @@ export function MyProjectDetailPage() {
         boxShadow="md"
         borderRadius="md"
       >
-        <MyProjectNavbar />
+        {/* <MyProjectNavbar /> */}
         <Box
           display={{
             base: 'flex',
@@ -96,6 +104,17 @@ export function MyProjectDetailPage() {
           textAlign="center"
         >
           <Heading as="h2" size="2xl" color="orange.400">
+            <IconButton
+              as={ReactRouterLink}
+              to={route.myprojects()}
+              aria-label="Go back btn"
+              icon={<ArrowBackIcon />}
+              size="sm"
+              borderRadius="full"
+              colorScheme="orange"
+              mr={3}
+              _hover={{ bg: 'orange.600' }}
+            />
             {project?.name}
           </Heading>
 
@@ -209,7 +228,6 @@ export function MyProjectDetailPage() {
           </Text>
         </Box>
       </Box>
-
       <Footer />
     </Box>
   );
