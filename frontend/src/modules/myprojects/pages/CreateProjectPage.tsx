@@ -3,7 +3,6 @@ import { gql, useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth'; // Import the useAuth hook
-import { route } from '@frontend/route';
 
 import { FormValues } from '../organisms/CreateProjectForm';
 import { CreateProjectTemplate } from '../templates/CreateProjectTemplate';
