@@ -10,6 +10,7 @@ import {
   useColorModeValue,
   VStack,
 } from '@chakra-ui/react';
+import { PiProjectorScreenChart } from 'react-icons/pi';
 import { Link } from 'react-router-dom';
 
 import { route } from '@frontend/route';
@@ -17,8 +18,6 @@ import { RouterNavLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 import UserNavbar from '@frontend/shared/navigation/components/navbar/UserNavbar';
-import { text } from 'stream/consumers';
-import { PiProjectorScreenChart } from 'react-icons/pi';
 
 export type MyProjectsTemplateProps = {
   projects: { id: string; name: string; description: string }[];
@@ -30,7 +29,6 @@ export function MyProjectsTemplate({
   onAddProject,
 }: MyProjectsTemplateProps) {
   const boxBg = useColorModeValue('white', 'gray.700');
-  const hoverBg = useColorModeValue('orange.400', 'orange.600');
   const border = useColorModeValue('gray.200', 'gray.600');
   const textColor = useColorModeValue('2D3748', 'gray.100');
 
@@ -78,7 +76,7 @@ export function MyProjectsTemplate({
                 color: 'white',
                 transform: 'scale(1.2)',
               }}
-              transition="all 0.2s ease"
+              transition="all 0.3s ease"
             />
             <Box
               fontSize="sm"
@@ -108,7 +106,7 @@ export function MyProjectsTemplate({
                   transform: 'scale(1.02)',
                   bg: 'orange.400',
                 }}
-                transition="all 0.2s ease"
+                transition="all 0.3s ease"
               >
                 <Text
                   fontWeight="bold"
