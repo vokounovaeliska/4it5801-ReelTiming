@@ -4,7 +4,6 @@ import { CiViewTimeline } from 'react-icons/ci';
 import { FaPeopleGroup } from 'react-icons/fa6';
 import { MdBuild, MdOutlineSummarize } from 'react-icons/md';
 
-
 const ProjectButtons: React.FC = () => {
   const buttonStyle = {
     colorScheme: 'orange',
