@@ -1,4 +1,6 @@
-import { Box, Center, Link, Paragraph } from '@frontend/shared/design-system';
+import { route } from '@frontend/route';
+import { Box, Center, Paragraph } from '@frontend/shared/design-system';
+import { RouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
@@ -51,9 +53,9 @@ export function RegisterTemplate({
             <Center>
               <Paragraph fontSize={{ base: 'xs', sm: 'md' }}>
                 Already have an account?{' '}
-                <Link href="/auth/login" color="orange.500" fontWeight="bold">
+                <RouterLink p={2} to={route.login()} fontWeight={'bold'}>
                   Login
-                </Link>
+                </RouterLink>
               </Paragraph>
             </Center>
           </RegisterForm>

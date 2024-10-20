@@ -15,18 +15,20 @@ export function ToCPage() {
         justifyContent="center"
         //   height="100vh"
         bg="#F7FAFC"
-        p={8}
+        p={{ base: 0, sm: 4, md: 8, xl: 8 }}
       >
         <Box
-          width={{ base: '90%', sm: '400px', md: '600px', xl: '800px' }} // Responsive width
-          p={6}
+          w="100%"
+          maxW={{ md: '650px', xl: '800px' }} // Responsive width
+          p="6"
           borderRadius="md"
-          boxShadow="lg"
+          borderWidth={1}
+          boxShadow="md"
           bg="white"
         >
           <Text textAlign="justify">
             <Heading as="h1" size="xl" mt="5px" mb="10px" textAlign="left">
-              Terms of Use for the Reeltiming Application
+              Terms of Use for the ReelTiming Application
             </Heading>
             <Text fontSize="md" color="gray.600" mb="4">
               Effective from October 12, 2024
