@@ -5,6 +5,7 @@ import { RegistrationPage } from '@frontend/modules/auth/pages/RegistrationPage'
 import { HelloPage } from '@frontend/modules/hello/pages/HelloPage';
 import { HomePage } from '@frontend/modules/home/pages/HomePage';
 import { MyProjectsPage } from '@frontend/modules/myprojects/MyProjectsPage';
+import { MyProjectDetailPage } from '@frontend/modules/myprojects/pages/ProjectsDetailPage';
 import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 
 import { ForgotPasswordPage } from './modules/auth/pages/ForgotPasswordPage';
@@ -26,6 +27,10 @@ export function Routes() {
       <Route path={route.terms()} element={<ToCPage />} />
       <Route path={route.newPassword()} element={<NewPasswordPage />} />
       <Route path={route.createProject()} element={<CreateProjectPage />} />
+      <Route
+        path={route.projectDetail(':id')}
+        element={<MyProjectDetailPage />}
+      />
     </RouterRoutes>
   );
 }

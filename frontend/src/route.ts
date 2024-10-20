@@ -9,4 +9,5 @@ export const route = {
   terms: () => `/term`,
   myprojects: () => `/myprojects`,
   createProject: () => `/create-project`,
+  projectDetail: (id: string = ':id') => `/projects/${id}`,
 };
