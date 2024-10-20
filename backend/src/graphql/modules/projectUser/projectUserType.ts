@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, InputType, ObjectType } from 'type-graphql';
 
 @ObjectType()
 export class ProjectUser {
@@ -17,13 +17,13 @@ export class ProjectUser {
   @Field(() => String, { nullable: true })
   position?: string | null;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   rate_id?: string | null = null;
 
   @Field(() => Number, { nullable: true })
   number_of_people?: number | null;
 
-  @Field(() => Number, { nullable: true })
+  @Field(() => String, { nullable: true })
   car_numberplate?: string | null;
 
   @Field(() => Boolean)
@@ -43,4 +43,28 @@ export class ProjectUser {
 
   @Field(() => Boolean)
   is_active: boolean = true;
+}
+
+@InputType()
+export class ProjectUserInput {
+  @Field(() => String, { nullable: true })
+  group_id?: string | null;
+
+  @Field(() => String, { nullable: true })
+  position?: string | null;
+
+  @Field(() => String, { nullable: true })
+  rate_id?: string | null;
+
+  @Field(() => Number, { nullable: true })
+  number_of_people?: number | null;
+
+  @Field(() => String, { nullable: true })
+  car_numberplate?: string | null;
+
+  @Field(() => Boolean, { nullable: true })
+  is_team_leader?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  is_active?: boolean;
 }
