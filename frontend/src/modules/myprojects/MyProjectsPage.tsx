@@ -43,7 +43,7 @@ export function MyProjectsPage() {
 
     return (
       <Center minHeight="100vh" flexDirection="column">
-        <Heading as="h3" size="lg" color="red.500" mb={4}>
+        <Heading as="h3" size="lg" color="orange.500" mb={4}>
           Error fetching projects
         </Heading>
         <Text color="gray.600">
