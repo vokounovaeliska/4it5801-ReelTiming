@@ -64,6 +64,7 @@ export function MyProjectsTemplate({
             <IconButton
               aria-label="Add project"
               colorScheme="orange"
+              bgColor={'orange.500'}
               as={RouterNavLink}
               to={route.createProject()}
               size="lg"

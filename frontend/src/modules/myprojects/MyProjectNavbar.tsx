@@ -1,5 +1,5 @@
 import React from 'react';
-import { HamburgerIcon } from '@chakra-ui/icons';
+import { ArrowBackIcon, HamburgerIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -18,6 +18,9 @@ import { CiViewTimeline } from 'react-icons/ci';
 import { FaPeopleGroup } from 'react-icons/fa6';
 import { MdBuild, MdOutlineSummarize } from 'react-icons/md';
 
+import { route } from '@frontend/route';
+import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
+
 export const MyProjectNavbar: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const btnRef = React.useRef<HTMLButtonElement>(null);
@@ -34,10 +37,23 @@ export const MyProjectNavbar: React.FC = () => {
         display={{ base: 'none', md: 'flex' }}
         justifyContent="space-around"
       >
+        <IconButton
+          as={ReactRouterLink}
+          to={route.myprojects()}
+          aria-label="Go back btn"
+          icon={<ArrowBackIcon />}
+          size="sm"
+          borderRadius="full"
+          colorScheme="orange"
+          _hover={{ bg: 'orange.600' }}
+        />
         <Button
           leftIcon={<CiViewTimeline />}
           colorScheme="orange"
           variant="ghost"
+          color={'orange.500'}
+          // _hover={{ bg: '#2D3748' }}
+          _hover={{ bg: 'orange.600', textColor: 'white' }}
         >
           Timesheets
         </Button>
@@ -45,6 +61,9 @@ export const MyProjectNavbar: React.FC = () => {
           leftIcon={<MdOutlineSummarize />}
           colorScheme="orange"
           variant="ghost"
+          color={'orange.500'}
+          // _hover={{ bg: '#2D3748' }}
+          _hover={{ bg: 'orange.600', textColor: 'white' }}
         >
           Dashboard
         </Button>
@@ -52,10 +71,20 @@ export const MyProjectNavbar: React.FC = () => {
           leftIcon={<FaPeopleGroup />}
           colorScheme="orange"
           variant="ghost"
+          color={'orange.500'}
+          // _hover={{ bg: '#2D3748' }}
+          _hover={{ bg: 'orange.600', textColor: 'white' }}
         >
           Crewlist
         </Button>
-        <Button leftIcon={<MdBuild />} colorScheme="orange" variant="ghost">
+        <Button
+          leftIcon={<MdBuild />}
+          colorScheme="orange"
+          variant="ghost"
+          color={'orange.500'}
+          // _hover={{ bg: '#2D3748' }}
+          _hover={{ bg: 'orange.600', textColor: 'white' }}
+        >
           Edit
         </Button>
       </HStack>
@@ -88,6 +117,9 @@ export const MyProjectNavbar: React.FC = () => {
                       leftIcon={<CiViewTimeline />}
                       colorScheme="orange"
                       variant="ghost"
+                      color={'orange.500'}
+                      // _hover={{ bg: '#2D3748' }}
+                      _hover={{ bg: 'orange.600', textColor: 'white' }}
                     >
                       Timesheets
                     </Button>
@@ -95,6 +127,9 @@ export const MyProjectNavbar: React.FC = () => {
                       leftIcon={<MdOutlineSummarize />}
                       colorScheme="orange"
                       variant="ghost"
+                      color={'orange.500'}
+                      // _hover={{ bg: '#2D3748' }}
+                      _hover={{ bg: 'orange.600', textColor: 'white' }}
                     >
                       Dashboard
                     </Button>
@@ -103,6 +138,9 @@ export const MyProjectNavbar: React.FC = () => {
                       leftIcon={<FaPeopleGroup />}
                       colorScheme="orange"
                       variant="ghost"
+                      color={'orange.500'}
+                      // _hover={{ bg: '#2D3748' }}
+                      _hover={{ bg: 'orange.600', textColor: 'white' }}
                     >
                       Crewlist
                     </Button>
@@ -110,6 +148,9 @@ export const MyProjectNavbar: React.FC = () => {
                       leftIcon={<MdBuild />}
                       colorScheme="orange"
                       variant="ghost"
+                      color={'orange.500'}
+                      // _hover={{ bg: '#2D3748' }}
+                      _hover={{ bg: 'orange.600', textColor: 'white' }}
                     >
                       Edit
                     </Button>

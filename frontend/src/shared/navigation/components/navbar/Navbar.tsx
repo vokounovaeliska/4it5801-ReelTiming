@@ -84,39 +84,13 @@ const Navbar: React.FC<{
                     boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.2)',
                   }}
                   _active={{
-                    bg: 'orange.600',
+                    bg: 'orange.500',
                     color: 'white',
                     boxShadow: 'inset 0 0 15px rgba(0, 0, 0, 0.3)',
                   }}
                 >
                   My Projects
                 </Button>
-                {/* <Button
-                  as={ReactRouterLink}
-                  to={route.myprojects()} // change when timesheet done
-                  variant="ghost"
-                  colorScheme="orange"
-                  textColor="white"
-                  aria-label="Button going to Timesheet page"
-                  bg={
-                    location.pathname === route.myprojects()
-                      ? 'orange.600'
-                      : 'transparent'
-                  }
-                  color="white"
-                  _hover={{
-                    bg: 'orange.700',
-                    color: 'white',
-                    boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.2)',
-                  }}
-                  _active={{
-                    bg: 'orange.600',
-                    color: 'white',
-                    boxShadow: 'inset 0 0 15px rgba(0, 0, 0, 0.3)',
-                  }}
-                >
-                  Timesheet
-                </Button> */}
               </>
             ) : null}
           </Stack>
@@ -206,7 +180,7 @@ const Navbar: React.FC<{
                               name={user.name || 'Guest'}
                               size="30px"
                               boxSize={25}
-                              bg={'orange.400'}
+                              bg={'orange.500'}
                               mr={2}
                             />
                             <Text fontSize="sm" fontWeight="bold" color="white">
