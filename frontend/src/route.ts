@@ -5,6 +5,7 @@ export const route = {
   login: () => `/auth/login`,
   register: () => `/auth/register`,
   forgotPassword: () => `/auth/forgot-password`,
+  newPassword: () => `/auth/new-password`,
   terms: () => `/term`,
   myprojects: () => `/myprojects`,
   createProject: () => `/create-project`,

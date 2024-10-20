@@ -11,13 +11,16 @@ import {
 import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
 
 const schema = zod.object({
-  email: zod.string().email().min(1),
+  email: zod.string().min(1, { message: 'Email is required!' }).email({
+    message:
+      'Invalid email format. It must be in the format example@domain.com',
+  }),
 });
 
 type FormValues = zod.infer<typeof schema>;
 
 const initialValues: FormValues = {
-  email: '',
+  email: '@',
 };
 
 export type ForgotPasswordFormProps = {

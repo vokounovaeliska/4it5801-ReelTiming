@@ -12,7 +12,7 @@ export class Project {
   production_company!: string;
 
   @Field(() => String)
-  description?: string;
+  description?: string | null;
 
   @Field(() => Date, { nullable: true })
   start_date: Date | null = null;
@@ -43,6 +43,9 @@ export class ProjectInput {
 
   @Field(() => String, { nullable: true })
   production_company?: string;
+
+  @Field(() => String)
+  description?: string | null;
 
   @Field(() => Date, { nullable: true })
   start_date?: Date | null;
