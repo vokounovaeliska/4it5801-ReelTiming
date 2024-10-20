@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { gql, useQuery } from '@apollo/client';
-import { Button, Center, Heading, Spinner, Text } from '@chakra-ui/react';
+import { Center, Spinner, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
 import { MyProjectsTemplate } from '@frontend/modules/auth/templates/MyProjectsTemplate';
 import { route } from '@frontend/route';
+
+import ErrorMyProjectPage from './ErrorMyProjectPage';
 
 const GET_PROJECTS = gql`
   query GetProjects {
@@ -39,22 +41,8 @@ export function MyProjectsPage() {
   }
 
   if (error) {
-    const isNetworkError = error.message.includes('Network error');
-
     return (
-      <Center minHeight="100vh" flexDirection="column">
-        <Heading as="h3" size="lg" color="orange.500" mb={4}>
-          Error fetching projects
-        </Heading>
-        <Text color="gray.600">
-          {isNetworkError
-            ? 'It seems there is an issue with the database connection. Please check your connection or try again later.'
-            : `Error: ${error.message}`}
-        </Text>
-        <Button mt={4} onClick={() => refetch()} colorScheme="orange">
-          Retry
-        </Button>
-      </Center>
+      <ErrorMyProjectPage errorMessage={error.message} onRetry={refetch} />
     );
   }
 
