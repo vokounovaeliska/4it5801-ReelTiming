@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  ChevronDownIcon,
-  ChevronUpIcon,
-  HamburgerIcon,
-} from '@chakra-ui/icons';
+import { HamburgerIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -22,9 +18,7 @@ import { CiViewTimeline } from 'react-icons/ci';
 import { FaPeopleGroup } from 'react-icons/fa6';
 import { MdBuild, MdOutlineSummarize } from 'react-icons/md';
 
-export const MyProjectNavbar: React.FC<{
-  children1?: React.ReactNode;
-}> = ({ children1 }) => {
+export const MyProjectNavbar: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const btnRef = React.useRef<HTMLButtonElement>(null);
   // const location = useLocation();
