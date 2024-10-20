@@ -1,9 +1,10 @@
-import { Box, Heading, Text } from '@chakra-ui/react';
+import { Box, Button, Heading, SimpleGrid, Text } from '@chakra-ui/react';
+import { FaHome } from 'react-icons/fa';
 
 import { route } from '@frontend/route';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 
-import { RouterLink } from '../atoms';
+import { ReactRouterLink } from '../atoms';
 import Navbar from '../components/navbar/Navbar';
 
 export function NotFoundPage() {
@@ -36,46 +37,33 @@ export function NotFoundPage() {
   const randomSentence = getRandomSentence();
 
   return (
-    <Box>
+    <>
       <Navbar />
       <Box
         display="flex"
-        alignItems="center"
+        alignItems="flex-start" // Align items to the top
         justifyContent="center"
         p={8}
         minHeight="100vh"
+        bg="#F7FAFC"
+        mt={12} // Add top margin to move it away from the top a bit
       >
-        <Box
+        <SimpleGrid
+          columns={1}
           bg="white"
           p={8}
           borderRadius="lg"
           boxShadow="lg"
+          borderWidth={1}
           textAlign="center"
-          maxWidth="500px"
+          w="100%"
+          maxW={{ md: '650px', xl: '800px' }} // Responsive width
         >
           <Heading as="h1" fontSize="2xl" color="orange.500" mb={4}>
-            Page Not Found
+            404 Page Not Found
           </Heading>
-
           <Text fontSize="lg" color="gray.600" mb={2} lineHeight="1.8">
-            {randomSentence} <br />
-            <br />
-            {''}
-            <RouterLink to={route.landingPage()}>
-              <Box
-                as="span"
-                color="orange.500"
-                fontWeight="bold"
-                p="1"
-                border="2px"
-                borderColor="orange.500"
-                borderRadius="md"
-                _hover={{ bg: 'orange.500', color: 'white' }}
-                transition="all 0.3s ease"
-              >
-                Home
-              </Box>
-            </RouterLink>
+            {randomSentence}
           </Text>
 
           <Box
@@ -87,9 +75,26 @@ export function NotFoundPage() {
           >
             🤔
           </Box>
-        </Box>
+          <Button
+            m={4}
+            as={ReactRouterLink}
+            to={route.landingPage()}
+            colorScheme="orange"
+            textColor="white"
+            justifySelf={'center'}
+            leftIcon={<FaHome />}
+            _hover={{
+              bg: 'orange.700',
+              color: 'white',
+              boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.2)',
+            }}
+          >
+            Home
+          </Button>
+        </SimpleGrid>
       </Box>
+
       <Footer />
-    </Box>
+    </>
   );
 }
