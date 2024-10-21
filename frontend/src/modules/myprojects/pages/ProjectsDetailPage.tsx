@@ -76,7 +76,7 @@ export function MyProjectDetailPage() {
         flex="1"
         p={8}
         width={{
-          base: '100%',
+          base: '90%',
           sm: '90%',
           md: '80%',
           xl: '70%',
