@@ -45,7 +45,7 @@ export function LogInForm({
       p={4}
     >
       <Box
-        width={{ base: '100%', sm: '170%', md: '400px', lg: '400px' }}
+        width={{ base: '100%', sm: '350px', md: '450px', lg: '500px' }}
         maxWidth={'500px'}
         pt={6}
         pb={6}

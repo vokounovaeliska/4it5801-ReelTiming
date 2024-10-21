@@ -104,7 +104,7 @@ export function RegisterForm({
     >
       <Box
         // width={{ base: '90%', sm: '400px', md: '600px', xl: '800px' }} // Responsive width
-        width={{ base: '100%', sm: '135%', md: '500px', lg: '700px' }}
+        width={{ base: '100%', sm: '350px', md: '480px', lg: '700px' }}
         maxWidth="600px"
         pt={4}
         pb={6}
@@ -116,6 +116,7 @@ export function RegisterForm({
         border="2px"
         borderColor="gray.300"
         overflow="hidden"
+        minW={'200px'}
       >
         <Heading as="h2" size="xl" textAlign="center" mb={4}>
           Register
