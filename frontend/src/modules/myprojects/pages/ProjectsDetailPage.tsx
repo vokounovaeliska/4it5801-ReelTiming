@@ -74,9 +74,7 @@ export function MyProjectDetailPage() {
       />
       <Box
         flex="1"
-        pt={4}
-        pl={8}
-        pr={8}
+        p={8}
         width={{
           base: '100%',
           sm: '90%',
@@ -86,12 +84,11 @@ export function MyProjectDetailPage() {
         }}
         maxWidth="1200px"
         mx="auto"
-        mt={8}
+        my={8}
         bg="white"
-        boxShadow="md"
+        boxShadow="xs"
         borderRadius="md"
         borderWidth={1}
-        borderColor={'gray.300'}
       >
         {/* <MyProjectNavbar /> */}
         <Box
@@ -123,22 +120,22 @@ export function MyProjectDetailPage() {
             as="h2"
             size={{ base: 'xl', md: '2xl' }}
             color="orange.500"
-            mb={4}
+            mb={4} // Margin below the title for spacing
             textAlign={{ base: 'center', md: 'left' }}
           >
             {project?.name}
           </Heading>
 
           <Box
-            display="flex"
-            flexDirection={{ base: 'column', md: 'row' }}
-            textAlign={{ base: 'center', md: 'left' }}
+            display="flex" // Flexbox for dates
+            flexDirection={{ base: 'column', md: 'row' }} // Stack on mobile, side by side on desktop
+            textAlign={{ base: 'center', md: 'left' }} // Centered text on mobile
           >
             <Text
               fontSize={{ base: 'md', md: 'lg' }}
               color="gray.700"
-              mb={{ base: 2, md: 0 }}
-              mr={{ md: 4 }}
+              mb={{ base: 2, md: 0 }} // Margin bottom on mobile
+              mr={{ md: 4 }} // Margin right on desktop
             >
               <Box as="span" mr={2} color="teal.500">
                 📅
@@ -159,7 +156,7 @@ export function MyProjectDetailPage() {
           </Box>
         </Box>
 
-        <Box p={6} bg="white" borderRadius="md" boxShadow="base">
+        <Box p={6} bg="white" borderRadius="md" boxShadow="xs">
           <Text fontSize="lg" mb={4} color="2D3748" fontWeight="bold">
             <Box as="span" mr={2} color="orange.400">
               🏢
