@@ -48,7 +48,6 @@ export function MyProjectDetailPage() {
     variables: { id },
   });
 
-
   if (loading) {
     return (
       <Center minHeight="100vh">
@@ -123,22 +122,22 @@ export function MyProjectDetailPage() {
             as="h2"
             size={{ base: 'xl', md: '2xl' }}
             color="orange.500"
-            mb={4} // Margin below the title for spacing
+            mb={4}
             textAlign={{ base: 'center', md: 'left' }}
           >
             {project?.name}
           </Heading>
 
           <Box
-            display="flex" // Flexbox for dates
-            flexDirection={{ base: 'column', md: 'row' }} // Stack on mobile, side by side on desktop
-            textAlign={{ base: 'center', md: 'left' }} // Centered text on mobile
+            display="flex"
+            flexDirection={{ base: 'column', md: 'row' }}
+            textAlign={{ base: 'center', md: 'left' }}
           >
             <Text
               fontSize={{ base: 'md', md: 'lg' }}
               color="gray.700"
-              mb={{ base: 2, md: 0 }} // Margin bottom on mobile
-              mr={{ md: 4 }} // Margin right on desktop
+              mb={{ base: 2, md: 0 }}
+              mr={{ md: 4 }}
             >
               <Box as="span" mr={2} color="teal.500">
                 📅
