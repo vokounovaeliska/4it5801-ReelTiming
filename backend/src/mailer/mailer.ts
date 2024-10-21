@@ -3,9 +3,8 @@ import nodemailer from 'nodemailer';
 
 dotenv.config();
 
-// Create a transporter for sending emails
 const transporter = nodemailer.createTransport({
-  service: 'gmail', // Use Gmail as an example (or replace with another service like SendGrid)
+  service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -18,7 +17,7 @@ export const sendMail = async (to: string, subject: string, html: string) => {
       from: process.env.EMAIL_USER,
       to,
       subject,
-      html, // Use html instead of text
+      html,
     });
     console.log('Email sent: ' + info.response);
     return info;
