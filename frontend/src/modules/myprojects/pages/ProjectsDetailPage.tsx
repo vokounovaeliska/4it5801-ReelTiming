@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 
+import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
 import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
@@ -40,11 +41,13 @@ const GET_PROJECT_DETAIL = gql`
 `;
 
 export function MyProjectDetailPage() {
+  const auth = useAuth();
   const { id } = useParams<{ id: string }>();
 
   const { data, loading, error } = useQuery(GET_PROJECT_DETAIL, {
     variables: { id },
   });
+
 
   if (loading) {
     return (
@@ -54,7 +57,7 @@ export function MyProjectDetailPage() {
     );
   }
 
-  if (error || !data?.project) {
+  if (error || !auth.user || !data?.project) {
     return <NotFoundPage />;
   }
 
