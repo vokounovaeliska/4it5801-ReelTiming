@@ -1,3 +1,5 @@
+import { Text } from '@chakra-ui/react';
+
 import { Checkbox, type CheckboxProps } from '@frontend/shared/design-system';
 
 import { FormField, type FormFieldBaseProps } from '../FormField';
@@ -19,7 +21,9 @@ export function CheckboxField({
           {...restField}
           isChecked={value}
         >
-          {label}
+          <Text fontSize={{ base: 'sm', md: 'md' }} display="inline">
+            {label}
+          </Text>
         </Checkbox>
       )}
     </FormField>

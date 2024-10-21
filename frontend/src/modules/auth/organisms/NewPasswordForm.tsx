@@ -90,9 +90,9 @@ export function NewPasswordForm({
         borderRadius="md"
         boxShadow="lg"
         bg="white"
-        border="1px"
-        borderColor="gray.100"
         overflow="hidden"
+        borderWidth={2}
+        borderColor="gray.300"
       >
         <Heading as="h2" size="xl" textAlign="center" mb={4}>
           Choose New Password

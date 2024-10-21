@@ -40,7 +40,7 @@ export function MyProjectsPage() {
     );
   }
 
-  if (error) {
+  if (error && auth.user) {
     return (
       <ErrorMyProjectPage errorMessage={error.message} onRetry={refetch} />
     );

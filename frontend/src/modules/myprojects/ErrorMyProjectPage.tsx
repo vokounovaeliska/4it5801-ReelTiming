@@ -23,7 +23,7 @@ const ErrorMyProjectPage: React.FC<ErrorMyProjectPageProps> = ({
         <Heading as="h3" size="lg" color="orange.500" mb={4}>
           Error fetching projects
         </Heading>
-        <Text color="gray.600">
+        <Text color="gray.600" textAlign="center">
           {isNetworkError
             ? 'It seems there is an issue with the database connection. Please check your connection or try again later.'
             : `Error: ${errorMessage}`}
