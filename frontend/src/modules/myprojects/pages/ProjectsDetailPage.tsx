@@ -19,7 +19,6 @@ import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 import UserNavbar from '@frontend/shared/navigation/components/navbar/UserNavbar';
 import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 
-// import { MyProjectNavbar } from '../MyProjectNavbar';
 import ProjectButtons from '../ProjectButtons';
 
 const GET_PROJECT_DETAIL = gql`
@@ -75,11 +74,9 @@ export function MyProjectDetailPage() {
       />
       <Box
         flex="1"
-        pt={4}
-        pl={8}
-        pr={8}
+        p={8}
         width={{
-          base: '100%',
+          base: '90%',
           sm: '90%',
           md: '80%',
           xl: '70%',
@@ -87,9 +84,9 @@ export function MyProjectDetailPage() {
         }}
         maxWidth="1200px"
         mx="auto"
-        mt={8}
+        my={8}
         bg="white"
-        boxShadow="md"
+        boxShadow="xs"
         borderRadius="md"
         borderWidth={1}
       >
@@ -159,7 +156,7 @@ export function MyProjectDetailPage() {
           </Box>
         </Box>
 
-        <Box p={6} bg="white" borderRadius="md" boxShadow="base">
+        <Box p={6} bg="white" borderRadius="md" boxShadow="xs">
           <Text fontSize="lg" mb={4} color="2D3748" fontWeight="bold">
             <Box as="span" mr={2} color="orange.400">
               🏢
