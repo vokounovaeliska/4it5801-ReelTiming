@@ -29,7 +29,7 @@ export function MyProjectsTemplate({
   onAddProject,
 }: MyProjectsTemplateProps) {
   const boxBg = useColorModeValue('white', 'gray.700');
-  const border = useColorModeValue('gray.200', 'gray.600');
+  const border = useColorModeValue('gray.300', 'gray.600');
   const textColor = useColorModeValue('2D3748', 'gray.100');
 
   return (
@@ -101,7 +101,7 @@ export function MyProjectsTemplate({
                 borderWidth={1}
                 borderColor={border}
                 p={6}
-                boxShadow="sm"
+                boxShadow="md"
                 _hover={{
                   boxShadow: 'md',
                   transform: 'scale(1.02)',
