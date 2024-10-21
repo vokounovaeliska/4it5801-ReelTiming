@@ -30,7 +30,7 @@ const UserMenu: React.FC = () => {
         py={2}
         transition="all 0.2s"
         _hover={{ bg: 'orange.700' }}
-        _expanded={{ bg: 'orange.600' }}
+        _expanded={{ bg: 'orange.700' }}
         // _focus={{ boxShadow: 'outline' }}
       >
         <Flex align="center">
@@ -39,7 +39,8 @@ const UserMenu: React.FC = () => {
             name={user?.name || 'Guest'}
             size="30px"
             boxSize={25}
-            bg={'orange.400'}
+            colorScheme="orange"
+            bg={'orange.500'}
             mr={2}
           />
           <Text
@@ -47,7 +48,7 @@ const UserMenu: React.FC = () => {
             fontWeight="bold"
             color="white"
             mr={2}
-            _hover={{ bg: 'orange.600', borderRadius: 'md', p: 1 }}
+            _hover={{ bg: 'orange.700', borderRadius: 'md', p: 1 }}
           >
             {user?.name || 'Guest'}
           </Text>

@@ -1,7 +1,7 @@
 import * as argon2 from 'argon2';
 
 import { getConnection } from '../src/db/db';
-import { user } from '../src/db/schema';
+import { project, user } from '../src/db/schema'; // Assuming you have a project schema defined
 
 async function seed() {
   console.log('Starting seed function');
@@ -10,53 +10,38 @@ async function seed() {
   console.log('Database connection established');
 
   try {
+    // Seed users
     if ((await db.select().from(user)).length === 0) {
       console.log('No users found, inserting sample users');
 
-      // Hash the sample passwords before inserting
       const password1 = await argon2.hash('notHashedPassword1');
       const password2 = await argon2.hash('notHashedPassword2');
-      const password3 = await argon2.hash('notHashedPassword3');
 
       await db.insert(user).values([
         {
-          name: 'Young',
-          surname: 'Gatchell',
-          email: 'yg123@quacker.cz',
-          password: password1, // Hashed password
-          phone_number: '777777777',
-          create_date: new Date('2024-10-18 19:00:10'), // Date object for timestamp
-          create_user_id: 'user-id',
-          last_update_user_id: 'user-id',
-          last_update_date: new Date('2024-10-18 19:00:10'), // Date object for timestamp
+          name: 'Jan',
+          surname: 'Novák',
+          email: 'jan.novak@example.cz',
+          password: password1,
+          phone_number: '777123456',
+          create_date: new Date('2024-10-18 19:00:10'),
+          create_user_id: 'user-id-1',
+          last_update_user_id: 'user-id-1',
+          last_update_date: new Date('2024-10-18 19:00:10'),
           is_active: true,
           password_reset_token: null,
           password_reset_expiration_time: null,
         },
         {
-          name: 'Gatchell',
-          surname: 'Young',
-          email: 'gyoung@quacker.cz',
-          password: password2, // Hashed password
-          phone_number: '777777777',
-          create_date: new Date('2024-10-18 19:00:10'), // Date object for timestamp
-          create_user_id: 'user-id',
-          last_update_user_id: 'user-id',
-          last_update_date: new Date('2024-10-18 19:00:10'), // Date object for timestamp
-          is_active: true,
-          password_reset_token: null,
-          password_reset_expiration_time: null,
-        },
-        {
-          name: 'Mitchel',
-          surname: 'Old',
-          email: 'oldmit@quacker.cz',
-          password: password3, // Hashed password
-          phone_number: '777777777',
-          create_date: new Date('2024-10-18 19:00:10'), // Date object for timestamp
-          create_user_id: 'user-id',
-          last_update_user_id: 'user-id',
-          last_update_date: new Date('2024-10-18 19:00:10'), // Date object for timestamp
+          name: 'Petra',
+          surname: 'Svobodová',
+          email: 'petra.svobodova@example.cz',
+          password: password2,
+          phone_number: '777654321',
+          create_date: new Date('2024-10-18 19:00:10'),
+          create_user_id: 'user-id-2',
+          last_update_user_id: 'user-id-2',
+          last_update_date: new Date('2024-10-18 19:00:10'),
           is_active: true,
           password_reset_token: null,
           password_reset_expiration_time: null,
@@ -64,8 +49,44 @@ async function seed() {
       ]);
       console.log('Sample users inserted');
     } else {
-      console.log('Users already exist, skipping seed');
+      console.log('Users already exist, skipping user seed');
     }
+
+    if ((await db.select().from(project)).length === 0) {
+      console.log('No projects found, inserting sample projects');
+
+      await db.insert(project).values([
+        {
+          name: 'Kreativní Reklama',
+          description: 'An innovative advertising campaign for a local brand.',
+          production_company: 'Reklamní Studio CZ',
+          start_date: new Date('2024-11-01'),
+          end_date: new Date('2025-01-31'),
+          create_date: new Date('2024-10-18 19:00:10'),
+          create_user_id: 'user-id-1',
+          last_update_user_id: 'user-id-1',
+          last_update_date: new Date('2024-10-18 19:00:10'),
+          is_active: true,
+        },
+        {
+          name: 'Filmový Projekt: Cesta',
+          description:
+            'A short film about personal journeys and self-discovery.',
+          production_company: 'Filmová Produkce Praha',
+          start_date: new Date('2024-12-01'),
+          end_date: new Date('2025-03-31'),
+          create_date: new Date('2024-10-18 19:00:10'),
+          create_user_id: 'user-id-2',
+          last_update_user_id: 'user-id-2',
+          last_update_date: new Date('2024-10-18 19:00:10'),
+          is_active: true,
+        },
+      ]);
+      console.log('Sample projects inserted');
+    } else {
+      console.log('Projects already exist, skipping project seed');
+    }
+
     console.log('Seed function completed');
   } finally {
     await connection.connection.end();

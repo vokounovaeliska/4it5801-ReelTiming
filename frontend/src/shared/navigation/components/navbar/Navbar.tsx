@@ -33,7 +33,9 @@ import Logo from '../logo/Logo';
 
 const Navbar: React.FC<{
   children1?: React.ReactNode;
-}> = ({ children1 }) => {
+  children2?: React.ReactNode;
+  drawerChildren?: React.ReactNode;
+}> = ({ children1, children2, drawerChildren }) => {
   const { user, signOut } = useAuth();
   const [isOpen, setIsOpen] = React.useState(false);
   const [isUserSettingsOpen, setUserSettingsOpen] = React.useState(false);
@@ -84,43 +86,19 @@ const Navbar: React.FC<{
                     boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.2)',
                   }}
                   _active={{
-                    bg: 'orange.600',
+                    bg: 'orange.500',
                     color: 'white',
                     boxShadow: 'inset 0 0 15px rgba(0, 0, 0, 0.3)',
                   }}
                 >
                   My Projects
                 </Button>
-                {/* <Button
-                  as={ReactRouterLink}
-                  to={route.myprojects()} // change when timesheet done
-                  variant="ghost"
-                  colorScheme="orange"
-                  textColor="white"
-                  aria-label="Button going to Timesheet page"
-                  bg={
-                    location.pathname === route.myprojects()
-                      ? 'orange.600'
-                      : 'transparent'
-                  }
-                  color="white"
-                  _hover={{
-                    bg: 'orange.700',
-                    color: 'white',
-                    boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.2)',
-                  }}
-                  _active={{
-                    bg: 'orange.600',
-                    color: 'white',
-                    boxShadow: 'inset 0 0 15px rgba(0, 0, 0, 0.3)',
-                  }}
-                >
-                  Timesheet
-                </Button> */}
+                {children2}
               </>
             ) : null}
           </Stack>
         </Flex>
+
         <Box display={{ base: 'block', md: 'none' }}>
           <IconButton
             ref={btnRef}
@@ -151,10 +129,12 @@ const Navbar: React.FC<{
                           colorScheme="orange"
                           onClick={toggleDrawer}
                           width="full"
-                          mb={6}
+                          mb={4}
                         >
                           My Projects
                         </Button>
+                        {drawerChildren && <Divider />}
+                        {drawerChildren}
                       </>
                     ) : (
                       <VStack spacing={4} align="center" width={'100%'}>
@@ -206,7 +186,7 @@ const Navbar: React.FC<{
                               name={user.name || 'Guest'}
                               size="30px"
                               boxSize={25}
-                              bg={'orange.400'}
+                              bg={'orange.500'}
                               mr={2}
                             />
                             <Text fontSize="sm" fontWeight="bold" color="white">

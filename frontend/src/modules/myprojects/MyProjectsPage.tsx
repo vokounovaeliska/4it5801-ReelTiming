@@ -1,10 +1,13 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { gql, useQuery } from '@apollo/client';
+import { Center, Spinner, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
 import { MyProjectsTemplate } from '@frontend/modules/auth/templates/MyProjectsTemplate';
 import { route } from '@frontend/route';
+
+import ErrorMyProjectPage from './ErrorMyProjectPage';
 
 const GET_PROJECTS = gql`
   query GetProjects {
@@ -20,7 +23,7 @@ export function MyProjectsPage() {
   const auth = useAuth();
   const navigate = useNavigate();
 
-  const { data, loading, error } = useQuery(GET_PROJECTS);
+  const { data, loading, error, refetch } = useQuery(GET_PROJECTS);
 
   useEffect(() => {
     if (!auth.user) {
@@ -29,11 +32,18 @@ export function MyProjectsPage() {
   }, [auth.user, navigate]);
 
   if (loading) {
-    return <p>Loading projects...</p>;
+    return (
+      <Center minHeight="100vh">
+        <Spinner size="xl" color="orange.500" />
+        <Text ml={4}>Loading projects...</Text>
+      </Center>
+    );
   }
 
-  if (error) {
-    return <p>Error fetching projects: {error.message}</p>;
+  if (error && auth.user) {
+    return (
+      <ErrorMyProjectPage errorMessage={error.message} onRetry={refetch} />
+    );
   }
 
   const projects =

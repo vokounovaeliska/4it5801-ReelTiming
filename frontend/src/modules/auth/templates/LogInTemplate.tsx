@@ -34,24 +34,26 @@ export function LogInTemplate({
         justifyContent="center"
         overflowY="auto"
         padding={{ base: '4', sm: '6', md: '8' }}
-        mx="auto"
+        mx={{ base: '0', sm: 'auto' }}
         width="100%"
-        maxWidth="600px"
+        maxWidth={{ base: '100%', sm: '90%', md: '60%' }}
       >
-        <LogInForm
-          isLoading={isLoading}
-          errorMessage={error && error.message}
-          onSubmit={onSubmit}
-        >
-          <Center>
-            <Paragraph>
-              Don't have an account?
-              <RouterLink p={2} to={route.register()} fontWeight={'bold'}>
-                Sign up
-              </RouterLink>
-            </Paragraph>
-          </Center>
-        </LogInForm>
+        <Box textAlign="center" width="full">
+          <LogInForm
+            isLoading={isLoading}
+            errorMessage={error && error.message}
+            onSubmit={onSubmit}
+          >
+            <Center>
+              <Paragraph>
+                Don't have an account?
+                <RouterLink p={2} to={route.register()} fontWeight={'bold'}>
+                  Sign up
+                </RouterLink>
+              </Paragraph>
+            </Center>
+          </LogInForm>
+        </Box>
       </Box>
       <Footer />
     </Box>

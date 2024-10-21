@@ -73,11 +73,7 @@ export function CreateProjectForm({
           resolver={zodResolver(createProjectSchema)}
           noValidate
         >
-          <Stack
-            py="0"
-            justify="center"
-            width={{ base: '200px', sm: '400px', md: '600px', lg: '700px' }}
-          >
+          <Stack py="0" justify="center">
             {errorMessage && <ErrorBanner title={errorMessage} />}
             <InputField
               name="name"
@@ -88,6 +84,7 @@ export function CreateProjectForm({
               autoCorrect="off"
               autoCapitalize="off"
               mb={2}
+              width={'100%'}
             />
             <TextAreaField
               name="description"

@@ -28,13 +28,17 @@ export function CreateProjectTemplate({
         justifyContent="center"
         overflowY="auto"
         padding={{ base: '4', sm: '6', md: '8' }}
-        mx="auto"
+        mx={{ base: '0', sm: 'auto' }}
+        width="100%"
+        maxWidth={{ base: '100%', sm: '900px' }}
       >
-        <CreateProjectForm
-          isLoading={isLoading}
-          errorMessage={error && error.message}
-          onSubmit={onSubmit}
-        ></CreateProjectForm>
+        <Box textAlign="center" width="full">
+          <CreateProjectForm
+            isLoading={isLoading}
+            errorMessage={error && error.message}
+            onSubmit={onSubmit}
+          ></CreateProjectForm>
+        </Box>
       </Box>
       <Footer />
     </Box>

@@ -1,7 +1,10 @@
 import { gql, useQuery } from '@apollo/client';
+import { ArrowBackIcon } from '@chakra-ui/icons';
 import {
   AbsoluteCenter,
   Box,
+  Button,
+  Center,
   Divider,
   Heading,
   Spinner,
@@ -9,11 +12,15 @@ import {
 } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 
+import { route } from '@frontend/route';
+import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 import UserNavbar from '@frontend/shared/navigation/components/navbar/UserNavbar';
+import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 
-import { MyProjectNavbar } from '../MyProjectNavbar';
+// import { MyProjectNavbar } from '../MyProjectNavbar';
+import ProjectButtons from '../ProjectButtons';
 
 const GET_PROJECT_DETAIL = gql`
   query GetProjectDetail($id: String!) {
@@ -41,14 +48,18 @@ export function MyProjectDetailPage() {
   });
 
   if (loading) {
-    return <Spinner size="xl" />;
+    return (
+      <Center minHeight="100vh">
+        <Spinner size="xl" color="orange.500" />
+      </Center>
+    );
   }
 
-  if (error) {
-    return <p>Error loading project details: {error.message}</p>;
+  if (error || !data?.project) {
+    return <NotFoundPage />;
   }
 
-  const project = data?.project;
+  const project = data.project;
 
   return (
     <Box
@@ -57,83 +68,108 @@ export function MyProjectDetailPage() {
       minHeight="100vh"
       bgColor="gray.50"
     >
-      <Navbar children1={<UserNavbar />} />
-
+      <Navbar
+        children1={<UserNavbar />}
+        children2={<ProjectButtons />}
+        drawerChildren={<ProjectButtons />}
+      />
       <Box
         flex="1"
         pt={4}
         pl={8}
         pr={8}
         width={{
-          base: '100%', // Full width on small screens (mobile)
-          sm: '90%', // Slightly narrower on small screens
-          md: '80%', // Medium screens get 80% width
-          xl: '70%', // Large screens get 70% width
-          '2xl': '60%', // Extra-large screens get 60% width
+          base: '100%',
+          sm: '90%',
+          md: '80%',
+          xl: '70%',
+          '2xl': '60%',
         }}
-        maxWidth="1200px" // Max width of the Box
+        maxWidth="1200px"
         mx="auto"
         mt={8}
         bg="white"
         boxShadow="md"
         borderRadius="md"
+        borderWidth={1}
       >
-        <MyProjectNavbar />
+        {/* <MyProjectNavbar /> */}
         <Box
-          display={{
-            base: 'flex',
-            xl: 'flex',
-            md: 'flex',
-            sm: 'grid',
-          }}
-          justifyContent={{ base: 'center', md: 'space-between', sm: 'center' }}
-          alignItems="center"
+          display="flex"
+          flexDirection="column"
+          alignItems="flex-start"
           p={6}
           bg="white"
-          boxShadow="lg"
+          boxShadow="base"
           borderRadius="md"
           mb={6}
-          textAlign="center"
         >
-          <Heading as="h2" size="2xl" color="orange.400">
+          <Button
+            as={ReactRouterLink}
+            to={route.myprojects()}
+            aria-label="Go back"
+            leftIcon={<ArrowBackIcon />}
+            size="sm"
+            borderRadius="full"
+            variant={'outline'}
+            colorScheme="orange"
+            _hover={{ bg: 'orange.600', color: 'white' }}
+            mb={4}
+          >
+            Back to my projects
+          </Button>
+
+          <Heading
+            as="h2"
+            size={{ base: 'xl', md: '2xl' }}
+            color="orange.500"
+            mb={4} // Margin below the title for spacing
+            textAlign={{ base: 'center', md: 'left' }}
+          >
             {project?.name}
           </Heading>
 
           <Box
-            textAlign={{ base: 'right', xl: 'right', sm: 'center' }}
-            p={{ base: '0', sm: '4' }}
+            display="flex" // Flexbox for dates
+            flexDirection={{ base: 'column', md: 'row' }} // Stack on mobile, side by side on desktop
+            textAlign={{ base: 'center', md: 'left' }} // Centered text on mobile
           >
-            <Text fontSize="lg" fontWeight="bold" color="gray.700" mb={2}>
+            <Text
+              fontSize={{ base: 'md', md: 'lg' }}
+              color="gray.700"
+              mb={{ base: 2, md: 0 }} // Margin bottom on mobile
+              mr={{ md: 4 }} // Margin right on desktop
+            >
               <Box as="span" mr={2} color="teal.500">
                 📅
               </Box>
               <strong>Start Date:</strong>{' '}
-              {new Date(project?.start_date).toLocaleDateString() || 'N/A'}
+              {new Date(project.start_date).toLocaleDateString() || 'N/A'}
             </Text>
 
-            <Text fontSize="lg" fontWeight="bold" color="gray.700">
+            <Text fontSize={{ base: 'md', md: 'lg' }} color="gray.700">
               <Box as="span" mr={2} color="red.500">
                 ⏳
               </Box>
               <strong>End Date:</strong>{' '}
-              {project?.end_date
-                ? new Date(project?.end_date).toLocaleDateString()
+              {project.end_date
+                ? new Date(project.end_date).toLocaleDateString()
                 : 'N/A'}
             </Text>
           </Box>
         </Box>
 
-        <Box p={6} bg="white" borderRadius="md" boxShadow="md">
+        <Box p={6} bg="white" borderRadius="md" boxShadow="base">
           <Text fontSize="lg" mb={4} color="2D3748" fontWeight="bold">
             <Box as="span" mr={2} color="orange.400">
               🏢
             </Box>
             <strong>Production Company:</strong>{' '}
-            {project?.production_company || 'N/A'}
+            {project.production_company || 'N/A'}
           </Text>
 
           <Text fontSize="md" mb={6} color="gray.700" fontStyle="italic">
-            {project?.description || 'No description available'}
+            {project.description || 'No description available'}
           </Text>
 
           <Box position="relative" padding="10">
@@ -144,23 +180,18 @@ export function MyProjectDetailPage() {
           </Box>
 
           <Box
-            display={{
-              base: 'flex',
-              xl: 'flex',
-              md: 'flex',
-              sm: 'grid',
-            }}
+            display="flex"
             justifyContent="center"
             mb={6}
             alignItems="center"
           >
-            <Box flex="1" mr={4} textAlign="center" p={{ base: '0', sm: '4' }}>
+            <Box flex="1" mr={4} textAlign="center" p={4}>
               <Text fontSize="md" color="gray.600" mb={2}>
                 <Box as="span" mr={2} color="green.500">
                   🗓️
                 </Box>
                 <strong>Created On:</strong>{' '}
-                {new Date(project?.create_date).toLocaleDateString()}
+                {new Date(project.create_date).toLocaleDateString()}
               </Text>
 
               <Text fontSize="md" color="gray.600">
@@ -168,7 +199,7 @@ export function MyProjectDetailPage() {
                   🧑‍💻
                 </Box>
                 <strong>Created By:</strong>{' '}
-                {project?.create_user_id || 'Unknown'}
+                {project.create_user_id || 'Unknown'}
               </Text>
             </Box>
             <Box textAlign="center" flex="1">
@@ -177,7 +208,7 @@ export function MyProjectDetailPage() {
                   ⏰
                 </Box>
                 <strong>Last Updated On:</strong>{' '}
-                {new Date(project?.last_update_date).toLocaleDateString()}
+                {new Date(project.last_update_date).toLocaleDateString()}
               </Text>
 
               <Text fontSize="md" color="gray.600">
@@ -185,7 +216,7 @@ export function MyProjectDetailPage() {
                   🖋️
                 </Box>
                 <strong>Last Updated By:</strong>{' '}
-                {project?.last_update_user_id || 'Unknown'}
+                {project.last_update_user_id || 'Unknown'}
               </Text>
             </Box>
           </Box>
@@ -199,17 +230,16 @@ export function MyProjectDetailPage() {
 
           <Text
             fontSize="md"
-            color={project?.is_active ? 'green.500' : 'red.500'}
+            color={project.is_active ? 'green.500' : 'red.500'}
             fontWeight="bold"
           >
             <Box as="span" mr={2}>
-              {project?.is_active ? '✅' : '❌'}
+              {project.is_active ? '✅' : '❌'}
             </Box>
-            <strong>Is Active:</strong> {project?.is_active ? 'Yes' : 'No'}
+            <strong>Is Active:</strong> {project.is_active ? 'Yes' : 'No'}
           </Text>
         </Box>
       </Box>
-
       <Footer />
     </Box>
   );

@@ -20,14 +20,13 @@ import { MOCKS, PORT } from '@backend/config';
 import { getConnection } from '@backend/db/db';
 import { EmptyResolver } from '@backend/graphql/modules/empty/emptyResolver';
 import { ProjectResolver } from '@backend/graphql/modules/project/projectResolver';
+import { ProjectUserResolver } from '@backend/graphql/modules/projectUser/projectUserResolver';
+import { PasswordResolver } from '@backend/graphql/modules/user/PasswordResolver';
 import { UserResolver } from '@backend/graphql/modules/user/userResolver';
 import { parseAndVerifyJWT } from '@backend/libs/jwt';
+import { sendMail } from '@backend/mailer/mailer';
 import { mockResolvers } from '@backend/mocks/mocks';
 import { CustomContext } from '@backend/types/types';
-
-import { ProjectUserResolver } from './graphql/modules/projectUser/projectUserResolver';
-import { PasswordResolver } from './graphql/modules/user/PasswordResolver';
-import { sendMail } from './mailer/mailer';
 
 const init = async () => {
   const app = express();

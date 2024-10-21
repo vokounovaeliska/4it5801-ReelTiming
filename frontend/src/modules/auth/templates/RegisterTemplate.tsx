@@ -1,4 +1,6 @@
-import { Box, Center, Link, Paragraph } from '@frontend/shared/design-system';
+import { route } from '@frontend/route';
+import { Box, Center, Paragraph } from '@frontend/shared/design-system';
+import { RouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
@@ -21,7 +23,6 @@ export function RegisterTemplate({
   error,
   onSubmit,
 }: RegisterProps) {
-  // todo - navbar and footer are imported - fix - add as local
   return (
     <Box
       display="flex"
@@ -37,23 +38,22 @@ export function RegisterTemplate({
         justifyContent="center"
         overflowY="auto"
         padding={{ base: '4', sm: '6', md: '8' }}
-        // maxWidth={{ base: '100%', sm: '80%', md: '60%' }}
-        mx="auto"
+        mx={{ base: '0', sm: 'auto' }}
         width="100%"
-        maxWidth="800px"
+        maxWidth={{ base: '100%', sm: '90%', md: '60%' }}
       >
-        <Box textAlign="center">
+        <Box textAlign="center" width="full">
           <RegisterForm
             isLoading={isLoading}
             errorMessage={error?.message}
             onSubmit={onSubmit}
           >
             <Center>
-              <Paragraph fontSize={{ base: 'xs', sm: 'md' }}>
+              <Paragraph fontSize={{ base: 's', sm: 'md' }}>
                 Already have an account?{' '}
-                <Link href="/auth/login" color="orange.500" fontWeight="bold">
+                <RouterLink p={2} to={route.login()} fontWeight={'bold'}>
                   Login
-                </Link>
+                </RouterLink>
               </Paragraph>
             </Center>
           </RegisterForm>
