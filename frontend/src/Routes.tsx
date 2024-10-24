@@ -11,11 +11,14 @@ import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 import { ForgotPasswordPage } from './modules/auth/pages/ForgotPasswordPage';
 import { NewPasswordPage } from './modules/auth/pages/NewPasswordPage';
 import AboutUsPage from './modules/contact/AboutUsPage';
+import { CrewListPage } from './modules/crewlist/pages/CrewListPage';
+import { EditProjectPage } from './modules/editproject/pages/EditProjectPage';
 import { CreateProjectPage } from './modules/myprojects/pages/CreateProjectPage';
+import { TimesheetPage } from './modules/timesheets/pages/TimesheetsPage';
 import { ToCPage } from './modules/toc/TocPage';
 import { route } from './route';
 
-export function Routes() {
+function Routes() {
   return (
     <RouterRoutes>
       <Route path={route.landingPage()} element={<HomePage />} />
@@ -29,6 +32,15 @@ export function Routes() {
       <Route path={route.newPassword()} element={<NewPasswordPage />} />
       <Route path={route.createProject()} element={<CreateProjectPage />} />
       <Route path={route.about()} element={<AboutUsPage />} />
+      <Route path={route.crewList(':projectId')} element={<CrewListPage />} />
+      <Route
+        path={route.timesheets(':projectId')}
+        element={<TimesheetPage />}
+      />
+      <Route
+        path={route.editprojectpage(':projectId')}
+        element={<EditProjectPage />}
+      />
       <Route
         path={route.projectDetail(':id')}
         element={<MyProjectDetailPage />}
@@ -36,3 +48,5 @@ export function Routes() {
     </RouterRoutes>
   );
 }
+
+export { Routes };
