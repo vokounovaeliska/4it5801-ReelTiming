@@ -56,6 +56,16 @@ export function CreateProjectPage() {
 
   const handleCreateProjectFormSubmit = useCallback(
     (variables: FormValues) => {
+      // console.log('formvariables', { startDate: variables.startDate });
+      // console.log('formvariables', { endDate: variables.endDate });
+      //debuging
+      if (!variables.startDate || !variables.endDate) {
+        console.error(
+          'Invalid date(s). Please enter valid start and end dates.',
+        );
+        return;
+      }
+
       createRequest({ variables });
     },
     [createRequest],

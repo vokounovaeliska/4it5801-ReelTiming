@@ -38,7 +38,7 @@ export function NotFoundPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar children={undefined} />
       <Box
         display="flex"
         alignItems="flex-start" // Align items to the top

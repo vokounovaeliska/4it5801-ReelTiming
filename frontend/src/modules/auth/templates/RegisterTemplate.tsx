@@ -30,7 +30,7 @@ export function RegisterTemplate({
       minHeight="100vh"
       bgColor={'gray.50'}
     >
-      <Navbar />
+      <Navbar children={undefined} />
       <Box
         flex="1"
         display="flex"

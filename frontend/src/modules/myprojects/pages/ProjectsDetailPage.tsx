@@ -10,14 +10,13 @@ import {
   Spinner,
   Text,
 } from '@chakra-ui/react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
 import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
-import UserNavbar from '@frontend/shared/navigation/components/navbar/UserNavbar';
 import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 
 import ProjectButtons from '../ProjectButtons';
@@ -43,6 +42,7 @@ const GET_PROJECT_DETAIL = gql`
 export function MyProjectDetailPage() {
   const auth = useAuth();
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
 
   const { data, loading, error } = useQuery(GET_PROJECT_DETAIL, {
     variables: { id },
@@ -60,6 +60,10 @@ export function MyProjectDetailPage() {
     return <NotFoundPage />;
   }
 
+  if (!id) {
+    return <NotFoundPage />;
+  }
+
   const project = data.project;
 
   return (
@@ -69,11 +73,35 @@ export function MyProjectDetailPage() {
       minHeight="100vh"
       bgColor="gray.50"
     >
-      <Navbar
-        children1={<UserNavbar />}
-        children2={<ProjectButtons />}
-        drawerChildren={<ProjectButtons />}
-      />
+      <Navbar>
+        <Button
+          as={ReactRouterLink}
+          to={route.myprojects()}
+          variant="ghost"
+          colorScheme="orange"
+          textColor="white"
+          aria-label="Button going to My Projects page"
+          bg={
+            location.pathname === route.myprojects()
+              ? 'orange.500'
+              : 'transparent'
+          }
+          color="white"
+          _hover={{
+            bg: 'orange.700',
+            color: 'white',
+            boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.2)',
+          }}
+          _active={{
+            bg: 'orange.500',
+            color: 'white',
+            boxShadow: 'inset 0 0 15px rgba(0, 0, 0, 0.3)',
+          }}
+        >
+          My Projects
+        </Button>
+        <ProjectButtons projectId={id} activePath={location.pathname} />
+      </Navbar>
       <Box
         flex="1"
         p={8}
@@ -92,7 +120,6 @@ export function MyProjectDetailPage() {
         borderRadius="md"
         borderWidth={1}
       >
-        {/* <MyProjectNavbar /> */}
         <Box
           display="flex"
           flexDirection="column"

@@ -2,12 +2,11 @@ import { Box, Divider, Heading, Text } from '@chakra-ui/react';
 
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
-import UserNavbar from '@frontend/shared/navigation/components/navbar/UserNavbar';
 
 export function ToCPage() {
   return (
     <Box>
-      <Navbar children1={<UserNavbar />} />
+      <Navbar children={undefined} />
       <Box
         display="flex"
         flexDirection="column"

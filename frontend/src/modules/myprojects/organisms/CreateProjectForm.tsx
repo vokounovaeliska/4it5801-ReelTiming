@@ -103,6 +103,7 @@ export function CreateProjectForm({
               autoComplete="on"
               autoCorrect="off"
               autoCapitalize="off"
+              isRequired
               mb={2}
             />
             <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>

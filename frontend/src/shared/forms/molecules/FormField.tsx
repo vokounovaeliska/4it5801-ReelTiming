@@ -5,6 +5,7 @@ import { Field, type FieldProps } from '@frontend/shared/design-system/';
 
 type BaseProps = Pick<FieldProps, 'id' | 'label' | 'isRequired'> & {
   name: string;
+  error?: string | null; // Add error prop here
 };
 
 export type FormFieldBaseProps<TInputProps> = BaseProps &
@@ -14,13 +15,18 @@ export type FormFieldProps = BaseProps & {
   children: (controller: ControllerRenderProps) => ReactNode;
 };
 
-export function FormField({ name, children, ...restProps }: FormFieldProps) {
+export function FormField({
+  name,
+  children,
+  error,
+  ...restProps
+}: FormFieldProps) {
   const controller = useController({ name });
 
-  const error = controller?.fieldState?.error?.message;
+  const fieldError = error || controller?.fieldState?.error?.message; // Use the error prop if provided
 
   return (
-    <Field error={error} {...restProps}>
+    <Field error={fieldError} {...restProps}>
       {children(controller.field)}
     </Field>
   );

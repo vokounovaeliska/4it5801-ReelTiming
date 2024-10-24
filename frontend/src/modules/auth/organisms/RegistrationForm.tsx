@@ -15,77 +15,46 @@ import {
   zod,
   zodResolver,
 } from '@frontend/shared/forms';
+import { PasswordInputField } from '@frontend/shared/forms/molecules/fields/PasswordInputField';
 import { RouterLink } from '@frontend/shared/navigation/atoms';
 
 const schema = zod
   .object({
-    email: zod
-      .string()
-      .email()
-      .min(1, { message: 'Email is required!' })
-      .email({
-        message:
-          'Invalid email format. It must be in the format example@domain.com',
-      }),
-    name: zod.string().min(1, { message: 'Name is required' }),
-    surname: zod.string().min(1, { message: 'Name is required' }),
+    email: zod.string().email(),
     password: zod
       .string()
-      .min(10, { message: 'Password must be at least 10 characters long ' })
-      .regex(/[a-z]/, {
-        message: 'Password must contain at least one lowercase letter',
-      })
-      .regex(/[A-Z]/, {
-        message: 'Password must contain at least one uppercase letter',
-      })
-      .regex(/[0-9]/, { message: 'Password must contain at least one number' }),
+      .min(8, 'Password must be at least 8 characters long'),
     passwordConfirmation: zod
       .string()
-      .min(10, { message: 'Password must be at least 10 characters long' }),
-    terms: zod.literal<boolean>(true, {
-      errorMap: () => ({ message: 'You must accept the terms and conditions' }),
-    }),
+      .min(8, 'Password confirmation must be at least 8 characters long'),
+    name: zod.string().min(1, 'Name is required'),
+    surname: zod.string().min(1, 'Surname is required'),
+    terms: zod
+      .boolean()
+      .refine(
+        (val) => val === true,
+        'You must accept the terms and conditions',
+      ),
   })
-  .superRefine((data, ctx) => {
-    if (data.password !== data.passwordConfirmation) {
-      ctx.addIssue({
-        code: zod.ZodIssueCode.custom,
-        path: ['passwordConfirmation'],
-        message: 'Passwords must match',
-      });
-    }
-    if (data.password && data.password.length < 10) {
-      ctx.addIssue({
-        code: zod.ZodIssueCode.custom,
-        path: ['password'],
-        message: 'Password is too short',
-      });
-    }
+  .refine((data) => data.password === data.passwordConfirmation, {
+    message: 'Passwords must match',
+    path: ['passwordConfirmation'],
   });
 
-type FormValues = zod.infer<typeof schema>;
-
-const initialValues: FormValues = {
+const initialValues = {
   email: '',
-  name: '',
-  surname: '',
   password: '',
   passwordConfirmation: '',
+  name: '',
+  surname: '',
   terms: false,
 };
 
 export type RegisterProps = {
-  children?: ReactNode;
   isLoading: boolean;
   errorMessage?: string;
-  onSubmit: (data: {
-    email: string;
-    password: string;
-    name: string;
-    surname: string;
-    passwordConfirmation: string;
-    // terms: boolean;
-  }) => void;
+  onSubmit: (data: typeof initialValues) => void;
+  children?: ReactNode;
 };
 
 export function RegisterForm({
@@ -103,7 +72,6 @@ export function RegisterForm({
       p={4}
     >
       <Box
-        // width={{ base: '90%', sm: '400px', md: '600px', xl: '800px' }} // Responsive width
         width={{ base: '100%', sm: '350px', md: '480px', lg: '700px' }}
         maxWidth="600px"
         pt={4}
@@ -169,19 +137,17 @@ export function RegisterForm({
               autoCorrect="off"
               autoCapitalize="off"
             />
-            <InputField
+            <PasswordInputField
               name="password"
               label="Password"
-              type="password"
               isRequired
               autoComplete="off"
               autoCorrect="off"
               autoCapitalize="off"
             />
-            <InputField
+            <PasswordInputField
               name="passwordConfirmation"
               label="Password Confirmation"
-              type="password"
               isRequired
               autoComplete="off"
               autoCorrect="off"
