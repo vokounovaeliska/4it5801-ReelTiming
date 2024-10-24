@@ -1,8 +1,9 @@
 import React from 'react';
-import { Box, Button, HStack, VStack } from '@chakra-ui/react';
+import { Box, Button, HStack } from '@chakra-ui/react';
 import { CiViewTimeline } from 'react-icons/ci';
 import { FaPeopleGroup } from 'react-icons/fa6';
 import { MdBuild, MdOutlineSummarize } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
 interface ProjectButtonsProps {
   activePath?: string;
@@ -13,6 +14,8 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
   projectId,
   activePath,
 }) => {
+  const navigate = useNavigate();
+
   const buttonStyle = {
     colorScheme: 'orange',
     variant: 'ghost',
@@ -34,50 +37,18 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
   const crewlistPath = `/projects/${projectId}/crewlist`;
   const editPath = `/projects/${projectId}/edit`;
 
-  return (
-    <Box pb={0} bg="white.100">
-      {/* Mobile buttons */}
-      <VStack spacing={4} display={{ base: 'flex', md: 'none' }} width="full">
-        <Button
-          {...buttonStyle}
-          width={'full'}
-          leftIcon={<MdOutlineSummarize />}
-          bg={activePath === dashboardPath ? 'orange.600' : 'transparent'}
-        >
-          Dashboard
-        </Button>
-        <Button
-          {...buttonStyle}
-          width={'full'}
-          leftIcon={<CiViewTimeline />}
-          bg={activePath === timesheetsPath ? 'orange.600' : 'transparent'}
-        >
-          Timesheets
-        </Button>
-        <Button
-          {...buttonStyle}
-          width={'full'}
-          leftIcon={<FaPeopleGroup />}
-          bg={activePath === crewlistPath ? 'orange.600' : 'transparent'}
-        >
-          Crewlist
-        </Button>
-        <Button
-          {...buttonStyle}
-          width={'full'}
-          leftIcon={<MdBuild />}
-          bg={activePath === editPath ? 'orange.600' : 'transparent'}
-        >
-          Edit
-        </Button>
-      </VStack>
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
 
-      {/* Desktop buttons */}
-      <HStack spacing={4} display={{ base: 'none', md: 'flex' }} width="full">
+  return (
+    <Box>
+      <HStack spacing={4}>
         <Button
           {...buttonStyle}
           leftIcon={<MdOutlineSummarize />}
           bg={activePath === dashboardPath ? 'orange.600' : 'transparent'}
+          onClick={() => handleNavigation(dashboardPath)}
         >
           Dashboard
         </Button>
@@ -85,6 +56,7 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
           {...buttonStyle}
           leftIcon={<CiViewTimeline />}
           bg={activePath === timesheetsPath ? 'orange.600' : 'transparent'}
+          onClick={() => handleNavigation(timesheetsPath)}
         >
           Timesheets
         </Button>
@@ -92,6 +64,7 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
           {...buttonStyle}
           leftIcon={<FaPeopleGroup />}
           bg={activePath === crewlistPath ? 'orange.600' : 'transparent'}
+          onClick={() => handleNavigation(crewlistPath)}
         >
           Crewlist
         </Button>
@@ -99,6 +72,7 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
           {...buttonStyle}
           leftIcon={<MdBuild />}
           bg={activePath === editPath ? 'orange.600' : 'transparent'}
+          onClick={() => handleNavigation(editPath)}
         >
           Edit
         </Button>

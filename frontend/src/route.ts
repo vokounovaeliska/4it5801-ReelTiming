@@ -11,4 +11,10 @@ export const route = {
   createProject: () => `/create-project`,
   about: () => `/about`,
   projectDetail: (id: string = ':id') => `/projects/${id}`,
+  crewList: (projectId: string = ':projectId') =>
+    `/projects/${projectId}/crewlist`,
+  timesheets: (projectId: string = ':projectId') =>
+    `/projects/${projectId}/timesheets`,
+  editprojectpage: (projectId: string = ':projectId') =>
+    `/projects/${projectId}/edit`,
 };
