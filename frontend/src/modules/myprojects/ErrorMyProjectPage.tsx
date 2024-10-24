@@ -18,7 +18,7 @@ const ErrorMyProjectPage: React.FC<ErrorMyProjectPageProps> = ({
 
   return (
     <>
-      <Navbar />
+      <Navbar children={undefined} />
       <Center minHeight="100vh" flexDirection="column">
         <Heading as="h3" size="lg" color="orange.500" mb={4}>
           Error fetching projects

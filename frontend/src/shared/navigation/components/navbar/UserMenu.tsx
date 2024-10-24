@@ -20,6 +20,10 @@ const UserMenu: React.FC = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <Menu>
       <MenuButton
@@ -31,12 +35,11 @@ const UserMenu: React.FC = () => {
         transition="all 0.2s"
         _hover={{ bg: 'orange.700' }}
         _expanded={{ bg: 'orange.700' }}
-        // _focus={{ boxShadow: 'outline' }}
       >
         <Flex align="center">
           <Avatar
-            src={user?.profileImageUrl || ''}
-            name={user?.name || 'Guest'}
+            src={user.profileImageUrl || ''}
+            name={user.name || 'Guest'}
             size="30px"
             boxSize={25}
             colorScheme="orange"
@@ -50,13 +53,12 @@ const UserMenu: React.FC = () => {
             mr={2}
             _hover={{ bg: 'orange.700', borderRadius: 'md', p: 1 }}
           >
-            {user?.name || 'Guest'}
+            {user.name}
           </Text>
           <ChevronDownIcon color="white" />
         </Flex>
       </MenuButton>
       <MenuList bg="orange.600" borderColor="orange.600" color="white">
-        {/*change when settings implemented */}
         <RouterLink to={route.myprojects()}>
           <MenuItem
             _hover={{ bg: 'orange.700' }}
@@ -66,7 +68,6 @@ const UserMenu: React.FC = () => {
             Settings
           </MenuItem>
         </RouterLink>
-        {/*change when options implemented */}
         <RouterLink to={route.myprojects()}>
           <MenuItem
             _hover={{ bg: 'orange.700' }}
@@ -82,7 +83,6 @@ const UserMenu: React.FC = () => {
             onClick={() => {
               signOut();
               navigate(route.login());
-              //   window.location.reload();
             }}
             _hover={{ bg: 'orange.700' }}
             bgColor={'orange.600'}

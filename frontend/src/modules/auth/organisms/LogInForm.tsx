@@ -9,6 +9,7 @@ import {
   Stack,
 } from '@frontend/shared/design-system';
 import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
+import { PasswordInputField } from '@frontend/shared/forms/molecules/fields/PasswordInputField';
 import { RouterLink } from '@frontend/shared/navigation/atoms';
 
 const schema = zod.object({
@@ -86,10 +87,9 @@ export function LogInForm({
               autoCapitalize="off"
               mb={2}
             />
-            <InputField
+            <PasswordInputField
               name="password"
               label="Password"
-              type="password"
               isRequired
               autoComplete="off"
               autoCorrect="off"

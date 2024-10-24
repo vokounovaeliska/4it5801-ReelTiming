@@ -4,7 +4,6 @@ import { gql } from '@frontend/gql';
 import { useAuth } from '@frontend/modules/auth';
 import { Box } from '@frontend/shared/design-system';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
-import UserNavbar from '@frontend/shared/navigation/components/navbar/UserNavbar';
 
 const EMPTY_QUERY = gql(/* GraphQL */ `
   query Quacks {
@@ -18,7 +17,7 @@ export function HelloPage() {
 
   return (
     <Box>
-      <Navbar children1={<UserNavbar />} />
+      <Navbar children={undefined} />
       <Box p="8">
         <Box>HelloWorld: {user ? user.name : '(not logged in)'}</Box>
         <Box pt="4">GraphQL query result:</Box>

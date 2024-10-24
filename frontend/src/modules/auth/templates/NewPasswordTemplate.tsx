@@ -22,7 +22,7 @@ export function NewPasswordTemplate({
 }: NewPasswordTemplateProps) {
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
-      <Navbar />
+      <Navbar children={undefined} />
       <Box
         flex="1"
         display="flex"

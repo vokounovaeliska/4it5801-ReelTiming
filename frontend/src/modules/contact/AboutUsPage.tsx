@@ -7,7 +7,7 @@ import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 const AboutUsPage = () => {
   return (
     <>
-      <Navbar />
+      <Navbar children={undefined} />
       <Box boxSize={{ base: '80px', md: '100px' }} mx="auto" py={30}>
         <Image src="/faviconlogo.png" alt="ReelTiming Logo" />
       </Box>

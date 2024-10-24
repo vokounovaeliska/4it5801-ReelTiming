@@ -1,6 +1,6 @@
-import { format } from 'date-fns';
-
-import { Input, type InputProps } from '@frontend/shared/design-system';
+import { useState } from 'react';
+import { Input, InputProps } from '@chakra-ui/react';
+import { format, isValid, parse } from 'date-fns';
 
 import { FormField, type FormFieldBaseProps } from '../FormField';
 
@@ -12,12 +12,26 @@ export function DateInputField({
   label,
   ...inputProps
 }: DateInputFieldProps) {
+  const [error, setError] = useState<string | null>(null);
+
+  const validateDate = (dateValue: string) => {
+    const parsedDate = parse(dateValue, 'yyyy-MM-dd', new Date());
+    if (!isValid(parsedDate)) {
+      setError('Invalid date. Please enter a valid date.');
+      return false;
+    } else {
+      setError(null);
+      return true;
+    }
+  };
+
   return (
     <FormField
       id={id}
       name={name}
       label={label}
       isRequired={inputProps.isRequired}
+      error={error}
     >
       {(field) => {
         const value = field.value ? format(field.value, 'yyyy-MM-dd') : '';
@@ -25,14 +39,22 @@ export function DateInputField({
         return (
           <Input
             borderWidth={1}
-            borderColor={'gray.400'}
+            borderColor={error ? 'red.500' : 'gray.400'}
             type="date"
             {...inputProps}
             {...field}
             value={value}
             onChange={(e) => {
               const dateValue = e.target.value;
-              field.onChange(dateValue ? new Date(dateValue) : null);
+              if (validateDate(dateValue)) {
+                field.onChange(dateValue ? new Date(dateValue) : null);
+              } else {
+                field.onChange(null);
+              }
+            }}
+            onBlur={(e) => {
+              const dateValue = e.target.value;
+              validateDate(dateValue);
             }}
           />
         );
