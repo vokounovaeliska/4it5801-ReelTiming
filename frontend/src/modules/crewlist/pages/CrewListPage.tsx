@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import {
   Box,
   Button,
@@ -21,25 +21,13 @@ import {
   useParams,
 } from 'react-router-dom';
 
+import { GET_PROJECT_DETAILS } from '@frontend/gql/queries/GetProjectDetails';
 import ProjectButtons from '@frontend/modules/myprojects/ProjectButtons';
 import { route } from '@frontend/route';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
 import { CrewListForm } from '../forms/CrewListForm';
-
-// Placeholder for the actual import
-// import { GET_PROJECT_DETAILS } from '@frontend/gql/queries/GetProjectDetails';
-
-const GET_PROJECT_DETAILS = gql`
-  query GetProjectDetails($id: String!) {
-    project(id: $id) {
-      id
-      name
-      description
-    }
-  }
-`;
 
 export function CrewListPage() {
   const { projectId } = useParams<{ projectId: string }>();

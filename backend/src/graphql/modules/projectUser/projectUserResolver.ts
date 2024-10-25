@@ -1,43 +1,93 @@
-import { and, eq } from 'drizzle-orm';
-import { GraphQLError } from 'graphql/error';
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import {
+  Arg,
+  Ctx,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
 
-import { project, project_user, user } from '@backend/db/schema';
-import { type CustomContext } from '@backend/types/types';
+import { RateService } from '@backend/graphql/modules/rate/rateService';
+import { Rate } from '@backend/graphql/modules/rate/rateType';
 
+import { CustomContext } from '../../../types/types';
+import { DepartmentService } from '../department/departmentService';
+import { Department } from '../department/departmentType';
+import { ProjectService } from '../project/projectService';
+import { Project } from '../project/projectType';
+import { UserService } from '../user/userService';
+import { User } from '../user/userType';
+
+import { ProjectUserService } from './projectUserService';
 import { ProjectUser, ProjectUserInput } from './projectUserType';
 
 @Resolver(() => ProjectUser)
 export class ProjectUserResolver {
+  @Query(() => [ProjectUser])
+  async project_users(@Ctx() { db }: CustomContext): Promise<ProjectUser[]> {
+    const projectUserService = new ProjectUserService(db);
+    return projectUserService.getAllProjectUsers();
+  }
+
   @Query(() => ProjectUser, { nullable: true })
   async projectUser(
     @Arg('id') id: string,
     @Ctx() { db }: CustomContext,
   ): Promise<ProjectUser | null> {
-    const projectUserRecord = await db
-      .select()
-      .from(project_user)
-      .where(eq(project_user.id, id));
-
-    if (projectUserRecord.length === 0) {
-      return null;
-    }
-
-    return projectUserRecord[0];
+    const projectUserService = new ProjectUserService(db);
+    return projectUserService.getProjectUserById(id);
   }
 
   @Query(() => [ProjectUser])
-  async project_users(@Ctx() { db }: CustomContext): Promise<ProjectUser[]> {
-    const projects = await db
-      .select()
-      .from(project_user)
-      .orderBy(project_user.create_date);
+  async projectUsers(
+    @Arg('projectId') projectId: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<ProjectUser[]> {
+    const projectUserService = new ProjectUserService(db);
+    return projectUserService.getProjectUsersByProjectId(projectId);
+  }
 
-    return projects.map((proj_user) => ({
-      ...proj_user,
-      create_date: new Date(proj_user.create_date),
-      is_active: !!proj_user.is_active,
-    }));
+  @FieldResolver(() => Project)
+  async project(
+    @Root() projectUser: ProjectUser,
+    @Ctx() { db }: CustomContext,
+  ): Promise<Project | null> {
+    const projectService = new ProjectService(db);
+    return projectService.getProjectById(projectUser.project_id);
+  }
+
+  @FieldResolver(() => User)
+  async user(
+    @Root() projectUser: ProjectUser,
+    @Ctx() { db }: CustomContext,
+  ): Promise<User | null> {
+    const userService = new UserService(db);
+    return userService.getUserById(projectUser.user_id);
+  }
+
+  @FieldResolver(() => Rate, { nullable: true })
+  async rate(
+    @Root() projectUser: ProjectUser,
+    @Ctx() { db }: CustomContext,
+  ): Promise<Rate | null> {
+    const rateService = new RateService(db);
+    if (projectUser.rate_id) {
+      return rateService.getRateById(projectUser.rate_id);
+    }
+    return null;
+  }
+
+  @FieldResolver(() => Department, { nullable: true })
+  async department(
+    @Root() projectUser: ProjectUser,
+    @Ctx() { db }: CustomContext,
+  ): Promise<Department | null> {
+    const departmentService = new DepartmentService(db);
+    if (projectUser.department_id) {
+      return departmentService.getDepartmentById(projectUser.department_id);
+    }
+    return null;
   }
 
   @Mutation(() => ProjectUser)
@@ -47,74 +97,30 @@ export class ProjectUserResolver {
     @Arg('isTeamLeader', { nullable: true, defaultValue: false })
     isTeamLeader: boolean,
     @Arg('rateId', () => String, { nullable: true, defaultValue: null })
-    rateId: string,
+    rateId: string | null,
+    @Arg('departmentId', () => String, { nullable: true, defaultValue: null })
+    departmentId: string | null,
+    @Arg('role', () => String, { nullable: true, defaultValue: null })
+    role: string | null,
+    @Arg('invitation', () => String, { nullable: true, defaultValue: null })
+    invitation: string | null,
+    @Arg('phone_number', () => String, { nullable: true, defaultValue: null })
+    phone_number: string | null,
     @Ctx() { db }: CustomContext,
   ): Promise<ProjectUser> {
-    // check project
-    const projectObject = await db
-      .select()
-      .from(project)
-      .where(eq(project.id, projectId));
+    const projectUserService = new ProjectUserService(db);
 
-    if (projectObject.length === 0) {
-      throw new GraphQLError('Project not found');
-    }
-
-    // check user
-    const userObject = await db.select().from(user).where(eq(user.id, userId));
-
-    if (userObject.length === 0) {
-      throw new GraphQLError('Project not found');
-    }
-
-    // check if the user is already assigned to project
-    const projectUserObject = await db
-      .select()
-      .from(project_user)
-      .where(
-        and(
-          eq(project_user.user_id, userId),
-          eq(project_user.project_id, projectId),
-        ),
-      );
-
-    if (projectUserObject.length !== 0) {
-      throw new GraphQLError('User already assigned to project');
-    }
-
-    const createdAt: Date = new Date();
-
-    const newProjectUser = await db
-      .insert(project_user)
-      .values({
-        project_id: projectId,
-        user_id: userId,
-        is_team_leader: isTeamLeader,
-        rate_id: rateId,
-        create_date: createdAt,
-        create_user_id: 'user-id', // Replace with actual user ID
-        last_update_user_id: 'user-id', // Replace with actual user ID
-        last_update_date: createdAt,
-      })
-      .$returningId();
-
-    const id = newProjectUser[0].id;
-    const result = await db
-      .select()
-      .from(project_user)
-      .where(eq(project_user.id, id));
-
-    if (result.length === 0) {
-      throw new GraphQLError('ProjectUser not found');
-    }
-
-    const projUser = result[0];
-
-    return {
-      ...projUser,
-      create_date: new Date(projUser.create_date),
-      is_active: !!projUser.is_active,
-    } as ProjectUser;
+    const data: ProjectUserInput = {
+      project_id: projectId,
+      user_id: userId,
+      is_team_leader: isTeamLeader,
+      rate_id: rateId,
+      department_id: departmentId,
+      role: role,
+      invitation: invitation,
+      phone_number: phone_number,
+    };
+    return projectUserService.createProjectUser(data);
   }
 
   @Mutation(() => Boolean)
@@ -122,8 +128,8 @@ export class ProjectUserResolver {
     @Arg('projectUserId') id: string,
     @Ctx() { db }: CustomContext,
   ): Promise<boolean> {
-    await db.delete(project_user).where(eq(project_user.id, id));
-    return true;
+    const projectUserService = new ProjectUserService(db);
+    return projectUserService.deleteProjectUser(id);
   }
 
   @Mutation(() => ProjectUser)
@@ -132,34 +138,17 @@ export class ProjectUserResolver {
     @Arg('data') data: ProjectUserInput,
     @Ctx() { db }: CustomContext,
   ): Promise<ProjectUser | null> {
-    const projectUserObject = await db
-      .select()
-      .from(project_user)
-      .where(eq(project_user.id, id));
+    const projectUserService = new ProjectUserService(db);
+    return projectUserService.updateProjectUser(id, data);
+  }
 
-    if (projectUserObject.length === 0) {
-      return null;
-    }
-
-    const cleanData = Object.fromEntries(
-      Object.entries(data).filter(([_, v]) => v !== undefined),
-    );
-    const is_active: boolean = cleanData.is_active
-      ? cleanData.is_active
-      : projectUserObject[0].is_active;
-
-    const updatedProjectUser = {
-      ...projectUserObject[0],
-      ...cleanData,
-      last_update_date: new Date(),
-      is_active,
-    };
-
-    await db
-      .update(project_user)
-      .set(updatedProjectUser)
-      .where(eq(project_user.id, id));
-
-    return updatedProjectUser;
+  @Query(() => Boolean)
+  async isUserAdminInProject(
+    @Arg('userId') uderId: string,
+    @Arg('projectId') projectId: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<boolean> {
+    const projectUserService = new ProjectUserService(db);
+    return projectUserService.isUserAdminInProject(uderId, projectId);
   }
 }

@@ -5,26 +5,19 @@ export class ProjectUser {
   @Field(() => ID)
   id!: string;
 
-  @Field(() => String)
   project_id!: string;
 
-  @Field(() => String)
   user_id!: string;
 
-  @Field(() => String, { nullable: true })
-  group_id?: string | null;
+  department_id?: string | null;
 
   @Field(() => String, { nullable: true })
   position?: string | null;
 
-  @Field(() => String, { nullable: true })
   rate_id?: string | null = null;
 
   @Field(() => Number, { nullable: true })
   number_of_people?: number | null;
-
-  @Field(() => String, { nullable: true })
-  car_numberplate?: string | null;
 
   @Field(() => Boolean)
   is_team_leader: boolean = false;
@@ -42,13 +35,28 @@ export class ProjectUser {
   last_update_date: Date | undefined;
 
   @Field(() => Boolean)
-  is_active: boolean = true;
+  is_active: boolean | undefined;
+
+  @Field(() => String, { nullable: true })
+  role?: string | null;
+
+  @Field(() => String, { nullable: true })
+  invitation?: string | null;
+
+  @Field(() => String, { nullable: true })
+  phone_number?: string | null;
 }
 
 @InputType()
 export class ProjectUserInput {
+  @Field(() => String)
+  project_id!: string;
+
+  @Field(() => String)
+  user_id!: string;
+
   @Field(() => String, { nullable: true })
-  group_id?: string | null;
+  department_id?: string | null;
 
   @Field(() => String, { nullable: true })
   position?: string | null;
@@ -59,12 +67,18 @@ export class ProjectUserInput {
   @Field(() => Number, { nullable: true })
   number_of_people?: number | null;
 
-  @Field(() => String, { nullable: true })
-  car_numberplate?: string | null;
-
-  @Field(() => Boolean, { nullable: true })
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
   is_team_leader?: boolean;
 
   @Field(() => Boolean, { nullable: true })
   is_active?: boolean;
+
+  @Field(() => String, { nullable: true })
+  role?: string | null;
+
+  @Field(() => String, { nullable: true })
+  invitation?: string | null;
+
+  @Field(() => String, { nullable: true })
+  phone_number?: string | null;
 }

@@ -1,15 +1,10 @@
 import { useQuery } from '@apollo/client';
 
-import { gql } from '@frontend/gql';
 import { useAuth } from '@frontend/modules/auth';
 import { Box } from '@frontend/shared/design-system';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
-const EMPTY_QUERY = gql(/* GraphQL */ `
-  query Quacks {
-    _empty
-  }
-`);
+import { EMPTY_QUERY } from '../../../gql/queries/EmptyQuery';
 
 export function HelloPage() {
   const { user } = useAuth();
