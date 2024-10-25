@@ -1,9 +1,10 @@
 import { Db } from '@backend/types/types';
-
 import { getProjectUserRepository } from './projectUserRepository';
 import { ProjectUser, ProjectUserInput } from './projectUserType';
+import { Project } from '../project/projectType';
 
 const ADMIN = 'ADMIN';
+
 export class ProjectUserService {
   private projectUserRepository: ReturnType<typeof getProjectUserRepository>;
 
@@ -28,7 +29,6 @@ export class ProjectUserService {
     if (!projectUser) {
       return null;
     }
-
     return projectUser;
   }
 
@@ -95,5 +95,21 @@ export class ProjectUserService {
     } else {
       return false;
     }
+  }
+
+  async getProjectsByUserId(userId: string): Promise<Project[]> {
+    const projectRecords =
+      await this.projectUserRepository.getProjectsByUserId(userId);
+    return projectRecords.map((record) => ({
+      ...record.project,
+      create_date: new Date(record.project.create_date),
+      start_date: record.project.start_date
+        ? new Date(record.project.start_date)
+        : null,
+      end_date: record.project.end_date
+        ? new Date(record.project.end_date)
+        : null,
+      is_active: !!record.project.is_active,
+    }));
   }
 }

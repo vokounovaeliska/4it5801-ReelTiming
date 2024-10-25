@@ -7,7 +7,7 @@ import { useAuth } from '@frontend/modules/auth';
 import { MyProjectsTemplate } from '@frontend/modules/auth/templates/MyProjectsTemplate';
 import { route } from '@frontend/route';
 
-import { GET_PROJECTS } from '../../gql/queries/GetProjects';
+import { GET_USER_PROJECTS } from '../../gql/queries/GetUserProjects';
 
 import ErrorMyProjectPage from './ErrorMyProjectPage';
 
@@ -15,7 +15,9 @@ export function MyProjectsPage() {
   const auth = useAuth();
   const navigate = useNavigate();
 
-  const { data, loading, error, refetch } = useQuery(GET_PROJECTS);
+  const { data, loading, error, refetch } = useQuery(GET_USER_PROJECTS, {
+    variables: { userId: auth.user?.id },
+  });
 
   useEffect(() => {
     if (!auth.user) {
@@ -39,7 +41,7 @@ export function MyProjectsPage() {
   }
 
   const projects =
-    data?.projects?.map(
+    data?.userProjects?.map(
       (project: { id: string; name: string; description: string }) => ({
         id: project.id,
         name: project.name,

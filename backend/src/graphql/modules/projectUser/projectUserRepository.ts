@@ -1,6 +1,5 @@
 import { and, eq } from 'drizzle-orm';
-
-import { project_user } from '@backend/db/schema';
+import { project, project_user } from '@backend/db/schema';
 import { type Db } from '@backend/types/types';
 
 export function getProjectUserRepository(db: Db) {
@@ -70,8 +69,14 @@ export function getProjectUserRepository(db: Db) {
             eq(project_user.project_id, projectId),
           ),
         );
-
       return projectUserRecord.length > 0 ? projectUserRecord[0] : null;
+    },
+    async getProjectsByUserId(userId: string) {
+      return db
+        .select()
+        .from(project)
+        .innerJoin(project_user, eq(project.id, project_user.project_id))
+        .where(eq(project_user.user_id, userId));
     },
   };
 }
