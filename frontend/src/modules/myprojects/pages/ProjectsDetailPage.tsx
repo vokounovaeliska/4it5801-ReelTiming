@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import {
   AbsoluteCenter,
@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useLocation, useParams } from 'react-router-dom';
 
+import { GET_PROJECT_DETAILS } from '@frontend/gql/queries/GetProjectDetails';
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
 import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
@@ -21,30 +22,12 @@ import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 
 import ProjectButtons from '../ProjectButtons';
 
-const GET_PROJECT_DETAIL = gql`
-  query GetProjectDetail($id: String!) {
-    project(id: $id) {
-      id
-      name
-      description
-      production_company
-      start_date
-      end_date
-      create_date
-      create_user_id
-      last_update_date
-      last_update_user_id
-      is_active
-    }
-  }
-`;
-
 export function MyProjectDetailPage() {
   const auth = useAuth();
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
 
-  const { data, loading, error } = useQuery(GET_PROJECT_DETAIL, {
+  const { data, loading, error } = useQuery(GET_PROJECT_DETAILS, {
     variables: { id },
   });
 

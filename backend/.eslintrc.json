@@ -2,8 +2,18 @@
   "extends": ["../.eslintrc.cjs"],
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx"],
-      "rules": {}
+      "files": ["*.ts"],
+      "rules": {
+        "react/no-is-mounted": "off",
+        "@typescript-eslint/no-explicit-any": "warn"
+      }
+    },
+    {
+      "files": ["*.tsx"],
+      "rules": {
+        "react/no-is-mounted": "error",
+        "@typescript-eslint/no-explicit-any": "warn"
+      }
     }
   ]
 }

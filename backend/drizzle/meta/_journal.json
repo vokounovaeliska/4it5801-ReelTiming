@@ -15,6 +15,20 @@
       "when": 1729320581517,
       "tag": "0001_cool_lord_tyger",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1729777255014,
+      "tag": "0002_third_sasquatch",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1729789103525,
+      "tag": "0003_bitter_clint_barton",
+      "breakpoints": true
     }
   ]
 }

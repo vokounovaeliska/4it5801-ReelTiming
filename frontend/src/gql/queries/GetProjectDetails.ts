@@ -1,13 +1,15 @@
 import { gql } from '@apollo/client';
 
-// todo figure out a way to use this -looks better
+import { PROJECT_BASIC_INFO } from './fragments';
 
 export const GET_PROJECT_DETAILS = gql`
-  query GetProjectDetails($id: String!) {
+  query GetProjectDetail($id: String!) {
     project(id: $id) {
-      id
-      name
-      description
+      ...ProjectBasicInfo
+      start_date
+      end_date
+      production_company
     }
   }
+  ${PROJECT_BASIC_INFO}
 `;

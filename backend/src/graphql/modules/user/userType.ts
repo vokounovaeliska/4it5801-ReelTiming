@@ -14,12 +14,6 @@ export class User {
   @Field(() => String)
   email!: string;
 
-  @Field(() => String, { nullable: true })
-  app_role_id?: string | null;
-
-  @Field(() => String, { nullable: true })
-  phone_number?: string | null;
-
   @Field(() => Date)
   create_date!: Date | undefined;
 
@@ -58,12 +52,6 @@ export class UserInput {
 
   @Field(() => String, { nullable: true })
   email?: string;
-
-  @Field(() => String, { nullable: true })
-  app_role_id?: string | null;
-
-  @Field(() => String, { nullable: true })
-  phone_number?: string | null;
 
   @Field(() => Date, { nullable: true })
   create_date?: Date;

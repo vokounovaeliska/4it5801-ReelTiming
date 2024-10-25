@@ -1,7 +1,8 @@
-// ErrorPage.tsx
 import React from 'react';
 import { Button, Center, Heading, Text } from '@chakra-ui/react';
 
+import { route } from '@frontend/route';
+import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
@@ -28,7 +29,14 @@ const ErrorMyProjectPage: React.FC<ErrorMyProjectPageProps> = ({
             ? 'It seems there is an issue with the database connection. Please check your connection or try again later.'
             : `Error: ${errorMessage}`}
         </Text>
-        <Button mt={4} onClick={onRetry} colorScheme="orange">
+        <Button
+          as={ReactRouterLink}
+          to={route.myprojects()}
+          mt={4}
+          onClick={onRetry}
+          colorScheme="orange"
+          bg={'orange.500'}
+        >
           Retry
         </Button>
       </Center>

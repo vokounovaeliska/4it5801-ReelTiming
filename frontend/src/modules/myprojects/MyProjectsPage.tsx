@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { Center, Spinner, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,17 +7,9 @@ import { useAuth } from '@frontend/modules/auth';
 import { MyProjectsTemplate } from '@frontend/modules/auth/templates/MyProjectsTemplate';
 import { route } from '@frontend/route';
 
-import ErrorMyProjectPage from './ErrorMyProjectPage';
+import { GET_PROJECTS } from '../../gql/queries/GetProjects';
 
-const GET_PROJECTS = gql`
-  query GetProjects {
-    projects {
-      id
-      name
-      description
-    }
-  }
-`;
+import ErrorMyProjectPage from './ErrorMyProjectPage';
 
 export function MyProjectsPage() {
   const auth = useAuth();

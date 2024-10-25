@@ -9,7 +9,6 @@ module.exports = {
       files: ['*.ts', '*.tsx'],
       rules: {
         '@typescript-eslint/no-explicit-any': 'warn',
-        // '@typescript-eslint/explicit-function-return-type': 'warn',
         '@typescript-eslint/no-unused-vars': [
           'warn',
           { argsIgnorePattern: '^_' },
@@ -17,8 +16,9 @@ module.exports = {
       },
     },
     {
-      files: ['*.ts', '*.tsx', '*.js', '*.jsx'],
+      files: ['*.jsx', '*.tsx'],
       rules: {
+        'react/no-is-mounted': 'warn',
         'simple-import-sort/imports': [
           'error',
           {
@@ -26,12 +26,10 @@ module.exports = {
               // Side effect imports.
               ['^\\u0000'],
               // Packages.
-              // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
               ['^(react|react-dom)(/.*|$)', '^(next)(/.*|$)', '^@?\\w'],
               // Project scope shared packages
               ['^(@(backend|frontend|shared))(/.*|$)'],
               // Absolute imports and other imports such as Vue-style `@/foo`.
-              // Anything not matched in another group.
               ['^'],
               // Parent imports. Put `..` last.
               ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
@@ -50,9 +48,8 @@ module.exports = {
           'warn',
           { allowConstantExport: true },
         ],
-        'react/no-unused-prop-types': 'warn', // warn if props never user
-        'react/no-unused-state': 'warn', // warn if vars never used
-        // 'react/jsx-equals-spacing': ['error', 'never'] // no space around =
+        'react/no-unused-prop-types': 'warn',
+        'react/no-unused-state': 'warn',
       },
     },
   ],

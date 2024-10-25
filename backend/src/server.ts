@@ -10,7 +10,6 @@ import {
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { addMocksToSchema } from '@graphql-tools/mock';
 import cors from 'cors';
-import { MySql2Database } from 'drizzle-orm/mysql2';
 import express from 'express';
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 import * as http from 'http';
@@ -19,14 +18,20 @@ import { buildSchema } from 'type-graphql';
 import { MOCKS, PORT } from '@backend/config';
 import { getConnection } from '@backend/db/db';
 import { EmptyResolver } from '@backend/graphql/modules/empty/emptyResolver';
+import { getProjectRepository } from '@backend/graphql/modules/project/projectRepository';
 import { ProjectResolver } from '@backend/graphql/modules/project/projectResolver';
 import { ProjectUserResolver } from '@backend/graphql/modules/projectUser/projectUserResolver';
 import { PasswordResolver } from '@backend/graphql/modules/user/PasswordResolver';
+import { getUserRepository } from '@backend/graphql/modules/user/userRepository';
 import { UserResolver } from '@backend/graphql/modules/user/userResolver';
 import { parseAndVerifyJWT } from '@backend/libs/jwt';
 import { sendMail } from '@backend/mailer/mailer';
 import { mockResolvers } from '@backend/mocks/mocks';
 import { CustomContext } from '@backend/types/types';
+
+import { DepartmentResolver } from './graphql/modules/department/departamentResolver';
+import { getProjectUserRepository } from './graphql/modules/projectUser/projectUserRepository';
+import { RateResolver } from './graphql/modules/rate/rateResolver';
 
 const init = async () => {
   const app = express();
@@ -40,6 +45,8 @@ const init = async () => {
       ProjectResolver,
       ProjectUserResolver,
       PasswordResolver,
+      RateResolver,
+      DepartmentResolver,
     ],
     emitSchemaFile: true,
   });
@@ -60,7 +67,7 @@ const init = async () => {
     req,
     res,
   }: ExpressContextFunctionArgument): Promise<CustomContext> => {
-    const drizzle = MOCKS ? null : await getConnection();
+    const drizzle = await getConnection();
     const authToken = req.headers.authorization ?? '';
     const authUser = parseAndVerifyJWT(authToken);
 
@@ -69,8 +76,11 @@ const init = async () => {
     });
 
     return {
-      db: drizzle?.db as unknown as MySql2Database,
+      db: drizzle.db,
       authUser,
+      userRepository: getUserRepository(drizzle.db),
+      projectRepository: getProjectRepository(drizzle.db),
+      projectUserRepository: getProjectUserRepository(drizzle.db),
     };
   };
 
