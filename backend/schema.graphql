@@ -98,6 +98,7 @@ type Query {
   rates: [Rate!]!
   user(id: String!): User
   userProjects(userId: String!): [Project!]!
+  userRoleInProject(projectId: String!, userId: String!): String
   users: [User!]!
 }
 

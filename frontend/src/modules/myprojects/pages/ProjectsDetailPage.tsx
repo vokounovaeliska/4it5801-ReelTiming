@@ -12,7 +12,6 @@ import {
 } from '@chakra-ui/react';
 import { useLocation, useParams } from 'react-router-dom';
 
-import { GET_PROJECT_DETAILS } from '@frontend/gql/queries/GetProjectDetails';
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
 import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
@@ -20,18 +19,27 @@ import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 
+import { GET_PROJECT_DETAILS } from '../../../gql/queries/GetProjectDetails';
+import { GET_USER_ROLE_IN_PROJECT } from '../../../gql/queries/GetUserRoleInProject';
 import ProjectButtons from '../ProjectButtons';
 
 export function MyProjectDetailPage() {
   const auth = useAuth();
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
-
   const { data, loading, error } = useQuery(GET_PROJECT_DETAILS, {
     variables: { id },
   });
+  const {
+    data: roleData,
+    loading: roleLoading,
+    error: roleError,
+  } = useQuery(GET_USER_ROLE_IN_PROJECT, {
+    skip: !auth.user,
+    variables: { userId: auth.user?.id, projectId: id },
+  });
 
-  if (loading) {
+  if (loading || roleLoading) {
     return (
       <Center minHeight="100vh">
         <Spinner size="xl" color="orange.500" />
@@ -39,7 +47,13 @@ export function MyProjectDetailPage() {
     );
   }
 
-  if (error || !auth.user || !data?.project) {
+  if (
+    error ||
+    roleError ||
+    !auth.user ||
+    !data?.project ||
+    !roleData?.userRoleInProject
+  ) {
     return <NotFoundPage />;
   }
 
@@ -48,6 +62,7 @@ export function MyProjectDetailPage() {
   }
 
   const project = data.project;
+  const userRole = roleData.userRoleInProject;
 
   return (
     <Box
@@ -83,7 +98,11 @@ export function MyProjectDetailPage() {
         >
           My Projects
         </Button>
-        <ProjectButtons projectId={id} activePath={location.pathname} />
+        <ProjectButtons
+          projectId={id}
+          activePath={location.pathname}
+          userRole={userRole}
+        />
       </Navbar>
       <Box
         flex="1"
@@ -127,7 +146,6 @@ export function MyProjectDetailPage() {
           >
             Back to my projects
           </Button>
-
           <Heading
             as="h2"
             size={{ base: 'xl', md: '2xl' }}
@@ -137,37 +155,16 @@ export function MyProjectDetailPage() {
           >
             {project?.name}
           </Heading>
-
           <Box
             display="flex"
             flexDirection={{ base: 'column', md: 'row' }}
             textAlign={{ base: 'center', md: 'left' }}
           >
-            <Text
-              fontSize={{ base: 'md', md: 'lg' }}
-              color="gray.700"
-              mb={{ base: 2, md: 0 }}
-              mr={{ md: 4 }}
-            >
-              <Box as="span" mr={2} color="teal.500">
-                📅
-              </Box>
-              <strong>Start Date:</strong>{' '}
-              {new Date(project.start_date).toLocaleDateString() || 'N/A'}
-            </Text>
-
-            <Text fontSize={{ base: 'md', md: 'lg' }} color="gray.700">
-              <Box as="span" mr={2} color="red.500">
-                ⏳
-              </Box>
-              <strong>End Date:</strong>{' '}
-              {project.end_date
-                ? new Date(project.end_date).toLocaleDateString()
-                : 'N/A'}
+            <Text fontSize={{ base: 'md', md: 'lg' }}>
+              {project?.description}
             </Text>
           </Box>
         </Box>
-
         <Box p={6} bg="white" borderRadius="md" boxShadow="xs">
           <Text fontSize="lg" mb={4} color="2D3748" fontWeight="bold">
             <Box as="span" mr={2} color="orange.400">
@@ -176,18 +173,15 @@ export function MyProjectDetailPage() {
             <strong>Production Company:</strong>{' '}
             {project.production_company || 'N/A'}
           </Text>
-
           <Text fontSize="md" mb={6} color="gray.700" fontStyle="italic">
             {project.description || 'No description available'}
           </Text>
-
           <Box position="relative" padding="10">
             <Divider />
             <AbsoluteCenter bg="white" px="4">
               Origin
             </AbsoluteCenter>
           </Box>
-
           <Box
             display="flex"
             justifyContent="center"
@@ -202,7 +196,6 @@ export function MyProjectDetailPage() {
                 <strong>Created On:</strong>{' '}
                 {new Date(project.create_date).toLocaleDateString()}
               </Text>
-
               <Text fontSize="md" color="gray.600">
                 <Box as="span" mr={2} color="blue.500">
                   🧑‍💻
@@ -219,7 +212,6 @@ export function MyProjectDetailPage() {
                 <strong>Last Updated On:</strong>{' '}
                 {new Date(project.last_update_date).toLocaleDateString()}
               </Text>
-
               <Text fontSize="md" color="gray.600">
                 <Box as="span" mr={2} color="purple.500">
                   🖋️
@@ -229,14 +221,12 @@ export function MyProjectDetailPage() {
               </Text>
             </Box>
           </Box>
-
           <Box position="relative" padding="10">
             <Divider />
             <AbsoluteCenter bg="white" px="4">
               Status
             </AbsoluteCenter>
           </Box>
-
           <Text
             fontSize="md"
             color={project.is_active ? 'green.500' : 'red.500'}

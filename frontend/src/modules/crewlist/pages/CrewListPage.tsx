@@ -94,7 +94,11 @@ export function CrewListPage() {
         >
           My Projects
         </Button>
-        <ProjectButtons projectId={projectId!} activePath={location.pathname} />
+        <ProjectButtons
+          projectId={projectId!}
+          activePath={location.pathname}
+          userRole="ADMIN"
+        />
       </Navbar>
       <Box flex="1" p={4} width="100%" maxWidth="1200px" mx="auto">
         <Heading mb={4} textAlign="center">

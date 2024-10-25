@@ -70,7 +70,11 @@ export function TimesheetPage() {
         >
           My Projects
         </Button>
-        <ProjectButtons projectId={projectId!} activePath={location.pathname} />
+        <ProjectButtons
+          projectId={projectId!}
+          activePath={location.pathname}
+          userRole="ADMIN" // TODO: get user role from auth context - might need it in the future ??? issue of whoever does timesheets :)
+        />
       </Navbar>
       <Box flex="1" p={4} width="100%" maxWidth="1200px" mx="auto">
         <Heading mb={4} textAlign="center">

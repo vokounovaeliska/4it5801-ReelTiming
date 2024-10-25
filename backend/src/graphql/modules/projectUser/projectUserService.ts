@@ -112,4 +112,15 @@ export class ProjectUserService {
       is_active: !!record.project.is_active,
     }));
   }
+  async getUserRoleInProject(
+    userId: string,
+    projectId: string,
+  ): Promise<string | null> {
+    const projectUser =
+      await this.projectUserRepository.getProjectUserByUserIdAndProjectId(
+        userId,
+        projectId,
+      );
+    return projectUser ? projectUser.role : null;
+  }
 }

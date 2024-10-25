@@ -127,4 +127,13 @@ export class ProjectUserResolver {
     const projectUserService = new ProjectUserService(db);
     return projectUserService.getProjectsByUserId(userId);
   }
+  @Query(() => String, { nullable: true })
+  async userRoleInProject(
+    @Arg('userId') userId: string,
+    @Arg('projectId') projectId: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<string | null> {
+    const projectUserService = new ProjectUserService(db);
+    return projectUserService.getUserRoleInProject(userId, projectId);
+  }
 }
