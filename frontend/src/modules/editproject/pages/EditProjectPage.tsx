@@ -4,23 +4,39 @@ import { Box, Button, Center, Heading, Spinner, Text } from '@chakra-ui/react';
 import {
   Link as ReactRouterLink,
   useLocation,
+  useNavigate,
   useParams,
 } from 'react-router-dom';
 
-import { GET_PROJECT_DETAILS } from '@frontend/gql/queries/GetProjectDetails';
+import { useAuth } from '@frontend/modules/auth';
 import ProjectButtons from '@frontend/modules/myprojects/ProjectButtons';
 import { route } from '@frontend/route';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
+// import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
+import { GET_PROJECT_DETAILS } from '../../../gql/queries/GetProjectDetails';
+import { GET_USER_ROLE_IN_PROJECT } from '../../../gql/queries/GetUserRoleInProject';
+import { EditProjectForm } from '../forms/EditProjectForm';
+
 export function EditProjectPage() {
+  const auth = useAuth();
   const { projectId } = useParams<{ projectId: string }>();
   const location = useLocation();
+  const navigate = useNavigate();
   const { data, loading, error } = useQuery(GET_PROJECT_DETAILS, {
     variables: { id: projectId },
   });
+  const {
+    data: roleData,
+    loading: roleLoading,
+    error: roleError,
+  } = useQuery(GET_USER_ROLE_IN_PROJECT, {
+    skip: !auth.user,
+    variables: { userId: auth.user?.id, projectId },
+  });
 
-  if (loading) {
+  if (loading || roleLoading) {
     return (
       <Center minHeight="100vh">
         <Spinner size="xl" color="orange.500" />
@@ -29,14 +45,27 @@ export function EditProjectPage() {
     );
   }
 
-  if (error) {
+  if (
+    error ||
+    roleError ||
+    !auth.user ||
+    !data?.project ||
+    !roleData?.userRoleInProject
+  ) {
     return (
       <Center minHeight="100vh">
         <Text color="red.500">
-          Error loading project details: {error.message}
+          Error loading project details: {error?.message}
         </Text>
       </Center>
     );
+  }
+
+  const userRole = roleData.userRoleInProject;
+
+  if (userRole !== 'ADMIN') {
+    navigate(route.myprojects());
+    return null;
   }
 
   const project = data?.project;
@@ -73,13 +102,16 @@ export function EditProjectPage() {
         <ProjectButtons
           projectId={projectId!}
           activePath={location.pathname}
-          userRole="ADMIN"
+          userRole={userRole}
         />
       </Navbar>
       <Box flex="1" p={4} width="100%" maxWidth="1200px" mx="auto">
         <Heading mb={4} textAlign="center">
           Edit Project for Project {project.name}
         </Heading>
+        <Center>
+          <EditProjectForm projectId={projectId!} />
+        </Center>
       </Box>
       <Footer />
     </Box>
