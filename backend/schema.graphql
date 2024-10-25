@@ -27,7 +27,6 @@ type Mutation {
   addProjectUser(departmentId: String = null, invitation: String = null, isTeamLeader: Boolean = false, phone_number: String = null, projectId: String!, rateId: String = null, role: String = null, userId: String!): ProjectUser!
   deleteDepartment(department: String!): Boolean!
   deleteProject(projectId: String!): Boolean!
-  deleteProjectUser(projectUserId: String!): Boolean!
   deleteRate(rateId: String!): Boolean!
   deleteUser(userId: String!): Boolean!
   forgotPassword(email: String!): Boolean!
@@ -36,7 +35,6 @@ type Mutation {
   signUp(email: String!, name: String!, password: String!, surname: String!): AuthInfo!
   updateDepartment(data: DepartmentInput!, department: String!): Department!
   updateProject(data: ProjectInput!, projectId: String!): Project!
-  updateProjectUser(data: ProjectUserInput!, projectUserId: String!): ProjectUser!
   updateRate(data: RateInput!, rateId: String!): Rate!
   updateUser(data: UserInput!, userId: String!): User!
 }
@@ -87,25 +85,10 @@ type ProjectUser {
   user: User!
 }
 
-input ProjectUserInput {
-  department_id: String
-  invitation: String
-  is_active: Boolean
-  is_team_leader: Boolean = false
-  number_of_people: Float
-  phone_number: String
-  position: String
-  project_id: String!
-  rate_id: String
-  role: String
-  user_id: String!
-}
-
 type Query {
   _empty: String!
   department(id: String!): Department
   departments: [Department!]!
-  isUserAdminInProject(projectId: String!, userId: String!): Boolean!
   project(id: String!): Project
   projectUser(id: String!): ProjectUser
   projectUsers(projectId: String!): [ProjectUser!]!
@@ -114,6 +97,8 @@ type Query {
   rate(id: String!): Rate
   rates: [Rate!]!
   user(id: String!): User
+  userProjects(userId: String!): [Project!]!
+  userRoleInProject(projectId: String!, userId: String!): String
   users: [User!]!
 }
 

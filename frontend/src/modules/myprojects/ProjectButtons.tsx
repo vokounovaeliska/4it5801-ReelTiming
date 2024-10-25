@@ -8,14 +8,15 @@ import { useNavigate } from 'react-router-dom';
 interface ProjectButtonsProps {
   activePath?: string;
   projectId: string;
+  userRole: string;
 }
 
 const ProjectButtons: React.FC<ProjectButtonsProps> = ({
   projectId,
   activePath,
+  userRole,
 }) => {
   const navigate = useNavigate();
-
   const buttonStyle = {
     colorScheme: 'orange',
     variant: 'ghost',
@@ -31,12 +32,10 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
       boxShadow: 'inset 0 0 15px rgba(0, 0, 0, 0.3)',
     },
   };
-
   const dashboardPath = `/projects/${projectId}`;
   const timesheetsPath = `/projects/${projectId}/timesheets`;
   const crewlistPath = `/projects/${projectId}/crewlist`;
   const editPath = `/projects/${projectId}/edit`;
-
   const handleNavigation = (path: string) => {
     navigate(path);
   };
@@ -52,30 +51,34 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
         >
           Dashboard
         </Button>
-        <Button
-          {...buttonStyle}
-          leftIcon={<CiViewTimeline />}
-          bg={activePath === timesheetsPath ? 'orange.600' : 'transparent'}
-          onClick={() => handleNavigation(timesheetsPath)}
-        >
-          Timesheets
-        </Button>
-        <Button
-          {...buttonStyle}
-          leftIcon={<FaPeopleGroup />}
-          bg={activePath === crewlistPath ? 'orange.600' : 'transparent'}
-          onClick={() => handleNavigation(crewlistPath)}
-        >
-          Crewlist
-        </Button>
-        <Button
-          {...buttonStyle}
-          leftIcon={<MdBuild />}
-          bg={activePath === editPath ? 'orange.600' : 'transparent'}
-          onClick={() => handleNavigation(editPath)}
-        >
-          Edit
-        </Button>
+        {userRole === 'ADMIN' && (
+          <>
+            <Button
+              {...buttonStyle}
+              leftIcon={<CiViewTimeline />}
+              bg={activePath === timesheetsPath ? 'orange.600' : 'transparent'}
+              onClick={() => handleNavigation(timesheetsPath)}
+            >
+              Timesheets
+            </Button>
+            <Button
+              {...buttonStyle}
+              leftIcon={<FaPeopleGroup />}
+              bg={activePath === crewlistPath ? 'orange.600' : 'transparent'}
+              onClick={() => handleNavigation(crewlistPath)}
+            >
+              Crewlist
+            </Button>
+            <Button
+              {...buttonStyle}
+              leftIcon={<MdBuild />}
+              bg={activePath === editPath ? 'orange.600' : 'transparent'}
+              onClick={() => handleNavigation(editPath)}
+            >
+              Edit
+            </Button>
+          </>
+        )}
       </HStack>
     </Box>
   );

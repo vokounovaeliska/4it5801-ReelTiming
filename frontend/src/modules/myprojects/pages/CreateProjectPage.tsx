@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { gql, useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuth } from '@frontend/modules/auth'; // Import the useAuth hook
+import { useAuth } from '@frontend/modules/auth';
 
 import { FormValues } from '../organisms/CreateProjectForm';
 import { CreateProjectTemplate } from '../templates/CreateProjectTemplate';
@@ -38,6 +38,41 @@ const CREATE_PROJECT_MUTATION = gql(/* GraphQL */
   }
 `);
 
+const ADD_PROJECT_USER_MUTATION = gql(/* GraphQL */
+`
+  mutation AddProjectUser(
+    $projectId: String!
+    $userId: String!
+    $isTeamLeader: Boolean!
+    $rateId: String
+    $departmentId: String
+    $role: String!
+    $invitation: String
+    $phone_number: String
+  ) {
+    addProjectUser(
+      projectId: $projectId
+      userId: $userId
+      isTeamLeader: $isTeamLeader
+      rateId: $rateId
+      departmentId: $departmentId
+      role: $role
+      invitation: $invitation
+      phone_number: $phone_number
+    ) {
+      id
+      project {
+        id
+      }
+      user {
+        id
+      }
+      is_team_leader
+      role
+    }
+  }
+`);
+
 export function CreateProjectPage() {
   const navigate = useNavigate();
   const auth = useAuth();
@@ -46,7 +81,19 @@ export function CreateProjectPage() {
     {
       onCompleted: (data) => {
         const projectId = data?.addProject?.id;
-        if (projectId) {
+        if (projectId && auth.user) {
+          addProjectUser({
+            variables: {
+              projectId,
+              userId: auth.user.id,
+              isTeamLeader: true,
+              rateId: null,
+              departmentId: null,
+              role: 'ADMIN',
+              invitation: null,
+              phone_number: null,
+            },
+          });
           navigate(`/projects/${projectId}`);
         }
       },
@@ -54,11 +101,12 @@ export function CreateProjectPage() {
     },
   );
 
+  const [addProjectUser] = useMutation(ADD_PROJECT_USER_MUTATION, {
+    onError: () => {},
+  });
+
   const handleCreateProjectFormSubmit = useCallback(
     (variables: FormValues) => {
-      // console.log('formvariables', { startDate: variables.startDate });
-      // console.log('formvariables', { endDate: variables.endDate });
-      //debuging
       if (!variables.startDate || !variables.endDate) {
         console.error(
           'Invalid date(s). Please enter valid start and end dates.',

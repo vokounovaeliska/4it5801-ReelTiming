@@ -7,20 +7,17 @@ import {
   Resolver,
   Root,
 } from 'type-graphql';
-
-import { RateService } from '@backend/graphql/modules/rate/rateService';
-import { Rate } from '@backend/graphql/modules/rate/rateType';
-
-import { CustomContext } from '../../../types/types';
-import { DepartmentService } from '../department/departmentService';
-import { Department } from '../department/departmentType';
-import { ProjectService } from '../project/projectService';
 import { Project } from '../project/projectType';
-import { UserService } from '../user/userService';
-import { User } from '../user/userType';
-
-import { ProjectUserService } from './projectUserService';
 import { ProjectUser, ProjectUserInput } from './projectUserType';
+import { User } from '../user/userType';
+import { Rate } from '../rate/rateType';
+import { Department } from '../department/departmentType';
+import { ProjectUserService } from './projectUserService';
+import { ProjectService } from '../project/projectService';
+import { UserService } from '../user/userService';
+import { RateService } from '../rate/rateService';
+import { DepartmentService } from '../department/departmentService';
+import { CustomContext } from '../../../types/types';
 
 @Resolver(() => ProjectUser)
 export class ProjectUserResolver {
@@ -109,46 +106,34 @@ export class ProjectUserResolver {
     @Ctx() { db }: CustomContext,
   ): Promise<ProjectUser> {
     const projectUserService = new ProjectUserService(db);
-
     const data: ProjectUserInput = {
       project_id: projectId,
       user_id: userId,
       is_team_leader: isTeamLeader,
       rate_id: rateId,
       department_id: departmentId,
-      role: role,
-      invitation: invitation,
-      phone_number: phone_number,
+      role,
+      invitation,
+      phone_number,
     };
     return projectUserService.createProjectUser(data);
   }
 
-  @Mutation(() => Boolean)
-  async deleteProjectUser(
-    @Arg('projectUserId') id: string,
+  @Query(() => [Project])
+  async userProjects(
+    @Arg('userId') userId: string,
     @Ctx() { db }: CustomContext,
-  ): Promise<boolean> {
+  ): Promise<Project[]> {
     const projectUserService = new ProjectUserService(db);
-    return projectUserService.deleteProjectUser(id);
+    return projectUserService.getProjectsByUserId(userId);
   }
-
-  @Mutation(() => ProjectUser)
-  async updateProjectUser(
-    @Arg('projectUserId') id: string,
-    @Arg('data') data: ProjectUserInput,
-    @Ctx() { db }: CustomContext,
-  ): Promise<ProjectUser | null> {
-    const projectUserService = new ProjectUserService(db);
-    return projectUserService.updateProjectUser(id, data);
-  }
-
-  @Query(() => Boolean)
-  async isUserAdminInProject(
-    @Arg('userId') uderId: string,
+  @Query(() => String, { nullable: true })
+  async userRoleInProject(
+    @Arg('userId') userId: string,
     @Arg('projectId') projectId: string,
     @Ctx() { db }: CustomContext,
-  ): Promise<boolean> {
+  ): Promise<string | null> {
     const projectUserService = new ProjectUserService(db);
-    return projectUserService.isUserAdminInProject(uderId, projectId);
+    return projectUserService.getUserRoleInProject(userId, projectId);
   }
 }
