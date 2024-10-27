@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, and, desc } from 'drizzle-orm';
 
 import { user } from '@backend/db/schema';
 import { type Db } from '@backend/types/types';
@@ -12,7 +12,17 @@ export function getUserRepository(db: Db) {
       return db.select().from(user).where(eq(user.id, id));
     },
     async getUserByEmail(email: string) {
-      return db.select().from(user).where(eq(user.email, email));
+      return db
+        .select()
+        .from(user)
+        .where(eq(user.email, email))
+        .orderBy(desc(user.is_active));
+    },
+    async getActiveUserByEmail(email: string) {
+      return db
+        .select()
+        .from(user)
+        .where(and(eq(user.email, email), eq(user.is_active, true)));
     },
     async createUser(data: {
       email: string;
@@ -61,6 +71,22 @@ export function getUserRepository(db: Db) {
       }>,
     ) {
       return db.update(user).set(data).where(eq(user.id, id));
+    },
+    async updatePasswordToken(
+      email: string,
+      token: string,
+      expirationTime: Date,
+    ) {
+      return db
+        .update(user)
+        .set({
+          password_reset_token: token,
+          password_reset_expiration_time: expirationTime,
+        })
+        .where(and(eq(user.email, email), eq(user.is_active, true)));
+    },
+    async getUserByPasswordToken(token: string) {
+      return db.select().from(user).where(eq(user.password_reset_token, token));
     },
   };
 }

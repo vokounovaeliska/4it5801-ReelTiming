@@ -3,6 +3,7 @@ import { GraphQLError } from 'graphql';
 import { Db } from '@backend/types/types';
 
 import { getRateRepository } from './rateRepository';
+import { RateInput } from './rateType';
 
 export class RateService {
   constructor(private db: Db) {
@@ -37,18 +38,8 @@ export class RateService {
    * Create a new rate
    * @param data - object containing rate creation data
    */
-  async createRate(data: {
-    standard_rate?: number;
-    overtime_hour1?: number;
-    overtime_hour2?: number;
-    overtime_hour3?: number;
-    overtime_hour4?: number;
-    compensation_rate?: number;
-    create_date: Date;
-    create_user_id: string;
-    last_update_date: Date;
-    last_update_user_id: string;
-  }) {
+  async createRate(data: RateInput) {
+    const createdAt = new Date();
     const rateData = {
       standard_rate: data.standard_rate,
       overtime_hour1: data.overtime_hour1,
@@ -56,14 +47,20 @@ export class RateService {
       overtime_hour3: data.overtime_hour3,
       overtime_hour4: data.overtime_hour4,
       compensation_rate: data.compensation_rate,
-      create_date: data.create_date,
-      create_user_id: data.create_user_id,
-      last_update_date: data.last_update_date,
-      last_update_user_id: data.last_update_user_id,
+      create_date: createdAt,
+      last_update_date: createdAt,
+      is_active: true,
+      create_user_id: '',
+      last_update_user_id: '',
     };
 
     const rateId = await this.rateRepository.createRate(rateData);
-    return rateId;
+
+    const rate = await this.getRateById(rateId);
+    if (!rate) {
+      throw new Error('Rate not found after creation');
+    }
+    return rate;
   }
 
   /**
@@ -81,8 +78,6 @@ export class RateService {
       overtime_hour3?: number;
       overtime_hour4?: number;
       compensation_rate?: number;
-      last_update_date: Date;
-      last_update_user_id: string;
     },
   ) {
     const rate = await this.getRateById(id);

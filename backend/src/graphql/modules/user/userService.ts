@@ -17,11 +17,7 @@ export class UserService {
    */
   async getAllUsers() {
     const users = await this.userRepository.getAllUsers();
-    return users.map((user) => ({
-      ...user,
-      create_date: new Date(user.create_date),
-      is_active: !!user.is_active,
-    }));
+    return users;
   }
 
   /**
@@ -161,7 +157,9 @@ export class UserService {
     name: string;
     surname: string;
   }) {
-    const userByEmail = await this.userRepository.getUserByEmail(data.email);
+    const userByEmail = await this.userRepository.getActiveUserByEmail(
+      data.email,
+    );
 
     if (userByEmail.length > 0) {
       throw new GraphQLError('Email already registered');
@@ -186,7 +184,7 @@ export class UserService {
     const token = createToken({ id: userId });
 
     return {
-      user: newUser,
+      user: { ...newUser, id: userId },
       token,
     };
   }

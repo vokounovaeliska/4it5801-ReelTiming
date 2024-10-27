@@ -1,23 +1,18 @@
-import { eq } from 'drizzle-orm';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { department } from '@backend/db/schema';
 import { CustomContext } from '@backend/types/types';
 
 import { User } from '../user/userType';
 
-import { Department, DepartmentInput } from './departmentType';
+import { Department } from './departmentType';
+import { DepartmentService } from './departmentService';
 
 @Resolver(() => User)
 export class DepartmentResolver {
   @Query(() => [Department])
   async departments(@Ctx() { db }: CustomContext): Promise<Department[]> {
-    const departments = await db
-      .select()
-      .from(department)
-      .orderBy(department.name);
-
-    return departments;
+    const departmentService = new DepartmentService(db);
+    return departmentService.getAllDepartments();
   }
 
   @Query(() => Department, { nullable: true })
@@ -25,56 +20,35 @@ export class DepartmentResolver {
     @Arg('id') id: string,
     @Ctx() { db }: CustomContext,
   ): Promise<Department | null> {
-    const departmentRecord = await db
-      .select()
-      .from(department)
-      .where(eq(department.id, id));
-
-    if (departmentRecord.length === 0) {
-      return null;
-    }
-
-    return departmentRecord[0];
+    const departmentService = new DepartmentService(db);
+    return departmentService.getDepartmentById(id);
   }
 
   @Mutation(() => Boolean)
   async deleteDepartment(
-    @Arg('department') id: string,
+    @Arg('departmentId') id: string,
     @Ctx() { db }: CustomContext,
   ): Promise<boolean> {
-    await db.delete(department).where(eq(department.id, id));
-    return true;
+    const departmentService = new DepartmentService(db);
+    return departmentService.deleteDepartment(id);
+  }
+
+  @Mutation(() => Department)
+  async addDepartment(
+    @Arg('name') name: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<Department | null> {
+    const departmentService = new DepartmentService(db);
+    return departmentService.createDepartment(name);
   }
 
   @Mutation(() => Department)
   async updateDepartment(
-    @Arg('department') id: string,
-    @Arg('data') data: DepartmentInput,
+    @Arg('departmentId') id: string,
+    @Arg('name') name: string,
     @Ctx() { db }: CustomContext,
   ): Promise<Department | null> {
-    const departmentObject = await db
-      .select()
-      .from(department)
-      .where(eq(department.id, id));
-
-    if (departmentObject.length === 0) {
-      return null;
-    }
-
-    const cleanData = Object.fromEntries(
-      Object.entries(data).filter(([_, v]) => v !== undefined),
-    );
-
-    const updatedDepartment = {
-      ...departmentObject[0],
-      ...cleanData,
-    };
-
-    await db
-      .update(department)
-      .set(updatedDepartment)
-      .where(eq(department.id, id));
-
-    return updatedDepartment;
+    const departmentService = new DepartmentService(db);
+    return departmentService.updateDepartment(id, name);
   }
 }

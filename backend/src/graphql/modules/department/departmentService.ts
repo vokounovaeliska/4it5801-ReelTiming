@@ -49,14 +49,18 @@ export class DepartmentService {
    * Create a new department
    * @param data - object containing department creation data
    */
-  async createDepartment(data: { name: string }) {
+  async createDepartment(name: string) {
     const departmentData = {
-      name: data.name,
+      name: name,
     };
 
     const departmentId =
       await this.departmentRepository.createDepartment(departmentData);
-    return departmentId;
+    const department = await this.getDepartmentById(departmentId);
+    if (!department) {
+      throw new Error('Department not found after creation');
+    }
+    return department;
   }
 
   /**
@@ -64,12 +68,12 @@ export class DepartmentService {
    * @param id string - department id
    * @param data - object containing department update data
    */
-  async updateDepartment(id: string, data: { name?: string }) {
+  async updateDepartment(id: string, name: string) {
     const department = await this.getDepartmentById(id);
 
     const updatedDepartmentData = {
       ...department,
-      ...data,
+      name,
     };
 
     await this.departmentRepository.updateDepartment(id, updatedDepartmentData);
