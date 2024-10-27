@@ -21,7 +21,6 @@ import { EmptyResolver } from '@backend/graphql/modules/empty/emptyResolver';
 import { getProjectRepository } from '@backend/graphql/modules/project/projectRepository';
 import { ProjectResolver } from '@backend/graphql/modules/project/projectResolver';
 import { ProjectUserResolver } from '@backend/graphql/modules/projectUser/projectUserResolver';
-import { PasswordResolver } from '@backend/graphql/modules/user/PasswordResolver';
 import { getUserRepository } from '@backend/graphql/modules/user/userRepository';
 import { UserResolver } from '@backend/graphql/modules/user/userResolver';
 import { parseAndVerifyJWT } from '@backend/libs/jwt';
@@ -32,6 +31,7 @@ import { CustomContext } from '@backend/types/types';
 import { DepartmentResolver } from './graphql/modules/department/departamentResolver';
 import { getProjectUserRepository } from './graphql/modules/projectUser/projectUserRepository';
 import { RateResolver } from './graphql/modules/rate/rateResolver';
+import { PasswordResolver } from './graphql/modules/user/PasswordResolver';
 
 const init = async () => {
   const app = express();

@@ -1,20 +1,16 @@
-import { eq } from 'drizzle-orm';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { rate } from '@backend/db/schema';
 import { CustomContext } from '@backend/types/types';
 
 import { Rate, RateInput } from './rateType';
+import { RateService } from './rateService';
 
 @Resolver(() => Rate)
 export class RateResolver {
   @Query(() => [Rate])
   async rates(@Ctx() { db }: CustomContext): Promise<Rate[]> {
-    const rates = await db.select().from(rate).orderBy(rate.create_date);
-
-    return rates.map((rate) => ({
-      ...rate,
-    }));
+    const rateService = new RateService(db);
+    return rateService.getAllRates();
   }
 
   @Query(() => Rate, { nullable: true })
@@ -22,13 +18,8 @@ export class RateResolver {
     @Arg('id') id: string,
     @Ctx() { db }: CustomContext,
   ): Promise<Rate | null> {
-    const rateRecord = await db.select().from(rate).where(eq(rate.id, id));
-
-    if (rateRecord.length === 0) {
-      return null;
-    }
-
-    return rateRecord[0];
+    const rateService = new RateService(db);
+    return rateService.getRateById(id);
   }
 
   @Mutation(() => Boolean)
@@ -36,8 +27,8 @@ export class RateResolver {
     @Arg('rateId') id: string,
     @Ctx() { db }: CustomContext,
   ): Promise<boolean> {
-    await db.delete(rate).where(eq(rate.id, id));
-    return true;
+    const rateService = new RateService(db);
+    return rateService.deleteRate(id);
   }
 
   @Mutation(() => Rate)
@@ -46,29 +37,30 @@ export class RateResolver {
     @Arg('data') data: RateInput,
     @Ctx() { db }: CustomContext,
   ): Promise<Rate | null> {
-    const rateObject = await db.select().from(rate).where(eq(rate.id, id));
+    const rateService = new RateService(db);
+    return rateService.updateRate(id, data);
+  }
 
-    if (rateObject.length === 0) {
-      return null;
-    }
+  @Mutation(() => Rate)
+  async addRate(
+    @Arg('standard_rate') standardRate: number,
+    @Arg('overtime_hour1') overtimeHour1: number,
+    @Arg('overtime_hour2') overtimeHour2: number,
+    @Arg('overtime_hour3') overtimeHour3: number,
+    @Arg('overtime_hour4') overtimeHour4: number,
+    @Arg('compensation_rate') compensationRate: number,
 
-    const cleanData = Object.fromEntries(
-      Object.entries(data).filter(([_, v]) => v !== undefined),
-    );
-
-    const updatedRate = {
-      ...rateObject[0],
-      ...cleanData,
-      create_date: data.create_date
-        ? new Date(data.create_date)
-        : rateObject[0].create_date,
-      last_update_date: data.last_update_date
-        ? new Date(data.last_update_date)
-        : rateObject[0].last_update_date,
+    @Ctx() { db }: CustomContext,
+  ): Promise<Rate> {
+    const rateService = new RateService(db);
+    const data: RateInput = {
+      standard_rate: standardRate,
+      overtime_hour1: overtimeHour1,
+      overtime_hour2: overtimeHour2,
+      overtime_hour3: overtimeHour3,
+      overtime_hour4: overtimeHour4,
+      compensation_rate: compensationRate,
     };
-
-    await db.update(rate).set(updatedRate).where(eq(rate.id, id));
-
-    return updatedRate;
+    return rateService.createRate(data);
   }
 }

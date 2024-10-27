@@ -56,15 +56,15 @@ export class RateInput {
   @Field(() => Number, { nullable: true })
   compensation_rate?: number;
 
-  @Field(() => Date)
-  create_date!: Date;
+  @Field(() => Date, { nullable: true })
+  create_date?: Date;
 
-  @Field(() => String)
-  create_user_id!: string;
+  @Field(() => String, { nullable: true })
+  create_user_id?: string;
 
-  @Field(() => String)
-  last_update_user_id!: string;
+  @Field(() => String, { nullable: true })
+  last_update_user_id?: string;
 
-  @Field(() => Date)
-  last_update_date!: Date;
+  @Field(() => Date, { nullable: true })
+  last_update_date?: Date;
 }
