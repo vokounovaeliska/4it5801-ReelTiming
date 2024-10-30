@@ -16,6 +16,7 @@ export const user = mysqlTable('user', {
   password: varchar('password', { length: 255 }).notNull(),
   name: varchar('name', { length: 255 }).notNull(),
   surname: varchar('surname', { length: 255 }).notNull(),
+  phone_number: varchar('phone_number', { length: 13 }),
   create_date: timestamp('create_date').notNull().defaultNow(),
   create_user_id: varchar('create_user_id', { length: 36 }).notNull(),
   last_update_user_id: varchar('last_update_user_id', { length: 36 }).notNull(),
