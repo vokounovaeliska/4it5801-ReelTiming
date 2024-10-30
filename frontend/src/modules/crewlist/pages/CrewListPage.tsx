@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   Box,
   Button,
   Center,
@@ -44,6 +38,8 @@ import { GET_PROJECT_USERS } from '../../../gql/queries/GetProjectUsers';
 import { GET_USER_ROLE_IN_PROJECT } from '../../../gql/queries/GetUserRoleInProject';
 import { CrewListForm } from '../forms/CrewListForm';
 
+import CrewAlertDialog from './CrewAlertDialog';
+
 export function CrewListPage() {
   const auth = useAuth();
   const { projectId } = useParams<{ projectId: string }>();
@@ -53,7 +49,7 @@ export function CrewListPage() {
   const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [userIdToRemove, setUserIdToRemove] = useState<string | null>(null);
-  const cancelRef = React.useRef<HTMLButtonElement>(null);
+  // const cancelRef = React.useRef<HTMLButtonElement>(null);
   const [selectedCrewMember, setSelectedCrewMember] =
     useState<CrewMemberData | null>(null);
   const sanitizeCrewMemberData = (data: CrewMemberData): CrewMemberData => ({
@@ -478,41 +474,16 @@ export function CrewListPage() {
         />
       </CustomModal>
       {/* TODO: Refactor to individual component ? cleaner code */}
-      <AlertDialog
+      <CrewAlertDialog
         isOpen={isAlertOpen}
-        leastDestructiveRef={cancelRef}
         onClose={() => setIsAlertOpen(false)}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Remove User
-            </AlertDialogHeader>
-
-            <AlertDialogBody>
-              Are you sure you want to remove from the project?
-            </AlertDialogBody>
-
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={() => setIsAlertOpen(false)}>
-                Cancel
-              </Button>
-              <Button
-                colorScheme="red"
-                onClick={() => {
-                  if (userIdToRemove) {
-                    handleRemoveUser(userIdToRemove);
-                  }
-                  setIsAlertOpen(false);
-                }}
-                ml={3}
-              >
-                Remove
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
+        onConfirm={() => {
+          if (userIdToRemove) {
+            handleRemoveUser(userIdToRemove);
+          }
+          setIsAlertOpen(false);
+        }}
+      />
     </Box>
   );
 }
