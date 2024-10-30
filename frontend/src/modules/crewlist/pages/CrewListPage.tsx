@@ -25,7 +25,7 @@ import {
 import {
   Link as ReactRouterLink,
   useLocation,
-  useNavigate,
+  // useNavigate,
   useParams,
 } from 'react-router-dom';
 
@@ -48,7 +48,7 @@ export function CrewListPage() {
   const auth = useAuth();
   const { projectId } = useParams<{ projectId: string }>();
   const location = useLocation();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
   const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -128,10 +128,10 @@ export function CrewListPage() {
 
   const userRole = roleData.userRoleInProject;
 
-  if (userRole !== 'ADMIN') {
-    navigate(route.myprojects());
-    return null;
-  }
+  // if (userRole !== 'ADMIN' || userRole !== 'CREW') {
+  //   navigate(route.myprojects());
+  //   return null;
+  // }
 
   const project = data?.project;
   const departments = departmentsData?.departments || [];
@@ -287,6 +287,14 @@ export function CrewListPage() {
     setIsAlertOpen(true);
   };
 
+  const filteredUsers =
+    userRole === 'ADMIN'
+      ? projectUsers
+      : projectUsers.filter(
+          (projectUser: { user: { id: string } }) =>
+            projectUser.user.id === auth.user?.id,
+        );
+
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <Navbar>
@@ -343,7 +351,7 @@ export function CrewListPage() {
             </Tr>
           </Thead>
           <Tbody>
-            {projectUsers.map(
+            {filteredUsers.map(
               (user: {
                 id: string;
                 user: {

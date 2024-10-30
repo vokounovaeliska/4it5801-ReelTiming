@@ -51,24 +51,24 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
         >
           Dashboard
         </Button>
+        <Button
+          {...buttonStyle}
+          leftIcon={<CiViewTimeline />}
+          bg={activePath === timesheetsPath ? 'orange.600' : 'transparent'}
+          onClick={() => handleNavigation(timesheetsPath)}
+        >
+          Timesheets
+        </Button>
+        <Button
+          {...buttonStyle}
+          leftIcon={<FaPeopleGroup />}
+          bg={activePath === crewlistPath ? 'orange.600' : 'transparent'}
+          onClick={() => handleNavigation(crewlistPath)}
+        >
+          Crewlist
+        </Button>
         {userRole === 'ADMIN' && (
           <>
-            <Button
-              {...buttonStyle}
-              leftIcon={<CiViewTimeline />}
-              bg={activePath === timesheetsPath ? 'orange.600' : 'transparent'}
-              onClick={() => handleNavigation(timesheetsPath)}
-            >
-              Timesheets
-            </Button>
-            <Button
-              {...buttonStyle}
-              leftIcon={<FaPeopleGroup />}
-              bg={activePath === crewlistPath ? 'orange.600' : 'transparent'}
-              onClick={() => handleNavigation(crewlistPath)}
-            >
-              Crewlist
-            </Button>
             <Button
               {...buttonStyle}
               leftIcon={<MdBuild />}
