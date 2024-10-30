@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { Text } from '@chakra-ui/react';
 import { useSearchParams } from 'react-router-dom';
 
 import {
@@ -10,6 +11,8 @@ import {
   Stack,
 } from '@frontend/shared/design-system';
 import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
+
+import RequiredInfo from './RequiredInfo';
 
 const schema = zod
   .object({
@@ -118,6 +121,9 @@ export function NewPasswordForm({
               autoCorrect="off"
               autoCapitalize="off"
             />
+            <Text color="gray.500" fontSize="xs" textAlign="left">
+              Password must be at least 10 characters long
+            </Text>
             <InputField
               name="newPasswordConfirmation"
               label="Confirm password"
@@ -140,6 +146,7 @@ export function NewPasswordForm({
             </Button>
           </Stack>
           {children}
+          <RequiredInfo />
         </Form>
       </Box>
     </Box>

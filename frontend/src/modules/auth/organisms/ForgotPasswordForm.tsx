@@ -10,6 +10,8 @@ import {
 } from '@frontend/shared/design-system';
 import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
 
+import RequiredInfo from './RequiredInfo';
+
 const schema = zod.object({
   email: zod.string().min(1, { message: 'Email is required!' }).email({
     message:
@@ -98,6 +100,7 @@ export function ForgotPasswordForm({
             </Button>
           </Stack>
           {children}
+          <RequiredInfo />
         </Form>
       </Box>
     </Box>
