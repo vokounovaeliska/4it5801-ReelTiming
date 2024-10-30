@@ -19,11 +19,11 @@ import {
 import {
   Link as ReactRouterLink,
   useLocation,
-  // useNavigate,
   useParams,
 } from 'react-router-dom';
 
 import { useCrewMemberMutations } from '@frontend/gql/mutations/addCrewMember';
+import { GET_CREWLIST_INFO } from '@frontend/gql/queries/GetCrewListInfo';
 import { useAuth } from '@frontend/modules/auth';
 import ProjectButtons from '@frontend/modules/myprojects/ProjectButtons';
 import { route } from '@frontend/route';
@@ -32,26 +32,23 @@ import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
 import { DELETE_PROJECT_USER } from '../../../gql/queries/DeleteProjectUser';
-import { GET_DEPARTMENTS } from '../../../gql/queries/GetDepartments';
-import { GET_PROJECT_DETAILS } from '../../../gql/queries/GetProjectDetails';
-import { GET_PROJECT_USERS } from '../../../gql/queries/GetProjectUsers';
-import { GET_USER_ROLE_IN_PROJECT } from '../../../gql/queries/GetUserRoleInProject';
 import { CrewListForm } from '../forms/CrewListForm';
 
 import CrewAlertDialog from './CrewAlertDialog';
 
 export function CrewListPage() {
   const auth = useAuth();
-  const { projectId } = useParams<{ projectId: string }>();
-  const location = useLocation();
-  // const navigate = useNavigate();
+  const toast = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [userIdToRemove, setUserIdToRemove] = useState<string | null>(null);
-  // const cancelRef = React.useRef<HTMLButtonElement>(null);
   const [selectedCrewMember, setSelectedCrewMember] =
     useState<CrewMemberData | null>(null);
+  const { projectId } = useParams<{ projectId: string }>();
+  const location = useLocation();
+  const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
+
   const sanitizeCrewMemberData = (data: CrewMemberData): CrewMemberData => ({
     ...data,
     standard_rate: data.standard_rate || 0,
@@ -62,40 +59,23 @@ export function CrewListPage() {
     overtime_hour4: data.overtime_hour4 || 0,
   });
 
-  const { data, loading, error } = useQuery(GET_PROJECT_DETAILS, {
-    variables: { id: projectId },
-  });
-
   const {
-    data: roleData,
-    loading: roleLoading,
-    error: roleError,
-  } = useQuery(GET_USER_ROLE_IN_PROJECT, {
-    skip: !auth.user,
-    variables: { userId: auth.user?.id, projectId },
-  });
-
-  const {
-    data: departmentsData,
-    loading: departmentsLoading,
-    error: departmentsError,
-  } = useQuery(GET_DEPARTMENTS);
-  const {
-    data: projectUsersData,
-    loading: projectUsersLoading,
-    error: projectUsersError,
+    data: crewListData,
+    loading: crewListLoading,
+    error: crewListError,
     refetch: refetchProjectUsers,
-  } = useQuery(GET_PROJECT_USERS, {
-    variables: { projectId },
+  } = useQuery(GET_CREWLIST_INFO, {
+    variables: { projectId, userId: auth.user?.id },
   });
+
+  const crewList = crewListData || [];
+
+  // GQL MUTATIONS CALLS
   const { addCrewMember, sendEmailInvitation, editCrewMember } =
     useCrewMemberMutations();
   const [deleteProjectUser] = useMutation(DELETE_PROJECT_USER);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const toast = useToast();
-
-  if (loading || roleLoading || departmentsLoading || projectUsersLoading) {
+  if (crewListLoading) {
     return (
       <Center minHeight="100vh">
         <Spinner size="xl" color="orange.500" />
@@ -104,51 +84,16 @@ export function CrewListPage() {
     );
   }
 
-  if (
-    error ||
-    roleError ||
-    departmentsError ||
-    projectUsersError ||
-    !auth.user ||
-    !data?.project ||
-    !roleData?.userRoleInProject
-  ) {
+  // Error handling
+  if (crewListError || !auth.user || !crewListData) {
     return (
       <Center minHeight="100vh">
         <Text color="red.500">
-          Error loading project details: {error?.message}
+          Error loading project details: {crewListError?.message}
         </Text>
       </Center>
     );
   }
-
-  const userRole = roleData.userRoleInProject;
-
-  // if (userRole !== 'ADMIN' || userRole !== 'CREW') {
-  //   navigate(route.myprojects());
-  //   return null;
-  // }
-
-  const project = data?.project;
-  const departments = departmentsData?.departments || [];
-  const projectUsers = projectUsersData?.projectUsers || [];
-
-  const handleAddMemberClick = () => {
-    setSelectedCrewMember(null); // clear selected crew member for adding new
-    setIsModalOpen(true);
-  };
-
-  const handleEditMemberClick = (crewMember: CrewMemberData) => {
-    setSelectedCrewMember(sanitizeCrewMemberData(crewMember)); // TODO - user sanitize to try unfuck zod or just fix zod
-    // setSelectedCrewMember(crewMember); // set selected crew member for editing
-    setIsModalOpen(true);
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setSelectedCrewMember(null); // clear selected crew member on close
-  };
-
   interface CrewMemberData {
     id: string;
     name: string;
@@ -168,7 +113,19 @@ export function CrewListPage() {
     rate_id: string | null;
   }
 
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedCrewMember(null); // clear selected crew member on close
+  };
+
+  const handleAddMemberClick = () => {
+    setSelectedCrewMember(null); // clear selected crew member for adding new
+    setIsModalOpen(true);
+  };
+
   const handleAddNewCrewMember = async (data: CrewMemberData) => {
+    setSelectedCrewMember(null); // clear selected crew member for adding new
+    setIsModalOpen(true);
     setIsSubmitting(true);
     try {
       const { userId } = await addCrewMember(data, projectId!);
@@ -223,6 +180,11 @@ export function CrewListPage() {
     }
   };
 
+  const handleRemoveButtonClick = (userId: string) => {
+    setUserIdToRemove(userId);
+    setIsAlertOpen(true);
+  };
+
   const handleRemoveUser = async (userId: string) => {
     try {
       await deleteProjectUser({
@@ -247,6 +209,12 @@ export function CrewListPage() {
         isClosable: true,
       });
     }
+  };
+
+  const handleEditMemberClick = (crewMember: CrewMemberData) => {
+    setSelectedCrewMember(sanitizeCrewMemberData(crewMember)); // TODO - user sanitize to try unfuck zod or just fix zod
+    // setSelectedCrewMember(crewMember); // set selected crew member for editing
+    setIsModalOpen(true);
   };
 
   const handleUpdateCrewMember = async (data: CrewMemberData) => {
@@ -278,15 +246,10 @@ export function CrewListPage() {
     }
   };
 
-  const handleRemoveButtonClick = (userId: string) => {
-    setUserIdToRemove(userId);
-    setIsAlertOpen(true);
-  };
-
   const filteredUsers =
-    userRole === 'ADMIN'
-      ? projectUsers
-      : projectUsers.filter(
+    crewList.userRoleInProject === 'ADMIN'
+      ? crewList.projectUsers
+      : crewList.projectUsers.filter(
           (projectUser: { user: { id: string } }) =>
             projectUser.user.id === auth.user?.id,
         );
@@ -323,14 +286,14 @@ export function CrewListPage() {
         <ProjectButtons
           projectId={projectId!}
           activePath={location.pathname}
-          userRole={userRole}
+          userRole={crewList.userRoleInProject}
         />
       </Navbar>
       <Box flex="1" p={4} width="100%" maxWidth="1200px" mx="auto">
         <Heading mb={4} textAlign="center">
-          Crew List for Project {project.name}
+          Crew List for Project {crewList.project.name}
         </Heading>
-        {userRole === 'ADMIN' && (
+        {crewList.userRoleInProject === 'ADMIN' && (
           <Button colorScheme="orange" onClick={handleAddMemberClick} mb={4}>
             Add New Member
           </Button>
@@ -468,12 +431,11 @@ export function CrewListPage() {
             }
           }}
           isLoading={isSubmitting}
-          departments={departments}
+          departments={crewList.departments}
           initialValues={selectedCrewMember || undefined}
           mode={selectedCrewMember ? 'edit' : 'add'}
         />
       </CustomModal>
-      {/* TODO: Refactor to individual component ? cleaner code */}
       <CrewAlertDialog
         isOpen={isAlertOpen}
         onClose={() => setIsAlertOpen(false)}
