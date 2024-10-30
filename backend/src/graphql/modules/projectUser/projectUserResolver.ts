@@ -103,6 +103,8 @@ export class ProjectUserResolver {
     invitation: string | null,
     @Arg('phone_number', () => String, { nullable: true, defaultValue: null })
     phone_number: string | null,
+    @Arg('position', () => String, { nullable: true, defaultValue: null })
+    position: string | null,
     @Ctx() { db }: CustomContext,
   ): Promise<ProjectUser> {
     const projectUserService = new ProjectUserService(db);
@@ -115,6 +117,7 @@ export class ProjectUserResolver {
       role,
       invitation,
       phone_number,
+      position,
     };
     return projectUserService.createProjectUser(data);
   }
@@ -135,5 +138,55 @@ export class ProjectUserResolver {
   ): Promise<string | null> {
     const projectUserService = new ProjectUserService(db);
     return projectUserService.getUserRoleInProject(userId, projectId);
+  }
+
+  @Query(() => ProjectUser)
+  async projectUsersByToken(
+    @Arg('token') token: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<ProjectUser | null> {
+    const projectUserService = new ProjectUserService(db);
+    return projectUserService.getProjectUserByToken(token);
+  }
+
+  @Mutation(() => Boolean)
+  async inviteUser(
+    @Arg('projectId') projectId: string,
+    @Arg('userId') userId: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<boolean> {
+    const projectUserService = new ProjectUserService(db);
+    return projectUserService.inviteUserToProject(projectId, userId, db);
+  }
+
+  @Mutation(() => Boolean)
+  async deleteProjectUser(
+    @Arg('userId') userId: string,
+    @Arg('projectId') projectId: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<boolean> {
+    const projectUserService = new ProjectUserService(db);
+    return projectUserService.deleteProjectUserByUserIdAndProjectId(
+      userId,
+      projectId,
+    );
+  }
+  @Mutation(() => Boolean)
+  async activateProjectUser(
+    @Arg('token') token: string,
+    @Arg('userId') userId: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<boolean> {
+    const projectUserService = new ProjectUserService(db);
+    return projectUserService.activateProjectUserByToken(token, userId);
+  }
+  @Mutation(() => ProjectUser)
+  async updateProjectUser(
+    @Arg('id') id: string,
+    @Arg('data') data: ProjectUserInput,
+    @Ctx() { db }: CustomContext,
+  ): Promise<ProjectUser | null> {
+    const projectUserService = new ProjectUserService(db);
+    return projectUserService.updateProjectUser(id, data);
   }
 }

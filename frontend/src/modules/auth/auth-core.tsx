@@ -15,6 +15,8 @@ type AuthState = {
 export type AuthUser = {
   id: string;
   name: string;
+  surname: string;
+  email: string;
   profileImageUrl?: string | null;
 };
 

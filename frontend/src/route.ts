@@ -17,4 +17,5 @@ export const route = {
     `/projects/${projectId}/timesheets`,
   editprojectpage: (projectId: string = ':projectId') =>
     `/projects/${projectId}/edit`,
+  acceptInvitation: () => `/accept-invitation`,
 };

@@ -62,4 +62,15 @@ export class UserResolver {
     const userService = new UserService(db);
     return userService.updateUser(id, data);
   }
+
+  @Mutation(() => User)
+  async addInactiveUser(
+    @Arg('name') name: string,
+    @Arg('surname') surname: string,
+    @Arg('email') email: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<User> {
+    const userService = new UserService(db);
+    return userService.addInactiveUser({ name, surname, email });
+  }
 }

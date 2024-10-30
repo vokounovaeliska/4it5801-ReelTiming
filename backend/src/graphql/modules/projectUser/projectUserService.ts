@@ -2,14 +2,26 @@ import { Db } from '@backend/types/types';
 import { getProjectUserRepository } from './projectUserRepository';
 import { ProjectUser, ProjectUserInput } from './projectUserType';
 import { Project } from '../project/projectType';
+import { UserService } from '../user/userService';
+import { GraphQLError } from 'graphql';
+import { randomBytes } from 'crypto';
+import { APP_LINK } from '@backend/config';
+import path from 'path';
+
+import { promises as fs } from 'fs';
+import { sendMail } from '@backend/mailer/mailer';
+import { ProjectService } from '../project/projectService';
+import { getUserRepository } from '../user/userRepository';
 
 const ADMIN = 'ADMIN';
 
 export class ProjectUserService {
   private projectUserRepository: ReturnType<typeof getProjectUserRepository>;
+  private userRepository: ReturnType<typeof getUserRepository>;
 
   constructor(db: Db) {
     this.projectUserRepository = getProjectUserRepository(db);
+    this.userRepository = getUserRepository(db);
   }
 
   async getAllProjectUsers(): Promise<ProjectUser[]> {
@@ -122,5 +134,110 @@ export class ProjectUserService {
         projectId,
       );
     return projectUser ? projectUser.role : null;
+  }
+  async getProjectUserByToken(token: string): Promise<ProjectUser | null> {
+    const projectUser =
+      await this.projectUserRepository.getProjectUserByToken(token);
+    if (!projectUser) {
+      return null;
+    }
+    return projectUser;
+  }
+  async handleToken(token: string, db: Db) {
+    const projectUserService = new ProjectUserService(db);
+    const projectUser = await projectUserService.getProjectUserByToken(token);
+
+    if (projectUser) {
+      // user is already registered, join the project
+      console.log('User is already registered, joining the project...');
+      // Implement logic to join the project
+    } else {
+      // user is not registered, allow registration
+      console.log('User is not registered, allow registration...');
+      // implement logic to register the user and join the project
+    }
+  }
+
+  async inviteUserToProject(
+    projectId: string,
+    userId: string,
+    db: Db,
+  ): Promise<boolean> {
+    const userService = new UserService(db);
+    const userById = await userService.getUserById(userId);
+
+    if (userById === null) {
+      throw new GraphQLError('User not found');
+    }
+
+    const projectService = new ProjectService(db);
+    const projectById = await projectService.getProjectById(projectId);
+
+    if (projectById === null) {
+      throw new GraphQLError('Project not found');
+    }
+
+    const token = randomBytes(32).toString('hex'); // Generate token
+
+    this.projectUserRepository.inviteUserToProject(projectId, userId, token);
+
+    const resetLink = APP_LINK + `/accept-invitation?token=${token}`;
+    try {
+      const templatePath = path.join(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        'mailer',
+        'invite-to-project-email.html',
+      );
+
+      let htmlContent = await fs.readFile(templatePath, 'utf-8');
+      htmlContent = htmlContent.replace('{{invitationLink}}', resetLink);
+      htmlContent = htmlContent.replace('{{projectName}}', projectById.name);
+      htmlContent = htmlContent.replace('{{name}}', userById.name);
+
+      await sendMail(userById.email, 'Invitation to project', htmlContent);
+    } catch (error) {
+      console.error('Error sending invitation email:', error);
+      throw new GraphQLError('Failed to send invtiation email.');
+    }
+
+    return true;
+  }
+
+  async deleteProjectUserByUserIdAndProjectId(
+    userId: string,
+    projectId: string,
+  ): Promise<boolean> {
+    const projectUser =
+      await this.projectUserRepository.getProjectUserByUserIdAndProjectId(
+        userId,
+        projectId,
+      );
+    if (!projectUser) {
+      throw new Error('Project user not found');
+    }
+    await this.projectUserRepository.deleteProjectUser(projectUser.id);
+    return true;
+  }
+  async activateProjectUserByToken(
+    token: string,
+    userId: string,
+  ): Promise<boolean> {
+    const projectUser =
+      await this.projectUserRepository.getProjectUserByToken(token);
+    if (!projectUser) {
+      throw new Error('Project user not found');
+    }
+    if (projectUser.is_active) {
+      throw new Error('Project user is already active');
+    }
+    await this.projectUserRepository.updateProjectUser(projectUser.id, {
+      is_active: true,
+      user_id: userId,
+    });
+    this.userRepository.deleteUser(projectUser.user_id);
+    return true;
   }
 }

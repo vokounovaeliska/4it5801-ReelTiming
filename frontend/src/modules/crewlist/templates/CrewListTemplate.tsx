@@ -23,7 +23,15 @@ export function CrewListTemplate({ projectId }: CrewListTemplateProps) {
       >
         <Box textAlign="center" width="100%" maxWidth="1200px">
           <Heading mb={4}>Crew List for Project {projectId}</Heading>
-          <CrewListForm projectId={projectId} />
+          <CrewListForm
+            projectId={projectId}
+            onSubmit={function (): void {
+              throw new Error('Function not implemented.');
+            }}
+            isLoading={false}
+            departments={[]}
+            mode={'edit'} // could cause a bug
+          />
         </Box>
       </Box>
       <Footer />

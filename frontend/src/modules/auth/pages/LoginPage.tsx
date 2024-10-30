@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { gql, useMutation } from '@apollo/client';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
@@ -23,10 +23,16 @@ const SIGNIN_MUTATION = gql(/* GraphQL */ `
 export function LogInPage() {
   const auth = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const invitationToken = searchParams.get('token'); // Get the token from query parameters
   const [loginRequest, loginRequestState] = useMutation(SIGNIN_MUTATION, {
     onCompleted: ({ signIn: { user, token } }) => {
       auth.signIn({ token, user });
-      navigate(route.myprojects());
+      if (invitationToken) {
+        navigate(`/accept-invitation?token=${invitationToken}`);
+      } else {
+        navigate(route.myprojects());
+      }
     },
     onError: () => {},
   });
@@ -43,6 +49,7 @@ export function LogInPage() {
       isLoading={loginRequestState.loading}
       error={loginRequestState.error}
       onSubmit={handleLogInFormSubmit}
+      token={invitationToken}
     />
   );
 }

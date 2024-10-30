@@ -27,13 +27,13 @@ export function getProjectUserRepository(db: Db) {
       position?: string | null;
       rate_id?: string | null;
       number_of_people?: number | null;
-      car_numberplate?: string | null;
       is_team_leader: boolean;
       create_date: Date;
       last_update_date: Date;
       create_user_id: string;
       last_update_user_id: string;
       is_active: boolean;
+      phone_number?: string | null;
     }) {
       const result = await db.insert(project_user).values(data).$returningId();
       return result[0].id;
@@ -49,6 +49,8 @@ export function getProjectUserRepository(db: Db) {
         is_team_leader?: boolean;
         last_update_date?: Date;
         is_active?: boolean;
+        user_id?: string;
+        phone_number?: string | null;
       }>,
     ) {
       return db.update(project_user).set(data).where(eq(project_user.id, id));
@@ -77,6 +79,30 @@ export function getProjectUserRepository(db: Db) {
         .from(project)
         .innerJoin(project_user, eq(project.id, project_user.project_id))
         .where(eq(project_user.user_id, userId));
+    },
+    async getProjectUserByToken(token: string) {
+      const projectUserRecord = await db
+        .select()
+        .from(project_user)
+        .where(eq(project_user.invitation, token));
+      return projectUserRecord.length > 0 ? projectUserRecord[0] : null;
+    },
+    async inviteUserToProject(
+      projectId: string,
+      userId: string,
+      token: string,
+    ) {
+      return db
+        .update(project_user)
+        .set({
+          invitation: token,
+        })
+        .where(
+          and(
+            eq(project_user.user_id, userId),
+            eq(project_user.project_id, projectId),
+          ),
+        );
     },
   };
 }
