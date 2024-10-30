@@ -34,6 +34,9 @@ export class User {
 
   @Field(() => Date, { nullable: true })
   password_reset_expiration_time?: Date | null;
+
+  //@Field(() => String)
+  //phone_number!: string;
 }
 
 @ObjectType()
@@ -76,4 +79,7 @@ export class UserInput {
 
   @Field(() => Date, { nullable: true })
   password_reset_expiration_time?: Date | null;
+
+  //@Field(() => String)
+  //phone_number?: string;
 }

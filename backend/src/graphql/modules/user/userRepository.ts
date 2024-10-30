@@ -29,6 +29,7 @@ export function getUserRepository(db: Db) {
       password: string;
       name: string;
       surname: string;
+      //phone_number: string,
       create_date: Date;
       create_user_id: string;
       last_update_date: Date;
@@ -42,6 +43,7 @@ export function getUserRepository(db: Db) {
           password: data.password,
           name: data.name,
           surname: data.surname,
+          //phone_number: data.phone_number,
           create_date: data.create_date,
           create_user_id: data.create_user_id,
           last_update_date: data.last_update_date,
@@ -61,6 +63,7 @@ export function getUserRepository(db: Db) {
         email?: string;
         password?: string;
         surname?: string;
+        //phone_number?: string;
         create_date?: Date;
         create_user_id?: string;
         last_update_date?: Date;
