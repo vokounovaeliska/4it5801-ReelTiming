@@ -38,16 +38,11 @@ export class UserResolver {
     @Arg('password') password: string,
     @Arg('name') name: string,
     @Arg('surname') surname: string,
-    //@Arg('phone_number') phone_number: string,
+    @Arg('phone_number') phone_number: string,
     @Ctx() { db }: CustomContext,
   ): Promise<AuthInfo> {
     const userService = new UserService(db);
-    return userService.signUp({
-      email,
-      password,
-      name,
-      surname, //phone_number
-    });
+    return userService.signUp({ email, password, name, surname, phone_number });
   }
 
   @Mutation(() => Boolean)
@@ -74,14 +69,10 @@ export class UserResolver {
     @Arg('name') name: string,
     @Arg('surname') surname: string,
     @Arg('email') email: string,
-    //@Arg('phone_number') phone_number: string,
+    @Arg('phone_number') phone_number: string,
     @Ctx() { db }: CustomContext,
   ): Promise<User> {
     const userService = new UserService(db);
-    return userService.addInactiveUser({
-      name,
-      surname,
-      email, //phone_number
-    });
+    return userService.addInactiveUser({ name, surname, email, phone_number });
   }
 }
