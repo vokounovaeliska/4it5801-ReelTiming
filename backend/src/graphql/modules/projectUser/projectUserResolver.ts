@@ -97,7 +97,7 @@ export class ProjectUserResolver {
     rateId: string | null,
     @Arg('departmentId', () => String, { nullable: true, defaultValue: null })
     departmentId: string | null,
-    @Arg('role', () => String, { nullable: true, defaultValue: null })
+    @Arg('role', () => String, { nullable: true, defaultValue: 'CREW' })
     role: string | null,
     @Arg('invitation', () => String, { nullable: true, defaultValue: null })
     invitation: string | null,
