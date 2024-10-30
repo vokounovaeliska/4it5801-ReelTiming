@@ -334,9 +334,11 @@ export function CrewListPage() {
         <Heading mb={4} textAlign="center">
           Crew List for Project {project.name}
         </Heading>
-        <Button colorScheme="orange" onClick={handleAddMemberClick} mb={4}>
-          Add New Member
-        </Button>
+        {userRole === 'ADMIN' && (
+          <Button colorScheme="orange" onClick={handleAddMemberClick} mb={4}>
+            Add New Member
+          </Button>
+        )}
         <Table variant="simple" size={tableSize}>
           <Thead>
             <Tr>
