@@ -22,6 +22,15 @@ export class ProjectUser {
   @Field(() => Boolean)
   is_team_leader: boolean = false;
 
+  @Field(() => String)
+  name!: string;
+
+  @Field(() => String)
+  surname!: string;
+
+  @Field(() => String)
+  email!: string;
+
   @Field(() => Date)
   create_date: Date | undefined;
 
@@ -81,4 +90,13 @@ export class ProjectUserInput {
 
   @Field(() => String, { nullable: true })
   phone_number?: string | null;
+
+  @Field(() => String, { nullable: true })
+  name?: string;
+
+  @Field(() => String, { nullable: true })
+  surname?: string;
+
+  @Field(() => String, { nullable: true })
+  email?: string;
 }
