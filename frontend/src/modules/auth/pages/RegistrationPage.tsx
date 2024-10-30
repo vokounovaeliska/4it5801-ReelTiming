@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { gql, useMutation } from '@apollo/client';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
@@ -29,10 +29,16 @@ const SIGNUP_MUTATION = gql(/* GraphQL */ `
 export function RegistrationPage() {
   const auth = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const invitationToken = searchParams.get('token'); // Get the token from query parameters
   const [signupRequest, signupRequestState] = useMutation(SIGNUP_MUTATION, {
     onCompleted: ({ signUp: { user, token } }) => {
       auth.signIn({ token, user });
-      navigate(route.myprojects());
+      if (invitationToken != null) {
+        navigate(`/accept-invitation?token=${invitationToken}`);
+      } else {
+        navigate(route.myprojects());
+      }
     },
     onError: () => {},
   });
@@ -55,6 +61,7 @@ export function RegistrationPage() {
         isLoading={signupRequestState.loading}
         error={signupRequestState.error}
         onSubmit={handleSignUpFormSubmit}
+        token={invitationToken}
       />
     </>
   );

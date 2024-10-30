@@ -16,12 +16,14 @@ export type RegisterProps = {
     surname: string;
     passwordConfirmation: string;
   }) => void;
+  token?: string | null;
 };
 
 export function RegisterTemplate({
   isLoading,
   error,
   onSubmit,
+  token,
 }: RegisterProps) {
   return (
     <Box
@@ -51,7 +53,11 @@ export function RegisterTemplate({
             <Center>
               <Paragraph fontSize={{ base: 's', sm: 'md' }}>
                 Already have an account?{' '}
-                <RouterLink p={2} to={route.login()} fontWeight={'bold'}>
+                <RouterLink
+                  p={2}
+                  to={`${route.login()}${token ? `?token=${token}` : ''}`}
+                  fontWeight={'bold'}
+                >
                   Login
                 </RouterLink>
               </Paragraph>

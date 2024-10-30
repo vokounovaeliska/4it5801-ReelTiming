@@ -19,20 +19,25 @@ type Department {
 }
 
 type Mutation {
+  activateProjectUser(token: String!, userId: String!): Boolean!
   addDepartment(name: String!): Department!
+  addInactiveUser(email: String!, name: String!, surname: String!): User!
   addProject(description: String, end_date: DateTimeISO, name: String!, production_company: String!, start_date: DateTimeISO): Project!
-  addProjectUser(departmentId: String = null, invitation: String = null, isTeamLeader: Boolean = false, phone_number: String = null, projectId: String!, rateId: String = null, role: String = null, userId: String!): ProjectUser!
+  addProjectUser(departmentId: String = null, invitation: String = null, isTeamLeader: Boolean = false, phone_number: String = null, position: String = null, projectId: String!, rateId: String = null, role: String = null, userId: String!): ProjectUser!
   addRate(compensation_rate: Float!, overtime_hour1: Float!, overtime_hour2: Float!, overtime_hour3: Float!, overtime_hour4: Float!, standard_rate: Float!): Rate!
   deleteDepartment(departmentId: String!): Boolean!
   deleteProject(projectId: String!): Boolean!
+  deleteProjectUser(projectId: String!, userId: String!): Boolean!
   deleteRate(rateId: String!): Boolean!
   deleteUser(userId: String!): Boolean!
   forgotPassword(email: String!): Boolean!
+  inviteUser(projectId: String!, userId: String!): Boolean!
   resetPassword(newPassword: String!, token: String!): AuthInfo!
   signIn(email: String!, password: String!): AuthInfo!
   signUp(email: String!, name: String!, password: String!, surname: String!): AuthInfo!
   updateDepartment(departmentId: String!, name: String!): Department!
   updateProject(data: ProjectInput!, projectId: String!): Project!
+  updateProjectUser(data: ProjectUserInput!, id: String!): ProjectUser!
   updateRate(data: RateInput!, rateId: String!): Rate!
   updateUser(data: UserInput!, userId: String!): User!
 }
@@ -83,6 +88,20 @@ type ProjectUser {
   user: User!
 }
 
+input ProjectUserInput {
+  department_id: String
+  invitation: String
+  is_active: Boolean
+  is_team_leader: Boolean = false
+  number_of_people: Float
+  phone_number: String
+  position: String
+  project_id: String!
+  rate_id: String
+  role: String
+  user_id: String!
+}
+
 type Query {
   _empty: String!
   department(id: String!): Department
@@ -90,6 +109,7 @@ type Query {
   project(id: String!): Project
   projectUser(id: String!): ProjectUser
   projectUsers(projectId: String!): [ProjectUser!]!
+  projectUsersByToken(token: String!): ProjectUser!
   project_users: [ProjectUser!]!
   projects: [Project!]!
   rate(id: String!): Rate
@@ -151,4 +171,5 @@ input UserInput {
   name: String
   password_reset_expiration_time: DateTimeISO
   password_reset_token: String
+  surname: String
 }

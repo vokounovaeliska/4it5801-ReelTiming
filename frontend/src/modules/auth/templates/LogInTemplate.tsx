@@ -10,11 +10,13 @@ export type LogInTemplateProps = {
   isLoading: boolean;
   error?: Error;
   onSubmit: (data: { email: string; password: string }) => void;
+  token?: string | null;
 };
 export function LogInTemplate({
   isLoading,
   error,
   onSubmit,
+  token,
 }: LogInTemplateProps) {
   return (
     <Box
@@ -44,7 +46,11 @@ export function LogInTemplate({
             <Center>
               <Paragraph>
                 Don't have an account?
-                <RouterLink p={2} to={route.register()} fontWeight={'bold'}>
+                <RouterLink
+                  p={2}
+                  to={`${route.register()}${token ? `?token=${token}` : ''}`}
+                  fontWeight={'bold'}
+                >
                   Sign up
                 </RouterLink>
               </Paragraph>

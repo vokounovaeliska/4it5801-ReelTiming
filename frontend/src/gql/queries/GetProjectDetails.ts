@@ -9,6 +9,11 @@ export const GET_PROJECT_DETAILS = gql`
       start_date
       end_date
       production_company
+      is_active
+      create_date
+      create_user_id
+      last_update_date
+      last_update_user_id
     }
   }
   ${PROJECT_BASIC_INFO}

@@ -51,6 +51,9 @@ export class UserInput {
   name?: string;
 
   @Field(() => String, { nullable: true })
+  surname?: string;
+
+  @Field(() => String, { nullable: true })
   email?: string;
 
   @Field(() => Date, { nullable: true })

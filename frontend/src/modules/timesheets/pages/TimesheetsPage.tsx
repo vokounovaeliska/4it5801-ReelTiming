@@ -1,5 +1,3 @@
-// 2024-tym4-film-crew-app/frontend/src/modules/timesheets/pages/TimesheetsPage.tsx
-
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Box, Button, Center, Heading, Spinner, Text } from '@chakra-ui/react';

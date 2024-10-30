@@ -188,4 +188,36 @@ export class UserService {
       token,
     };
   }
+
+  /**
+   * Add new crew member - inactive user
+   * @param data - object containing user data
+   */
+  async addInactiveUser(data: {
+    name: string;
+    surname: string;
+    email: string;
+  }) {
+    const passwordHash = await argon2.hash('default');
+    const currentDate = new Date();
+
+    const newUser = {
+      email: data.email,
+      password: passwordHash,
+      name: data.name,
+      surname: data.surname,
+      create_date: currentDate,
+      create_user_id: 'user-id',
+      last_update_date: currentDate,
+      last_update_user_id: 'user-id',
+      is_active: false,
+    };
+
+    const userId = await this.userRepository.createUser(newUser);
+
+    return {
+      ...newUser,
+      id: userId,
+    };
+  }
 }
