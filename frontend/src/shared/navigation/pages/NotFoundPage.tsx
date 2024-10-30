@@ -1,4 +1,16 @@
-import { Box, Button, Heading, SimpleGrid, Text } from '@chakra-ui/react';
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  Button,
+  Heading,
+  Link,
+  SimpleGrid,
+  Text,
+} from '@chakra-ui/react';
 import { FaHome } from 'react-icons/fa';
 
 import { route } from '@frontend/route';
@@ -46,7 +58,7 @@ export function NotFoundPage() {
         p={8}
         minHeight="100vh"
         bg="#F7FAFC"
-        mt={12} // Add top margin to move it away from the top a bit
+        pt={12} // Add top padding to move it away from the top a bit
       >
         <SimpleGrid
           columns={1}
@@ -91,9 +103,40 @@ export function NotFoundPage() {
           >
             Home
           </Button>
+          <Accordion allowToggle>
+            <AccordionItem>
+              <AccordionButton>
+                <Box flex="1" textAlign="left" color="gray.600">
+                  What happened?
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel color="gray.600" textAlign="justify">
+                It looks like the page you're trying to visit doesn't exist
+                anymore or was never there in the first place. This could happen
+                because the URL was typed incorrectly, the page was moved, or it
+                no longer exists. Don't worry though! You can go back to the{' '}
+                <Link
+                  as={ReactRouterLink}
+                  to={route.landingPage()}
+                  color="orange.500"
+                >
+                  homepage
+                </Link>
+                , or feel free to{' '}
+                <Link
+                  as={ReactRouterLink}
+                  to={`${route.about()}#contact-us`}
+                  color="orange.500"
+                >
+                  contact us
+                </Link>{' '}
+                if you need further assistance.
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
         </SimpleGrid>
       </Box>
-
       <Footer />
     </>
   );
