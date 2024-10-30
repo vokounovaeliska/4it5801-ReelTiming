@@ -304,10 +304,17 @@ export function CrewListPage() {
               <Th>Name</Th>
               <Th>Surname</Th>
               <Th>Department</Th>
-              <Th>Role</Th>
               <Th>Position</Th>
+              <Th>Role</Th>
               <Th>Email</Th>
+              <Th>Phone number</Th>
               <Th>Invitation</Th>
+              <Th>Standard rate</Th>
+              <Th>Compensation rate</Th>
+              <Th>Overtime hour 1</Th>
+              <Th>Overtime hour 2</Th>
+              <Th>Overtime hour 3</Th>
+              <Th>Overtime hour 4</Th>
               <Th>Delete</Th>
             </Tr>
           </Thead>
