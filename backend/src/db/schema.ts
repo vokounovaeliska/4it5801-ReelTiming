@@ -75,6 +75,9 @@ export const project_user = mysqlTable(
     position: varchar('position', { length: 255 }),
     number_of_people: int('number_of_people'),
     is_team_leader: boolean('is_team_leader').notNull().default(false),
+    name: varchar('name', { length: 255 }).notNull(),
+    surname: varchar('surname', { length: 255 }).notNull(),
+    email: varchar('email', { length: 255 }).notNull(),
     create_date: timestamp('create_date').notNull().defaultNow(),
     create_user_id: varchar('create_user_id', { length: 36 }).notNull(),
     last_update_user_id: varchar('last_update_user_id', {
