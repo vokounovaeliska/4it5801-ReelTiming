@@ -39,24 +39,30 @@ const schema = zod.object({
         'Invalid phone number format. Example: +420607887591 or 420607887591',
     }),
   email: zod.string().email().min(1),
-  standard_rate: zod
-    .number()
-    .nonnegative({ message: 'Must be a non-negative number' }),
-  compensation_rate: zod
-    .number()
-    .nonnegative({ message: 'Must be a non-negative number' }),
-  overtime_hour1: zod
-    .number()
-    .nonnegative({ message: 'Must be a non-negative number' }),
-  overtime_hour2: zod
-    .number()
-    .nonnegative({ message: 'Must be a non-negative number' }),
-  overtime_hour3: zod
-    .number()
-    .nonnegative({ message: 'Must be a non-negative number' }),
-  overtime_hour4: zod
-    .number()
-    .nonnegative({ message: 'Must be a non-negative number' }),
+  standard_rate: zod.preprocess(
+    (val) => (typeof val === 'string' ? parseFloat(val) : val),
+    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+  ),
+  compensation_rate: zod.preprocess(
+    (val) => (typeof val === 'string' ? parseFloat(val) : val),
+    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+  ),
+  overtime_hour1: zod.preprocess(
+    (val) => (typeof val === 'string' ? parseFloat(val) : val),
+    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+  ),
+  overtime_hour2: zod.preprocess(
+    (val) => (typeof val === 'string' ? parseFloat(val) : val),
+    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+  ),
+  overtime_hour3: zod.preprocess(
+    (val) => (typeof val === 'string' ? parseFloat(val) : val),
+    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+  ),
+  overtime_hour4: zod.preprocess(
+    (val) => (typeof val === 'string' ? parseFloat(val) : val),
+    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+  ),
   role: zod.string().default('CREW'),
 });
 
