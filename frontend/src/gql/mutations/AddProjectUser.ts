@@ -8,7 +8,9 @@ export const ADD_PROJECT_USER = gql`
     $rateId: String
     $departmentId: String
     $role: String
-    $position: String
+    $name: String!
+    $surname: String!
+    $email: String!
   ) {
     addProjectUser(
       userId: $userId
@@ -17,7 +19,9 @@ export const ADD_PROJECT_USER = gql`
       rateId: $rateId
       departmentId: $departmentId
       role: $role
-      position: $position
+      name: $name
+      surname: $surname
+      email: $email
     ) {
       id
     }
