@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import {
+  Box,
   Button,
+  Divider,
   FormControl,
   FormLabel,
   Select,
@@ -98,94 +100,104 @@ export function CrewListForm({
     >
       <Stack justify="center">
         {errorMessage && <ErrorBanner title={errorMessage} />}
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4} p="2">
-          <InputField
-            name="name"
-            label="Name"
-            isRequired
-            isDisabled={mode === 'edit'}
+        <Box display={{ base: 'block', lg: 'flex' }} gap={6} p="2">
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+            <InputField
+              name="name"
+              label="Name"
+              isRequired
+              isDisabled={mode === 'edit'}
+            />
+            <InputField
+              name="surname"
+              label="Surname"
+              isRequired
+              isDisabled={mode === 'edit'}
+            />
+            <Controller
+              name="department"
+              render={({ field }) => (
+                <FormControl isRequired>
+                  <FormLabel>Department</FormLabel>
+                  <Select
+                    {...field}
+                    placeholder="Select Department"
+                    borderColor={'gray.400'}
+                    borderWidth={1}
+                  >
+                    {departments.map((dept) => (
+                      <option key={dept.id} value={dept.id}>
+                        {dept.name}
+                      </option>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+            />
+            <InputField name="position" label="Position" isRequired />
+            <InputField
+              name="email"
+              label="Email"
+              isRequired
+              isDisabled={mode === 'edit'}
+            />
+            <InputField name="phone_number" label="Phone number" isRequired />
+            <Controller
+              name="role"
+              render={({ field }) => (
+                <FormControl isRequired>
+                  <FormLabel>Role</FormLabel>
+                  <Select {...field} borderColor={'gray.400'} borderWidth={1}>
+                    <option value="CREW">CREW</option>
+                    <option value="ADMIN">ADMIN</option>
+                  </Select>
+                </FormControl>
+              )}
+            />
+          </SimpleGrid>
+          <Divider
+            orientation="vertical"
+            display={{ base: 'none', lg: 'block' }}
           />
-          <InputField
-            name="surname"
-            label="Surname"
-            isRequired
-            isDisabled={mode === 'edit'}
+          <Divider
+            orientation="horizontal"
+            display={{ base: 'block', lg: 'none' }}
           />
-          <Controller
-            name="department"
-            render={({ field }) => (
-              <FormControl isRequired>
-                <FormLabel>Department</FormLabel>
-                <Select
-                  {...field}
-                  placeholder="Select Department"
-                  borderColor={'gray.400'}
-                  borderWidth={1}
-                >
-                  {departments.map((dept) => (
-                    <option key={dept.id} value={dept.id}>
-                      {dept.name}
-                    </option>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
-          />
-          <InputField name="position" label="Position" isRequired />
-          <InputField
-            name="email"
-            label="Email"
-            isRequired
-            isDisabled={mode === 'edit'}
-          />
-          <InputField name="phone_number" label="Phone number" isRequired />
-          <Controller
-            name="role"
-            render={({ field }) => (
-              <FormControl isRequired>
-                <FormLabel>Role</FormLabel>
-                <Select {...field} borderColor={'gray.400'} borderWidth={1}>
-                  <option value="CREW">CREW</option>
-                  <option value="ADMIN">ADMIN</option>
-                </Select>
-              </FormControl>
-            )}
-          />
-        </SimpleGrid>
 
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4} p="2">
-          <InputField name="standard_rate" label="Standard rate" isRequired />
-          <InputField
-            name="compensation_rate"
-            label="Compensation rate"
-            isRequired
-            type="number"
-          />
-          <InputField
-            name="overtime_hour1"
-            label="1. Overtime hour"
-            isRequired
-            type="number"
-          />
-          <InputField
-            name="overtime_hour2"
-            label="2. Overtime hour"
-            isRequired
-            type="number"
-          />
-          <InputField
-            name="overtime_hour3"
-            label="3. Overtime hour"
-            isRequired
-            type="number"
-          />
-          <InputField
-            name="overtime_hour4"
-            label="4. Overtime hour"
-            isRequired
-            type="number"
-          />
-        </SimpleGrid>
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+            <InputField name="standard_rate" label="Standard rate" isRequired />
+            <InputField
+              name="compensation_rate"
+              label="Compensation rate"
+              isRequired
+              type="number"
+            />
+            <InputField
+              name="overtime_hour1"
+              label="1. Overtime hour"
+              isRequired
+              type="number"
+            />
+            <InputField
+              name="overtime_hour2"
+              label="2. Overtime hour"
+              isRequired
+              type="number"
+            />
+            <InputField
+              name="overtime_hour3"
+              label="3. Overtime hour"
+              isRequired
+              type="number"
+            />
+            <InputField
+              name="overtime_hour4"
+              label="4. Overtime hour"
+              isRequired
+              type="number"
+            />
+          </SimpleGrid>
+        </Box>
       </Stack>
       <Stack m={4} spacing={6}>
         {mode === 'add' ? (

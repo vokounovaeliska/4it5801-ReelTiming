@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
+import { AddIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
   Center,
   Heading,
+  IconButton,
   Spinner,
   Table,
   Tbody,
@@ -15,6 +17,7 @@ import {
   Tr,
   useBreakpointValue,
   useToast,
+  VStack,
 } from '@chakra-ui/react';
 import {
   Link as ReactRouterLink,
@@ -47,7 +50,7 @@ export function CrewListPage() {
     useState<CrewMemberData | null>(null);
   const { projectId } = useParams<{ projectId: string }>();
   const location = useLocation();
-  const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
+  const tableSize = useBreakpointValue({ base: 'xl', md: 'md' });
 
   const sanitizeCrewMemberData = (data: CrewMemberData): CrewMemberData => ({
     ...data,
@@ -290,126 +293,153 @@ export function CrewListPage() {
           userRole={crewList.userRoleInProject}
         />
       </Navbar>
-      <Box flex="1" p={4} width="100%" maxWidth="1200px" mx="auto">
-        <Heading mb={4} textAlign="center">
+      <Box flex="1" p={0} width="100%">
+        <Heading mb={4} mt={2} textAlign="center">
           Crew List for Project {crewList.project.name}
         </Heading>
         {crewList.userRoleInProject === 'ADMIN' && (
-          <Button colorScheme="orange" onClick={handleAddMemberClick} mb={4}>
-            Add New Member
-          </Button>
+          <Center pb="1">
+            <VStack spacing={3}>
+              <IconButton
+                aria-label="Add project"
+                colorScheme="orange"
+                bgColor={'orange.500'}
+                onClick={handleAddMemberClick}
+                size="lg"
+                icon={<AddIcon />}
+                borderRadius="full"
+                boxShadow="md"
+                _hover={{
+                  bg: 'orange.500',
+                  color: 'white',
+                  transform: 'scale(1.2)',
+                }}
+                transition="all 0.3s ease"
+              />
+              <Box fontSize="sm">Add New Member</Box>
+            </VStack>
+          </Center>
         )}
-        <Table variant="simple" size={tableSize}>
-          <Thead>
-            <Tr>
-              <Th>Name</Th>
-              <Th>Surname</Th>
-              <Th>Department</Th>
-              <Th>Position</Th>
-              <Th>Role</Th>
-              <Th>Email</Th>
-              <Th>Phone number</Th>
-              <Th>Invitation</Th>
-              <Th>Standard rate</Th>
-              <Th>Compensation rate</Th>
-              <Th>Overtime hour 1</Th>
-              <Th>Overtime hour 2</Th>
-              <Th>Overtime hour 3</Th>
-              <Th>Overtime hour 4</Th>
-              <Th>Delete</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {filteredUsers.map(
-              (user: {
-                id: string;
-                user: {
+        <Box overflowX="auto">
+          <Table variant="simple" size={tableSize}>
+            <Thead>
+              <Tr>
+                <Th>Name</Th>
+                <Th>Surname</Th>
+                <Th>Department</Th>
+                <Th>Position</Th>
+                <Th>Role</Th>
+                <Th>Email</Th>
+                <Th>Phone number</Th>
+                <Th>Standard rate</Th>
+                <Th>Compensation rate</Th>
+                <Th>Overtime hour 1</Th>
+                <Th>Overtime hour 2</Th>
+                <Th>Overtime hour 3</Th>
+                <Th>Overtime hour 4</Th>
+                <Th>Invitation</Th>
+                <Th>Delete</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {filteredUsers.map(
+                (user: {
                   id: string;
-                  name: string;
-                  surname: string;
-                  email: string;
-                  standard_rate: number;
-                  compensation_rate: number;
-                  overtime_hour1: number;
-                  overtime_hour2: number;
-                  overtime_hour3: number;
-                  overtime_hour4: number;
-                };
-                department: { name: string; id: string } | null;
-                role: string;
-                position: string;
-                phone_number: string;
-                is_active: boolean;
-                invitation: string;
-                rate: { id: string };
-              }) => (
-                <Tr
-                  key={user.id}
-                  onClick={() =>
-                    handleEditMemberClick({
-                      id: user.id,
-                      name: user.user.name,
-                      surname: user.user.surname,
-                      department: user.department?.id || 'N/A',
-                      position: user.position,
-                      phone_number: user.phone_number,
-                      email: user.user.email,
-                      standard_rate: user.user.standard_rate,
-                      compensation_rate: user.user.compensation_rate,
-                      overtime_hour1: user.user.overtime_hour1,
-                      overtime_hour2: user.user.overtime_hour2,
-                      overtime_hour3: user.user.overtime_hour3,
-                      overtime_hour4: user.user.overtime_hour4,
-                      role: user.role,
-                      user_id: user.user.id,
-                      rate_id: user.rate?.id,
-                    })
-                  }
-                  _hover={{ cursor: 'pointer', backgroundColor: 'gray.100' }}
-                >
-                  <Td>{user.user.name}</Td>
-                  <Td>{user.user.surname}</Td>
-                  <Td>{String(user.department?.name) || 'N/A'}</Td>
-                  <Td>{user.role}</Td>
-                  <Td>{user.position}</Td>
-                  <Td>
-                    <a href={`mailto:${user?.user?.email || ''}`}>
-                      {user.user.email}
-                    </a>
-                  </Td>
-                  <Td>
-                    <Button
-                      colorScheme="orange"
-                      isDisabled={user.is_active && user.invitation != null}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSendEmail(user.user.id);
-                      }}
-                    >
-                      {user.is_active && user.invitation != null
-                        ? `Joined`
-                        : !user.is_active && user.invitation != null
-                          ? 'Resend invitation'
-                          : 'Send invitation'}
-                    </Button>
-                  </Td>
-                  <Td>
-                    <Button
-                      colorScheme="red"
-                      ml={2}
-                      onClick={(e) => {
-                        e.stopPropagation(); // prevent row click
-                        handleRemoveButtonClick(user.user.id);
-                      }}
-                    >
-                      Remove
-                    </Button>
-                  </Td>
-                </Tr>
-              ),
-            )}
-          </Tbody>
-        </Table>
+                  user: {
+                    id: string;
+                    name: string;
+                    surname: string;
+                    email: string;
+                    standard_rate: number;
+                    compensation_rate: number;
+                    overtime_hour1: number;
+                    overtime_hour2: number;
+                    overtime_hour3: number;
+                    overtime_hour4: number;
+                  };
+                  department: { name: string; id: string } | null;
+                  role: string;
+                  position: string;
+                  phone_number: string;
+                  is_active: boolean;
+                  invitation: string;
+                  rate: { id: string };
+                }) => (
+                  <Tr
+                    key={user.id}
+                    onClick={() =>
+                      handleEditMemberClick({
+                        id: user.id,
+                        name: user.user.name,
+                        surname: user.user.surname,
+                        department: user.department?.id || 'N/A',
+                        position: user.position,
+                        phone_number: user.phone_number,
+                        email: user.user.email,
+                        standard_rate: user.user.standard_rate,
+                        compensation_rate: user.user.compensation_rate,
+                        overtime_hour1: user.user.overtime_hour1,
+                        overtime_hour2: user.user.overtime_hour2,
+                        overtime_hour3: user.user.overtime_hour3,
+                        overtime_hour4: user.user.overtime_hour4,
+                        role: user.role,
+                        user_id: user.user.id,
+                        rate_id: user.rate?.id,
+                      })
+                    }
+                    _hover={{ cursor: 'pointer', backgroundColor: 'gray.100' }}
+                  >
+                    <Td>{user.user.name}</Td>
+                    <Td>{user.user.surname}</Td>
+                    <Td>{String(user.department?.name) || 'N/A'}</Td>
+                    <Td>{user.role}</Td>
+                    <Td>{user.position}</Td>
+                    <Td>
+                      <a href={`mailto:${user?.user?.email || ''}`}>
+                        {user.user.email}
+                      </a>
+                    </Td>
+                    <Td>{user.phone_number}</Td>
+                    <Td>{user.user.standard_rate}</Td>
+                    <Td>{user.user.compensation_rate}</Td>
+                    <Td>{user.user.overtime_hour1}</Td>
+                    <Td>{user.user.overtime_hour2}</Td>
+                    <Td>{user.user.overtime_hour3}</Td>
+                    <Td>{user.user.overtime_hour4}</Td>
+                    <Td>
+                      <Button
+                        colorScheme="orange"
+                        isDisabled={user.is_active && user.invitation != null}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSendEmail(user.user.id);
+                        }}
+                      >
+                        {user.is_active && user.invitation != null
+                          ? 'Joined'
+                          : !user.is_active && user.invitation != null
+                            ? 'Resend invitation'
+                            : 'Send invitation'}
+                      </Button>
+                    </Td>
+                    <Td>
+                      <Button
+                        colorScheme="red"
+                        ml={2}
+                        onClick={(e) => {
+                          e.stopPropagation(); // prevent row click
+                          handleRemoveButtonClick(user.user.id);
+                        }}
+                      >
+                        Remove
+                      </Button>
+                    </Td>
+                  </Tr>
+                ),
+              )}
+            </Tbody>
+          </Table>
+        </Box>
       </Box>
       <Footer />
       <CustomModal
