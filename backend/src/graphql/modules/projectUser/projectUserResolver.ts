@@ -8,7 +8,11 @@ import {
   Root,
 } from 'type-graphql';
 import { Project } from '../project/projectType';
-import { ProjectUser, ProjectUserInput } from './projectUserType';
+import {
+  CreateProjectUserInput,
+  ProjectUser,
+  ProjectUserInput,
+} from './projectUserType';
 import { User } from '../user/userType';
 import { Rate } from '../rate/rateType';
 import { Department } from '../department/departmentType';
@@ -105,10 +109,13 @@ export class ProjectUserResolver {
     phone_number: string | null,
     @Arg('position', () => String, { nullable: true, defaultValue: null })
     position: string | null,
+    @Arg('name') name: string,
+    @Arg('surname') surname: string,
+    @Arg('email') email: string,
     @Ctx() { db }: CustomContext,
   ): Promise<ProjectUser> {
     const projectUserService = new ProjectUserService(db);
-    const data: ProjectUserInput = {
+    const data: CreateProjectUserInput = {
       project_id: projectId,
       user_id: userId,
       is_team_leader: isTeamLeader,
@@ -118,6 +125,9 @@ export class ProjectUserResolver {
       invitation,
       phone_number,
       position,
+      name,
+      surname,
+      email,
     };
     return projectUserService.createProjectUser(data);
   }

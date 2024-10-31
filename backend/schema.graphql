@@ -21,9 +21,9 @@ type Department {
 type Mutation {
   activateProjectUser(token: String!, userId: String!): Boolean!
   addDepartment(name: String!): Department!
-  addInactiveUser(email: String!, name: String!, surname: String!): User!
+  addInactiveUser(email: String!, name: String!, phone_number: String!, surname: String!): User!
   addProject(description: String, end_date: DateTimeISO, name: String!, production_company: String!, start_date: DateTimeISO): Project!
-  addProjectUser(departmentId: String = null, invitation: String = null, isTeamLeader: Boolean = false, phone_number: String = null, position: String = null, projectId: String!, rateId: String = null, role: String = "CREW", userId: String!): ProjectUser!
+  addProjectUser(departmentId: String = null, email: String!, invitation: String = null, isTeamLeader: Boolean = false, name: String!, phone_number: String = null, position: String = null, projectId: String!, rateId: String = null, role: String = "CREW", surname: String!, userId: String!): ProjectUser!
   addRate(compensation_rate: Float!, overtime_hour1: Float!, overtime_hour2: Float!, overtime_hour3: Float!, overtime_hour4: Float!, standard_rate: Float!): Rate!
   deleteDepartment(departmentId: String!): Boolean!
   deleteProject(projectId: String!): Boolean!
@@ -34,7 +34,7 @@ type Mutation {
   inviteUser(projectId: String!, userId: String!): Boolean!
   resetPassword(newPassword: String!, token: String!): AuthInfo!
   signIn(email: String!, password: String!): AuthInfo!
-  signUp(email: String!, name: String!, password: String!, surname: String!): AuthInfo!
+  signUp(email: String!, name: String!, password: String!, phone_number: String!, surname: String!): AuthInfo!
   updateDepartment(departmentId: String!, name: String!): Department!
   updateProject(data: ProjectInput!, projectId: String!): Project!
   updateProjectUser(data: ProjectUserInput!, id: String!): ProjectUser!
@@ -73,32 +73,38 @@ type ProjectUser {
   create_date: DateTimeISO!
   create_user_id: String!
   department: Department
+  email: String!
   id: ID!
   invitation: String
   is_active: Boolean!
   is_team_leader: Boolean!
   last_update_date: DateTimeISO!
   last_update_user_id: String!
+  name: String!
   number_of_people: Float
   phone_number: String
   position: String
   project: Project!
   rate: Rate
   role: String
+  surname: String!
   user: User!
 }
 
 input ProjectUserInput {
   department_id: String
+  email: String!
   invitation: String
   is_active: Boolean
   is_team_leader: Boolean = false
+  name: String!
   number_of_people: Float
   phone_number: String
   position: String
   project_id: String!
   rate_id: String
   role: String
+  surname: String!
   user_id: String!
 }
 
@@ -158,6 +164,7 @@ type User {
   name: String!
   password_reset_expiration_time: DateTimeISO
   password_reset_token: String
+  phone_number: String
   surname: String!
 }
 
@@ -171,5 +178,6 @@ input UserInput {
   name: String
   password_reset_expiration_time: DateTimeISO
   password_reset_token: String
+  phone_number: String!
   surname: String
 }
