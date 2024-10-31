@@ -321,7 +321,7 @@ export function CrewListPage() {
             </VStack>
           </Center>
         )}
-        <Box overflowX="auto">
+        <Box overflowX="auto" overflowY="auto" maxHeight="68vh">
           <Table variant="simple" size={tableSize}>
             <Thead>
               <Tr>
