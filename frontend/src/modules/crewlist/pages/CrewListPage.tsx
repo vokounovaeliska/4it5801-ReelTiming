@@ -351,12 +351,6 @@ export function CrewListPage() {
                     name: string;
                     surname: string;
                     email: string;
-                    standard_rate: number;
-                    compensation_rate: number;
-                    overtime_hour1: number;
-                    overtime_hour2: number;
-                    overtime_hour3: number;
-                    overtime_hour4: number;
                   };
                   department: { name: string; id: string } | null;
                   role: string;
@@ -364,7 +358,15 @@ export function CrewListPage() {
                   phone_number: string;
                   is_active: boolean;
                   invitation: string;
-                  rate: { id: string };
+                  rate: {
+                    id: string;
+                    standard_rate: number;
+                    compensation_rate: number;
+                    overtime_hour1: number;
+                    overtime_hour2: number;
+                    overtime_hour3: number;
+                    overtime_hour4: number;
+                  } | null;
                 }) => (
                   <Tr
                     key={user.id}
@@ -377,36 +379,32 @@ export function CrewListPage() {
                         position: user.position,
                         phone_number: user.phone_number,
                         email: user.user.email,
-                        standard_rate: user.user.standard_rate,
-                        compensation_rate: user.user.compensation_rate,
-                        overtime_hour1: user.user.overtime_hour1,
-                        overtime_hour2: user.user.overtime_hour2,
-                        overtime_hour3: user.user.overtime_hour3,
-                        overtime_hour4: user.user.overtime_hour4,
+                        standard_rate: user.rate?.standard_rate || 0,
+                        compensation_rate: user.rate?.compensation_rate || 0,
+                        overtime_hour1: user.rate?.overtime_hour1 || 0,
+                        overtime_hour2: user.rate?.overtime_hour2 || 0,
+                        overtime_hour3: user.rate?.overtime_hour3 || 0,
+                        overtime_hour4: user.rate?.overtime_hour4 || 0,
                         role: user.role,
                         user_id: user.user.id,
-                        rate_id: user.rate?.id,
+                        rate_id: user.rate?.id ?? null,
                       })
                     }
                     _hover={{ cursor: 'pointer', backgroundColor: 'gray.100' }}
                   >
                     <Td>{user.user.name}</Td>
                     <Td>{user.user.surname}</Td>
-                    <Td>{String(user.department?.name) || 'N/A'}</Td>
-                    <Td>{user.role}</Td>
+                    <Td>{user.department ? user.department.name : 'N/A'}</Td>
                     <Td>{user.position}</Td>
-                    <Td>
-                      <a href={`mailto:${user?.user?.email || ''}`}>
-                        {user.user.email}
-                      </a>
-                    </Td>
+                    <Td>{user.role}</Td>
+                    <Td>{user.user.email}</Td>
                     <Td>{user.phone_number}</Td>
-                    <Td>{user.user.standard_rate}</Td>
-                    <Td>{user.user.compensation_rate}</Td>
-                    <Td>{user.user.overtime_hour1}</Td>
-                    <Td>{user.user.overtime_hour2}</Td>
-                    <Td>{user.user.overtime_hour3}</Td>
-                    <Td>{user.user.overtime_hour4}</Td>
+                    <Td>{user.rate ? user.rate.standard_rate : 'N/A'}</Td>
+                    <Td>{user.rate ? user.rate.compensation_rate : 'N/A'}</Td>
+                    <Td>{user.rate ? user.rate.overtime_hour1 : 'N/A'}</Td>
+                    <Td>{user.rate ? user.rate.overtime_hour2 : 'N/A'}</Td>
+                    <Td>{user.rate ? user.rate.overtime_hour3 : 'N/A'}</Td>
+                    <Td>{user.rate ? user.rate.overtime_hour4 : 'N/A'}</Td>
                     <Td>
                       <Button
                         colorScheme="orange"
