@@ -54,12 +54,16 @@ export class ProjectUserService {
       ...data,
       project_id: data.project_id,
       user_id: data.user_id ?? null,
-      is_team_leader: data.is_team_leader ?? false, // always needs to be defined
+      is_team_leader: data.is_team_leader ?? false,
       create_date: createdAt,
       last_update_date: createdAt,
       create_user_id: userId,
       last_update_user_id: userId,
       is_active: false,
+      phone_number: data.phone_number ?? null,
+      name: data.name,
+      surname: data.surname,
+      email: data.email,
     });
     const projectUser = await this.getProjectUserById(projectUserId);
     if (!projectUser) {
@@ -75,6 +79,9 @@ export class ProjectUserService {
     await this.projectUserRepository.updateProjectUser(id, {
       ...data,
       phone_number: data.phone_number ?? null,
+      name: data.name,
+      surname: data.surname,
+      email: data.email,
       last_update_date: new Date(),
     });
     return this.getProjectUserById(id);

@@ -115,8 +115,6 @@ export class ProjectUserResolver {
     invitation: string | null,
     @Arg('phone_number', () => String, { nullable: true, defaultValue: null })
     phone_number: string | null,
-    @Arg('position', () => String, { nullable: true, defaultValue: null })
-    position: string | null,
     @Arg('name') name: string,
     @Arg('surname') surname: string,
     @Arg('email') email: string,
@@ -132,7 +130,6 @@ export class ProjectUserResolver {
       role,
       invitation,
       phone_number,
-      position,
       name,
       surname,
       email,
@@ -213,6 +210,11 @@ export class ProjectUserResolver {
     @Ctx() { db }: CustomContext,
   ): Promise<ProjectUser | null> {
     const projectUserService = new ProjectUserService(db);
-    return projectUserService.updateProjectUser(id, data);
+    return projectUserService.updateProjectUser(id, {
+      ...data,
+      name: data.name,
+      surname: data.surname,
+      email: data.email,
+    });
   }
 }

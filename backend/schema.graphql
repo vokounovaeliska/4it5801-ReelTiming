@@ -23,7 +23,7 @@ type Mutation {
   addDepartment(name: String!): Department!
   addInactiveUser(email: String!, name: String!, phone_number: String!, surname: String!): User!
   addProject(description: String, end_date: DateTimeISO, name: String!, production_company: String!, start_date: DateTimeISO): Project!
-  addProjectUser(departmentId: String = null, email: String!, invitation: String = null, isTeamLeader: Boolean = false, name: String!, phone_number: String = null, position: String = null, projectId: String!, rateId: String = null, role: String = "CREW", surname: String!, userId: String = null): ProjectUser!
+  addProjectUser(departmentId: String = null, email: String!, invitation: String = null, isTeamLeader: Boolean = false, name: String!, phone_number: String = null, projectId: String!, rateId: String = null, role: String = "CREW", surname: String!, userId: String = null): ProjectUser!
   addRate(compensation_rate: Float!, overtime_hour1: Float!, overtime_hour2: Float!, overtime_hour3: Float!, overtime_hour4: Float!, standard_rate: Float!): Rate!
   deleteDepartment(departmentId: String!): Boolean!
   deleteProject(projectId: String!): Boolean!
