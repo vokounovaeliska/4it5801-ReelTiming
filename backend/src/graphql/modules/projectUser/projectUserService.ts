@@ -248,4 +248,18 @@ export class ProjectUserService {
     this.userRepository.deleteUser(projectUser.user_id);
     return true;
   }
+  async deleteInvitation(userId: string, projectId: string): Promise<boolean> {
+    const projectUser =
+      await this.projectUserRepository.getProjectUserByUserIdAndProjectId(
+        userId,
+        projectId,
+      );
+    if (!projectUser) {
+      throw new Error('Project user not found');
+    }
+    await this.projectUserRepository.updateProjectUser(projectUser.id, {
+      invitation: null,
+    });
+    return true;
+  }
 }

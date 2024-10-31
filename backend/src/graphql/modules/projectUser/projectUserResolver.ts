@@ -199,4 +199,13 @@ export class ProjectUserResolver {
     const projectUserService = new ProjectUserService(db);
     return projectUserService.updateProjectUser(id, data);
   }
+  @Mutation(() => Boolean)
+  async deleteInvitation(
+    @Arg('userId') userId: string,
+    @Arg('projectId') projectId: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<boolean> {
+    const projectUserService = new ProjectUserService(db);
+    return projectUserService.deleteInvitation(userId, projectId);
+  }
 }

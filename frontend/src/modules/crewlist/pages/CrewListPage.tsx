@@ -26,6 +26,7 @@ import {
 } from 'react-router-dom';
 
 import { useCrewMemberMutations } from '@frontend/gql/mutations/addCrewMember';
+import { DELETE_INVITATION } from '@frontend/gql/mutations/DeleteInvitation';
 import { GET_CREWLIST_INFO } from '@frontend/gql/queries/GetCrewListInfo';
 import { useAuth } from '@frontend/modules/auth';
 import ProjectButtons from '@frontend/modules/myprojects/ProjectButtons';
@@ -77,6 +78,7 @@ export function CrewListPage() {
   const { addCrewMember, sendEmailInvitation, editCrewMember } =
     useCrewMemberMutations();
   const [deleteProjectUser] = useMutation(DELETE_PROJECT_USER);
+  const [deleteProjectInvitation] = useMutation(DELETE_INVITATION);
 
   if (crewListLoading) {
     return (
@@ -163,9 +165,16 @@ export function CrewListPage() {
     }
   };
 
-  const handleSendEmail = async (userId: string) => {
+  const sendInvitation = async (userId: string, resending: boolean) => {
     try {
-      await sendEmailInvitation(projectId!, userId);
+      if (resending) {
+        await deleteProjectInvitation({
+          variables: { userId, projectId: projectId! },
+        });
+        await sendEmailInvitation(projectId!, userId);
+      } else {
+        await sendEmailInvitation(projectId!, userId);
+      }
       toast({
         title: 'Success',
         description: 'Invitation email sent successfully.',
@@ -173,6 +182,7 @@ export function CrewListPage() {
         duration: 5000,
         isClosable: true,
       });
+      // refetchProjectUsers();
     } catch (error) {
       console.error('Error sending invitation email:', error);
       toast({
@@ -408,17 +418,24 @@ export function CrewListPage() {
                     <Td>
                       <Button
                         colorScheme="orange"
-                        isDisabled={user.is_active && user.invitation != null}
+                        isDisabled={user.invitation != null && user.is_active}
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleSendEmail(user.user.id);
+                          if (user.invitation == null && !user.is_active) {
+                            sendInvitation(user.user.id, false);
+                          } else if (
+                            user.invitation != null &&
+                            !user.is_active
+                          ) {
+                            sendInvitation(user.user.id, true);
+                          }
                         }}
                       >
-                        {user.is_active && user.invitation != null
+                        {user.invitation != null && user.is_active
                           ? 'Joined'
-                          : !user.is_active && user.invitation != null
-                            ? 'Resend invitation'
-                            : 'Send invitation'}
+                          : user.invitation == null && !user.is_active
+                            ? 'Send invitation'
+                            : 'Resend invitation'}
                       </Button>
                     </Td>
                     <Td>

@@ -57,6 +57,7 @@ export function getProjectUserRepository(db: Db) {
         name?: string;
         surname?: string;
         email?: string;
+        invitation?: string | null;
       }>,
     ) {
       return db.update(project_user).set(data).where(eq(project_user.id, id));
