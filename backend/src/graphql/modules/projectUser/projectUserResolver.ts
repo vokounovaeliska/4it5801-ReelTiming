@@ -22,6 +22,7 @@ import { UserService } from '../user/userService';
 import { RateService } from '../rate/rateService';
 import { DepartmentService } from '../department/departmentService';
 import { CustomContext } from '../../../types/types';
+import { GraphQLError } from 'graphql';
 
 @Resolver(() => ProjectUser)
 export class ProjectUserResolver {
@@ -58,13 +59,20 @@ export class ProjectUserResolver {
     return projectService.getProjectById(projectUser.project_id);
   }
 
-  @FieldResolver(() => User)
+  @FieldResolver(() => User, { nullable: true })
   async user(
     @Root() projectUser: ProjectUser,
     @Ctx() { db }: CustomContext,
   ): Promise<User | null> {
     const userService = new UserService(db);
-    return userService.getUserById(projectUser.user_id);
+    try {
+      return await userService.getUserById(projectUser.user_id!);
+    } catch (error) {
+      if (error instanceof GraphQLError && error.message === 'User not found') {
+        return null;
+      }
+      throw error;
+    }
   }
 
   @FieldResolver(() => Rate, { nullable: true })
@@ -94,7 +102,7 @@ export class ProjectUserResolver {
   @Mutation(() => ProjectUser)
   async addProjectUser(
     @Arg('projectId') projectId: string,
-    @Arg('userId') userId: string,
+    @Arg('userId', { nullable: true, defaultValue: null }) userId: string,
     @Arg('isTeamLeader', { nullable: true, defaultValue: false })
     isTeamLeader: boolean,
     @Arg('rateId', () => String, { nullable: true, defaultValue: null })
@@ -162,11 +170,19 @@ export class ProjectUserResolver {
   @Mutation(() => Boolean)
   async inviteUser(
     @Arg('projectId') projectId: string,
-    @Arg('userId') userId: string,
+    @Arg('id') id: string,
+    @Arg('name') name: string,
+    @Arg('email') email: string,
     @Ctx() { db }: CustomContext,
   ): Promise<boolean> {
     const projectUserService = new ProjectUserService(db);
-    return projectUserService.inviteUserToProject(projectId, userId, db);
+    return projectUserService.inviteUserToProject(
+      projectId,
+      id,
+      name,
+      email,
+      db,
+    );
   }
 
   @Mutation(() => Boolean)

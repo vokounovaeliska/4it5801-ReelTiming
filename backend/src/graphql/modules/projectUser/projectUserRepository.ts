@@ -22,7 +22,7 @@ export function getProjectUserRepository(db: Db) {
     },
     async createProjectUser(data: {
       project_id: string;
-      user_id: string;
+      user_id?: string | null;
       group_id?: string | null;
       position?: string | null;
       rate_id?: string | null;
@@ -93,22 +93,13 @@ export function getProjectUserRepository(db: Db) {
         .where(eq(project_user.invitation, token));
       return projectUserRecord.length > 0 ? projectUserRecord[0] : null;
     },
-    async inviteUserToProject(
-      projectId: string,
-      userId: string,
-      token: string,
-    ) {
+    async inviteUserToProject(id: string, token: string) {
       return db
         .update(project_user)
         .set({
           invitation: token,
         })
-        .where(
-          and(
-            eq(project_user.user_id, userId),
-            eq(project_user.project_id, projectId),
-          ),
-        );
+        .where(and(eq(project_user.id, id)));
     },
   };
 }
