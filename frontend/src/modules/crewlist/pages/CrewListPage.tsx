@@ -132,6 +132,7 @@ export function CrewListPage() {
   ) => {
     setIsSubmitting(true);
     try {
+      console.log(data.name, data.surname, data.email, data.phone_number);
       const { userId } = await addCrewMember(data, projectId!);
 
       // Step 2: Only send the invitation if sendInvite is true

@@ -27,6 +27,8 @@ export const GET_CREWLIST_INFO = gql`
         surname
         email
         id
+        phone_number
+        is_active
       }
       rate {
         id
@@ -48,6 +50,9 @@ export const GET_CREWLIST_INFO = gql`
         name
         id
       }
+      email
+      name
+      surname
     }
     userRoleInProject(projectId: $projectId, userId: $userId)
   }

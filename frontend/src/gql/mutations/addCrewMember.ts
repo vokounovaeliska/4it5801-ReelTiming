@@ -43,6 +43,7 @@ export const useCrewMemberMutations = () => {
           email: data.email,
           name: data.name,
           surname: data.surname,
+          phone_number: data.phone_number,
         },
       });
       const userId = responseUser.data?.addInactiveUser?.id;
@@ -70,6 +71,9 @@ export const useCrewMemberMutations = () => {
           departmentId: data.department,
           role: data.role,
           position: data.position,
+          name: data.name,
+          surname: data.surname,
+          email: data.email,
         },
       });
 

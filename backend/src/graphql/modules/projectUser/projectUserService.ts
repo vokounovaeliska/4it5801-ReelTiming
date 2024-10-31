@@ -205,6 +205,9 @@ export class ProjectUserService {
       await sendMail(userById.email, 'Invitation to project', htmlContent);
     } catch (error) {
       console.error('Error sending invitation email:', error);
+      if (error instanceof Error) {
+        console.error('Stack trace:', error.stack);
+      }
       throw new GraphQLError('Failed to send invtiation email.');
     }
 
