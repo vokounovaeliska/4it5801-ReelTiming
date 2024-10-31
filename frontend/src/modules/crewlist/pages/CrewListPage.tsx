@@ -123,19 +123,22 @@ export function CrewListPage() {
     setIsModalOpen(true);
   };
 
-  const handleAddNewCrewMember = async (data: CrewMemberData) => {
-    setSelectedCrewMember(null); // clear selected crew member for adding new
-    setIsModalOpen(true);
+  const handleAddNewCrewMember = async (
+    data: CrewMemberData,
+    sendInvite: boolean,
+  ) => {
     setIsSubmitting(true);
     try {
       const { userId } = await addCrewMember(data, projectId!);
-      // TODO - sendemail isnt sending after creation
-      await sendEmailInvitation(projectId!, userId); // Send invitation after adding member
-      // handleSendInvitation(projectId!, userId)
-      console.log('New crew member added and invitation sent:', userId);
+
+      // Step 2: Only send the invitation if sendInvite is true
+      if (sendInvite) {
+        await sendEmailInvitation(projectId!, userId);
+      }
+
       toast({
         title: 'Success',
-        description: 'Crew member added and invitation sent successfully.',
+        description: `Crew member added${sendInvite ? ' and invitation sent' : ''} successfully.`,
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -152,9 +155,7 @@ export function CrewListPage() {
         isClosable: true,
       });
     } finally {
-      setIsSubmitting(false); // Reset button state
-      // refetchProjectUsers();
-      // uncomment if we wanna refetch always - even after bad addition to db, fails rn thanks to no mail send
+      setIsSubmitting(false);
     }
   };
 
@@ -418,23 +419,20 @@ export function CrewListPage() {
       >
         <CrewListForm
           projectId={projectId!}
-          onSubmit={(data) => {
+          onSubmit={(data, sendInvite) => {
             if (selectedCrewMember) {
-              // TODO - implement to actually do stuff
+              // handleUpdateCrewMember({ ...data, id: selectedCrewMember.id });
               handleUpdateCrewMember({
                 ...data,
                 id: selectedCrewMember.id,
                 user_id: selectedCrewMember.user_id,
                 rate_id: selectedCrewMember.rate_id,
               });
-              console.log('Edit crew member:', data);
             } else {
-              handleAddNewCrewMember({
-                ...data,
-                id: '',
-                user_id: null,
-                rate_id: null,
-              });
+              handleAddNewCrewMember(
+                { ...data, id: '', user_id: null, rate_id: null },
+                sendInvite,
+              ); // Pass sendInvite boolean
             }
           }}
           isLoading={isSubmitting}

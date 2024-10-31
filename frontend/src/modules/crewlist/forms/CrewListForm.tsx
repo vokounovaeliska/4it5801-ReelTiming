@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Button,
   FormControl,
@@ -14,7 +15,7 @@ import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
 export type CrewListFormProps = {
   projectId: string;
   errorMessage?: string;
-  onSubmit: (data: FormValues) => void;
+  onSubmit: (data: FormValues, sendInvite: boolean) => void;
   isLoading: boolean;
   departments: { id: string; name: string }[];
   initialValues?: FormValues;
@@ -84,9 +85,13 @@ export function CrewListForm({
   initialValues: formInitialValues = initialValues,
   mode,
 }: CrewListFormProps) {
+  const [sendInvite, setSendInvite] = useState(false);
   return (
     <Form
-      onSubmit={onSubmit}
+      onSubmit={(data) => {
+        onSubmit(data, sendInvite);
+        setSendInvite(false);
+      }}
       defaultValues={formInitialValues}
       resolver={zodResolver(schema)}
       noValidate
@@ -190,6 +195,7 @@ export function CrewListForm({
               colorScheme="orange"
               width="100%"
               isLoading={isLoading}
+              onClick={() => setSendInvite(true)}
             >
               Add Member and Send Invitation
             </Button>
@@ -198,6 +204,7 @@ export function CrewListForm({
               colorScheme="gray"
               width="100%"
               isLoading={isLoading}
+              onClick={() => setSendInvite(false)}
             >
               Add Member without Invitation
             </Button>
