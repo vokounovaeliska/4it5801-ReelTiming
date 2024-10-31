@@ -53,6 +53,7 @@ export class UserService {
     password: string;
     name: string;
     surname: string;
+    phone_number: string;
     createUserId: string;
   }) {
     const userByEmail = await this.userRepository.getUserByEmail(data.email);
@@ -69,6 +70,7 @@ export class UserService {
       password: passwordHash,
       name: data.name,
       surname: data.surname,
+      phone_number: data.phone_number,
       create_date: currentDate,
       create_user_id: data.createUserId,
       last_update_date: currentDate,
@@ -92,6 +94,7 @@ export class UserService {
       password: string;
       name: string;
       surname: string;
+      phone_number: string;
       create_date: Date;
       last_update_date: Date;
       is_active: boolean;
@@ -156,6 +159,7 @@ export class UserService {
     password: string;
     name: string;
     surname: string;
+    phone_number: string;
   }) {
     const userByEmail = await this.userRepository.getActiveUserByEmail(
       data.email,
@@ -173,6 +177,7 @@ export class UserService {
       password: passwordHash,
       name: data.name,
       surname: data.surname,
+      phone_number: data.phone_number,
       create_date: currentDate,
       create_user_id: 'user-id',
       last_update_date: currentDate,
@@ -197,6 +202,7 @@ export class UserService {
     name: string;
     surname: string;
     email: string;
+    phone_number: string;
   }) {
     const passwordHash = await argon2.hash('default');
     const currentDate = new Date();
@@ -206,6 +212,7 @@ export class UserService {
       password: passwordHash,
       name: data.name,
       surname: data.surname,
+      phone_number: data.phone_number,
       create_date: currentDate,
       create_user_id: 'user-id',
       last_update_date: currentDate,

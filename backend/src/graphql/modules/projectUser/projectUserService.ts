@@ -1,6 +1,10 @@
 import { Db } from '@backend/types/types';
 import { getProjectUserRepository } from './projectUserRepository';
-import { ProjectUser, ProjectUserInput } from './projectUserType';
+import {
+  CreateProjectUserInput,
+  ProjectUser,
+  ProjectUserInput,
+} from './projectUserType';
 import { Project } from '../project/projectType';
 import { UserService } from '../user/userService';
 import { GraphQLError } from 'graphql';
@@ -44,7 +48,7 @@ export class ProjectUserService {
     return projectUser;
   }
 
-  async createProjectUser(data: ProjectUserInput): Promise<ProjectUser> {
+  async createProjectUser(data: CreateProjectUserInput): Promise<ProjectUser> {
     const createdAt = new Date();
     const userId = 'user-id'; // actual user id
     const projectUserId = await this.projectUserRepository.createProjectUser({
@@ -71,6 +75,7 @@ export class ProjectUserService {
   ): Promise<ProjectUser | null> {
     await this.projectUserRepository.updateProjectUser(id, {
       ...data,
+      phone_number: data.phone_number ?? null,
       last_update_date: new Date(),
     });
     return this.getProjectUserById(id);

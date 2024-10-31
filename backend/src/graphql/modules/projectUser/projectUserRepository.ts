@@ -34,6 +34,9 @@ export function getProjectUserRepository(db: Db) {
       last_update_user_id: string;
       is_active: boolean;
       phone_number?: string | null;
+      name: string;
+      surname: string;
+      email: string;
     }) {
       const result = await db.insert(project_user).values(data).$returningId();
       return result[0].id;
@@ -51,6 +54,9 @@ export function getProjectUserRepository(db: Db) {
         is_active?: boolean;
         user_id?: string;
         phone_number?: string | null;
+        name?: string;
+        surname?: string;
+        email?: string;
       }>,
     ) {
       return db.update(project_user).set(data).where(eq(project_user.id, id));
