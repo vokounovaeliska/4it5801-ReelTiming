@@ -485,6 +485,7 @@ export function CrewListPage() {
           departments={crewList.departments}
           initialValues={selectedCrewMember || undefined}
           mode={selectedCrewMember ? 'edit' : 'add'}
+          userRole={crewList.userRoleInProject}
         />
       </CustomModal>
       <CrewAlertDialog

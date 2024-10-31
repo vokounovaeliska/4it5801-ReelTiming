@@ -22,6 +22,7 @@ export type CrewListFormProps = {
   departments: { id: string; name: string }[];
   initialValues?: FormValues;
   mode: 'add' | 'edit'; // TODO - ugly solution, refactor when free ?
+  userRole: 'ADMIN' | 'CREW';
 };
 
 const phoneRegex = /^(\+\d{1,3}[- ]?)?\d{9}$/;
@@ -92,6 +93,7 @@ export function CrewListForm({
   departments,
   initialValues: formInitialValues = initialValues,
   mode,
+  userRole,
 }: CrewListFormProps) {
   const [sendInvite, setSendInvite] = useState(false);
   return (
@@ -108,18 +110,8 @@ export function CrewListForm({
         {errorMessage && <ErrorBanner title={errorMessage} />}
         <Box display={{ base: 'block', lg: 'flex' }} gap={6} p="2">
           <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-            <InputField
-              name="name"
-              label="Name"
-              isRequired
-              isDisabled={mode === 'edit'}
-            />
-            <InputField
-              name="surname"
-              label="Surname"
-              isRequired
-              isDisabled={mode === 'edit'}
-            />
+            <InputField name="name" label="Name" isRequired />
+            <InputField name="surname" label="Surname" isRequired />
             <Controller
               name="department"
               render={({ field }) => (
@@ -140,13 +132,13 @@ export function CrewListForm({
                 </FormControl>
               )}
             />
-            <InputField name="position" label="Position" isRequired />
             <InputField
-              name="email"
-              label="Email"
+              name="position"
+              label="Position"
               isRequired
-              isDisabled={mode === 'edit'}
+              isDisabled={userRole !== 'ADMIN'}
             />
+            <InputField name="email" label="Email" isRequired isDisabled />
             <InputField name="phone_number" label="Phone number" isRequired />
             <Controller
               name="role"
