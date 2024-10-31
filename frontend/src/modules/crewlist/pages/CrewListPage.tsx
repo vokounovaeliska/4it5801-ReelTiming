@@ -7,6 +7,7 @@ import {
   Center,
   Heading,
   IconButton,
+  Link,
   Spinner,
   Table,
   Tbody,
@@ -407,7 +408,17 @@ export function CrewListPage() {
                     <Td>{user.department ? user.department.name : 'N/A'}</Td>
                     <Td>{user.position}</Td>
                     <Td>{user.role}</Td>
-                    <Td>{user.user.email}</Td>
+                    <Td>
+                      <Link
+                        href={`mailto:${user.user.email}`}
+                        color="black"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        {user.user.email}
+                      </Link>
+                    </Td>
                     <Td>{user.phone_number}</Td>
                     <Td>{user.rate ? user.rate.standard_rate : 'N/A'}</Td>
                     <Td>{user.rate ? user.rate.compensation_rate : 'N/A'}</Td>
