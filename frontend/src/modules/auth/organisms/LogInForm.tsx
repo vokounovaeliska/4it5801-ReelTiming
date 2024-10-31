@@ -12,6 +12,8 @@ import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
 import { PasswordInputField } from '@frontend/shared/forms/molecules/fields/PasswordInputField';
 import { RouterLink } from '@frontend/shared/navigation/atoms';
 
+import RequiredInfo from './RequiredInfo';
+
 const schema = zod.object({
   email: zod.string().email().min(1),
   password: zod.string().min(1, { message: 'Password is required' }),
@@ -119,6 +121,7 @@ export function LogInForm({
             Login
           </Button>
           {children}
+          <RequiredInfo />
         </Form>
       </Box>
     </Box>

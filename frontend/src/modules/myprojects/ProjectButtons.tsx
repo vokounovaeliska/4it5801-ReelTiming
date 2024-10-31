@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, HStack } from '@chakra-ui/react';
+import { Box, Button, HStack, VStack } from '@chakra-ui/react';
 import { CiViewTimeline } from 'react-icons/ci';
 import { FaPeopleGroup } from 'react-icons/fa6';
 import { MdBuild, MdOutlineSummarize } from 'react-icons/md';

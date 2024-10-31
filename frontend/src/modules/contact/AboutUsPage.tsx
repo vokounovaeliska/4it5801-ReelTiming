@@ -45,7 +45,7 @@ const AboutUsPage = () => {
         <Divider my={6} />
 
         {/* Contact Section */}
-        <Heading as="h2" size={{ base: 'lg', md: 'xl' }} mb={4}>
+        <Heading as="h2" size={{ base: 'lg', md: 'xl' }} mb={4} id="contact-us">
           Get in Touch
         </Heading>
 

@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { Heading, HStack } from '@chakra-ui/react';
+import { Heading, HStack, Text } from '@chakra-ui/react';
 
 import { route } from '@frontend/route';
 import {
@@ -18,15 +18,17 @@ import {
 import { PasswordInputField } from '@frontend/shared/forms/molecules/fields/PasswordInputField';
 import { RouterLink } from '@frontend/shared/navigation/atoms';
 
+import RequiredInfo from './RequiredInfo';
+
 const schema = zod
   .object({
     email: zod.string().email(),
     password: zod
       .string()
-      .min(8, 'Password must be at least 8 characters long'),
+      .min(10, 'Password must be at least 10 characters long'),
     passwordConfirmation: zod
       .string()
-      .min(8, 'Password confirmation must be at least 8 characters long'),
+      .min(10, 'Password confirmation must be at least 10 characters long'),
     name: zod.string().min(1, 'Name is required'),
     surname: zod.string().min(1, 'Surname is required'),
     terms: zod
@@ -145,6 +147,9 @@ export function RegisterForm({
               autoCorrect="off"
               autoCapitalize="off"
             />
+            <Text color="gray.500" fontSize="xs" textAlign="left">
+              Password must be at least 10 characters long
+            </Text>
             <PasswordInputField
               name="passwordConfirmation"
               label="Password Confirmation"
@@ -180,6 +185,7 @@ export function RegisterForm({
             </Button>
           </Stack>
           {children}
+          <RequiredInfo />
         </Form>
       </Box>
     </Box>
