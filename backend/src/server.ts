@@ -111,7 +111,11 @@ const init = async () => {
     res.redirect('/graphql');
   });
 
+  const timeout = 20000;
+  httpServer.setTimeout(timeout);
+
   httpServer.listen({ port: PORT }, () => {
+    console.log('Timeout set to: ' + timeout + 'ms');
     console.log('Server listening on port: ' + PORT);
   });
 };
