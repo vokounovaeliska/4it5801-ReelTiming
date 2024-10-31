@@ -177,7 +177,7 @@ export function CrewListPage() {
     try {
       const { userId } = await addCrewMember(data, projectId!);
       // TODO - sendemail isnt sending after creation
-      await sendEmailInvitation(projectId!, userId); // Send invitation after adding member
+      await sendEmailInvitation(projectId!, userId, data.name, data.email); // Send invitation after adding member
       // handleSendInvitation(projectId!, userId)
       console.log('New crew member added and invitation sent:', userId);
       toast({
@@ -207,7 +207,7 @@ export function CrewListPage() {
 
   const handleSendEmail = async (userId: string) => {
     try {
-      await sendEmailInvitation(projectId!, userId);
+      await sendEmailInvitation(projectId!, userId,data.name,data.email);
       toast({
         title: 'Success',
         description: 'Invitation email sent successfully.',
