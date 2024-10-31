@@ -61,8 +61,8 @@ export class ProjectUserInput {
   @Field(() => String)
   project_id!: string;
 
-  @Field(() => String)
-  user_id!: string;
+  @Field(() => String, { nullable: true })
+  user_id?: string | string;
 
   @Field(() => String, { nullable: true })
   department_id?: string | null;
