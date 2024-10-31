@@ -1,5 +1,11 @@
 import React from 'react';
-import { Box, Button, HStack, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  HStack,
+  useBreakpointValue,
+  VStack,
+} from '@chakra-ui/react';
 import { CiViewTimeline } from 'react-icons/ci';
 import { FaPeopleGroup } from 'react-icons/fa6';
 import { MdBuild, MdOutlineSummarize } from 'react-icons/md';
@@ -40,9 +46,12 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
     navigate(path);
   };
 
+  const StackComponent =
+    useBreakpointValue({ base: VStack, md: HStack }) || VStack;
+
   return (
     <Box>
-      <HStack spacing={4}>
+      <StackComponent spacing={4}>
         <Button
           {...buttonStyle}
           leftIcon={<MdOutlineSummarize />}
@@ -79,7 +88,7 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
             </Button>
           </>
         )}
-      </HStack>
+      </StackComponent>
     </Box>
   );
 };
