@@ -138,7 +138,12 @@ export function CrewListForm({
               isRequired
               isDisabled={userRole !== 'ADMIN'}
             />
-            <InputField name="email" label="Email" isRequired isDisabled />
+            <InputField
+              name="email"
+              label="Email"
+              isRequired
+              isDisabled={mode !== 'add'}
+            />
             <InputField name="phone_number" label="Phone number" isRequired />
             <Controller
               name="role"

@@ -12,9 +12,6 @@ export const ADD_PROJECT_USER = gql`
     $surname: String!
     $email: String!
     $position: String
-    $name: String!
-    $surname: String!
-    $email: String!
   ) {
     addProjectUser(
       userId: $userId
@@ -27,9 +24,6 @@ export const ADD_PROJECT_USER = gql`
       surname: $surname
       email: $email
       position: $position
-      name: $name
-      surname: $surname
-      email: $email
     ) {
       id
     }
