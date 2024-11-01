@@ -12,6 +12,7 @@ interface CrewMemberData {
   name: string;
   surname: string;
   department: string;
+  position: string;
   phone_number: string;
   email: string;
   standard_rate: number;
@@ -68,6 +69,7 @@ export const useCrewMemberMutations = () => {
           phoneNumber: data.phone_number,
           rateId: rateId,
           departmentId: data.department,
+          position: data.position,
           role: data.role,
           name: data.name,
           surname: data.surname,
@@ -144,6 +146,7 @@ export const useCrewMemberMutations = () => {
             name: data.name,
             surname: data.surname,
             email: data.email,
+            position: data.position,
           },
           updateProjectUserId: data.id,
         },

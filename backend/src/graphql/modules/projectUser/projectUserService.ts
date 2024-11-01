@@ -64,6 +64,7 @@ export class ProjectUserService {
       name: data.name,
       surname: data.surname,
       email: data.email,
+      position: data.position ?? null,
     });
     const projectUser = await this.getProjectUserById(projectUserId);
     if (!projectUser) {
@@ -82,6 +83,7 @@ export class ProjectUserService {
       name: data.name,
       surname: data.surname,
       email: data.email,
+      position: data.position ?? null,
       last_update_date: new Date(),
     });
     return this.getProjectUserById(id);

@@ -118,6 +118,8 @@ export class ProjectUserResolver {
     @Arg('name') name: string,
     @Arg('surname') surname: string,
     @Arg('email') email: string,
+    @Arg('position', () => String, { nullable: true, defaultValue: null })
+    position: string | null,
     @Ctx() { db }: CustomContext,
   ): Promise<ProjectUser> {
     const projectUserService = new ProjectUserService(db);
@@ -133,6 +135,7 @@ export class ProjectUserResolver {
       name,
       surname,
       email,
+      position,
     };
     return projectUserService.createProjectUser(data);
   }
@@ -210,11 +213,6 @@ export class ProjectUserResolver {
     @Ctx() { db }: CustomContext,
   ): Promise<ProjectUser | null> {
     const projectUserService = new ProjectUserService(db);
-    return projectUserService.updateProjectUser(id, {
-      ...data,
-      name: data.name,
-      surname: data.surname,
-      email: data.email,
-    });
+    return projectUserService.updateProjectUser(id, data);
   }
 }
