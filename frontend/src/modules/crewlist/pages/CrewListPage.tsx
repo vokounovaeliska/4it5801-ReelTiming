@@ -339,7 +339,7 @@ export function CrewListPage() {
             </VStack>
           </Center>
         )}
-        <Box overflowX="auto" overflowY="auto" maxHeight="68vh">
+        <Box minHeight="10vh">
           <Table variant="simple" size={tableSize}>
             <Thead>
               <Tr>
@@ -426,7 +426,17 @@ export function CrewListPage() {
                         {user.user.email}
                       </Link>
                     </Td>
-                    <Td>{user.phone_number}</Td>
+                    <Td>
+                      <Link
+                        href={`tel:${user.phone_number}`}
+                        color="black"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        {user.phone_number}
+                      </Link>
+                    </Td>
                     <Td>{user.rate ? user.rate.standard_rate : 'N/A'}</Td>
                     <Td>{user.rate ? user.rate.compensation_rate : 'N/A'}</Td>
                     <Td>{user.rate ? user.rate.overtime_hour1 : 'N/A'}</Td>
