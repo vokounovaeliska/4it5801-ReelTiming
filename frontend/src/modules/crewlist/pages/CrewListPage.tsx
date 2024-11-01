@@ -138,12 +138,17 @@ export function CrewListPage() {
   ) => {
     setIsSubmitting(true);
     try {
-      console.log(data.name, data.surname, data.email, data.phone_number);
-      const { userId } = await addCrewMember(data, projectId!);
-
+      const { responseUserId } = await addCrewMember(data, projectId!);
+      console.log(responseUserId.data.addProjectUser.id);
+      console.log(responseUserId.data.addProjectUser.user.id);
       // Step 2: Only send the invitation if sendInvite is true
       if (sendInvite) {
-        await sendEmailInvitation(projectId!, userId, name, email);
+        await sendEmailInvitation(
+          projectId!,
+          responseUserId.data.addProjectUser.id,
+          name,
+          email,
+        );
       }
 
       toast({
@@ -170,6 +175,7 @@ export function CrewListPage() {
   };
 
   const sendInvitation = async (
+    projectUserId: string,
     userId: string,
     name: string,
     email: string,
@@ -180,9 +186,9 @@ export function CrewListPage() {
         await deleteProjectInvitation({
           variables: { userId, projectId: projectId! },
         });
-        await sendEmailInvitation(projectId!, userId, name, email);
+        await sendEmailInvitation(projectId!, projectUserId, name, email);
       } else {
-        await sendEmailInvitation(projectId!, userId, name, email);
+        await sendEmailInvitation(projectId!, projectUserId, name, email);
       }
       toast({
         title: 'Success',
@@ -481,6 +487,7 @@ export function CrewListPage() {
                               e.stopPropagation();
                               if (user.invitation == null && !user.is_active) {
                                 sendInvitation(
+                                  user.id,
                                   user.user.id,
                                   user.user.name,
                                   user.user.email,
@@ -491,6 +498,7 @@ export function CrewListPage() {
                                 !user.is_active
                               ) {
                                 sendInvitation(
+                                  user.id,
                                   user.user.id,
                                   user.user.name,
                                   user.user.email,

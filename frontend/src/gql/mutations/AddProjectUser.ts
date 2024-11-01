@@ -26,6 +26,9 @@ export const ADD_PROJECT_USER = gql`
       position: $position
     ) {
       id
+      user {
+        id
+      }
     }
   }
 `;
