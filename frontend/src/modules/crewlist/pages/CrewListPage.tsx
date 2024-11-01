@@ -10,6 +10,7 @@ import {
   Link,
   Spinner,
   Table,
+  TableContainer,
   Tbody,
   Td,
   Text,
@@ -339,161 +340,193 @@ export function CrewListPage() {
             </VStack>
           </Center>
         )}
-        <Box minHeight="10vh">
-          <Table variant="simple" size={tableSize}>
-            <Thead>
-              <Tr>
-                <Th>Name</Th>
-                <Th>Surname</Th>
-                <Th>Department</Th>
-                <Th>Position</Th>
-                <Th>Role</Th>
-                <Th>Email</Th>
-                <Th>Phone number</Th>
-                <Th>Standard rate</Th>
-                <Th>Compensation rate</Th>
-                <Th>Overtime hour 1</Th>
-                <Th>Overtime hour 2</Th>
-                <Th>Overtime hour 3</Th>
-                <Th>Overtime hour 4</Th>
-                <Th>Invitation</Th>
-                <Th>Delete</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {filteredUsers.map(
-                (user: {
-                  id: string;
-                  user: {
-                    id: string;
-                    name: string;
-                    surname: string;
-                    email: string;
-                  };
-                  department: { name: string; id: string } | null;
-                  role: string;
-                  position: string;
-                  phone_number: string;
-                  is_active: boolean;
-                  invitation: string;
-                  rate: {
-                    id: string;
-                    standard_rate: number;
-                    compensation_rate: number;
-                    overtime_hour1: number;
-                    overtime_hour2: number;
-                    overtime_hour3: number;
-                    overtime_hour4: number;
-                  } | null;
-                }) => (
-                  <Tr
-                    key={user.id}
-                    onClick={() =>
-                      handleEditMemberClick({
-                        id: user.id,
-                        name: user.user.name,
-                        surname: user.user.surname,
-                        department: user.department?.id || 'N/A',
-                        position: user.position,
-                        phone_number: user.phone_number,
-                        email: user.user.email,
-                        standard_rate: user.rate?.standard_rate || 0,
-                        compensation_rate: user.rate?.compensation_rate || 0,
-                        overtime_hour1: user.rate?.overtime_hour1 || 0,
-                        overtime_hour2: user.rate?.overtime_hour2 || 0,
-                        overtime_hour3: user.rate?.overtime_hour3 || 0,
-                        overtime_hour4: user.rate?.overtime_hour4 || 0,
-                        role: user.role,
-                        user_id: user.user.id,
-                        rate_id: user.rate?.id ?? null,
-                      })
-                    }
-                    _hover={{ cursor: 'pointer', backgroundColor: 'gray.100' }}
-                  >
-                    <Td>{user.user.name}</Td>
-                    <Td>{user.user.surname}</Td>
-                    <Td>{user.department ? user.department.name : 'N/A'}</Td>
-                    <Td>{user.position}</Td>
-                    <Td>{user.role}</Td>
-                    <Td>
-                      <Link
-                        href={`mailto:${user.user.email}`}
-                        color="black"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                      >
-                        {user.user.email}
-                      </Link>
-                    </Td>
-                    <Td>
-                      <Link
-                        href={`tel:${user.phone_number}`}
-                        color="black"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                      >
-                        {user.phone_number}
-                      </Link>
-                    </Td>
-                    <Td>{user.rate ? user.rate.standard_rate : 'N/A'}</Td>
-                    <Td>{user.rate ? user.rate.compensation_rate : 'N/A'}</Td>
-                    <Td>{user.rate ? user.rate.overtime_hour1 : 'N/A'}</Td>
-                    <Td>{user.rate ? user.rate.overtime_hour2 : 'N/A'}</Td>
-                    <Td>{user.rate ? user.rate.overtime_hour3 : 'N/A'}</Td>
-                    <Td>{user.rate ? user.rate.overtime_hour4 : 'N/A'}</Td>
-                    <Td>
-                      <Button
-                        colorScheme="orange"
-                        isDisabled={user.invitation != null && user.is_active}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (user.invitation == null && !user.is_active) {
-                            sendInvitation(
-                              user.user.id,
-                              user.user.name,
-                              user.user.email,
-                              false,
-                            );
-                          } else if (
-                            user.invitation != null &&
-                            !user.is_active
-                          ) {
-                            sendInvitation(
-                              user.user.id,
-                              user.user.name,
-                              user.user.email,
-                              true,
-                            );
-                          }
-                        }}
-                      >
-                        {user.invitation != null && user.is_active
-                          ? 'Joined'
-                          : user.invitation == null && !user.is_active
-                            ? 'Send invitation'
-                            : 'Resend invitation'}
-                      </Button>
-                    </Td>
-                    <Td>
-                      <Button
-                        colorScheme="red"
-                        ml={2}
-                        onClick={(e) => {
-                          e.stopPropagation(); // prevent row click
-                          handleRemoveButtonClick(user.user.id);
-                        }}
-                      >
-                        Remove
-                      </Button>
-                    </Td>
+        {/* could work ??*/}
+        {/* <Box  maxWidth="100%"> */}
+
+        {/* custom scrollbar */}
+        <Box
+          overflowX="auto"
+          // maxW="100vw"
+          h="100%"
+          whiteSpace="nowrap"
+          // pb="17px"
+          // color="white"
+          px="32px"
+          sx={{
+            '::-webkit-scrollbar': {
+              display: 'block',
+            },
+          }}
+        >
+          <Box maxH="100vw">
+            <TableContainer>
+              <Table variant="simple" size={tableSize}>
+                <Thead>
+                  <Tr>
+                    <Th>Name</Th>
+                    <Th>Surname</Th>
+                    <Th>Department</Th>
+                    <Th>Position</Th>
+                    <Th>Role</Th>
+                    <Th>Email</Th>
+                    <Th>Phone number</Th>
+                    <Th>Standard rate</Th>
+                    <Th>Compensation rate</Th>
+                    <Th>Overtime hour 1</Th>
+                    <Th>Overtime hour 2</Th>
+                    <Th>Overtime hour 3</Th>
+                    <Th>Overtime hour 4</Th>
+                    <Th>Invitation</Th>
+                    <Th>Delete</Th>
                   </Tr>
-                ),
-              )}
-            </Tbody>
-          </Table>
+                </Thead>
+                <Tbody>
+                  {filteredUsers.map(
+                    (user: {
+                      id: string;
+                      user: {
+                        id: string;
+                        name: string;
+                        surname: string;
+                        email: string;
+                      };
+                      department: { name: string; id: string } | null;
+                      role: string;
+                      position: string;
+                      phone_number: string;
+                      is_active: boolean;
+                      invitation: string;
+                      rate: {
+                        id: string;
+                        standard_rate: number;
+                        compensation_rate: number;
+                        overtime_hour1: number;
+                        overtime_hour2: number;
+                        overtime_hour3: number;
+                        overtime_hour4: number;
+                      } | null;
+                    }) => (
+                      <Tr
+                        key={user.id}
+                        onClick={() =>
+                          handleEditMemberClick({
+                            id: user.id,
+                            name: user.user.name,
+                            surname: user.user.surname,
+                            department: user.department?.id || 'N/A',
+                            position: user.position,
+                            phone_number: user.phone_number,
+                            email: user.user.email,
+                            standard_rate: user.rate?.standard_rate || 0,
+                            compensation_rate:
+                              user.rate?.compensation_rate || 0,
+                            overtime_hour1: user.rate?.overtime_hour1 || 0,
+                            overtime_hour2: user.rate?.overtime_hour2 || 0,
+                            overtime_hour3: user.rate?.overtime_hour3 || 0,
+                            overtime_hour4: user.rate?.overtime_hour4 || 0,
+                            role: user.role,
+                            user_id: user.user.id,
+                            rate_id: user.rate?.id ?? null,
+                          })
+                        }
+                        _hover={{
+                          cursor: 'pointer',
+                          backgroundColor: 'gray.100',
+                        }}
+                      >
+                        <Td>{user.user.name}</Td>
+                        <Td>{user.user.surname}</Td>
+                        <Td>
+                          {user.department ? user.department.name : 'N/A'}
+                        </Td>
+                        <Td>{user.position}</Td>
+                        <Td>{user.role}</Td>
+                        <Td>
+                          <Link
+                            href={`mailto:${user.user.email}`}
+                            color="black"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                          >
+                            {user.user.email}
+                          </Link>
+                        </Td>
+                        <Td>
+                          <Link
+                            href={`tel:${user.phone_number}`}
+                            color="black"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                          >
+                            {user.phone_number}
+                          </Link>
+                        </Td>
+                        <Td>{user.rate ? user.rate.standard_rate : 'N/A'}</Td>
+                        <Td>
+                          {user.rate ? user.rate.compensation_rate : 'N/A'}
+                        </Td>
+                        <Td>{user.rate ? user.rate.overtime_hour1 : 'N/A'}</Td>
+                        <Td>{user.rate ? user.rate.overtime_hour2 : 'N/A'}</Td>
+                        <Td>{user.rate ? user.rate.overtime_hour3 : 'N/A'}</Td>
+                        <Td>{user.rate ? user.rate.overtime_hour4 : 'N/A'}</Td>
+                        <Td>
+                          <Button
+                            colorScheme="orange"
+                            isDisabled={
+                              user.invitation != null && user.is_active
+                            }
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (user.invitation == null && !user.is_active) {
+                                sendInvitation(
+                                  user.user.id,
+                                  user.user.name,
+                                  user.user.email,
+                                  false,
+                                );
+                              } else if (
+                                user.invitation != null &&
+                                !user.is_active
+                              ) {
+                                sendInvitation(
+                                  user.user.id,
+                                  user.user.name,
+                                  user.user.email,
+                                  true,
+                                );
+                              }
+                            }}
+                          >
+                            {user.invitation != null && user.is_active
+                              ? 'Joined'
+                              : user.invitation == null && !user.is_active
+                                ? 'Send invitation'
+                                : 'Resend invitation'}
+                          </Button>
+                        </Td>
+                        <Td>
+                          <Button
+                            colorScheme="red"
+                            ml={2}
+                            onClick={(e) => {
+                              e.stopPropagation(); // prevent row click
+                              handleRemoveButtonClick(user.user.id);
+                            }}
+                          >
+                            Remove
+                          </Button>
+                        </Td>
+                      </Tr>
+                    ),
+                  )}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </Box>
         </Box>
+        {/* </Box> */}
       </Box>
       <Footer />
       <CustomModal
