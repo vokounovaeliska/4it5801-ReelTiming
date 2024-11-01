@@ -7,7 +7,7 @@ export class ProjectUser {
 
   project_id!: string;
 
-  user_id!: string;
+  user_id?: string | null;
 
   department_id?: string | null;
 
@@ -61,8 +61,8 @@ export class ProjectUserInput {
   @Field(() => String)
   project_id!: string;
 
-  @Field(() => String)
-  user_id!: string;
+  @Field(() => String, { nullable: true })
+  user_id?: string | string;
 
   @Field(() => String, { nullable: true })
   department_id?: string | null;
@@ -106,8 +106,8 @@ export class CreateProjectUserInput {
   @Field(() => String)
   project_id!: string;
 
-  @Field(() => String)
-  user_id!: string;
+  @Field(() => String, { nullable: true })
+  user_id?: string | null;
 
   @Field(() => String, { nullable: true })
   department_id?: string | null;

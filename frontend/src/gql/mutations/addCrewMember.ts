@@ -69,8 +69,8 @@ export const useCrewMemberMutations = () => {
           phoneNumber: data.phone_number,
           rateId: rateId,
           departmentId: data.department,
-          role: data.role,
           position: data.position,
+          role: data.role,
           name: data.name,
           surname: data.surname,
           email: data.email,
@@ -84,12 +84,19 @@ export const useCrewMemberMutations = () => {
     }
   };
 
-  const sendEmailInvitation = async (projectId: string, userId: string) => {
+  const sendEmailInvitation = async (
+    projectId: string,
+    userId: string,
+    name: string,
+    email: string,
+  ) => {
     try {
       await inviteUserToProject({
         variables: {
-          userId,
           projectId,
+          id: userId,
+          name,
+          email,
         },
       });
       console.log('Invitation sent successfully');
@@ -107,6 +114,7 @@ export const useCrewMemberMutations = () => {
             email: data.email,
             name: data.name,
             surname: data.surname,
+            phone_number: data.phone_number,
           },
           userId: data.user_id,
         },
@@ -135,13 +143,16 @@ export const useCrewMemberMutations = () => {
             department_id: data.department,
             role: data.role,
             rate_id: data.rate_id,
+            name: data.name,
+            surname: data.surname,
+            email: data.email,
             position: data.position,
           },
           updateProjectUserId: data.id,
         },
       });
     } catch (error) {
-      console.error('Error adding crew member:', error);
+      console.error('Error editing crew member:', error);
       throw error;
     }
   };

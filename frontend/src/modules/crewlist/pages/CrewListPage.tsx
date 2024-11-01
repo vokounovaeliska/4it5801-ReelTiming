@@ -132,6 +132,8 @@ export function CrewListPage() {
   const handleAddNewCrewMember = async (
     data: CrewMemberData,
     sendInvite: boolean,
+    name: string,
+    email: string,
   ) => {
     setIsSubmitting(true);
     try {
@@ -140,7 +142,7 @@ export function CrewListPage() {
 
       // Step 2: Only send the invitation if sendInvite is true
       if (sendInvite) {
-        await sendEmailInvitation(projectId!, userId);
+        await sendEmailInvitation(projectId!, userId, name, email);
       }
 
       toast({
@@ -166,15 +168,20 @@ export function CrewListPage() {
     }
   };
 
-  const sendInvitation = async (userId: string, resending: boolean) => {
+  const sendInvitation = async (
+    userId: string,
+    name: string,
+    email: string,
+    resending: boolean,
+  ) => {
     try {
       if (resending) {
         await deleteProjectInvitation({
           variables: { userId, projectId: projectId! },
         });
-        await sendEmailInvitation(projectId!, userId);
+        await sendEmailInvitation(projectId!, userId, name, email);
       } else {
-        await sendEmailInvitation(projectId!, userId);
+        await sendEmailInvitation(projectId!, userId, name, email);
       }
       toast({
         title: 'Success',
@@ -433,12 +440,22 @@ export function CrewListPage() {
                         onClick={(e) => {
                           e.stopPropagation();
                           if (user.invitation == null && !user.is_active) {
-                            sendInvitation(user.user.id, false);
+                            sendInvitation(
+                              user.user.id,
+                              user.user.name,
+                              user.user.email,
+                              false,
+                            );
                           } else if (
                             user.invitation != null &&
                             !user.is_active
                           ) {
-                            sendInvitation(user.user.id, true);
+                            sendInvitation(
+                              user.user.id,
+                              user.user.name,
+                              user.user.email,
+                              true,
+                            );
                           }
                         }}
                       >
@@ -489,7 +506,9 @@ export function CrewListPage() {
               handleAddNewCrewMember(
                 { ...data, id: '', user_id: null, rate_id: null },
                 sendInvite,
-              ); // Pass sendInvite boolean
+                data.name,
+                data.email,
+              );
             }
           }}
           isLoading={isSubmitting}
