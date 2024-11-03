@@ -31,6 +31,7 @@ export function CrewListTemplate({ projectId }: CrewListTemplateProps) {
             isLoading={false}
             departments={[]}
             mode={'edit'} // could cause a bug
+            userRole={'CREW'}
           />
         </Box>
       </Box>

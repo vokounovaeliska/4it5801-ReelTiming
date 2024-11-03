@@ -5,18 +5,21 @@ import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
 import { LogInForm } from '../organisms/LogInForm';
+import ProjectInvitationInfo from '../organisms/ProjectInvitationInfo';
 
 export type LogInTemplateProps = {
   isLoading: boolean;
   error?: Error;
   onSubmit: (data: { email: string; password: string }) => void;
   token?: string | null;
+  project: { name: string; description: string };
 };
 export function LogInTemplate({
   isLoading,
   error,
   onSubmit,
   token,
+  project,
 }: LogInTemplateProps) {
   return (
     <Box
@@ -38,6 +41,7 @@ export function LogInTemplate({
         maxWidth={{ base: '100%', sm: '90%', md: '60%' }}
       >
         <Box textAlign="center" width="full">
+          {project && <ProjectInvitationInfo name={project?.name} />}
           <LogInForm
             isLoading={isLoading}
             errorMessage={error && error.message}

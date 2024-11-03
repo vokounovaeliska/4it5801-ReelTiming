@@ -62,7 +62,7 @@ export const useCrewMemberMutations = () => {
       const rateId = responseRate.data?.addRate?.id;
 
       // Third Mutation - Add Project User
-      await addProjectUser({
+      const responseUserId = await addProjectUser({
         variables: {
           userId: userId,
           projectId: projectId,
@@ -77,7 +77,7 @@ export const useCrewMemberMutations = () => {
         },
       });
 
-      return { userId }; // Return userId for use in invitation
+      return { responseUserId }; // Return userId for use in invitation
     } catch (error) {
       console.error('Error adding crew member:', error);
       throw error;
