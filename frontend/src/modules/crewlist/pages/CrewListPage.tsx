@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import { useApolloClient, useMutation, useQuery } from '@apollo/client';
 import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -46,6 +46,7 @@ import CrewAlertDialog from './CrewAlertDialog';
 export function CrewListPage() {
   const auth = useAuth();
   const toast = useToast();
+  const client = useApolloClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -57,7 +58,6 @@ export function CrewListPage() {
   const [collapsedDepartments, setCollapsedDepartments] = useState<
     Record<string, boolean>
   >({});
-  // const tableSize = useBreakpointValue({ base: 'xl', md: 'md' });
 
   const sanitizeCrewMemberData = (data: CrewMemberData): CrewMemberData => ({
     ...data,
@@ -143,9 +143,34 @@ export function CrewListPage() {
     setIsSubmitting(true);
     try {
       const { responseUserId } = await addCrewMember(data, projectId!);
-      console.log(responseUserId.data.addProjectUser.id);
-      console.log(responseUserId.data.addProjectUser.user.id);
-      // Step 2: Only send the invitation if sendInvite is true
+
+      // Update the cache directly
+      const cacheData = client.readQuery({
+        query: GET_CREWLIST_INFO,
+        variables: { projectId, userId: auth.user?.id },
+      });
+
+      const newUser = {
+        ...data,
+        id: responseUserId.data.addProjectUser.id,
+        user: {
+          id: responseUserId.data.addProjectUser.user.id,
+          name,
+          email,
+        },
+        invitation: sendInvite ? true : null,
+      };
+
+      client.writeQuery({
+        query: GET_CREWLIST_INFO,
+        variables: { projectId, userId: auth.user?.id },
+        data: {
+          ...cacheData,
+          projectUsers: [...cacheData.projectUsers, newUser],
+        },
+      });
+
+      // Send the invitation if sendInvite is true
       if (sendInvite) {
         await sendEmailInvitation(
           projectId!,
@@ -157,13 +182,14 @@ export function CrewListPage() {
 
       toast({
         title: 'Success',
-        description: `Crew member added${sendInvite ? ' and invitation sent' : ''} successfully.`,
+        description: `Crew member added${
+          sendInvite ? ' and invitation sent' : ''
+        } successfully.`,
         status: 'success',
         duration: 5000,
         isClosable: true,
       });
       handleModalClose();
-      refetchProjectUsers();
     } catch (error) {
       console.error('Error adding new crew member:', error);
       toast({
@@ -190,10 +216,34 @@ export function CrewListPage() {
         await deleteProjectInvitation({
           variables: { userId, projectId: projectId! },
         });
-        await sendEmailInvitation(projectId!, projectUserId, name, email);
-      } else {
-        await sendEmailInvitation(projectId!, projectUserId, name, email);
       }
+      await sendEmailInvitation(projectId!, projectUserId, name, email);
+
+      // Update the cache directly
+      const data = client.readQuery({
+        query: GET_CREWLIST_INFO,
+        variables: { projectId, userId: auth.user?.id },
+      });
+
+      const updatedUsers = data.projectUsers.map((user: ProjectUser) => {
+        if (user.id === projectUserId) {
+          return {
+            ...user,
+            invitation: true,
+          };
+        }
+        return user;
+      });
+
+      client.writeQuery({
+        query: GET_CREWLIST_INFO,
+        variables: { projectId, userId: auth.user?.id },
+        data: {
+          ...data,
+          projectUsers: updatedUsers,
+        },
+      });
+
       toast({
         title: 'Success',
         description: 'Invitation email sent successfully.',
@@ -201,7 +251,6 @@ export function CrewListPage() {
         duration: 5000,
         isClosable: true,
       });
-      // refetchProjectUsers();
     } catch (error) {
       console.error('Error sending invitation email:', error);
       toast({
@@ -224,6 +273,26 @@ export function CrewListPage() {
       await deleteProjectUser({
         variables: { userId, projectId },
       });
+
+      // Update the cache directly
+      const data = client.readQuery({
+        query: GET_CREWLIST_INFO,
+        variables: { projectId, userId: auth.user?.id },
+      });
+
+      const updatedUsers = data.projectUsers.filter(
+        (user: ProjectUser) => user.user.id !== userId,
+      );
+
+      client.writeQuery({
+        query: GET_CREWLIST_INFO,
+        variables: { projectId, userId: auth.user?.id },
+        data: {
+          ...data,
+          projectUsers: updatedUsers,
+        },
+      });
+
       toast({
         title: 'Success',
         description: 'User removed from the project successfully.',
@@ -231,7 +300,6 @@ export function CrewListPage() {
         duration: 5000,
         isClosable: true,
       });
-      refetchProjectUsers();
     } catch (error) {
       console.error('Error removing user from project:', error);
       toast({
@@ -280,13 +348,6 @@ export function CrewListPage() {
     }
   };
 
-  // const filteredUsers =
-  //   crewList.userRoleInProject === 'ADMIN'
-  //     ? crewList.projectUsers
-  //     : crewList.projectUsers.filter(
-  //         (projectUser: { user: { id: string } }) =>
-  //           projectUser.user.id === auth.user?.id,
-  //       );
   interface ProjectUser {
     id: string;
     user: {
