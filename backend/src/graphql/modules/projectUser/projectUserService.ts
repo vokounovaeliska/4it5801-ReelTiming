@@ -6,7 +6,6 @@ import {
   ProjectUserInput,
 } from './projectUserType';
 import { Project } from '../project/projectType';
-import { UserService } from '../user/userService';
 import { GraphQLError } from 'graphql';
 import { randomBytes } from 'crypto';
 import { APP_LINK } from '@backend/config';
@@ -54,13 +53,18 @@ export class ProjectUserService {
     const projectUserId = await this.projectUserRepository.createProjectUser({
       ...data,
       project_id: data.project_id,
-      user_id: data.user_id,
-      is_team_leader: data.is_team_leader ?? false, // always needs to be defined
+      user_id: data.user_id ?? null,
+      is_team_leader: data.is_team_leader ?? false,
       create_date: createdAt,
       last_update_date: createdAt,
       create_user_id: userId,
       last_update_user_id: userId,
       is_active: false,
+      phone_number: data.phone_number ?? null,
+      name: data.name,
+      surname: data.surname,
+      email: data.email,
+      position: data.position ?? null,
     });
     const projectUser = await this.getProjectUserById(projectUserId);
     if (!projectUser) {
@@ -76,6 +80,10 @@ export class ProjectUserService {
     await this.projectUserRepository.updateProjectUser(id, {
       ...data,
       phone_number: data.phone_number ?? null,
+      name: data.name,
+      surname: data.surname,
+      email: data.email,
+      position: data.position ?? null,
       last_update_date: new Date(),
     });
     return this.getProjectUserById(id);
@@ -165,16 +173,11 @@ export class ProjectUserService {
 
   async inviteUserToProject(
     projectId: string,
-    userId: string,
+    id: string,
+    name: string,
+    email: string,
     db: Db,
   ): Promise<boolean> {
-    const userService = new UserService(db);
-    const userById = await userService.getUserById(userId);
-
-    if (userById === null) {
-      throw new GraphQLError('User not found');
-    }
-
     const projectService = new ProjectService(db);
     const projectById = await projectService.getProjectById(projectId);
 
@@ -182,9 +185,13 @@ export class ProjectUserService {
       throw new GraphQLError('Project not found');
     }
 
-    const token = randomBytes(32).toString('hex'); // Generate token
+    if (email === null) {
+      throw new GraphQLError('Email not provided');
+    }
 
-    this.projectUserRepository.inviteUserToProject(projectId, userId, token);
+    const token = randomBytes(32).toString('hex');
+
+    this.projectUserRepository.inviteUserToProject(id, token);
 
     const resetLink = APP_LINK + `/accept-invitation?token=${token}`;
     try {
@@ -200,9 +207,9 @@ export class ProjectUserService {
       let htmlContent = await fs.readFile(templatePath, 'utf-8');
       htmlContent = htmlContent.replace('{{invitationLink}}', resetLink);
       htmlContent = htmlContent.replace('{{projectName}}', projectById.name);
-      htmlContent = htmlContent.replace('{{name}}', userById.name);
+      htmlContent = htmlContent.replace('{{name}}', name);
 
-      await sendMail(userById.email, 'Invitation to project', htmlContent);
+      await sendMail(email, 'Invitation to project', htmlContent);
     } catch (error) {
       console.error('Error sending invitation email:', error);
       throw new GraphQLError('Failed to send invtiation email.');
@@ -242,7 +249,6 @@ export class ProjectUserService {
       is_active: true,
       user_id: userId,
     });
-    this.userRepository.deleteUser(projectUser.user_id);
     return true;
   }
 }

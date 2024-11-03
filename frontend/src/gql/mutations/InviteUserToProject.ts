@@ -1,7 +1,12 @@
 import { gql } from '@apollo/client';
 
 export const INVITE_USER_TO_PROJECT = gql`
-  mutation Mutation($userId: String!, $projectId: String!) {
-    inviteUser(userId: $userId, projectId: $projectId)
+  mutation InviteUserToProject(
+    $projectId: String!
+    $id: String!
+    $name: String!
+    $email: String!
+  ) {
+    inviteUser(projectId: $projectId, id: $id, name: $name, email: $email)
   }
 `;
