@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { AddIcon } from '@chakra-ui/icons';
+import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
   Center,
+  Collapse,
   Heading,
   IconButton,
   Link,
@@ -17,7 +18,7 @@ import {
   Th,
   Thead,
   Tr,
-  useBreakpointValue,
+  // useBreakpointValue,
   useToast,
   VStack,
 } from '@chakra-ui/react';
@@ -53,7 +54,10 @@ export function CrewListPage() {
     useState<CrewMemberData | null>(null);
   const { projectId } = useParams<{ projectId: string }>();
   const location = useLocation();
-  const tableSize = useBreakpointValue({ base: 'xl', md: 'md' });
+  const [collapsedDepartments, setCollapsedDepartments] = useState<
+    Record<string, boolean>
+  >({});
+  // const tableSize = useBreakpointValue({ base: 'xl', md: 'md' });
 
   const sanitizeCrewMemberData = (data: CrewMemberData): CrewMemberData => ({
     ...data,
@@ -276,13 +280,58 @@ export function CrewListPage() {
     }
   };
 
-  const filteredUsers =
-    crewList.userRoleInProject === 'ADMIN'
-      ? crewList.projectUsers
-      : crewList.projectUsers.filter(
-          (projectUser: { user: { id: string } }) =>
-            projectUser.user.id === auth.user?.id,
-        );
+  // const filteredUsers =
+  //   crewList.userRoleInProject === 'ADMIN'
+  //     ? crewList.projectUsers
+  //     : crewList.projectUsers.filter(
+  //         (projectUser: { user: { id: string } }) =>
+  //           projectUser.user.id === auth.user?.id,
+  //       );
+  interface ProjectUser {
+    id: string;
+    user: {
+      id: string;
+      name: string;
+      surname: string;
+      email: string;
+    };
+    department: { name: string; id: string } | null;
+    role: string;
+    position: string;
+    phone_number: string;
+    is_active: boolean;
+    invitation: string;
+    rate: {
+      id: string;
+      standard_rate: number;
+      compensation_rate: number;
+      overtime_hour1: number;
+      overtime_hour2: number;
+      overtime_hour3: number;
+      overtime_hour4: number;
+    } | null;
+  }
+
+  const groupedByDepartment = crewList.projectUsers.reduce(
+    (acc: Record<string, ProjectUser[]>, user: ProjectUser) => {
+      const departmentName = user.department?.name || 'No Department';
+      if (!acc[departmentName]) {
+        acc[departmentName] = [];
+      }
+      acc[departmentName].push(user);
+      return acc;
+    },
+    {} as Record<string, ProjectUser[]>,
+  );
+
+  const toggleDepartmentCollapse = (departmentName: string) => {
+    setCollapsedDepartments((prev) => ({
+      ...prev,
+      [departmentName]: !prev[departmentName],
+    }));
+  };
+
+  const sortedDepartments = Object.keys(groupedByDepartment).sort();
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
@@ -364,7 +413,215 @@ export function CrewListPage() {
             },
           }}
         >
-          <Box maxH="100vw">
+          {sortedDepartments.map((departmentName) => (
+            <Box
+              key={departmentName}
+              mb={8}
+              borderWidth="2px"
+              borderRadius="lg"
+              boxShadow="md"
+              bg="white"
+            >
+              <Box
+                display="flex"
+                alignItems="center"
+                bg="#2D3748"
+                p={2}
+                borderTopRadius="lg"
+                cursor="pointer"
+                onClick={() => toggleDepartmentCollapse(departmentName)}
+              >
+                <Box display="flex" alignItems="center">
+                  <ChevronDownIcon
+                    transform={
+                      collapsedDepartments[departmentName]
+                        ? 'rotate(0deg)'
+                        : 'rotate(180deg)'
+                    }
+                    transition="transform 0.3s"
+                    color="white"
+                    mr={2}
+                  />
+                  <Box fontWeight="bold" fontSize="xl" textColor="white">
+                    {departmentName}
+                  </Box>
+                </Box>
+              </Box>
+              <Collapse
+                in={!collapsedDepartments[departmentName]}
+                animateOpacity
+              >
+                <TableContainer className="custom-scrollbar">
+                  <Box
+                    overflowX="auto"
+                    sx={{
+                      '::-webkit-scrollbar': {
+                        height: '12px',
+                      },
+                      '::-webkit-scrollbar-track': {
+                        background: '#2D3748',
+                      },
+                      '::-webkit-scrollbar-thumb': {
+                        background: '#888',
+                        borderRadius: '6px',
+                      },
+                      '::-webkit-scrollbar-thumb:hover': {
+                        background: '#555',
+                      },
+                      scrollbarWidth: 'thin',
+                      scrollbarColor: '#2D3748 white',
+                    }}
+                  >
+                    <Table variant="simple" size="md">
+                      <Thead>
+                        <Tr bg="#2D3748" textColor="white">
+                          <Th textColor={'white'}>Name</Th>
+                          <Th textColor={'white'}>Surname</Th>
+                          <Th textColor={'white'}>Position</Th>
+                          <Th textColor={'white'}>Role</Th>
+                          <Th textColor={'white'}>Email</Th>
+                          <Th textColor={'white'}>Phone number</Th>
+                          <Th textColor={'white'}>Standard rate</Th>
+                          <Th textColor={'white'}>Compensation rate</Th>
+                          <Th textColor={'white'}>Overtime hour 1</Th>
+                          <Th textColor={'white'}>Overtime hour 2</Th>
+                          <Th textColor={'white'}>Overtime hour 3</Th>
+                          <Th textColor={'white'}>Overtime hour 4</Th>
+                          <Th textColor={'white'}>Invitation</Th>
+                          <Th textColor={'white'}>Delete</Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {groupedByDepartment[departmentName].map(
+                          (user: ProjectUser) => (
+                            <Tr
+                              key={user.id}
+                              onClick={() =>
+                                handleEditMemberClick({
+                                  id: user.id,
+                                  name: user.user.name,
+                                  surname: user.user.surname,
+                                  department:
+                                    user.department?.name || 'No Department',
+                                  position: user.position,
+                                  phone_number: user.phone_number,
+                                  email: user.user.email,
+                                  standard_rate: user.rate?.standard_rate || 0,
+                                  compensation_rate:
+                                    user.rate?.compensation_rate || 0,
+                                  overtime_hour1:
+                                    user.rate?.overtime_hour1 || 0,
+                                  overtime_hour2:
+                                    user.rate?.overtime_hour2 || 0,
+                                  overtime_hour3:
+                                    user.rate?.overtime_hour3 || 0,
+                                  overtime_hour4:
+                                    user.rate?.overtime_hour4 || 0,
+                                  role: user.role,
+                                  user_id: user.user.id,
+                                  rate_id: user.rate?.id || null,
+                                })
+                              }
+                              _hover={{
+                                cursor: 'pointer',
+                                backgroundColor: 'gray.100',
+                              }}
+                            >
+                              <Td>{user.user.name}</Td>
+                              <Td>{user.user.surname}</Td>
+                              <Td>{user.position}</Td>
+                              <Td>{user.role}</Td>
+                              <Td>
+                                <Link
+                                  href={`mailto:${user.user.email}`}
+                                  color="blue.500"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                  }}
+                                >
+                                  {user.user.email}
+                                </Link>
+                              </Td>
+                              <Td>
+                                <Link
+                                  href={`tel:${user.phone_number}`}
+                                  color="blue.500"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                  }}
+                                >
+                                  {user.phone_number}
+                                </Link>
+                              </Td>
+                              <Td>{user.rate?.standard_rate}</Td>
+                              <Td>{user.rate?.compensation_rate}</Td>
+                              <Td>{user.rate?.overtime_hour1}</Td>
+                              <Td>{user.rate?.overtime_hour2}</Td>
+                              <Td>{user.rate?.overtime_hour3}</Td>
+                              <Td>{user.rate?.overtime_hour4}</Td>
+                              <Td>
+                                <Button
+                                  colorScheme="orange"
+                                  isDisabled={
+                                    user.invitation != null && user.is_active
+                                  }
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (
+                                      user.invitation == null &&
+                                      !user.is_active
+                                    ) {
+                                      sendInvitation(
+                                        user.id,
+                                        user.user.id,
+                                        user.user.name,
+                                        user.user.email,
+                                        false,
+                                      );
+                                    } else if (
+                                      user.invitation != null &&
+                                      !user.is_active
+                                    ) {
+                                      sendInvitation(
+                                        user.id,
+                                        user.user.id,
+                                        user.user.name,
+                                        user.user.email,
+                                        true,
+                                      );
+                                    }
+                                  }}
+                                >
+                                  {user.invitation != null && user.is_active
+                                    ? 'Joined'
+                                    : user.invitation == null && !user.is_active
+                                      ? 'Send invitation'
+                                      : 'Resend invitation'}
+                                </Button>
+                              </Td>
+                              <Td>
+                                <Button
+                                  colorScheme="red"
+                                  ml={2}
+                                  onClick={(e) => {
+                                    e.stopPropagation(); // prevent row click
+                                    handleRemoveButtonClick(user.user.id);
+                                  }}
+                                >
+                                  Remove
+                                </Button>
+                              </Td>
+                            </Tr>
+                          ),
+                        )}
+                      </Tbody>
+                    </Table>
+                  </Box>
+                </TableContainer>
+              </Collapse>
+            </Box>
+          ))}
+          {/* <Box maxH="100vw">
             <TableContainer>
               <Table variant="simple" size={tableSize}>
                 <Thead>
@@ -532,7 +789,7 @@ export function CrewListPage() {
                 </Tbody>
               </Table>
             </TableContainer>
-          </Box>
+          </Box> */}
         </Box>
         {/* </Box> */}
       </Box>
