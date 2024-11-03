@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
-import { AddIcon } from '@chakra-ui/icons';
+import { useApolloClient, useMutation, useQuery } from '@apollo/client';
+import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
   Center,
+  Collapse,
   Heading,
   IconButton,
   Link,
@@ -17,7 +18,6 @@ import {
   Th,
   Thead,
   Tr,
-  useBreakpointValue,
   useToast,
   VStack,
 } from '@chakra-ui/react';
@@ -45,6 +45,7 @@ import CrewAlertDialog from './CrewAlertDialog';
 export function CrewListPage() {
   const auth = useAuth();
   const toast = useToast();
+  const client = useApolloClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -53,7 +54,9 @@ export function CrewListPage() {
     useState<CrewMemberData | null>(null);
   const { projectId } = useParams<{ projectId: string }>();
   const location = useLocation();
-  const tableSize = useBreakpointValue({ base: 'xl', md: 'md' });
+  const [collapsedDepartments, setCollapsedDepartments] = useState<
+    Record<string, boolean>
+  >({});
 
   const sanitizeCrewMemberData = (data: CrewMemberData): CrewMemberData => ({
     ...data,
@@ -69,7 +72,6 @@ export function CrewListPage() {
     data: crewListData,
     loading: crewListLoading,
     error: crewListError,
-    refetch: refetchProjectUsers,
   } = useQuery(GET_CREWLIST_INFO, {
     variables: { projectId, userId: auth.user?.id },
   });
@@ -91,7 +93,6 @@ export function CrewListPage() {
     );
   }
 
-  // Error handling
   if (crewListError || !auth.user || !crewListData) {
     return (
       <Center minHeight="100vh">
@@ -139,9 +140,32 @@ export function CrewListPage() {
     setIsSubmitting(true);
     try {
       const { responseUserId } = await addCrewMember(data, projectId!);
-      console.log(responseUserId.data.addProjectUser.id);
-      console.log(responseUserId.data.addProjectUser.user.id);
-      // Step 2: Only send the invitation if sendInvite is true
+
+      const cacheData = client.readQuery({
+        query: GET_CREWLIST_INFO,
+        variables: { projectId, userId: auth.user?.id },
+      });
+
+      const newUser = {
+        ...data,
+        id: responseUserId.data.addProjectUser.id,
+        user: {
+          id: responseUserId.data.addProjectUser.user.id,
+          name,
+          email,
+        },
+        invitation: sendInvite ? true : null,
+      };
+
+      client.writeQuery({
+        query: GET_CREWLIST_INFO,
+        variables: { projectId, userId: auth.user?.id },
+        data: {
+          ...cacheData,
+          projectUsers: [...cacheData.projectUsers, newUser],
+        },
+      });
+
       if (sendInvite) {
         await sendEmailInvitation(
           projectId!,
@@ -153,13 +177,14 @@ export function CrewListPage() {
 
       toast({
         title: 'Success',
-        description: `Crew member added${sendInvite ? ' and invitation sent' : ''} successfully.`,
+        description: `Crew member added${
+          sendInvite ? ' and invitation sent' : ''
+        } successfully.`,
         status: 'success',
         duration: 5000,
         isClosable: true,
       });
       handleModalClose();
-      refetchProjectUsers();
     } catch (error) {
       console.error('Error adding new crew member:', error);
       toast({
@@ -186,10 +211,33 @@ export function CrewListPage() {
         await deleteProjectInvitation({
           variables: { userId, projectId: projectId! },
         });
-        await sendEmailInvitation(projectId!, projectUserId, name, email);
-      } else {
-        await sendEmailInvitation(projectId!, projectUserId, name, email);
       }
+      await sendEmailInvitation(projectId!, projectUserId, name, email);
+
+      const data = client.readQuery({
+        query: GET_CREWLIST_INFO,
+        variables: { projectId, userId: auth.user?.id },
+      });
+
+      const updatedUsers = data.projectUsers.map((user: ProjectUser) => {
+        if (user.id === projectUserId) {
+          return {
+            ...user,
+            invitation: true,
+          };
+        }
+        return user;
+      });
+
+      client.writeQuery({
+        query: GET_CREWLIST_INFO,
+        variables: { projectId, userId: auth.user?.id },
+        data: {
+          ...data,
+          projectUsers: updatedUsers,
+        },
+      });
+
       toast({
         title: 'Success',
         description: 'Invitation email sent successfully.',
@@ -220,6 +268,26 @@ export function CrewListPage() {
       await deleteProjectUser({
         variables: { userId, projectId },
       });
+
+      // Update the cache directly
+      const data = client.readQuery({
+        query: GET_CREWLIST_INFO,
+        variables: { projectId, userId: auth.user?.id },
+      });
+
+      const updatedUsers = data.projectUsers.filter(
+        (user: ProjectUser) => user.user.id !== userId,
+      );
+
+      client.writeQuery({
+        query: GET_CREWLIST_INFO,
+        variables: { projectId, userId: auth.user?.id },
+        data: {
+          ...data,
+          projectUsers: updatedUsers,
+        },
+      });
+
       toast({
         title: 'Success',
         description: 'User removed from the project successfully.',
@@ -227,7 +295,6 @@ export function CrewListPage() {
         duration: 5000,
         isClosable: true,
       });
-      refetchProjectUsers();
     } catch (error) {
       console.error('Error removing user from project:', error);
       toast({
@@ -241,17 +308,62 @@ export function CrewListPage() {
     }
   };
 
+  const departmentNameToId = (
+    name: string,
+    departments: { name: string; id: string }[],
+  ): string | null => {
+    const department = departments.find((dept) => dept.name === name);
+    return department ? department.id : null;
+  };
+
+  // TODO - replace this 12IQ solution - rip
   const handleEditMemberClick = (crewMember: CrewMemberData) => {
-    setSelectedCrewMember(sanitizeCrewMemberData(crewMember)); // TODO - user sanitize to try unfuck zod or just fix zod
-    // setSelectedCrewMember(crewMember); // set selected crew member for editing
+    setSelectedCrewMember(sanitizeCrewMemberData(crewMember));
     setIsModalOpen(true);
   };
 
   const handleUpdateCrewMember = async (data: CrewMemberData) => {
     setIsSubmitting(true);
     try {
-      console.log('Edit crew member:', data);
-      await editCrewMember(data, projectId!);
+      const departmentId = departmentNameToId(
+        data.department,
+        crewList.departments,
+      );
+      if (!departmentId) {
+        throw new Error('Invalid department ID');
+      }
+
+      const updatedData = {
+        ...data,
+        department: departmentId,
+      };
+
+      console.log('Edit crew member:', updatedData);
+      await editCrewMember(updatedData, projectId!);
+
+      const cacheData = client.readQuery({
+        query: GET_CREWLIST_INFO,
+        variables: { projectId, userId: auth.user?.id },
+      });
+
+      const updatedUsers = cacheData.projectUsers.map((user: ProjectUser) => {
+        if (user.id === data.id) {
+          return {
+            ...user,
+            ...updatedData,
+          };
+        }
+        return user;
+      });
+
+      client.writeQuery({
+        query: GET_CREWLIST_INFO,
+        variables: { projectId, userId: auth.user?.id },
+        data: {
+          ...cacheData,
+          projectUsers: updatedUsers,
+        },
+      });
 
       toast({
         title: 'Success',
@@ -261,7 +373,6 @@ export function CrewListPage() {
         isClosable: true,
       });
       handleModalClose();
-      refetchProjectUsers();
     } catch (error) {
       console.error('Error updating crew member:', error);
       toast({
@@ -276,13 +387,51 @@ export function CrewListPage() {
     }
   };
 
-  const filteredUsers =
-    crewList.userRoleInProject === 'ADMIN'
-      ? crewList.projectUsers
-      : crewList.projectUsers.filter(
-          (projectUser: { user: { id: string } }) =>
-            projectUser.user.id === auth.user?.id,
-        );
+  interface ProjectUser {
+    id: string;
+    user: {
+      id: string;
+      name: string;
+      surname: string;
+      email: string;
+    };
+    department: { name: string; id: string } | null;
+    role: string;
+    position: string;
+    phone_number: string;
+    is_active: boolean;
+    invitation: string;
+    rate: {
+      id: string;
+      standard_rate: number;
+      compensation_rate: number;
+      overtime_hour1: number;
+      overtime_hour2: number;
+      overtime_hour3: number;
+      overtime_hour4: number;
+    } | null;
+  }
+
+  const groupedByDepartment = crewList.projectUsers.reduce(
+    (acc: Record<string, ProjectUser[]>, user: ProjectUser) => {
+      const departmentName = user.department?.name || 'No Department';
+      if (!acc[departmentName]) {
+        acc[departmentName] = [];
+      }
+      acc[departmentName].push(user);
+      return acc;
+    },
+    {} as Record<string, ProjectUser[]>,
+  );
+
+  const toggleDepartmentCollapse = (departmentName: string) => {
+    setCollapsedDepartments((prev) => ({
+      ...prev,
+      [departmentName]: !prev[departmentName],
+    }));
+  };
+
+  const sortedDepartments = Object.keys(groupedByDepartment).sort();
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
@@ -346,17 +495,10 @@ export function CrewListPage() {
             </VStack>
           </Center>
         )}
-        {/* could work ??*/}
-        {/* <Box  maxWidth="100%"> */}
-
-        {/* custom scrollbar */}
         <Box
           overflowX="auto"
-          // maxW="100vw"
           h="100%"
           whiteSpace="nowrap"
-          // pb="17px"
-          // color="white"
           px="32px"
           sx={{
             '::-webkit-scrollbar': {
@@ -364,177 +506,215 @@ export function CrewListPage() {
             },
           }}
         >
-          <Box maxH="100vw">
-            <TableContainer>
-              <Table variant="simple" size={tableSize}>
-                <Thead>
-                  <Tr>
-                    <Th>Name</Th>
-                    <Th>Surname</Th>
-                    <Th>Department</Th>
-                    <Th>Position</Th>
-                    <Th>Role</Th>
-                    <Th>Email</Th>
-                    <Th>Phone number</Th>
-                    <Th>Standard rate</Th>
-                    <Th>Compensation rate</Th>
-                    <Th>Overtime hour 1</Th>
-                    <Th>Overtime hour 2</Th>
-                    <Th>Overtime hour 3</Th>
-                    <Th>Overtime hour 4</Th>
-                    <Th>Invitation</Th>
-                    <Th>Delete</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {filteredUsers.map(
-                    (user: {
-                      id: string;
-                      user: {
-                        id: string;
-                        name: string;
-                        surname: string;
-                        email: string;
-                      };
-                      department: { name: string; id: string } | null;
-                      role: string;
-                      position: string;
-                      phone_number: string;
-                      is_active: boolean;
-                      invitation: string;
-                      rate: {
-                        id: string;
-                        standard_rate: number;
-                        compensation_rate: number;
-                        overtime_hour1: number;
-                        overtime_hour2: number;
-                        overtime_hour3: number;
-                        overtime_hour4: number;
-                      } | null;
-                    }) => (
-                      <Tr
-                        key={user.id}
-                        onClick={() =>
-                          handleEditMemberClick({
-                            id: user.id,
-                            name: user.user.name,
-                            surname: user.user.surname,
-                            department: user.department?.id || 'N/A',
-                            position: user.position,
-                            phone_number: user.phone_number,
-                            email: user.user.email,
-                            standard_rate: user.rate?.standard_rate || 0,
-                            compensation_rate:
-                              user.rate?.compensation_rate || 0,
-                            overtime_hour1: user.rate?.overtime_hour1 || 0,
-                            overtime_hour2: user.rate?.overtime_hour2 || 0,
-                            overtime_hour3: user.rate?.overtime_hour3 || 0,
-                            overtime_hour4: user.rate?.overtime_hour4 || 0,
-                            role: user.role,
-                            user_id: user.user.id,
-                            rate_id: user.rate?.id ?? null,
-                          })
-                        }
-                        _hover={{
-                          cursor: 'pointer',
-                          backgroundColor: 'gray.100',
-                        }}
-                      >
-                        <Td>{user.user.name}</Td>
-                        <Td>{user.user.surname}</Td>
-                        <Td>
-                          {user.department ? user.department.name : 'N/A'}
-                        </Td>
-                        <Td>{user.position}</Td>
-                        <Td>{user.role}</Td>
-                        <Td>
-                          <Link
-                            href={`mailto:${user.user.email}`}
-                            color="black"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                            }}
-                          >
-                            {user.user.email}
-                          </Link>
-                        </Td>
-                        <Td>
-                          <Link
-                            href={`tel:${user.phone_number}`}
-                            color="black"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                            }}
-                          >
-                            {user.phone_number}
-                          </Link>
-                        </Td>
-                        <Td>{user.rate ? user.rate.standard_rate : 'N/A'}</Td>
-                        <Td>
-                          {user.rate ? user.rate.compensation_rate : 'N/A'}
-                        </Td>
-                        <Td>{user.rate ? user.rate.overtime_hour1 : 'N/A'}</Td>
-                        <Td>{user.rate ? user.rate.overtime_hour2 : 'N/A'}</Td>
-                        <Td>{user.rate ? user.rate.overtime_hour3 : 'N/A'}</Td>
-                        <Td>{user.rate ? user.rate.overtime_hour4 : 'N/A'}</Td>
-                        <Td>
-                          <Button
-                            colorScheme="orange"
-                            isDisabled={
-                              user.invitation != null && user.is_active
-                            }
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (user.invitation == null && !user.is_active) {
-                                sendInvitation(
-                                  user.id,
-                                  user.user.id,
-                                  user.user.name,
-                                  user.user.email,
-                                  false,
-                                );
-                              } else if (
-                                user.invitation != null &&
-                                !user.is_active
-                              ) {
-                                sendInvitation(
-                                  user.id,
-                                  user.user.id,
-                                  user.user.name,
-                                  user.user.email,
-                                  true,
-                                );
+          {sortedDepartments.map((departmentName) => (
+            <Box
+              key={departmentName}
+              mb={8}
+              borderWidth="2px"
+              borderRadius="lg"
+              boxShadow="md"
+              bg="white"
+            >
+              <Box
+                display="flex"
+                alignItems="center"
+                bg="#2D3748"
+                p={2}
+                borderTopRadius="lg"
+                cursor="pointer"
+                onClick={() => toggleDepartmentCollapse(departmentName)}
+              >
+                <Box display="flex" alignItems="center">
+                  <ChevronDownIcon
+                    transform={
+                      collapsedDepartments[departmentName]
+                        ? 'rotate(0deg)'
+                        : 'rotate(180deg)'
+                    }
+                    transition="transform 0.3s"
+                    color="white"
+                    mr={2}
+                  />
+                  <Box fontWeight="bold" fontSize="xl" textColor="white">
+                    {departmentName}
+                  </Box>
+                </Box>
+              </Box>
+              <Collapse
+                in={!collapsedDepartments[departmentName]}
+                animateOpacity
+              >
+                <TableContainer className="custom-scrollbar">
+                  <Box
+                    overflowX="auto"
+                    sx={{
+                      '::-webkit-scrollbar': {
+                        height: '12px',
+                      },
+                      '::-webkit-scrollbar-track': {
+                        background: '#2D3748',
+                      },
+                      '::-webkit-scrollbar-thumb': {
+                        background: '#888',
+                        borderRadius: '6px',
+                      },
+                      '::-webkit-scrollbar-thumb:hover': {
+                        background: '#555',
+                      },
+                      scrollbarWidth: 'thin',
+                      scrollbarColor: '#2D3748 white',
+                    }}
+                  >
+                    <Table variant="simple" size="md">
+                      <Thead>
+                        <Tr bg="#2D3748" textColor="white">
+                          <Th textColor={'white'}>Name</Th>
+                          <Th textColor={'white'}>Surname</Th>
+                          <Th textColor={'white'}>Position</Th>
+                          <Th textColor={'white'}>Role</Th>
+                          <Th textColor={'white'}>Email</Th>
+                          <Th textColor={'white'}>Phone number</Th>
+                          <Th textColor={'white'}>Standard rate</Th>
+                          <Th textColor={'white'}>Compensation rate</Th>
+                          <Th textColor={'white'}>Overtime hour 1</Th>
+                          <Th textColor={'white'}>Overtime hour 2</Th>
+                          <Th textColor={'white'}>Overtime hour 3</Th>
+                          <Th textColor={'white'}>Overtime hour 4</Th>
+                          <Th textColor={'white'}>Invitation</Th>
+                          <Th textColor={'white'}>Delete</Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {groupedByDepartment[departmentName].map(
+                          (user: ProjectUser) => (
+                            <Tr
+                              key={user.id}
+                              onClick={() =>
+                                handleEditMemberClick({
+                                  id: user.id,
+                                  name: user.user.name,
+                                  surname: user.user.surname,
+                                  department:
+                                    user.department?.name || 'No Department',
+                                  position: user.position,
+                                  phone_number: user.phone_number,
+                                  email: user.user.email,
+                                  standard_rate: user.rate?.standard_rate || 0,
+                                  compensation_rate:
+                                    user.rate?.compensation_rate || 0,
+                                  overtime_hour1:
+                                    user.rate?.overtime_hour1 || 0,
+                                  overtime_hour2:
+                                    user.rate?.overtime_hour2 || 0,
+                                  overtime_hour3:
+                                    user.rate?.overtime_hour3 || 0,
+                                  overtime_hour4:
+                                    user.rate?.overtime_hour4 || 0,
+                                  role: user.role,
+                                  user_id: user.user.id,
+                                  rate_id: user.rate?.id || null,
+                                })
                               }
-                            }}
-                          >
-                            {user.invitation != null && user.is_active
-                              ? 'Joined'
-                              : user.invitation == null && !user.is_active
-                                ? 'Send invitation'
-                                : 'Resend invitation'}
-                          </Button>
-                        </Td>
-                        <Td>
-                          <Button
-                            colorScheme="red"
-                            ml={2}
-                            onClick={(e) => {
-                              e.stopPropagation(); // prevent row click
-                              handleRemoveButtonClick(user.user.id);
-                            }}
-                          >
-                            Remove
-                          </Button>
-                        </Td>
-                      </Tr>
-                    ),
-                  )}
-                </Tbody>
-              </Table>
-            </TableContainer>
-          </Box>
+                              _hover={{
+                                cursor: 'pointer',
+                                backgroundColor: 'gray.100',
+                              }}
+                            >
+                              <Td>{user.user.name}</Td>
+                              <Td>{user.user.surname}</Td>
+                              <Td>{user.position}</Td>
+                              <Td>{user.role}</Td>
+                              <Td>
+                                <Link
+                                  href={`mailto:${user.user.email}`}
+                                  color="blue.500"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                  }}
+                                >
+                                  {user.user.email}
+                                </Link>
+                              </Td>
+                              <Td>
+                                <Link
+                                  href={`tel:${user.phone_number}`}
+                                  color="blue.500"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                  }}
+                                >
+                                  {user.phone_number}
+                                </Link>
+                              </Td>
+                              <Td>{user.rate?.standard_rate}</Td>
+                              <Td>{user.rate?.compensation_rate}</Td>
+                              <Td>{user.rate?.overtime_hour1}</Td>
+                              <Td>{user.rate?.overtime_hour2}</Td>
+                              <Td>{user.rate?.overtime_hour3}</Td>
+                              <Td>{user.rate?.overtime_hour4}</Td>
+                              <Td>
+                                <Button
+                                  colorScheme="orange"
+                                  isDisabled={
+                                    user.invitation != null && user.is_active
+                                  }
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (
+                                      user.invitation == null &&
+                                      !user.is_active
+                                    ) {
+                                      sendInvitation(
+                                        user.id,
+                                        user.user.id,
+                                        user.user.name,
+                                        user.user.email,
+                                        false,
+                                      );
+                                    } else if (
+                                      user.invitation != null &&
+                                      !user.is_active
+                                    ) {
+                                      sendInvitation(
+                                        user.id,
+                                        user.user.id,
+                                        user.user.name,
+                                        user.user.email,
+                                        true,
+                                      );
+                                    }
+                                  }}
+                                >
+                                  {user.invitation != null && user.is_active
+                                    ? 'Joined'
+                                    : user.invitation == null && !user.is_active
+                                      ? 'Send invitation'
+                                      : 'Resend invitation'}
+                                </Button>
+                              </Td>
+                              <Td>
+                                <Button
+                                  colorScheme="red"
+                                  ml={2}
+                                  onClick={(e) => {
+                                    e.stopPropagation(); // prevent row click
+                                    handleRemoveButtonClick(user.user.id);
+                                  }}
+                                >
+                                  Remove
+                                </Button>
+                              </Td>
+                            </Tr>
+                          ),
+                        )}
+                      </Tbody>
+                    </Table>
+                  </Box>
+                </TableContainer>
+              </Collapse>
+            </Box>
+          ))}
         </Box>
-        {/* </Box> */}
       </Box>
       <Footer />
       <CustomModal
@@ -546,7 +726,6 @@ export function CrewListPage() {
           projectId={projectId!}
           onSubmit={(data, sendInvite) => {
             if (selectedCrewMember) {
-              // handleUpdateCrewMember({ ...data, id: selectedCrewMember.id });
               handleUpdateCrewMember({
                 ...data,
                 id: selectedCrewMember.id,
