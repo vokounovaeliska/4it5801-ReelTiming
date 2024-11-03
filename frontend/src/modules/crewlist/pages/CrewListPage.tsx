@@ -93,7 +93,6 @@ export function CrewListPage() {
     );
   }
 
-  // Error handling
   if (crewListError || !auth.user || !crewListData) {
     return (
       <Center minHeight="100vh">
@@ -142,7 +141,6 @@ export function CrewListPage() {
     try {
       const { responseUserId } = await addCrewMember(data, projectId!);
 
-      // Update the cache directly
       const cacheData = client.readQuery({
         query: GET_CREWLIST_INFO,
         variables: { projectId, userId: auth.user?.id },
@@ -168,7 +166,6 @@ export function CrewListPage() {
         },
       });
 
-      // Send the invitation if sendInvite is true
       if (sendInvite) {
         await sendEmailInvitation(
           projectId!,
@@ -217,7 +214,6 @@ export function CrewListPage() {
       }
       await sendEmailInvitation(projectId!, projectUserId, name, email);
 
-      // Update the cache directly
       const data = client.readQuery({
         query: GET_CREWLIST_INFO,
         variables: { projectId, userId: auth.user?.id },
@@ -498,10 +494,6 @@ export function CrewListPage() {
             </VStack>
           </Center>
         )}
-        {/* could work ??*/}
-        {/* <Box  maxWidth="100%"> */}
-
-        {/* custom scrollbar */}
         <Box
           overflowX="auto"
           h="100%"
@@ -722,7 +714,6 @@ export function CrewListPage() {
             </Box>
           ))}
         </Box>
-        {/* </Box> */}
       </Box>
       <Footer />
       <CustomModal
