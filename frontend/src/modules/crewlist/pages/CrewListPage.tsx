@@ -18,7 +18,6 @@ import {
   Th,
   Thead,
   Tr,
-  // useBreakpointValue,
   useToast,
   VStack,
 } from '@chakra-ui/react';
@@ -73,7 +72,6 @@ export function CrewListPage() {
     data: crewListData,
     loading: crewListLoading,
     error: crewListError,
-    refetch: refetchProjectUsers,
   } = useQuery(GET_CREWLIST_INFO, {
     variables: { projectId, userId: auth.user?.id },
   });
@@ -313,17 +311,62 @@ export function CrewListPage() {
     }
   };
 
+  const departmentNameToId = (
+    name: string,
+    departments: { name: string; id: string }[],
+  ): string | null => {
+    const department = departments.find((dept) => dept.name === name);
+    return department ? department.id : null;
+  };
+
+  // TODO - replace this 12IQ solution - rip
   const handleEditMemberClick = (crewMember: CrewMemberData) => {
-    setSelectedCrewMember(sanitizeCrewMemberData(crewMember)); // TODO - user sanitize to try unfuck zod or just fix zod
-    // setSelectedCrewMember(crewMember); // set selected crew member for editing
+    setSelectedCrewMember(sanitizeCrewMemberData(crewMember));
     setIsModalOpen(true);
   };
 
   const handleUpdateCrewMember = async (data: CrewMemberData) => {
     setIsSubmitting(true);
     try {
-      console.log('Edit crew member:', data);
-      await editCrewMember(data, projectId!);
+      const departmentId = departmentNameToId(
+        data.department,
+        crewList.departments,
+      );
+      if (!departmentId) {
+        throw new Error('Invalid department ID');
+      }
+
+      const updatedData = {
+        ...data,
+        department: departmentId,
+      };
+
+      console.log('Edit crew member:', updatedData);
+      await editCrewMember(updatedData, projectId!);
+
+      const cacheData = client.readQuery({
+        query: GET_CREWLIST_INFO,
+        variables: { projectId, userId: auth.user?.id },
+      });
+
+      const updatedUsers = cacheData.projectUsers.map((user: ProjectUser) => {
+        if (user.id === data.id) {
+          return {
+            ...user,
+            ...updatedData,
+          };
+        }
+        return user;
+      });
+
+      client.writeQuery({
+        query: GET_CREWLIST_INFO,
+        variables: { projectId, userId: auth.user?.id },
+        data: {
+          ...cacheData,
+          projectUsers: updatedUsers,
+        },
+      });
 
       toast({
         title: 'Success',
@@ -333,7 +376,6 @@ export function CrewListPage() {
         isClosable: true,
       });
       handleModalClose();
-      refetchProjectUsers();
     } catch (error) {
       console.error('Error updating crew member:', error);
       toast({
@@ -692,7 +734,6 @@ export function CrewListPage() {
           projectId={projectId!}
           onSubmit={(data, sendInvite) => {
             if (selectedCrewMember) {
-              // handleUpdateCrewMember({ ...data, id: selectedCrewMember.id });
               handleUpdateCrewMember({
                 ...data,
                 id: selectedCrewMember.id,
