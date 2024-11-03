@@ -59,11 +59,9 @@ export const project_user = mysqlTable(
       .references(() => project.id, {
         onDelete: 'cascade',
       }),
-    user_id: varchar('user_id', { length: 36 })
-      .notNull()
-      .references(() => user.id, {
-        onDelete: 'cascade',
-      }),
+    user_id: varchar('user_id', { length: 36 }).references(() => user.id, {
+      onDelete: 'cascade',
+    }),
     department_id: varchar('department_id', { length: 36 }).references(
       () => department.id,
       {

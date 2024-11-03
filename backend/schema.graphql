@@ -23,7 +23,7 @@ type Mutation {
   addDepartment(name: String!): Department!
   addInactiveUser(email: String!, name: String!, phone_number: String!, surname: String!): User!
   addProject(description: String, end_date: DateTimeISO, name: String!, production_company: String!, start_date: DateTimeISO): Project!
-  addProjectUser(departmentId: String = null, email: String!, invitation: String = null, isTeamLeader: Boolean = false, name: String!, phone_number: String = null, position: String = null, projectId: String!, rateId: String = null, role: String = "CREW", surname: String!, userId: String!): ProjectUser!
+  addProjectUser(departmentId: String = null, email: String!, invitation: String = null, isTeamLeader: Boolean = false, name: String!, phone_number: String = null, position: String = null, projectId: String!, rateId: String = null, role: String = "CREW", surname: String!, userId: String = null): ProjectUser!
   addRate(compensation_rate: Float!, overtime_hour1: Float!, overtime_hour2: Float!, overtime_hour3: Float!, overtime_hour4: Float!, standard_rate: Float!): Rate!
   deleteDepartment(departmentId: String!): Boolean!
   deleteProject(projectId: String!): Boolean!
@@ -31,7 +31,7 @@ type Mutation {
   deleteRate(rateId: String!): Boolean!
   deleteUser(userId: String!): Boolean!
   forgotPassword(email: String!): Boolean!
-  inviteUser(projectId: String!, userId: String!): Boolean!
+  inviteUser(email: String!, id: String!, name: String!, projectId: String!): Boolean!
   resetPassword(newPassword: String!, token: String!): AuthInfo!
   signIn(email: String!, password: String!): AuthInfo!
   signUp(email: String!, name: String!, password: String!, phone_number: String!, surname: String!): AuthInfo!
@@ -88,7 +88,7 @@ type ProjectUser {
   rate: Rate
   role: String
   surname: String!
-  user: User!
+  user: User
 }
 
 input ProjectUserInput {
@@ -105,7 +105,7 @@ input ProjectUserInput {
   rate_id: String
   role: String
   surname: String!
-  user_id: String!
+  user_id: String
 }
 
 type Query {

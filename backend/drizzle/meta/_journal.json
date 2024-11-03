@@ -29,6 +29,13 @@
       "when": 1729789103525,
       "tag": "0003_bitter_clint_barton",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1730329667323,
+      "tag": "0004_normal_swordsman",
+      "breakpoints": true
     }
   ]
 }
