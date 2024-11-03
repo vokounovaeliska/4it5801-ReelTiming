@@ -11,7 +11,7 @@ import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 import { ForgotPasswordPage } from './modules/auth/pages/ForgotPasswordPage';
 import { NewPasswordPage } from './modules/auth/pages/NewPasswordPage';
 import AboutUsPage from './modules/contact/AboutUsPage';
-import AcceptInvitationPage from './modules/crewlist/pages/AcceptInvitationPage';
+import { AcceptInvitationPage } from './modules/crewlist/pages/AcceptInvitationPage';
 import { CrewListPage } from './modules/crewlist/pages/CrewListPage';
 import { EditProjectPage } from './modules/editproject/pages/EditProjectPage';
 import { CreateProjectPage } from './modules/myprojects/pages/CreateProjectPage';

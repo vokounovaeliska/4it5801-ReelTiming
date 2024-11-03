@@ -35,7 +35,7 @@ type Mutation {
   inviteUser(email: String!, id: String!, name: String!, projectId: String!): Boolean!
   resetPassword(newPassword: String!, token: String!): AuthInfo!
   signIn(email: String!, password: String!): AuthInfo!
-  signUp(email: String!, name: String!, password: String!, phone_number: String!, surname: String!): AuthInfo!
+  signUp(email: String!, name: String!, password: String!, phone_number: String, surname: String!): AuthInfo!
   updateDepartment(departmentId: String!, name: String!): Department!
   updateProject(data: ProjectInput!, projectId: String!): Project!
   updateProjectUser(data: ProjectUserInput!, id: String!): ProjectUser!

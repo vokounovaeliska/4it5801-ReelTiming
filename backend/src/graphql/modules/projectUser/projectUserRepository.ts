@@ -48,7 +48,6 @@ export function getProjectUserRepository(db: Db) {
         position?: string | null;
         rate_id?: string | null;
         number_of_people?: number | null;
-        car_numberplate?: string | null;
         is_team_leader?: boolean;
         last_update_date?: Date;
         is_active?: boolean;

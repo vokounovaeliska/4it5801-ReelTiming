@@ -1,15 +1,22 @@
 import { useEffect } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
+import { useToast } from '@chakra-ui/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
+import { UPDATE_AND_ACTIVATE_PROJECT_USER } from '@frontend/gql/mutations/UpdateAdActivateProjectUser';
+import { GET_DEPARTMENTS } from '@frontend/gql/queries/GetDepartments';
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
+import Footer from '@frontend/shared/navigation/components/footer/Footer';
+import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
-import { ACTIVATE_PROJECT_USER } from '../../../gql/mutations/ActivateProjectUser';
 import { GET_PROJECT_USER_BY_TOKEN } from '../../../gql/queries/GetProjectUserByToken';
+import { FormValues } from '../forms/AcceptInvitationForm';
+import { AcceptInvitationTemplate } from '../templates/AcceptInvitationTemplate';
 
-const AcceptInvitationPage = () => {
+export function AcceptInvitationPage() {
   const navigate = useNavigate();
+  const toast = useToast();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
 
@@ -21,7 +28,9 @@ const AcceptInvitationPage = () => {
     skip: !token,
   });
 
-  const [activateProjectUser] = useMutation(ACTIVATE_PROJECT_USER);
+  const [UpdateAdActivateProjectUser] = useMutation(
+    UPDATE_AND_ACTIVATE_PROJECT_USER,
+  );
 
   useEffect(() => {
     if (!token) {
@@ -30,40 +39,77 @@ const AcceptInvitationPage = () => {
     }
 
     if (!isAuthenticated) {
-      navigate(`/auth/register?token=${token}`);
+      navigate(`${route.login()}${`?token=${token}`}`);
       return;
     }
-    if (data) {
-      const projectUser = data.projectUsersByToken;
-      if (!projectUser) {
-        console.error('No project user found in data:', data);
-        navigate('/error');
-        return;
-      }
-      const { isActive, invitation } = projectUser;
-      const trimmedToken = String(token).trim();
-      const trimmedInvitation = String(invitation).trim();
+  }, [isAuthenticated, token, navigate]);
 
-      if (trimmedToken === trimmedInvitation && !isActive) {
-        console.log('Activating project user...');
-        activateProjectUser({ variables: { token: token, userId: user.id } })
-          .then(() => {
-            // TODO - debug - userid in myprojectspage is different from the one in gql - some query is bad - cant see projects
-            navigate(route.myprojects());
-          })
-          .catch((err) => {
-            console.error('Error activating project user:', err);
-          });
-      } else {
-        navigate('/error');
-      }
-    }
-  }, [data, isAuthenticated, token, user, activateProjectUser, navigate]);
+  const {
+    data: departmentsData,
+    loading: departmentsLoading,
+    error: departmentsError,
+  } = useQuery(GET_DEPARTMENTS);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  const departments = departmentsData?.departments || [];
+  const projectUser = data?.projectUsersByToken;
 
-  return <div>Processing invitation...</div>;
-};
+  const handleFormSubmit = async (formData: FormValues) => {
+    await UpdateAdActivateProjectUser({
+      variables: {
+        updateProjectUserId: projectUser.id!,
+        data: {
+          user_id: user?.id!,
+          project_id: projectUser.project?.id!,
+          name: formData.name,
+          surname: formData.surname,
+          email: formData.email,
+          phone_number: formData.phone_number,
+          position: formData.position,
+          department_id: formData.department,
+          is_active: true,
+        },
+        updateRateData: {
+          standard_rate: formData.standard_rate,
+          compensation_rate: formData.compensation_rate,
+          overtime_hour1: formData.overtime_hour1,
+          overtime_hour2: formData.overtime_hour2,
+          overtime_hour3: formData.overtime_hour3,
+          overtime_hour4: formData.overtime_hour4,
+        },
+        rateId: projectUser.rate?.id,
+      },
+    })
+      .then(() => {
+        navigate(`/projects/${projectUser.project?.id}`);
+      })
+      .catch((err) => {
+        console.error('Error activating project user:', err);
+        toast({
+          title: 'Error',
+          description: 'Failed to join the project. ' + err,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      });
+  };
 
-export default AcceptInvitationPage;
+  if (loading || departmentsLoading) return <p>Loading...</p>;
+  if (error || departmentsError)
+    return <p>Error: {error?.message ?? departmentsError?.message}</p>;
+
+  return (
+    <div>
+      <Navbar children={undefined} />
+      <AcceptInvitationTemplate
+        onSubmit={handleFormSubmit}
+        projectUserData={projectUser}
+        departments={departments}
+        errorMessage={error}
+        isLoading={loading}
+        authUser={user!}
+      />
+      <Footer />
+    </div>
+  );
+}

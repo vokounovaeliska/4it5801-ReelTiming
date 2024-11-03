@@ -245,6 +245,7 @@ export function CrewListPage() {
         duration: 5000,
         isClosable: true,
       });
+      // refetchProjectUsers();
     } catch (error) {
       console.error('Error sending invitation email:', error);
       toast({
