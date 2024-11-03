@@ -212,6 +212,9 @@ export class ProjectUserService {
       await sendMail(email, 'Invitation to project', htmlContent);
     } catch (error) {
       console.error('Error sending invitation email:', error);
+      if (error instanceof Error) {
+        console.error('Stack trace:', error.stack);
+      }
       throw new GraphQLError('Failed to send invtiation email.');
     }
 
@@ -248,6 +251,20 @@ export class ProjectUserService {
     await this.projectUserRepository.updateProjectUser(projectUser.id, {
       is_active: true,
       user_id: userId,
+    });
+    return true;
+  }
+  async deleteInvitation(userId: string, projectId: string): Promise<boolean> {
+    const projectUser =
+      await this.projectUserRepository.getProjectUserByUserIdAndProjectId(
+        userId,
+        projectId,
+      );
+    if (!projectUser) {
+      throw new Error('Project user not found');
+    }
+    await this.projectUserRepository.updateProjectUser(projectUser.id, {
+      invitation: null,
     });
     return true;
   }

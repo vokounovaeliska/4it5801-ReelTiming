@@ -25,7 +25,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
   footerButtons,
 }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+    <Modal isOpen={isOpen} onClose={onClose} size={'5xl'}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{title}</ModalHeader>

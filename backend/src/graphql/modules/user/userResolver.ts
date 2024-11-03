@@ -38,7 +38,7 @@ export class UserResolver {
     @Arg('password') password: string,
     @Arg('name') name: string,
     @Arg('surname') surname: string,
-    @Arg('phone_number') phone_number: string,
+    @Arg('phone_number', { nullable: true }) phone_number: string,
     @Ctx() { db }: CustomContext,
   ): Promise<AuthInfo> {
     const userService = new UserService(db);

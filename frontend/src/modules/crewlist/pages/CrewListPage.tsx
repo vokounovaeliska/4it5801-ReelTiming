@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
+import { AddIcon } from '@chakra-ui/icons';
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   Box,
   Button,
   Center,
   Heading,
+  IconButton,
+  Link,
   Spinner,
   Table,
+  TableContainer,
   Tbody,
   Td,
   Text,
@@ -21,15 +19,17 @@ import {
   Tr,
   useBreakpointValue,
   useToast,
+  VStack,
 } from '@chakra-ui/react';
 import {
   Link as ReactRouterLink,
   useLocation,
-  useNavigate,
   useParams,
 } from 'react-router-dom';
 
 import { useCrewMemberMutations } from '@frontend/gql/mutations/addCrewMember';
+import { DELETE_INVITATION } from '@frontend/gql/mutations/DeleteInvitation';
+import { GET_CREWLIST_INFO } from '@frontend/gql/queries/GetCrewListInfo';
 import { useAuth } from '@frontend/modules/auth';
 import ProjectButtons from '@frontend/modules/myprojects/ProjectButtons';
 import { route } from '@frontend/route';
@@ -38,24 +38,23 @@ import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
 import { DELETE_PROJECT_USER } from '../../../gql/queries/DeleteProjectUser';
-import { GET_DEPARTMENTS } from '../../../gql/queries/GetDepartments';
-import { GET_PROJECT_DETAILS } from '../../../gql/queries/GetProjectDetails';
-import { GET_PROJECT_USERS } from '../../../gql/queries/GetProjectUsers';
-import { GET_USER_ROLE_IN_PROJECT } from '../../../gql/queries/GetUserRoleInProject';
 import { CrewListForm } from '../forms/CrewListForm';
+
+import CrewAlertDialog from './CrewAlertDialog';
 
 export function CrewListPage() {
   const auth = useAuth();
-  const { projectId } = useParams<{ projectId: string }>();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const toast = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const tableSize = useBreakpointValue({ base: 'sm', md: 'md' });
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [userIdToRemove, setUserIdToRemove] = useState<string | null>(null);
-  const cancelRef = React.useRef<HTMLButtonElement>(null);
   const [selectedCrewMember, setSelectedCrewMember] =
     useState<CrewMemberData | null>(null);
+  const { projectId } = useParams<{ projectId: string }>();
+  const location = useLocation();
+  const tableSize = useBreakpointValue({ base: 'xl', md: 'md' });
+
   const sanitizeCrewMemberData = (data: CrewMemberData): CrewMemberData => ({
     ...data,
     standard_rate: data.standard_rate || 0,
@@ -66,40 +65,24 @@ export function CrewListPage() {
     overtime_hour4: data.overtime_hour4 || 0,
   });
 
-  const { data, loading, error } = useQuery(GET_PROJECT_DETAILS, {
-    variables: { id: projectId },
-  });
-
   const {
-    data: roleData,
-    loading: roleLoading,
-    error: roleError,
-  } = useQuery(GET_USER_ROLE_IN_PROJECT, {
-    skip: !auth.user,
-    variables: { userId: auth.user?.id, projectId },
-  });
-
-  const {
-    data: departmentsData,
-    loading: departmentsLoading,
-    error: departmentsError,
-  } = useQuery(GET_DEPARTMENTS);
-  const {
-    data: projectUsersData,
-    loading: projectUsersLoading,
-    error: projectUsersError,
+    data: crewListData,
+    loading: crewListLoading,
+    error: crewListError,
     refetch: refetchProjectUsers,
-  } = useQuery(GET_PROJECT_USERS, {
-    variables: { projectId },
+  } = useQuery(GET_CREWLIST_INFO, {
+    variables: { projectId, userId: auth.user?.id },
   });
+
+  const crewList = crewListData || [];
+
+  // GQL MUTATIONS CALLS
   const { addCrewMember, sendEmailInvitation, editCrewMember } =
     useCrewMemberMutations();
   const [deleteProjectUser] = useMutation(DELETE_PROJECT_USER);
+  const [deleteProjectInvitation] = useMutation(DELETE_INVITATION);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const toast = useToast();
-
-  if (loading || roleLoading || departmentsLoading || projectUsersLoading) {
+  if (crewListLoading) {
     return (
       <Center minHeight="100vh">
         <Spinner size="xl" color="orange.500" />
@@ -108,51 +91,16 @@ export function CrewListPage() {
     );
   }
 
-  if (
-    error ||
-    roleError ||
-    departmentsError ||
-    projectUsersError ||
-    !auth.user ||
-    !data?.project ||
-    !roleData?.userRoleInProject
-  ) {
+  // Error handling
+  if (crewListError || !auth.user || !crewListData) {
     return (
       <Center minHeight="100vh">
         <Text color="red.500">
-          Error loading project details: {error?.message}
+          Error loading project details: {crewListError?.message}
         </Text>
       </Center>
     );
   }
-
-  const userRole = roleData.userRoleInProject;
-
-  if (userRole !== 'ADMIN') {
-    navigate(route.myprojects());
-    return null;
-  }
-
-  const project = data?.project;
-  const departments = departmentsData?.departments || [];
-  const projectUsers = projectUsersData?.projectUsers || [];
-
-  const handleAddMemberClick = () => {
-    setSelectedCrewMember(null); // clear selected crew member for adding new
-    setIsModalOpen(true);
-  };
-
-  const handleEditMemberClick = (crewMember: CrewMemberData) => {
-    setSelectedCrewMember(sanitizeCrewMemberData(crewMember)); // TODO - user sanitize to try unfuck zod or just fix zod
-    // setSelectedCrewMember(crewMember); // set selected crew member for editing
-    setIsModalOpen(true);
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setSelectedCrewMember(null); // clear selected crew member on close
-  };
-
   interface CrewMemberData {
     id: string;
     name: string;
@@ -172,17 +120,40 @@ export function CrewListPage() {
     rate_id: string | null;
   }
 
-  const handleAddNewCrewMember = async (data: CrewMemberData) => {
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedCrewMember(null); // clear selected crew member on close
+  };
+
+  const handleAddMemberClick = () => {
+    setSelectedCrewMember(null); // clear selected crew member for adding new
+    setIsModalOpen(true);
+  };
+
+  const handleAddNewCrewMember = async (
+    data: CrewMemberData,
+    sendInvite: boolean,
+    name: string,
+    email: string,
+  ) => {
     setIsSubmitting(true);
     try {
-      const { userId } = await addCrewMember(data, projectId!);
-      // TODO - sendemail isnt sending after creation
-      await sendEmailInvitation(projectId!, userId, data.name, data.email); // Send invitation after adding member
-      // handleSendInvitation(projectId!, userId)
-      console.log('New crew member added and invitation sent:', userId);
+      const { responseUserId } = await addCrewMember(data, projectId!);
+      console.log(responseUserId.data.addProjectUser.id);
+      console.log(responseUserId.data.addProjectUser.user.id);
+      // Step 2: Only send the invitation if sendInvite is true
+      if (sendInvite) {
+        await sendEmailInvitation(
+          projectId!,
+          responseUserId.data.addProjectUser.id,
+          name,
+          email,
+        );
+      }
+
       toast({
         title: 'Success',
-        description: 'Crew member added and invitation sent successfully.',
+        description: `Crew member added${sendInvite ? ' and invitation sent' : ''} successfully.`,
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -199,15 +170,26 @@ export function CrewListPage() {
         isClosable: true,
       });
     } finally {
-      setIsSubmitting(false); // Reset button state
-      // refetchProjectUsers();
-      // uncomment if we wanna refetch always - even after bad addition to db, fails rn thanks to no mail send
+      setIsSubmitting(false);
     }
   };
 
-  const handleSendEmail = async (userId: string) => {
+  const sendInvitation = async (
+    projectUserId: string,
+    userId: string,
+    name: string,
+    email: string,
+    resending: boolean,
+  ) => {
     try {
-      await sendEmailInvitation(projectId!, userId, data.name, data.email);
+      if (resending) {
+        await deleteProjectInvitation({
+          variables: { userId, projectId: projectId! },
+        });
+        await sendEmailInvitation(projectId!, projectUserId, name, email);
+      } else {
+        await sendEmailInvitation(projectId!, projectUserId, name, email);
+      }
       toast({
         title: 'Success',
         description: 'Invitation email sent successfully.',
@@ -215,6 +197,7 @@ export function CrewListPage() {
         duration: 5000,
         isClosable: true,
       });
+      // refetchProjectUsers();
     } catch (error) {
       console.error('Error sending invitation email:', error);
       toast({
@@ -225,6 +208,11 @@ export function CrewListPage() {
         isClosable: true,
       });
     }
+  };
+
+  const handleRemoveButtonClick = (userId: string) => {
+    setUserIdToRemove(userId);
+    setIsAlertOpen(true);
   };
 
   const handleRemoveUser = async (userId: string) => {
@@ -251,6 +239,12 @@ export function CrewListPage() {
         isClosable: true,
       });
     }
+  };
+
+  const handleEditMemberClick = (crewMember: CrewMemberData) => {
+    setSelectedCrewMember(sanitizeCrewMemberData(crewMember)); // TODO - user sanitize to try unfuck zod or just fix zod
+    // setSelectedCrewMember(crewMember); // set selected crew member for editing
+    setIsModalOpen(true);
   };
 
   const handleUpdateCrewMember = async (data: CrewMemberData) => {
@@ -282,10 +276,13 @@ export function CrewListPage() {
     }
   };
 
-  const handleRemoveButtonClick = (userId: string) => {
-    setUserIdToRemove(userId);
-    setIsAlertOpen(true);
-  };
+  const filteredUsers =
+    crewList.userRoleInProject === 'ADMIN'
+      ? crewList.projectUsers
+      : crewList.projectUsers.filter(
+          (projectUser: { user: { id: string } }) =>
+            projectUser.user.id === auth.user?.id,
+        );
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
@@ -319,120 +316,225 @@ export function CrewListPage() {
         <ProjectButtons
           projectId={projectId!}
           activePath={location.pathname}
-          userRole={userRole}
+          userRole={crewList.userRoleInProject}
         />
       </Navbar>
-      <Box flex="1" p={4} width="100%" maxWidth="1200px" mx="auto">
-        <Heading mb={4} textAlign="center">
-          Crew List for Project {project.name}
+      <Box flex="1" p={0} width="100%">
+        <Heading mb={4} mt={2} textAlign="center">
+          Crew List for Project {crewList.project.name}
         </Heading>
-        <Button colorScheme="orange" onClick={handleAddMemberClick} mb={4}>
-          Add New Member
-        </Button>
-        <Table variant="simple" size={tableSize}>
-          <Thead>
-            <Tr>
-              <Th>Name</Th>
-              <Th>Surname</Th>
-              <Th>Department</Th>
-              <Th>Role</Th>
-              <Th>Position</Th>
-              <Th>Email</Th>
-              <Th>Invitation</Th>
-              <Th>Delete</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {projectUsers.map(
-              (user: {
-                id: string;
-                user: {
-                  id: string;
-                  name: string;
-                  surname: string;
-                  email: string;
-                  standard_rate: number;
-                  compensation_rate: number;
-                  overtime_hour1: number;
-                  overtime_hour2: number;
-                  overtime_hour3: number;
-                  overtime_hour4: number;
-                };
-                department: { name: string; id: string } | null;
-                role: string;
-                position: string;
-                phone_number: string;
-                is_active: boolean;
-                invitation: string;
-                rate: { id: string };
-              }) => (
-                <Tr
-                  key={user.id}
-                  onClick={() =>
-                    handleEditMemberClick({
-                      id: user.id,
-                      name: user.user.name,
-                      surname: user.user.surname,
-                      department: user.department?.id || 'N/A',
-                      position: user.position,
-                      phone_number: user.phone_number,
-                      email: user.user.email,
-                      standard_rate: user.user.standard_rate,
-                      compensation_rate: user.user.compensation_rate,
-                      overtime_hour1: user.user.overtime_hour1,
-                      overtime_hour2: user.user.overtime_hour2,
-                      overtime_hour3: user.user.overtime_hour3,
-                      overtime_hour4: user.user.overtime_hour4,
-                      role: user.role,
-                      user_id: user.user.id,
-                      rate_id: user.rate?.id,
-                    })
-                  }
-                  _hover={{ cursor: 'pointer', backgroundColor: 'gray.100' }}
-                >
-                  <Td>{user.user.name}</Td>
-                  <Td>{user.user.surname}</Td>
-                  <Td>{String(user.department?.name) || 'N/A'}</Td>
-                  <Td>{user.role}</Td>
-                  <Td>{user.position}</Td>
-                  <Td>
-                    <a href={`mailto:${user?.user?.email || ''}`}>
-                      {user.user.email}
-                    </a>
-                  </Td>
-                  <Td>
-                    <Button
-                      colorScheme="orange"
-                      isDisabled={user.is_active && user.invitation != null}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSendEmail(user.user.id);
-                      }}
-                    >
-                      {user.is_active && user.invitation != null
-                        ? `Joined`
-                        : !user.is_active && user.invitation != null
-                          ? 'Resend invitation'
-                          : 'Send invitation'}
-                    </Button>
-                  </Td>
-                  <Td>
-                    <Button
-                      colorScheme="red"
-                      ml={2}
-                      onClick={(e) => {
-                        e.stopPropagation(); // prevent row click
-                        handleRemoveButtonClick(user.user.id);
-                      }}
-                    >
-                      Remove
-                    </Button>
-                  </Td>
-                </Tr>
-              ),
-            )}
-          </Tbody>
-        </Table>
+        {crewList.userRoleInProject === 'ADMIN' && (
+          <Center pb="1">
+            <VStack spacing={3}>
+              <IconButton
+                aria-label="Add project"
+                colorScheme="orange"
+                bgColor={'orange.500'}
+                onClick={handleAddMemberClick}
+                size="lg"
+                icon={<AddIcon />}
+                borderRadius="full"
+                boxShadow="md"
+                _hover={{
+                  bg: 'orange.500',
+                  color: 'white',
+                  transform: 'scale(1.2)',
+                }}
+                transition="all 0.3s ease"
+              />
+              <Box fontSize="sm">Add New Member</Box>
+            </VStack>
+          </Center>
+        )}
+        {/* could work ??*/}
+        {/* <Box  maxWidth="100%"> */}
+
+        {/* custom scrollbar */}
+        <Box
+          overflowX="auto"
+          // maxW="100vw"
+          h="100%"
+          whiteSpace="nowrap"
+          // pb="17px"
+          // color="white"
+          px="32px"
+          sx={{
+            '::-webkit-scrollbar': {
+              display: 'block',
+            },
+          }}
+        >
+          <Box maxH="100vw">
+            <TableContainer>
+              <Table variant="simple" size={tableSize}>
+                <Thead>
+                  <Tr>
+                    <Th>Name</Th>
+                    <Th>Surname</Th>
+                    <Th>Department</Th>
+                    <Th>Position</Th>
+                    <Th>Role</Th>
+                    <Th>Email</Th>
+                    <Th>Phone number</Th>
+                    <Th>Standard rate</Th>
+                    <Th>Compensation rate</Th>
+                    <Th>Overtime hour 1</Th>
+                    <Th>Overtime hour 2</Th>
+                    <Th>Overtime hour 3</Th>
+                    <Th>Overtime hour 4</Th>
+                    <Th>Invitation</Th>
+                    <Th>Delete</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {filteredUsers.map(
+                    (user: {
+                      id: string;
+                      user: {
+                        id: string;
+                        name: string;
+                        surname: string;
+                        email: string;
+                      };
+                      department: { name: string; id: string } | null;
+                      role: string;
+                      position: string;
+                      phone_number: string;
+                      is_active: boolean;
+                      invitation: string;
+                      rate: {
+                        id: string;
+                        standard_rate: number;
+                        compensation_rate: number;
+                        overtime_hour1: number;
+                        overtime_hour2: number;
+                        overtime_hour3: number;
+                        overtime_hour4: number;
+                      } | null;
+                    }) => (
+                      <Tr
+                        key={user.id}
+                        onClick={() =>
+                          handleEditMemberClick({
+                            id: user.id,
+                            name: user.user.name,
+                            surname: user.user.surname,
+                            department: user.department?.id || 'N/A',
+                            position: user.position,
+                            phone_number: user.phone_number,
+                            email: user.user.email,
+                            standard_rate: user.rate?.standard_rate || 0,
+                            compensation_rate:
+                              user.rate?.compensation_rate || 0,
+                            overtime_hour1: user.rate?.overtime_hour1 || 0,
+                            overtime_hour2: user.rate?.overtime_hour2 || 0,
+                            overtime_hour3: user.rate?.overtime_hour3 || 0,
+                            overtime_hour4: user.rate?.overtime_hour4 || 0,
+                            role: user.role,
+                            user_id: user.user.id,
+                            rate_id: user.rate?.id ?? null,
+                          })
+                        }
+                        _hover={{
+                          cursor: 'pointer',
+                          backgroundColor: 'gray.100',
+                        }}
+                      >
+                        <Td>{user.user.name}</Td>
+                        <Td>{user.user.surname}</Td>
+                        <Td>
+                          {user.department ? user.department.name : 'N/A'}
+                        </Td>
+                        <Td>{user.position}</Td>
+                        <Td>{user.role}</Td>
+                        <Td>
+                          <Link
+                            href={`mailto:${user.user.email}`}
+                            color="black"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                          >
+                            {user.user.email}
+                          </Link>
+                        </Td>
+                        <Td>
+                          <Link
+                            href={`tel:${user.phone_number}`}
+                            color="black"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                          >
+                            {user.phone_number}
+                          </Link>
+                        </Td>
+                        <Td>{user.rate ? user.rate.standard_rate : 'N/A'}</Td>
+                        <Td>
+                          {user.rate ? user.rate.compensation_rate : 'N/A'}
+                        </Td>
+                        <Td>{user.rate ? user.rate.overtime_hour1 : 'N/A'}</Td>
+                        <Td>{user.rate ? user.rate.overtime_hour2 : 'N/A'}</Td>
+                        <Td>{user.rate ? user.rate.overtime_hour3 : 'N/A'}</Td>
+                        <Td>{user.rate ? user.rate.overtime_hour4 : 'N/A'}</Td>
+                        <Td>
+                          <Button
+                            colorScheme="orange"
+                            isDisabled={
+                              user.invitation != null && user.is_active
+                            }
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (user.invitation == null && !user.is_active) {
+                                sendInvitation(
+                                  user.id,
+                                  user.user.id,
+                                  user.user.name,
+                                  user.user.email,
+                                  false,
+                                );
+                              } else if (
+                                user.invitation != null &&
+                                !user.is_active
+                              ) {
+                                sendInvitation(
+                                  user.id,
+                                  user.user.id,
+                                  user.user.name,
+                                  user.user.email,
+                                  true,
+                                );
+                              }
+                            }}
+                          >
+                            {user.invitation != null && user.is_active
+                              ? 'Joined'
+                              : user.invitation == null && !user.is_active
+                                ? 'Send invitation'
+                                : 'Resend invitation'}
+                          </Button>
+                        </Td>
+                        <Td>
+                          <Button
+                            colorScheme="red"
+                            ml={2}
+                            onClick={(e) => {
+                              e.stopPropagation(); // prevent row click
+                              handleRemoveButtonClick(user.user.id);
+                            }}
+                          >
+                            Remove
+                          </Button>
+                        </Td>
+                      </Tr>
+                    ),
+                  )}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </Box>
+        </Box>
+        {/* </Box> */}
       </Box>
       <Footer />
       <CustomModal
@@ -442,67 +544,41 @@ export function CrewListPage() {
       >
         <CrewListForm
           projectId={projectId!}
-          onSubmit={(data) => {
+          onSubmit={(data, sendInvite) => {
             if (selectedCrewMember) {
-              // TODO - implement to actually do stuff
+              // handleUpdateCrewMember({ ...data, id: selectedCrewMember.id });
               handleUpdateCrewMember({
                 ...data,
                 id: selectedCrewMember.id,
                 user_id: selectedCrewMember.user_id,
                 rate_id: selectedCrewMember.rate_id,
               });
-              console.log('Edit crew member:', data);
             } else {
-              handleAddNewCrewMember({
-                ...data,
-                id: '',
-                user_id: null,
-                rate_id: null,
-              });
+              handleAddNewCrewMember(
+                { ...data, id: '', user_id: null, rate_id: null },
+                sendInvite,
+                data.name,
+                data.email,
+              );
             }
           }}
           isLoading={isSubmitting}
-          departments={departments}
+          departments={crewList.departments}
           initialValues={selectedCrewMember || undefined}
           mode={selectedCrewMember ? 'edit' : 'add'}
+          userRole={crewList.userRoleInProject}
         />
       </CustomModal>
-      {/* TODO: Refactor to individual component ? cleaner code */}
-      <AlertDialog
+      <CrewAlertDialog
         isOpen={isAlertOpen}
-        leastDestructiveRef={cancelRef}
         onClose={() => setIsAlertOpen(false)}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Remove User
-            </AlertDialogHeader>
-
-            <AlertDialogBody>
-              Are you sure you want to remove from the project?
-            </AlertDialogBody>
-
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={() => setIsAlertOpen(false)}>
-                Cancel
-              </Button>
-              <Button
-                colorScheme="red"
-                onClick={() => {
-                  if (userIdToRemove) {
-                    handleRemoveUser(userIdToRemove);
-                  }
-                  setIsAlertOpen(false);
-                }}
-                ml={3}
-              >
-                Remove
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
+        onConfirm={() => {
+          if (userIdToRemove) {
+            handleRemoveUser(userIdToRemove);
+          }
+          setIsAlertOpen(false);
+        }}
+      />
     </Box>
   );
 }

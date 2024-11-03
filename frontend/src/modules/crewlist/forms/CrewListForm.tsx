@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {
+  Box,
   Button,
   Divider,
   FormControl,
@@ -7,7 +8,6 @@ import {
   Select,
   SimpleGrid,
   Stack,
-  Text,
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
@@ -17,11 +17,12 @@ import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
 export type CrewListFormProps = {
   projectId: string;
   errorMessage?: string;
-  onSubmit: (data: FormValues) => void;
+  onSubmit: (data: FormValues, sendInvite: boolean) => void;
   isLoading: boolean;
   departments: { id: string; name: string }[];
   initialValues?: FormValues;
   mode: 'add' | 'edit'; // TODO - ugly solution, refactor when free ?
+  userRole: 'ADMIN' | 'CREW';
 };
 
 const phoneRegex = /^(\+\d{1,3}[- ]?)?\d{9}$/;
@@ -39,24 +40,30 @@ const schema = zod.object({
         'Invalid phone number format. Example: +420607887591 or 420607887591',
     }),
   email: zod.string().email().min(1),
-  standard_rate: zod
-    .number()
-    .nonnegative({ message: 'Must be a non-negative number' }),
-  compensation_rate: zod
-    .number()
-    .nonnegative({ message: 'Must be a non-negative number' }),
-  overtime_hour1: zod
-    .number()
-    .nonnegative({ message: 'Must be a non-negative number' }),
-  overtime_hour2: zod
-    .number()
-    .nonnegative({ message: 'Must be a non-negative number' }),
-  overtime_hour3: zod
-    .number()
-    .nonnegative({ message: 'Must be a non-negative number' }),
-  overtime_hour4: zod
-    .number()
-    .nonnegative({ message: 'Must be a non-negative number' }),
+  standard_rate: zod.preprocess(
+    (val) => (typeof val === 'string' ? parseFloat(val) : val),
+    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+  ),
+  compensation_rate: zod.preprocess(
+    (val) => (typeof val === 'string' ? parseFloat(val) : val),
+    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+  ),
+  overtime_hour1: zod.preprocess(
+    (val) => (typeof val === 'string' ? parseFloat(val) : val),
+    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+  ),
+  overtime_hour2: zod.preprocess(
+    (val) => (typeof val === 'string' ? parseFloat(val) : val),
+    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+  ),
+  overtime_hour3: zod.preprocess(
+    (val) => (typeof val === 'string' ? parseFloat(val) : val),
+    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+  ),
+  overtime_hour4: zod.preprocess(
+    (val) => (typeof val === 'string' ? parseFloat(val) : val),
+    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+  ),
   role: zod.string().default('CREW'),
 });
 
@@ -86,52 +93,25 @@ export function CrewListForm({
   departments,
   initialValues: formInitialValues = initialValues,
   mode,
+  userRole,
 }: CrewListFormProps) {
-  const [step, setStep] = useState(1);
-  const nextStep = () => setStep((prev) => (prev < 2 ? prev + 1 : prev));
-  const prevStep = () => setStep((prev) => (prev > 1 ? prev - 1 : prev));
-
+  const [sendInvite, setSendInvite] = useState(false);
   return (
     <Form
-      onSubmit={onSubmit}
+      onSubmit={(data) => {
+        onSubmit(data, sendInvite);
+        setSendInvite(false);
+      }}
       defaultValues={formInitialValues}
       resolver={zodResolver(schema)}
       noValidate
     >
       <Stack justify="center">
         {errorMessage && <ErrorBanner title={errorMessage} />}
-        <Stack direction="row" align="center" justify="space-between" pb="3">
-          <Button
-            onClick={prevStep}
-            visibility={step === 2 ? 'visible' : 'hidden'}
-          >
-            ← Back
-          </Button>
-          <Text color="gray" p="2" fontWeight="bold">
-            {step} / 2
-          </Text>
-          <Button
-            onClick={nextStep}
-            visibility={step === 1 ? 'visible' : 'hidden'}
-          >
-            Next →
-          </Button>
-        </Stack>
-        <Divider borderWidth="1px" />
-        {step === 1 && (
-          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4} p="2">
-            <InputField
-              name="name"
-              label="Name"
-              isRequired
-              isDisabled={mode === 'edit'}
-            />
-            <InputField
-              name="surname"
-              label="Surname"
-              isRequired
-              isDisabled={mode === 'edit'}
-            />
+        <Box display={{ base: 'block', lg: 'flex' }} gap={6} p="2">
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+            <InputField name="name" label="Name" isRequired />
+            <InputField name="surname" label="Surname" isRequired />
             <Controller
               name="department"
               render={({ field }) => (
@@ -152,12 +132,17 @@ export function CrewListForm({
                 </FormControl>
               )}
             />
-            <InputField name="position" label="Position" isRequired />
+            <InputField
+              name="position"
+              label="Position"
+              isRequired
+              isDisabled={userRole !== 'ADMIN'}
+            />
             <InputField
               name="email"
               label="Email"
               isRequired
-              isDisabled={mode === 'edit'}
+              isDisabled={mode !== 'add'}
             />
             <InputField name="phone_number" label="Phone number" isRequired />
             <Controller
@@ -173,10 +158,16 @@ export function CrewListForm({
               )}
             />
           </SimpleGrid>
-        )}
+          <Divider
+            orientation="vertical"
+            display={{ base: 'none', lg: 'block' }}
+          />
+          <Divider
+            orientation="horizontal"
+            display={{ base: 'block', lg: 'none' }}
+          />
 
-        {step === 2 && (
-          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4} p="2">
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
             <InputField name="standard_rate" label="Standard rate" isRequired />
             <InputField
               name="compensation_rate"
@@ -209,7 +200,7 @@ export function CrewListForm({
               type="number"
             />
           </SimpleGrid>
-        )}
+        </Box>
       </Stack>
       <Stack m={4} spacing={6}>
         {mode === 'add' ? (
@@ -219,6 +210,7 @@ export function CrewListForm({
               colorScheme="orange"
               width="100%"
               isLoading={isLoading}
+              onClick={() => setSendInvite(true)}
             >
               Add Member and Send Invitation
             </Button>
@@ -227,6 +219,7 @@ export function CrewListForm({
               colorScheme="gray"
               width="100%"
               isLoading={isLoading}
+              onClick={() => setSendInvite(false)}
             >
               Add Member without Invitation
             </Button>
