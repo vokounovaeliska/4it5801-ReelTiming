@@ -621,7 +621,7 @@ export function CrewListPage() {
                                   name: user.user.name,
                                   surname: user.user.surname,
                                   department:
-                                    user.department?.name || 'No Department',
+                                    user.department?.id || 'No Department',
                                   position: user.position,
                                   phone_number: user.phone_number,
                                   email: user.user.email,
