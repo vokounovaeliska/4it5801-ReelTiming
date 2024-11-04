@@ -49,6 +49,9 @@ const ADD_PROJECT_USER_MUTATION = gql(/* GraphQL */
     $role: String!
     $invitation: String
     $phone_number: String
+    $email: String!
+    $name: String!
+    $surname: String!
   ) {
     addProjectUser(
       projectId: $projectId
@@ -59,6 +62,9 @@ const ADD_PROJECT_USER_MUTATION = gql(/* GraphQL */
       role: $role
       invitation: $invitation
       phone_number: $phone_number
+      email: $email
+      name: $name
+      surname: $surname
     ) {
       id
       project {
@@ -92,6 +98,9 @@ export function CreateProjectPage() {
               role: 'ADMIN',
               invitation: null,
               phone_number: null,
+              email: auth.user.email,
+              name: auth.user.name,
+              surname: auth.user.surname,
             },
           });
           navigate(`/projects/${projectId}`);
