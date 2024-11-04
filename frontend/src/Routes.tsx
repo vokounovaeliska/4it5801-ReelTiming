@@ -15,6 +15,7 @@ import { AcceptInvitationPage } from './modules/crewlist/pages/AcceptInvitationP
 import { CrewListPage } from './modules/crewlist/pages/CrewListPage';
 import { EditProjectPage } from './modules/editproject/pages/EditProjectPage';
 import { CreateProjectPage } from './modules/myprojects/pages/CreateProjectPage';
+import ProfileSettingsPage from './modules/profilesettings/pages/ProfileSettingsPage';
 import { TimesheetPage } from './modules/timesheets/pages/TimesheetsPage';
 import { ToCPage } from './modules/toc/TocPage';
 import { route } from './route';
@@ -50,6 +51,7 @@ function Routes() {
         path={route.acceptInvitation()}
         element={<AcceptInvitationPage />}
       />
+      <Route path={route.profileSettings} element={<ProfileSettingsPage />} />
     </RouterRoutes>
   );
 }
