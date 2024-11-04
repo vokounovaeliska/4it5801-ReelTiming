@@ -423,11 +423,16 @@ export function CrewListPage() {
 
   const groupedByDepartment = crewList.projectUsers.reduce(
     (acc: Record<string, ProjectUser[]>, user: ProjectUser) => {
-      const departmentName = user.department?.name || 'No Department';
-      if (!acc[departmentName]) {
-        acc[departmentName] = [];
+      if (
+        crewList.userRoleInProject === 'ADMIN' ||
+        user.user.id === auth.user?.id
+      ) {
+        const departmentName = user.department?.name || 'No Department';
+        if (!acc[departmentName]) {
+          acc[departmentName] = [];
+        }
+        acc[departmentName].push(user);
       }
-      acc[departmentName].push(user);
       return acc;
     },
     {} as Record<string, ProjectUser[]>,
