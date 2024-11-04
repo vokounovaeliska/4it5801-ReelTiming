@@ -59,7 +59,7 @@ const UserMenu: React.FC = () => {
         </Flex>
       </MenuButton>
       <MenuList bg="orange.600" borderColor="orange.600" color="white">
-        <RouterLink to={route.myprojects()}>
+        <RouterLink to={route.profileSettings}>
           <MenuItem
             _hover={{ bg: 'orange.700' }}
             bgColor={'orange.600'}

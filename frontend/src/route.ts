@@ -18,4 +18,5 @@ export const route = {
   editprojectpage: (projectId: string = ':projectId') =>
     `/projects/${projectId}/edit`,
   acceptInvitation: () => `/accept-invitation`,
+  profileSettings: '/profile-settings',
 };
