@@ -325,10 +325,19 @@ export function CrewListPage() {
   const handleUpdateCrewMember = async (data: CrewMemberData) => {
     setIsSubmitting(true);
     try {
-      const departmentId = departmentNameToId(
-        data.department,
-        crewList.departments,
-      );
+      console.log('Updating crew member:', data);
+      console.log('Available departments:', crewList.departments);
+
+      let departmentId = data.department;
+      if (
+        !crewList.departments.some(
+          (dept: { id: string }) => dept.id === departmentId,
+        )
+      ) {
+        departmentId =
+          departmentNameToId(data.department, crewList.departments) || '';
+      }
+
       if (!departmentId) {
         throw new Error('Invalid department ID');
       }
