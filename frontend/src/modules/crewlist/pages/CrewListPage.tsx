@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useApolloClient, useMutation, useQuery } from '@apollo/client';
-import { AddIcon, ChevronDownIcon } from '@chakra-ui/icons';
+import { AddIcon, ChevronDownIcon, DeleteIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -33,6 +33,8 @@ import { GET_CREWLIST_INFO } from '@frontend/gql/queries/GetCrewListInfo';
 import { useAuth } from '@frontend/modules/auth';
 import ProjectButtons from '@frontend/modules/myprojects/ProjectButtons';
 import { route } from '@frontend/route';
+import { TextPhoneNumber } from '@frontend/shared/design-system/atoms/TextPhoneNumber';
+import { TooltipHeader } from '@frontend/shared/design-system/atoms/Tooltip';
 import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
@@ -579,7 +581,7 @@ export function CrewListPage() {
                       scrollbarColor: '#2D3748 white',
                     }}
                   >
-                    <Table variant="simple" size="md">
+                    <Table variant="simple" size="sm">
                       <Thead>
                         <Tr bg="#2D3748" textColor="white">
                           <Th textColor={'white'}>Name</Th>
@@ -589,11 +591,21 @@ export function CrewListPage() {
                           <Th textColor={'white'}>Email</Th>
                           <Th textColor={'white'}>Phone number</Th>
                           <Th textColor={'white'}>Standard rate</Th>
-                          <Th textColor={'white'}>Compensation rate</Th>
-                          <Th textColor={'white'}>Overtime hour 1</Th>
-                          <Th textColor={'white'}>Overtime hour 2</Th>
-                          <Th textColor={'white'}>Overtime hour 3</Th>
-                          <Th textColor={'white'}>Overtime hour 4</Th>
+                          <TooltipHeader label="Compensation rate">
+                            <Th textColor={'white'}>Compensation</Th>
+                          </TooltipHeader>
+                          <TooltipHeader label="Overtime hour1">
+                            <Th textColor={'white'}>OH 1</Th>
+                          </TooltipHeader>
+                          <TooltipHeader label="Overtime hour2">
+                            <Th textColor={'white'}>OH 2</Th>
+                          </TooltipHeader>
+                          <TooltipHeader label="Overtime hour3">
+                            <Th textColor={'white'}>OH 3</Th>
+                          </TooltipHeader>
+                          <TooltipHeader label="Overtime hour4">
+                            <Th textColor={'white'}>OH 4</Th>
+                          </TooltipHeader>
                           <Th textColor={'white'}>Invitation</Th>
                           <Th textColor={'white'}>Delete</Th>
                         </Tr>
@@ -657,7 +669,9 @@ export function CrewListPage() {
                                     e.stopPropagation();
                                   }}
                                 >
-                                  {user.phone_number}
+                                  <TextPhoneNumber
+                                    phoneNumber={user.phone_number}
+                                  ></TextPhoneNumber>
                                 </Link>
                               </Td>
                               <Td>{user.rate?.standard_rate}</Td>
@@ -669,6 +683,7 @@ export function CrewListPage() {
                               <Td>
                                 <Button
                                   colorScheme="orange"
+                                  size={'sm'}
                                   isDisabled={
                                     user.invitation != null && user.is_active
                                   }
@@ -707,16 +722,16 @@ export function CrewListPage() {
                                 </Button>
                               </Td>
                               <Td>
-                                <Button
+                                <IconButton
+                                  aria-label="Remove record"
+                                  icon={<DeleteIcon />}
                                   colorScheme="red"
-                                  ml={2}
+                                  size={'sm'}
                                   onClick={(e) => {
                                     e.stopPropagation(); // prevent row click
                                     handleRemoveButtonClick(user.user.id);
                                   }}
-                                >
-                                  Remove
-                                </Button>
+                                />
                               </Td>
                             </Tr>
                           ),
