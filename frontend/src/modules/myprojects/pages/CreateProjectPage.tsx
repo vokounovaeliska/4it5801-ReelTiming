@@ -79,21 +79,57 @@ const ADD_PROJECT_USER_MUTATION = gql(/* GraphQL */
   }
 `);
 
+const ADD_RATE_MUTATION = gql(/* GraphQL */
+`
+  mutation AddRate(
+    $standardRate: Float!
+    $compensationRate: Float!
+    $overtimeHour1: Float!
+    $overtimeHour2: Float!
+    $overtimeHour3: Float!
+    $overtimeHour4: Float!
+  ) {
+    addRate(
+      standard_rate: $standardRate
+      compensation_rate: $compensationRate
+      overtime_hour1: $overtimeHour1
+      overtime_hour2: $overtimeHour2
+      overtime_hour3: $overtimeHour3
+      overtime_hour4: $overtimeHour4
+    ) {
+      id
+    }
+  }
+`);
+
 export function CreateProjectPage() {
   const navigate = useNavigate();
   const auth = useAuth();
   const [createRequest, createRequestState] = useMutation(
     CREATE_PROJECT_MUTATION,
     {
-      onCompleted: (data) => {
+      onCompleted: async (data) => {
         const projectId = data?.addProject?.id;
         if (projectId && auth.user) {
-          addProjectUser({
+          const { data: rateData } = await addRate({
+            variables: {
+              standardRate: 0,
+              compensationRate: 0,
+              overtimeHour1: 0,
+              overtimeHour2: 0,
+              overtimeHour3: 0,
+              overtimeHour4: 0,
+            },
+          });
+
+          const rateId = rateData?.addRate?.id;
+
+          await addProjectUser({
             variables: {
               projectId,
               userId: auth.user.id,
               isTeamLeader: true,
-              rateId: null,
+              rateId: rateId,
               departmentId: null,
               role: 'ADMIN',
               invitation: null,
@@ -111,6 +147,10 @@ export function CreateProjectPage() {
   );
 
   const [addProjectUser] = useMutation(ADD_PROJECT_USER_MUTATION, {
+    onError: () => {},
+  });
+
+  const [addRate] = useMutation(ADD_RATE_MUTATION, {
     onError: () => {},
   });
 

@@ -13,7 +13,7 @@ interface ProjectUser {
   };
   department: {
     name: string;
-  };
+  } | null;
   rate: {
     create_date: string; // Formát: YYYY-MM-DD HH:MM:SS
   };
@@ -76,7 +76,11 @@ const RecentCrewMembers: React.FC<RecentCrewMembersProps> = ({
                 <Tr key={member.id}>
                   <Td>{member.user.name}</Td>
                   <Td>{member.user.surname}</Td>
-                  <Td>{member.department.name}</Td>
+                  <Td>
+                    {member.department
+                      ? member.department.name
+                      : 'Assistant Director'}
+                  </Td>
                 </Tr>
               ))
             ) : (
