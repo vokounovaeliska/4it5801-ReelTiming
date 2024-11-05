@@ -1,30 +1,128 @@
 import React from 'react';
-import { Box, Button, Input } from '@chakra-ui/react';
+import { Box, Button, SimpleGrid, Text } from '@chakra-ui/react';
+
+import { FormValues } from '@frontend/modules/myprojects/organisms/CreateProjectForm';
+import { createProjectSchema } from '@frontend/modules/myprojects/schema/CreateProjecSchema';
+import {
+  DateInputField,
+  Form,
+  InputField,
+  TextAreaField,
+  zodResolver,
+} from '@frontend/shared/forms';
+
+import { ProjectData } from '../pages/EditProjectPage';
+
+type EditProjectFormProps = {
+  projectId: string | undefined;
+  project: ProjectData;
+  onSubmit: (data: FormValues) => void;
+};
 
 // export function EditProjectForm({ projectId }: { projectId: string }) {
 export function EditProjectForm({
   projectId: _projectId,
-}: {
-  projectId: string;
-}) {
+  project,
+  onSubmit,
+}: EditProjectFormProps) {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
   };
 
+  const initialValues: FormValues = {
+    name: project.name,
+    description: project.description,
+    productionCompany: project.production_company,
+    startDate: new Date(project?.start_date),
+    endDate: new Date(project?.end_date),
+  };
+
   return (
     <Box
-      as="form"
       onSubmit={handleSubmit}
-      mb={4}
+      mb={6}
       width="100%"
       maxWidth="600px"
       mx="auto"
+      p={4}
+      border="1px solid"
+      borderColor="gray.200"
+      borderRadius="md"
+      boxShadow="sm"
     >
-      <Input placeholder="Project Name" mb={4} />
-      <Input placeholder="Project Description" mb={4} />
-      <Button type="submit" colorScheme="orange" width="100%">
-        Save Changes
-      </Button>
+      <Text fontSize="lg" fontWeight="bold" mb={4} textAlign="center">
+        Project Details
+      </Text>
+
+      <Form
+        onSubmit={onSubmit}
+        resolver={zodResolver(createProjectSchema)}
+        defaultValues={initialValues}
+        noValidate
+      >
+        <Box mb={4}>
+          <InputField
+            name="name"
+            label="Project Name"
+            isRequired
+            autoComplete="on"
+            autoCorrect="off"
+            autoCapitalize="off"
+            mb={2}
+            width="100%"
+          />
+        </Box>
+
+        <Box mb={4}>
+          <TextAreaField
+            name="description"
+            label="Project Description"
+            isRequired
+            autoComplete="on"
+            autoCorrect="off"
+            autoCapitalize="off"
+            mb={2}
+            width="100%"
+          />
+        </Box>
+
+        <Box mb={4}>
+          <InputField
+            name="productionCompany"
+            label="Production Company"
+            autoComplete="on"
+            autoCorrect="off"
+            autoCapitalize="off"
+            isRequired
+            mb={2}
+            width="100%"
+          />
+        </Box>
+
+        <Text fontSize="md" fontWeight="semibold" mt={6} mb={2}>
+          Project Dates
+        </Text>
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4} mb={6}>
+          <DateInputField name="startDate" label="Start Date" isRequired />
+          <DateInputField
+            name="endDate"
+            label="End Date"
+            autoComplete="on"
+            autoCorrect="off"
+            autoCapitalize="off"
+          />
+        </SimpleGrid>
+
+        <Button
+          type="submit"
+          colorScheme="orange"
+          width="100%"
+          mt={4}
+          size="lg"
+        >
+          Save Changes
+        </Button>
+      </Form>
     </Box>
   );
 }
