@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import { Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import { Box, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 
 import { GET_CREWLIST_INFO } from '../../gql/queries/GetCrewListInfo';
 
@@ -61,30 +61,32 @@ const RecentCrewMembers: React.FC<RecentCrewMembersProps> = ({
   return (
     <>
       <Text>Recently added crew members</Text>
-      <Table variant="simple" mb={4}>
-        <Thead>
-          <Tr>
-            <Th>Name</Th>
-            <Th>Surname</Th>
-            <Th>Department</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {sortedMembers.length > 0 ? (
-            sortedMembers.map((member) => (
-              <Tr key={member.id}>
-                <Td>{member.user.name}</Td>
-                <Td>{member.user.surname}</Td>
-                <Td>{member.department.name}</Td>
-              </Tr>
-            ))
-          ) : (
+      <Box overflowX="scroll">
+        <Table variant="simple" mb={4} size={{ base: 'sm', md: 'md' }}>
+          <Thead>
             <Tr>
-              <Td colSpan={3}>No recent members found.</Td>
+              <Th>Name</Th>
+              <Th>Surname</Th>
+              <Th>Department</Th>
             </Tr>
-          )}
-        </Tbody>
-      </Table>
+          </Thead>
+          <Tbody>
+            {sortedMembers.length > 0 ? (
+              sortedMembers.map((member) => (
+                <Tr key={member.id}>
+                  <Td>{member.user.name}</Td>
+                  <Td>{member.user.surname}</Td>
+                  <Td>{member.department.name}</Td>
+                </Tr>
+              ))
+            ) : (
+              <Tr>
+                <Td colSpan={3}>No recent members found.</Td>
+              </Tr>
+            )}
+          </Tbody>
+        </Table>
+      </Box>
     </>
   );
 };
