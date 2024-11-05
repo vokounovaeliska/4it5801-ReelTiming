@@ -1,32 +1,31 @@
-import React from 'react';
-import { useQuery } from '@apollo/client';
-import { Box, Button, Center, Heading, Spinner, Text } from '@chakra-ui/react';
-import {
-  Link as ReactRouterLink,
-  useLocation,
-  useNavigate,
-  useParams,
-} from 'react-router-dom';
+import { useMutation, useQuery } from '@apollo/client';
+import { Center, Spinner, Text, useToast } from '@chakra-ui/react';
+import { useNavigate, useParams } from 'react-router-dom';
 
+import { EDIT_PROJECT } from '@frontend/gql/mutations/EditProject';
 import { useAuth } from '@frontend/modules/auth';
-import ProjectButtons from '@frontend/modules/myprojects/ProjectButtons';
+import { FormValues } from '@frontend/modules/myprojects/organisms/CreateProjectForm';
 import { route } from '@frontend/route';
-import Footer from '@frontend/shared/navigation/components/footer/Footer';
-import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
 // import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 import { GET_PROJECT_DETAILS } from '../../../gql/queries/GetProjectDetails';
 import { GET_USER_ROLE_IN_PROJECT } from '../../../gql/queries/GetUserRoleInProject';
-import { EditProjectForm } from '../forms/EditProjectForm';
+import { EditProjectTemplate } from '../templates/EditProjectTemplate';
 
 export function EditProjectPage() {
   const auth = useAuth();
   const { projectId } = useParams<{ projectId: string }>();
-  const location = useLocation();
   const navigate = useNavigate();
   const { data, loading, error } = useQuery(GET_PROJECT_DETAILS, {
     variables: { id: projectId },
   });
+  const [editproject] = useMutation(EDIT_PROJECT, {
+    onCompleted: () => {
+      navigate(`/projects/${projectId}`);
+    },
+  });
+  const toast = useToast();
+
   const {
     data: roleData,
     loading: roleLoading,
@@ -61,7 +60,52 @@ export function EditProjectPage() {
     );
   }
 
+  const alterDateHours = (date: Date) => {
+    var alteredDate = new Date(date);
+    alteredDate.setHours(alteredDate.getHours() + 1);
+    return alteredDate.toISOString();
+  };
+
   const userRole = roleData.userRoleInProject;
+  const userId = auth.user.id;
+
+  const handleEditProject = async (data: FormValues) => {
+    console.log(`Updating project info for project id: #${projectId}`);
+    var startDate = alterDateHours(data.startDate);
+    var endDate = data.endDate ? alterDateHours(data.endDate) : null;
+
+    try {
+      await editproject({
+        variables: {
+          projectId: projectId,
+          data: {
+            description: data.description,
+            name: data.name,
+            production_company: data.productionCompany,
+            start_date: startDate,
+            end_date: endDate,
+            last_update_user_id: userId,
+          },
+        },
+      });
+      toast({
+        title: 'Success',
+        description: 'Project updated successfully!',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to update project. Please try again.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      console.log(error);
+    }
+  };
 
   if (userRole !== 'ADMIN') {
     navigate(route.myprojects());
@@ -71,49 +115,18 @@ export function EditProjectPage() {
   const project = data?.project;
 
   return (
-    <Box display="flex" flexDirection="column" minHeight="100vh">
-      <Navbar>
-        <Button
-          as={ReactRouterLink}
-          to={route.myprojects()}
-          variant="ghost"
-          colorScheme="orange"
-          textColor="white"
-          aria-label="Button going to My Projects page"
-          bg={
-            location.pathname === route.myprojects()
-              ? 'orange.500'
-              : 'transparent'
-          }
-          color="white"
-          _hover={{
-            bg: 'orange.700',
-            color: 'white',
-            boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.2)',
-          }}
-          _active={{
-            bg: 'orange.500',
-            color: 'white',
-            boxShadow: 'inset 0 0 15px rgba(0, 0, 0, 0.3)',
-          }}
-        >
-          My Projects
-        </Button>
-        <ProjectButtons
-          projectId={projectId!}
-          activePath={location.pathname}
-          userRole={userRole}
-        />
-      </Navbar>
-      <Box flex="1" p={4} width="100%" maxWidth="1200px" mx="auto">
-        <Heading mb={4} textAlign="center">
-          Edit Project for Project {project.name}
-        </Heading>
-        <Center>
-          <EditProjectForm projectId={projectId!} />
-        </Center>
-      </Box>
-      <Footer />
-    </Box>
+    <EditProjectTemplate
+      project={project}
+      projectId={String(projectId).trim()}
+      onSubmit={handleEditProject}
+    />
   );
+}
+
+export interface ProjectData {
+  name: string;
+  description: string;
+  production_company: string;
+  start_date: Date;
+  end_date: Date;
 }

@@ -1,15 +1,24 @@
-import React from 'react';
-import { Box, Button, Center, Heading } from '@chakra-ui/react';
+import { Box, Button, Center, Heading, Text } from '@chakra-ui/react';
 import { Link as ReactRouterLink, useLocation } from 'react-router-dom';
 
+import { FormValues } from '@frontend/modules/myprojects/organisms/CreateProjectForm';
 import ProjectButtons from '@frontend/modules/myprojects/ProjectButtons';
 import { route } from '@frontend/route';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
 import { EditProjectForm } from '../forms/EditProjectForm';
+import { ProjectData } from '../pages/EditProjectPage';
 
-export function EditProjectTemplate({ projectId }: { projectId: string }) {
+export function EditProjectTemplate({
+  project,
+  projectId,
+  onSubmit,
+}: {
+  project: ProjectData;
+  projectId: string;
+  onSubmit: (data: FormValues) => void;
+}) {
   const location = useLocation();
 
   return (
@@ -47,14 +56,34 @@ export function EditProjectTemplate({ projectId }: { projectId: string }) {
           userRole="ADMIN"
         />
       </Navbar>
-      <Box flex="1" p={4} width="100%" maxWidth="1200px" mx="auto">
-        <Heading mb={4} textAlign="center">
-          Edit Project for Project {projectId}
+      <Box
+        flex="1"
+        p={{ base: 4, md: 6 }}
+        width="100%"
+        maxWidth="1200px"
+        mx="auto"
+        bg="white"
+      >
+        <Heading
+          mb={6}
+          textAlign="center"
+          fontSize={{ base: '2xl', md: '3xl' }}
+        >
+          Edit Project:{' '}
+          <Text as="span" color="gray.700">
+            {project?.name}
+          </Text>
         </Heading>
+
         <Center>
-          <EditProjectForm projectId={projectId} />
+          <EditProjectForm
+            projectId={projectId}
+            project={project}
+            onSubmit={onSubmit}
+          />
         </Center>
       </Box>
+
       <Footer />
     </Box>
   );

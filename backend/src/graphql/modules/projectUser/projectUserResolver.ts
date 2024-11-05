@@ -115,11 +115,11 @@ export class ProjectUserResolver {
     invitation: string | null,
     @Arg('phone_number', () => String, { nullable: true, defaultValue: null })
     phone_number: string | null,
+    @Arg('position', () => String, { nullable: true, defaultValue: null })
+    position: string | null,
     @Arg('name') name: string,
     @Arg('surname') surname: string,
     @Arg('email') email: string,
-    @Arg('position', () => String, { nullable: true, defaultValue: null })
-    position: string | null,
     @Ctx() { db }: CustomContext,
   ): Promise<ProjectUser> {
     const projectUserService = new ProjectUserService(db);
