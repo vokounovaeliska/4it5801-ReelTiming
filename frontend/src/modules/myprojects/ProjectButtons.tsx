@@ -74,7 +74,7 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
           bg={activePath === crewlistPath ? 'orange.600' : 'transparent'}
           onClick={() => handleNavigation(crewlistPath)}
         >
-          Crewlist
+          Crew List
         </Button>
         {userRole === 'ADMIN' && (
           <>
@@ -84,7 +84,7 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
               bg={activePath === editPath ? 'orange.600' : 'transparent'}
               onClick={() => handleNavigation(editPath)}
             >
-              Edit
+              Edit Project
             </Button>
           </>
         )}
