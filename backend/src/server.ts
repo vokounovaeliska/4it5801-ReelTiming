@@ -28,10 +28,10 @@ import { sendMail } from '@backend/mailer/mailer';
 import { mockResolvers } from '@backend/mocks/mocks';
 import { CustomContext } from '@backend/types/types';
 
-import { DepartmentResolver } from './graphql/modules/department/departamentResolver';
-import { getProjectUserRepository } from './graphql/modules/projectUser/projectUserRepository';
-import { RateResolver } from './graphql/modules/rate/rateResolver';
-import { PasswordResolver } from './graphql/modules/user/PasswordResolver';
+import { DepartmentResolver } from '@backend/graphql/modules/department/departamentResolver';
+import { getProjectUserRepository } from '@backend/graphql/modules/projectUser/projectUserRepository';
+import { RateResolver } from '@backend/graphql/modules/rate/rateResolver';
+import { PasswordResolver } from '@backend/graphql/modules/user/PasswordResolver';
 
 const init = async () => {
   const app = express();
