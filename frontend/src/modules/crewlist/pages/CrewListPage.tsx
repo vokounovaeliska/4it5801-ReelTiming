@@ -320,10 +320,13 @@ export function CrewListPage() {
 
   // TODO - replace this 12IQ solution - rip
   const handleEditMemberClick = (crewMember: CrewMemberData) => {
-    setSelectedCrewMember(sanitizeCrewMemberData(crewMember));
+    const sanitizedCrewMember = sanitizeCrewMemberData(crewMember);
+    setSelectedCrewMember({
+      ...sanitizedCrewMember,
+      department: sanitizedCrewMember.department || 'No Department',
+    });
     setIsModalOpen(true);
   };
-
   const handleUpdateCrewMember = async (data: CrewMemberData) => {
     setIsSubmitting(true);
     try {
