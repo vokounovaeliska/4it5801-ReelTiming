@@ -72,6 +72,7 @@ export function MyProjectDetailPage() {
 
   const project = data.project;
   const userRole = roleData.userRoleInProject;
+  // const editPath = `/projects/${id}/edit`;
 
   return (
     <Box
