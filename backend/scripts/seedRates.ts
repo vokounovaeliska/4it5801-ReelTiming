@@ -10,8 +10,6 @@ async function seedRates(
   if (existingRates.length === 0) {
     console.log('No rates found, inserting sample rates');
 
-
-
     // Insert rates
     await db.insert(rate).values([
       {

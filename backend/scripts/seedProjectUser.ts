@@ -4,7 +4,6 @@ import { project_user } from '../src/db/schema';
 async function seedProjectUser(
   db: MySql2Database<typeof import('../src/db/schema')>,
 ) {
-
   if ((await db.select().from(project_user)).length === 0) {
     console.log('No projects found, inserting sample project_user');
     const projectUsers = [
@@ -107,7 +106,8 @@ async function seedProjectUser(
         last_update_date: new Date('2024-11-05T14:22:41'),
         is_active: true,
         role: 'ADMIN',
-        invitation: '54b09ee030fc0f6513f1bf7e37190cb80646c5c42175bdbf98d93b70ca06fedc',
+        invitation:
+          '54b09ee030fc0f6513f1bf7e37190cb80646c5c42175bdbf98d93b70ca06fedc',
         phone_number: '+420707540384',
         name: 'Jan',
         surname: 'Doleček',

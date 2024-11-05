@@ -14,7 +14,8 @@ async function seedUsers(
       {
         id: '75a41493-c0b3-45ba-86bd-970459ee9b99',
         email: 'produkce@film.com',
-        password: '$argon2id$v=19$m=65536,t=3,p=4$nSIgPAxBmLrotulM5MWKUw$2Qwrkw1xIcIlmjlPQj1zYsjwdoRM0cT1h1VzYKNMiGY',
+        password:
+          '$argon2id$v=19$m=65536,t=3,p=4$nSIgPAxBmLrotulM5MWKUw$2Qwrkw1xIcIlmjlPQj1zYsjwdoRM0cT1h1VzYKNMiGY',
         name: 'Jan',
         surname: 'Doleček',
         create_date: new Date('2024-11-04 18:32:01'),
@@ -29,7 +30,8 @@ async function seedUsers(
       {
         id: '4b95fa2a-b110-431e-a141-929c94870c1f',
         email: 'marie.vdolek@film.cz',
-        password: '$argon2id$v=19$m=65536,t=3,p=4$+o96ya57gk2FWR2rgKEbCg$/bW9JkDQZFwH91TBHr2V6yusJZLZ8WeEKYAAdM3a4RA',
+        password:
+          '$argon2id$v=19$m=65536,t=3,p=4$+o96ya57gk2FWR2rgKEbCg$/bW9JkDQZFwH91TBHr2V6yusJZLZ8WeEKYAAdM3a4RA',
         name: 'Marie',
         surname: 'Vdolková',
         create_date: new Date('2024-11-04 19:01:20'),
@@ -41,7 +43,6 @@ async function seedUsers(
         password_reset_expiration_time: null,
         phone_number: '+420790395887',
       },
-
     ]);
 
     console.log('Sample users inserted');
