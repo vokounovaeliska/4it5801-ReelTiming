@@ -102,6 +102,12 @@ const ADD_RATE_MUTATION = gql(/* GraphQL */
   }
 `);
 
+const ACTIVATE_PROJECT_USER_MUTATION = gql`
+  mutation ActivateProjectUser($userId: String!, $token: String!) {
+    activateProjectUser(userId: $userId, token: $token)
+  }
+`;
+
 export function CreateProjectPage() {
   const navigate = useNavigate();
   const auth = useAuth();
@@ -130,13 +136,19 @@ export function CreateProjectPage() {
               userId: auth.user.id,
               isTeamLeader: true,
               rateId: rateId,
-              departmentId: null,
+              departmentId: '53964a96-17f1-4c96-a69d-cec10f2b01b6',
               role: 'ADMIN',
-              invitation: null,
+              invitation: projectId,
               phone_number: null,
               email: auth.user.email,
               name: auth.user.name,
               surname: auth.user.surname,
+            },
+          });
+          activateProjectUser({
+            variables: {
+              userId: auth.user.id,
+              token: projectId,
             },
           });
           navigate(`/projects/${projectId}`);
@@ -151,6 +163,10 @@ export function CreateProjectPage() {
   });
 
   const [addRate] = useMutation(ADD_RATE_MUTATION, {
+    onError: () => {},
+  });
+
+  const [activateProjectUser] = useMutation(ACTIVATE_PROJECT_USER_MUTATION, {
     onError: () => {},
   });
 
