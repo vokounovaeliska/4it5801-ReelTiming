@@ -2,33 +2,37 @@ import { gql } from '@apollo/client';
 
 export const ADD_PROJECT_USER = gql`
   mutation AddProjectUser(
-    $userId: String!
     $projectId: String!
-    $phoneNumber: String
+    $isTeamLeader: Boolean!
     $rateId: String
     $departmentId: String
-    $role: String
+    $role: String!
+    $invitation: String
+    $phone_number: String
+    $email: String!
     $name: String!
     $surname: String!
-    $email: String!
     $position: String
   ) {
     addProjectUser(
-      userId: $userId
       projectId: $projectId
-      phone_number: $phoneNumber
+      isTeamLeader: $isTeamLeader
       rateId: $rateId
       departmentId: $departmentId
       role: $role
+      invitation: $invitation
+      phone_number: $phone_number
+      email: $email
       name: $name
       surname: $surname
-      email: $email
       position: $position
     ) {
       id
-      user {
+      project {
         id
       }
+      is_team_leader
+      role
     }
   }
 `;

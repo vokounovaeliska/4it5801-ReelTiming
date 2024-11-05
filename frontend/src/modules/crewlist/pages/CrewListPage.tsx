@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useApolloClient, useMutation, useQuery } from '@apollo/client';
+import { useApolloClient, useQuery } from '@apollo/client';
 import { AddIcon, ChevronDownIcon, DeleteIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -28,7 +28,6 @@ import {
 } from 'react-router-dom';
 
 import { useCrewMemberMutations } from '@frontend/gql/mutations/addCrewMember';
-import { DELETE_INVITATION } from '@frontend/gql/mutations/DeleteInvitation';
 import { GET_CREWLIST_INFO } from '@frontend/gql/queries/GetCrewListInfo';
 import { useAuth } from '@frontend/modules/auth';
 import ProjectButtons from '@frontend/modules/myprojects/ProjectButtons';
@@ -39,7 +38,6 @@ import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
-import { DELETE_PROJECT_USER } from '../../../gql/queries/DeleteProjectUser';
 import { CrewListForm } from '../forms/CrewListForm';
 
 import CrewAlertDialog from './CrewAlertDialog';
@@ -81,10 +79,13 @@ export function CrewListPage() {
   const crewList = crewListData || [];
 
   // GQL MUTATIONS CALLS
-  const { addCrewMember, sendEmailInvitation, editCrewMember } =
-    useCrewMemberMutations();
-  const [deleteProjectUser] = useMutation(DELETE_PROJECT_USER);
-  const [deleteProjectInvitation] = useMutation(DELETE_INVITATION);
+  const {
+    addCrewMember,
+    sendEmailInvitation,
+    editCrewMember,
+    deleteCrewMember,
+    deleteCrewMemberInvitation,
+  } = useCrewMemberMutations();
 
   if (crewListLoading) {
     return (
@@ -141,7 +142,7 @@ export function CrewListPage() {
   ) => {
     setIsSubmitting(true);
     try {
-      const { responseUserId } = await addCrewMember(data, projectId!);
+      const { responseId } = await addCrewMember(data, projectId!);
 
       const cacheData = client.readQuery({
         query: GET_CREWLIST_INFO,
@@ -150,14 +151,14 @@ export function CrewListPage() {
 
       const newUser = {
         ...data,
-        id: responseUserId.data.addProjectUser.id,
-        user: {
-          id: responseUserId.data.addProjectUser.user.id,
-          name,
-          email,
-        },
+        id: responseId.data.addProjectUser.id,
         invitation: sendInvite ? true : null,
+        rate_id: responseId.data.addProjectUser.rate,
+        user: null,
+        is_active: false,
       };
+
+      console.log(newUser);
 
       client.writeQuery({
         query: GET_CREWLIST_INFO,
@@ -170,8 +171,7 @@ export function CrewListPage() {
 
       if (sendInvite) {
         await sendEmailInvitation(
-          projectId!,
-          responseUserId.data.addProjectUser.id,
+          responseId.data.addProjectUser.id,
           name,
           email,
         );
@@ -203,18 +203,15 @@ export function CrewListPage() {
 
   const sendInvitation = async (
     projectUserId: string,
-    userId: string,
     name: string,
     email: string,
     resending: boolean,
   ) => {
     try {
       if (resending) {
-        await deleteProjectInvitation({
-          variables: { userId, projectId: projectId! },
-        });
+        await deleteCrewMemberInvitation(projectUserId!);
       }
-      await sendEmailInvitation(projectId!, projectUserId, name, email);
+      await sendEmailInvitation(projectUserId, name, email);
 
       const data = client.readQuery({
         query: GET_CREWLIST_INFO,
@@ -260,25 +257,21 @@ export function CrewListPage() {
     }
   };
 
-  const handleRemoveButtonClick = (userId: string) => {
-    setUserIdToRemove(userId);
+  const handleRemoveButtonClick = (projectUserId: string) => {
+    setUserIdToRemove(projectUserId);
     setIsAlertOpen(true);
   };
 
-  const handleRemoveUser = async (userId: string) => {
+  const handleRemoveUser = async (projectUserId: string) => {
     try {
-      await deleteProjectUser({
-        variables: { userId, projectId },
-      });
-
-      // Update the cache directly
+      await deleteCrewMember(projectUserId);
       const data = client.readQuery({
         query: GET_CREWLIST_INFO,
         variables: { projectId, userId: auth.user?.id },
       });
 
       const updatedUsers = data.projectUsers.filter(
-        (user: ProjectUser) => user.user.id !== userId,
+        (user: ProjectUser) => user.id !== projectUserId,
       );
 
       client.writeQuery({
@@ -349,7 +342,7 @@ export function CrewListPage() {
 
       const updatedData = {
         ...data,
-        department: departmentId,
+        department: data.department,
       };
 
       console.log('Edit crew member:', updatedData);
@@ -405,9 +398,6 @@ export function CrewListPage() {
     id: string;
     user: {
       id: string;
-      name: string;
-      surname: string;
-      email: string;
     };
     department: { name: string; id: string } | null;
     role: string;
@@ -415,6 +405,9 @@ export function CrewListPage() {
     phone_number: string;
     is_active: boolean;
     invitation: string;
+    name: string;
+    surname: string;
+    email: string;
     rate: {
       id: string;
       standard_rate: number;
@@ -621,13 +614,13 @@ export function CrewListPage() {
                               onClick={() =>
                                 handleEditMemberClick({
                                   id: user.id,
-                                  name: user.user.name,
-                                  surname: user.user.surname,
+                                  name: user?.name,
+                                  surname: user?.surname,
                                   department:
                                     user.department?.id || 'No Department',
                                   position: user.position,
                                   phone_number: user.phone_number,
-                                  email: user.user.email,
+                                  email: user?.email,
                                   standard_rate: user.rate?.standard_rate || 0,
                                   compensation_rate:
                                     user.rate?.compensation_rate || 0,
@@ -640,7 +633,7 @@ export function CrewListPage() {
                                   overtime_hour4:
                                     user.rate?.overtime_hour4 || 0,
                                   role: user.role,
-                                  user_id: user.user.id,
+                                  user_id: user.user?.id,
                                   rate_id: user.rate?.id || null,
                                 })
                               }
@@ -649,19 +642,19 @@ export function CrewListPage() {
                                 backgroundColor: 'gray.100',
                               }}
                             >
-                              <Td>{user.user.name}</Td>
-                              <Td>{user.user.surname}</Td>
+                              <Td>{user?.name}</Td>
+                              <Td>{user?.surname}</Td>
                               <Td>{user.position}</Td>
                               <Td>{user.role}</Td>
                               <Td>
                                 <Link
-                                  href={`mailto:${user.user.email}`}
+                                  href={`mailto:${user?.email}`}
                                   color="blue.500"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                   }}
                                 >
-                                  {user.user.email}
+                                  {user?.email}
                                 </Link>
                               </Td>
                               <Td>
@@ -698,9 +691,8 @@ export function CrewListPage() {
                                     ) {
                                       sendInvitation(
                                         user.id,
-                                        user.user.id,
-                                        user.user.name,
-                                        user.user.email,
+                                        user?.name,
+                                        user?.email,
                                         false,
                                       );
                                     } else if (
@@ -709,9 +701,8 @@ export function CrewListPage() {
                                     ) {
                                       sendInvitation(
                                         user.id,
-                                        user.user.id,
-                                        user.user.name,
-                                        user.user.email,
+                                        user?.name,
+                                        user?.email,
                                         true,
                                       );
                                     }
@@ -732,7 +723,7 @@ export function CrewListPage() {
                                   size={'sm'}
                                   onClick={(e) => {
                                     e.stopPropagation(); // prevent row click
-                                    handleRemoveButtonClick(user.user.id);
+                                    handleRemoveButtonClick(user.id);
                                   }}
                                 />
                               </Td>

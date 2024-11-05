@@ -23,12 +23,7 @@ export const GET_CREWLIST_INFO = gql`
       is_active
       position
       user {
-        name
-        surname
-        email
         id
-        phone_number
-        is_active
       }
       rate {
         id

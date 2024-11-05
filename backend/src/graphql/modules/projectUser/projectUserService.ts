@@ -172,14 +172,20 @@ export class ProjectUserService {
   }
 
   async inviteUserToProject(
-    projectId: string,
-    id: string,
+    projectUserId: string,
     name: string,
     email: string,
     db: Db,
   ): Promise<boolean> {
+    const projectUser = await this.getProjectUserById(projectUserId);
+    if (projectUser === null) {
+      throw new GraphQLError('Project user not found');
+    }
+
     const projectService = new ProjectService(db);
-    const projectById = await projectService.getProjectById(projectId);
+    const projectById = await projectService.getProjectById(
+      projectUser.project_id,
+    );
 
     if (projectById === null) {
       throw new GraphQLError('Project not found');
@@ -191,7 +197,7 @@ export class ProjectUserService {
 
     const token = randomBytes(32).toString('hex');
 
-    this.projectUserRepository.inviteUserToProject(id, token);
+    this.projectUserRepository.inviteUserToProject(projectUserId, token);
 
     const resetLink = APP_LINK + `/accept-invitation?token=${token}`;
     try {
@@ -221,15 +227,9 @@ export class ProjectUserService {
     return true;
   }
 
-  async deleteProjectUserByUserIdAndProjectId(
-    userId: string,
-    projectId: string,
-  ): Promise<boolean> {
+  async deleteProjectUserById(projectUserId: string): Promise<boolean> {
     const projectUser =
-      await this.projectUserRepository.getProjectUserByUserIdAndProjectId(
-        userId,
-        projectId,
-      );
+      await this.projectUserRepository.getProjectUserById(projectUserId);
     if (!projectUser) {
       throw new Error('Project user not found');
     }
@@ -254,12 +254,9 @@ export class ProjectUserService {
     });
     return true;
   }
-  async deleteInvitation(userId: string, projectId: string): Promise<boolean> {
+  async deleteInvitation(projectUserId: string): Promise<boolean> {
     const projectUser =
-      await this.projectUserRepository.getProjectUserByUserIdAndProjectId(
-        userId,
-        projectId,
-      );
+      await this.projectUserRepository.getProjectUserById(projectUserId);
     if (!projectUser) {
       throw new Error('Project user not found');
     }

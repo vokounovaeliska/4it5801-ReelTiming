@@ -1,11 +1,11 @@
 import { useMutation } from '@apollo/client';
-import { ADD_INACTIVE_USER } from './AddInactiveUser';
 import { ADD_RATE } from './AddRate';
 import { ADD_PROJECT_USER } from './AddProjectUser';
 import { INVITE_USER_TO_PROJECT } from './InviteUserToProject';
-import { EDIT_USER } from './EditUser';
 import { EDIT_RATE } from './EditRate';
 import { EDIT_PROJECT_USER } from './EditProjectUser';
+import { DELETE_PROJECT_USER } from '../queries/DeleteProjectUser';
+import { DELETE_INVITATION } from './DeleteInvitation';
 
 interface CrewMemberData {
   id: string;
@@ -27,28 +27,20 @@ interface CrewMemberData {
 }
 
 export const useCrewMemberMutations = () => {
-  const [addInactiveUser] = useMutation(ADD_INACTIVE_USER);
   const [addRate] = useMutation(ADD_RATE);
   const [addProjectUser] = useMutation(ADD_PROJECT_USER);
   const [inviteUserToProject] = useMutation(INVITE_USER_TO_PROJECT);
-  const [editUser] = useMutation(EDIT_USER);
   const [editRate] = useMutation(EDIT_RATE);
   const [editProjectUser] = useMutation(EDIT_PROJECT_USER);
+  const [deleteProjectUser] = useMutation(DELETE_PROJECT_USER);
+  const [deleteProjectInvitation] = useMutation(DELETE_INVITATION);
 
   const addCrewMember = async (data: CrewMemberData, projectId: string) => {
     try {
-      // First Mutation - Add Inactive User
-      const responseUser = await addInactiveUser({
-        variables: {
-          email: data.email,
-          name: data.name,
-          surname: data.surname,
-          phone_number: data.phone_number,
-        },
-      });
-      const userId = responseUser.data?.addInactiveUser?.id;
-
-      // Second Mutation - Add Rate
+      console.log('addcrewmember');
+      console.log(data);
+      console.log(projectId);
+      // Add Rate
       const responseRate = await addRate({
         variables: {
           standardRate: data.standard_rate,
@@ -61,12 +53,11 @@ export const useCrewMemberMutations = () => {
       });
       const rateId = responseRate.data?.addRate?.id;
 
-      // Third Mutation - Add Project User
-      const responseUserId = await addProjectUser({
+      //  Add Project User
+      const responseId = await addProjectUser({
         variables: {
-          userId: userId,
           projectId: projectId,
-          phoneNumber: data.phone_number,
+          phone_number: data.phone_number,
           rateId: rateId,
           departmentId: data.department,
           position: data.position,
@@ -74,10 +65,12 @@ export const useCrewMemberMutations = () => {
           name: data.name,
           surname: data.surname,
           email: data.email,
+          isTeamLeader: false,
+          invitation: null,
         },
       });
 
-      return { responseUserId }; // Return userId for use in invitation
+      return { responseId };
     } catch (error) {
       console.error('Error adding crew member:', error);
       throw error;
@@ -85,16 +78,14 @@ export const useCrewMemberMutations = () => {
   };
 
   const sendEmailInvitation = async (
-    projectId: string,
-    userId: string,
+    projectUserId: string,
     name: string,
     email: string,
   ) => {
     try {
       await inviteUserToProject({
         variables: {
-          projectId,
-          id: userId,
+          projectUserId,
           name,
           email,
         },
@@ -108,18 +99,6 @@ export const useCrewMemberMutations = () => {
 
   const editCrewMember = async (data: CrewMemberData, projectId: string) => {
     try {
-      await editUser({
-        variables: {
-          data: {
-            email: data.email,
-            name: data.name,
-            surname: data.surname,
-            phone_number: data.phone_number,
-          },
-          userId: data.user_id,
-        },
-      });
-
       await editRate({
         variables: {
           data: {
@@ -157,5 +136,39 @@ export const useCrewMemberMutations = () => {
     }
   };
 
-  return { addCrewMember, sendEmailInvitation, editCrewMember };
+  const deleteCrewMember = async (projectUserId: string) => {
+    try {
+      await deleteProjectUser({
+        variables: {
+          projectUserId,
+        },
+      });
+      console.log('User deleted successfully from project');
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      throw error;
+    }
+  };
+
+  const deleteCrewMemberInvitation = async (projectUserId: string) => {
+    try {
+      await deleteProjectInvitation({
+        variables: {
+          projectUserId,
+        },
+      });
+      console.log('User deleted successfully from project');
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      throw error;
+    }
+  };
+
+  return {
+    addCrewMember,
+    sendEmailInvitation,
+    editCrewMember,
+    deleteCrewMember,
+    deleteCrewMemberInvitation,
+  };
 };

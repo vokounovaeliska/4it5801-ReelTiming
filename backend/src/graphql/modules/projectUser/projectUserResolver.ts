@@ -157,7 +157,6 @@ export class ProjectUserResolver {
     const projectUserService = new ProjectUserService(db);
     return projectUserService.getUserRoleInProject(userId, projectId);
   }
-
   @Query(() => ProjectUser)
   async projectUsersByToken(
     @Arg('token') token: string,
@@ -169,16 +168,14 @@ export class ProjectUserResolver {
 
   @Mutation(() => Boolean)
   async inviteUser(
-    @Arg('projectId') projectId: string,
-    @Arg('id') id: string,
+    @Arg('projectUserId') projectUserId: string,
     @Arg('name') name: string,
     @Arg('email') email: string,
     @Ctx() { db }: CustomContext,
   ): Promise<boolean> {
     const projectUserService = new ProjectUserService(db);
     return projectUserService.inviteUserToProject(
-      projectId,
-      id,
+      projectUserId,
       name,
       email,
       db,
@@ -187,15 +184,11 @@ export class ProjectUserResolver {
 
   @Mutation(() => Boolean)
   async deleteProjectUser(
-    @Arg('userId') userId: string,
-    @Arg('projectId') projectId: string,
+    @Arg('projectUserId') projectUserId: string,
     @Ctx() { db }: CustomContext,
   ): Promise<boolean> {
     const projectUserService = new ProjectUserService(db);
-    return projectUserService.deleteProjectUserByUserIdAndProjectId(
-      userId,
-      projectId,
-    );
+    return projectUserService.deleteProjectUserById(projectUserId);
   }
   @Mutation(() => Boolean)
   async activateProjectUser(
@@ -217,11 +210,10 @@ export class ProjectUserResolver {
   }
   @Mutation(() => Boolean)
   async deleteInvitation(
-    @Arg('userId') userId: string,
-    @Arg('projectId') projectId: string,
+    @Arg('projectUserId') projectUserId: string,
     @Ctx() { db }: CustomContext,
   ): Promise<boolean> {
     const projectUserService = new ProjectUserService(db);
-    return projectUserService.deleteInvitation(userId, projectId);
+    return projectUserService.deleteInvitation(projectUserId);
   }
 }

@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const DELETE_INVITATION = gql`
-  mutation DeleteInvitation($userId: String!, $projectId: String!) {
-    deleteInvitation(userId: $userId, projectId: $projectId)
+  mutation DeleteInvitation($projectUserId: String!) {
+    deleteInvitation(projectUserId: $projectUserId)
   }
 `;
