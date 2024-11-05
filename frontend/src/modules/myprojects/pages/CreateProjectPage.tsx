@@ -49,6 +49,9 @@ const ADD_PROJECT_USER_MUTATION = gql(/* GraphQL */
     $role: String!
     $invitation: String
     $phone_number: String
+    $email: String!
+    $name: String!
+    $surname: String!
   ) {
     addProjectUser(
       projectId: $projectId
@@ -59,6 +62,9 @@ const ADD_PROJECT_USER_MUTATION = gql(/* GraphQL */
       role: $role
       invitation: $invitation
       phone_number: $phone_number
+      email: $email
+      name: $name
+      surname: $surname
     ) {
       id
       project {
@@ -73,25 +79,76 @@ const ADD_PROJECT_USER_MUTATION = gql(/* GraphQL */
   }
 `);
 
+const ADD_RATE_MUTATION = gql(/* GraphQL */
+`
+  mutation AddRate(
+    $standardRate: Float!
+    $compensationRate: Float!
+    $overtimeHour1: Float!
+    $overtimeHour2: Float!
+    $overtimeHour3: Float!
+    $overtimeHour4: Float!
+  ) {
+    addRate(
+      standard_rate: $standardRate
+      compensation_rate: $compensationRate
+      overtime_hour1: $overtimeHour1
+      overtime_hour2: $overtimeHour2
+      overtime_hour3: $overtimeHour3
+      overtime_hour4: $overtimeHour4
+    ) {
+      id
+    }
+  }
+`);
+
+const ACTIVATE_PROJECT_USER_MUTATION = gql`
+  mutation ActivateProjectUser($userId: String!, $token: String!) {
+    activateProjectUser(userId: $userId, token: $token)
+  }
+`;
+
 export function CreateProjectPage() {
   const navigate = useNavigate();
   const auth = useAuth();
   const [createRequest, createRequestState] = useMutation(
     CREATE_PROJECT_MUTATION,
     {
-      onCompleted: (data) => {
+      onCompleted: async (data) => {
         const projectId = data?.addProject?.id;
         if (projectId && auth.user) {
-          addProjectUser({
+          const { data: rateData } = await addRate({
+            variables: {
+              standardRate: 0,
+              compensationRate: 0,
+              overtimeHour1: 0,
+              overtimeHour2: 0,
+              overtimeHour3: 0,
+              overtimeHour4: 0,
+            },
+          });
+
+          const rateId = rateData?.addRate?.id;
+
+          await addProjectUser({
             variables: {
               projectId,
               userId: auth.user.id,
               isTeamLeader: true,
-              rateId: null,
-              departmentId: null,
+              rateId: rateId,
+              departmentId: '53964a96-17f1-4c96-a69d-cec10f2b01b6',
               role: 'ADMIN',
-              invitation: null,
+              invitation: projectId,
               phone_number: null,
+              email: auth.user.email,
+              name: auth.user.name,
+              surname: auth.user.surname,
+            },
+          });
+          activateProjectUser({
+            variables: {
+              userId: auth.user.id,
+              token: projectId,
             },
           });
           navigate(`/projects/${projectId}`);
@@ -102,6 +159,14 @@ export function CreateProjectPage() {
   );
 
   const [addProjectUser] = useMutation(ADD_PROJECT_USER_MUTATION, {
+    onError: () => {},
+  });
+
+  const [addRate] = useMutation(ADD_RATE_MUTATION, {
+    onError: () => {},
+  });
+
+  const [activateProjectUser] = useMutation(ACTIVATE_PROJECT_USER_MUTATION, {
     onError: () => {},
   });
 
