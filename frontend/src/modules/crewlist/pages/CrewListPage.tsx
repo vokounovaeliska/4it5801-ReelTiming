@@ -423,7 +423,7 @@ export function CrewListPage() {
     (acc: Record<string, ProjectUser[]>, user: ProjectUser) => {
       if (
         crewList.userRoleInProject === 'ADMIN' ||
-        user.user.id === auth.user?.id
+        (user.user && user.user.id === auth.user?.id)
       ) {
         const departmentName = user.department?.name || 'No Department';
         if (!acc[departmentName]) {
@@ -618,7 +618,10 @@ export function CrewListPage() {
                             OH 4
                           </TooltipHeader>
                           <Th textColor={'white'}>Invitation</Th>
-                          <Th textColor={'white'}>Delete</Th>
+                          {/*redo to remove gap if we keep this after table change */}
+                          {crewList.userRoleInProject === 'ADMIN' && (
+                            <Th textColor={'white'}>Delete</Th>
+                          )}
                         </Tr>
                       </Thead>
                       <Tbody>
@@ -730,18 +733,20 @@ export function CrewListPage() {
                                       : 'Resend invitation'}
                                 </Button>
                               </Td>
-                              <Td>
-                                <IconButton
-                                  aria-label="Remove record"
-                                  icon={<DeleteIcon />}
-                                  colorScheme="red"
-                                  size={'sm'}
-                                  onClick={(e) => {
-                                    e.stopPropagation(); // prevent row click
-                                    handleRemoveButtonClick(user.id);
-                                  }}
-                                />
-                              </Td>
+                              {crewList.userRoleInProject === 'ADMIN' && user.user?.id !== auth.user?.id && (
+        <Td>
+          <IconButton
+            aria-label="Remove record"
+            icon={<DeleteIcon />}
+            colorScheme="red"
+            size={'sm'}
+            onClick={(e) => {
+              e.stopPropagation(); // prevent row click
+              handleRemoveButtonClick(user.id);
+            }}
+          />
+        </Td>
+      )}
                             </Tr>
                           ),
                         )}
