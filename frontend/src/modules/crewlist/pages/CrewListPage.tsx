@@ -587,20 +587,35 @@ export function CrewListPage() {
                           <Th textColor={'white'}>Email</Th>
                           <Th textColor={'white'}>Phone number</Th>
                           <Th textColor={'white'}>Standard rate</Th>
-                          <TooltipHeader label="Compensation rate">
-                            <Th textColor={'white'}>Compensation</Th>
+                          <TooltipHeader
+                            label="Compensation rate"
+                            textColor="white"
+                          >
+                            Compensation
                           </TooltipHeader>
-                          <TooltipHeader label="Overtime hour1">
-                            <Th textColor={'white'}>OH 1</Th>
+                          <TooltipHeader
+                            label="Overtime hour1"
+                            textColor="white"
+                          >
+                            OH 1
                           </TooltipHeader>
-                          <TooltipHeader label="Overtime hour2">
-                            <Th textColor={'white'}>OH 2</Th>
+                          <TooltipHeader
+                            label="Overtime hour2"
+                            textColor="white"
+                          >
+                            OH 2
                           </TooltipHeader>
-                          <TooltipHeader label="Overtime hour3">
-                            <Th textColor={'white'}>OH 3</Th>
+                          <TooltipHeader
+                            label="Overtime hour3"
+                            textColor="white"
+                          >
+                            OH 3
                           </TooltipHeader>
-                          <TooltipHeader label="Overtime hour4">
-                            <Th textColor={'white'}>OH 4</Th>
+                          <TooltipHeader
+                            label="Overtime hour4"
+                            textColor="white"
+                          >
+                            OH 4
                           </TooltipHeader>
                           <Th textColor={'white'}>Invitation</Th>
                           <Th textColor={'white'}>Delete</Th>
