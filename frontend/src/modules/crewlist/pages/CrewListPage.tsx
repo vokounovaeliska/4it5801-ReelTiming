@@ -688,12 +688,36 @@ export function CrewListPage() {
                                   ></TextPhoneNumber>
                                 </Link>
                               </Td>
-                              <Td>{user.rate?.standard_rate}</Td>
-                              <Td>{user.rate?.compensation_rate}</Td>
-                              <Td>{user.rate?.overtime_hour1}</Td>
-                              <Td>{user.rate?.overtime_hour2}</Td>
-                              <Td>{user.rate?.overtime_hour3}</Td>
-                              <Td>{user.rate?.overtime_hour4}</Td>
+                              <Td>
+                                {user.rate?.standard_rate !== 0
+                                  ? user.rate?.standard_rate
+                                  : ''}
+                              </Td>
+                              <Td>
+                                {user.rate?.compensation_rate !== 0
+                                  ? user.rate?.compensation_rate
+                                  : ''}
+                              </Td>
+                              <Td>
+                                {user.rate?.overtime_hour1 !== 0
+                                  ? user.rate?.overtime_hour1
+                                  : ''}
+                              </Td>
+                              <Td>
+                                {user.rate?.overtime_hour2 !== 0
+                                  ? user.rate?.overtime_hour2
+                                  : ''}
+                              </Td>
+                              <Td>
+                                {user.rate?.overtime_hour3 !== 0
+                                  ? user.rate?.overtime_hour3
+                                  : ''}
+                              </Td>
+                              <Td>
+                                {user.rate?.overtime_hour4 !== 0
+                                  ? user.rate?.overtime_hour4
+                                  : ''}
+                              </Td>
                               <Td>
                                 <Button
                                   colorScheme="orange"
@@ -733,20 +757,21 @@ export function CrewListPage() {
                                       : 'Resend invitation'}
                                 </Button>
                               </Td>
-                              {crewList.userRoleInProject === 'ADMIN' && user.user?.id !== auth.user?.id && (
-        <Td>
-          <IconButton
-            aria-label="Remove record"
-            icon={<DeleteIcon />}
-            colorScheme="red"
-            size={'sm'}
-            onClick={(e) => {
-              e.stopPropagation(); // prevent row click
-              handleRemoveButtonClick(user.id);
-            }}
-          />
-        </Td>
-      )}
+                              {crewList.userRoleInProject === 'ADMIN' &&
+                                user.user?.id !== auth.user?.id && (
+                                  <Td>
+                                    <IconButton
+                                      aria-label="Remove record"
+                                      icon={<DeleteIcon />}
+                                      colorScheme="red"
+                                      size={'sm'}
+                                      onClick={(e) => {
+                                        e.stopPropagation(); // prevent row click
+                                        handleRemoveButtonClick(user.id);
+                                      }}
+                                    />
+                                  </Td>
+                                )}
                             </Tr>
                           ),
                         )}
