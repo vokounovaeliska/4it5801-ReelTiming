@@ -1,5 +1,6 @@
 import {
   boolean,
+  date,
   int,
   mysqlTable,
   timestamp,
@@ -123,4 +124,52 @@ export const rate = mysqlTable('rate', {
     .notNull()
     .defaultNow()
     .onUpdateNow(),
+});
+
+export const statement = mysqlTable('statement', {
+  id: varchar('id', { length: 36 })
+    .$defaultFn(() => uuidv4())
+    .primaryKey(),
+  project_user_id: varchar('project_user_id', { length: 36 })
+    .notNull()
+    .references(() => project_user.id, {
+      onDelete: 'cascade',
+    }),
+  start_date: date('start_date').notNull(),
+  from: timestamp('from').notNull(),
+  to: timestamp('to').notNull(),
+  shift_lenght: int('shift_lenght').notNull(),
+  calculated_overtime: int('calculated_overtime'),
+  claimed_overtime: int('claimed_overtime'),
+  create_date: timestamp('create_date').notNull().defaultNow(),
+  create_user_id: varchar('create_user_id', { length: 36 }).notNull(),
+  last_update_user_id: varchar('last_update_user_id', { length: 36 }).notNull(),
+  last_update_date: timestamp('last_update_date')
+    .notNull()
+    .defaultNow()
+    .onUpdateNow(),
+});
+
+export const report = mysqlTable('report', {
+  id: varchar('id', { length: 36 })
+    .$defaultFn(() => uuidv4())
+    .primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  path: varchar('path', { length: 500 }).notNull(),
+  start_date: date('start_date').notNull(),
+  end_date: date('end_date').notNull(),
+  project_user_id: varchar('project_user_id', { length: 36 }).references(
+    () => project_user.id,
+    {
+      onDelete: 'cascade',
+    },
+  ),
+  project_id: varchar('project_id', { length: 36 }).references(
+    () => project.id,
+    {
+      onDelete: 'cascade',
+    },
+  ),
+  create_date: timestamp('create_date').notNull().defaultNow(),
+  create_user_id: varchar('create_user_id', { length: 36 }).notNull(),
 });

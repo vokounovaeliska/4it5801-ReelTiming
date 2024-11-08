@@ -32,6 +32,8 @@ import { DepartmentResolver } from '@backend/graphql/modules/department/departam
 import { getProjectUserRepository } from '@backend/graphql/modules/projectUser/projectUserRepository';
 import { RateResolver } from '@backend/graphql/modules/rate/rateResolver';
 import { PasswordResolver } from '@backend/graphql/modules/user/PasswordResolver';
+import { StatementResolver } from '@backend/graphql/modules/statement/statementResolver';
+import { ReportResolver } from '@backend/graphql/modules/report/reportResolver';
 
 const init = async () => {
   const app = express();
@@ -47,6 +49,8 @@ const init = async () => {
       PasswordResolver,
       RateResolver,
       DepartmentResolver,
+      StatementResolver,
+      ReportResolver,
     ],
     emitSchemaFile: true,
   });
