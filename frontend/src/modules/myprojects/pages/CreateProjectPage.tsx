@@ -79,6 +79,15 @@ export function CreateProjectPage() {
             variables: {
               userId: auth.user.id,
               token: projectId,
+              email: auth.user.email,
+              name: auth.user.name,
+              surname: auth.user.surname,
+            },
+          });
+          activateProjectUser({
+            variables: {
+              userId: auth.user.id,
+              token: projectId,
             },
           });
 
