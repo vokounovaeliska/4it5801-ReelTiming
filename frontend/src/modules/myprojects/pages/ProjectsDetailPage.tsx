@@ -235,9 +235,9 @@ export function MyProjectDetailPage() {
             <Text fontSize="lg">Number of crew members</Text>
             <HStack spacing={2} align="center" mb={4}>
               <IoPerson size="64px" />
-              <Text fontSize="6xl">
+              <Box as="span" fontSize="6xl">
                 <CrewMemberCount projectId={project.id} userId={auth.user.id} />
-              </Text>
+              </Box>
             </HStack>
             <RecentCrewMembers projectId={project.id} userId={auth.user.id} />
             <Box

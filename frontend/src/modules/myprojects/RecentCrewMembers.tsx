@@ -7,10 +7,8 @@ import { GET_CREWLIST_INFO } from '../../gql/queries/GetCrewListInfo';
 interface ProjectUser {
   id: string;
   is_active: boolean;
-  user: {
-    name: string;
-    surname: string;
-  };
+  name: string;
+  surname: string;
   department: {
     name: string;
   } | null;
@@ -74,8 +72,8 @@ const RecentCrewMembers: React.FC<RecentCrewMembersProps> = ({
             {sortedMembers.length > 0 ? (
               sortedMembers.map((member) => (
                 <Tr key={member.id}>
-                  <Td>{member.user.name}</Td>
-                  <Td>{member.user.surname}</Td>
+                  <Td>{member?.name}</Td>
+                  <Td>{member?.surname}</Td>
                   <Td>
                     {member.department
                       ? member.department.name

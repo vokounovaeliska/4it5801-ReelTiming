@@ -116,13 +116,17 @@ export function CrewListForm({
             <Controller
               name="department"
               render={({ field, fieldState }) => (
-                <FormControl isRequired isInvalid={!!fieldState.error}>
+                <FormControl
+                  isRequired={userRole === 'ADMIN'}
+                  isInvalid={!!fieldState.error}
+                >
                   <FormLabel>Department</FormLabel>
                   <Select
                     {...field}
                     placeholder="Select Department"
                     borderColor="gray.400"
                     borderWidth={1}
+                    isDisabled={userRole !== 'ADMIN'}
                   >
                     {departments.map((dept) => (
                       <option key={dept.id} value={dept.id}>

@@ -136,7 +136,7 @@ async function seedProjects(
           'Sledujeme příběh ranního zákazníka, který díky šálku voňavé kávy začne svůj den s úsměvem. Kamera zachycuje detailní záběry pražení a přípravy kávy, doplněné atmosférou útulné kavárny.',
       },
       {
-        id: '71294022-369d-459b-926e-484f902761cd',
+        id: '4dd6ec6b-8c05-410c-ae17-06942641716d',
         name: 'Škola vaření',
         production_company: 'Cinematic Pulse Productions',
         start_date: new Date('2024-10-18 20:00:00'),

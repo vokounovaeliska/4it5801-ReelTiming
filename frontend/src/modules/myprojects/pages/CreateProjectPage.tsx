@@ -1,121 +1,49 @@
 import { useCallback, useEffect } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 
+import { ACTIVATE_PROJECT_USER } from '@frontend/gql/mutations/ActivateProjectUser';
+import { ADD_PROJECT } from '@frontend/gql/mutations/AddProject';
+import { ADD_PROJECT_USER } from '@frontend/gql/mutations/AddProjectUser';
+import { ADD_RATE } from '@frontend/gql/mutations/AddRate';
 import { useAuth } from '@frontend/modules/auth';
 
 import { FormValues } from '../organisms/CreateProjectForm';
 import { CreateProjectTemplate } from '../templates/CreateProjectTemplate';
 
-const CREATE_PROJECT_MUTATION = gql(/* GraphQL */
-`
-  mutation Mutation(
-    $productionCompany: String!
-    $name: String!
-    $endDate: DateTimeISO
-    $startDate: DateTimeISO
-    $description: String
-  ) {
-    addProject(
-      production_company: $productionCompany
-      name: $name
-      end_date: $endDate
-      start_date: $startDate
-      description: $description
-    ) {
-      id
-      name
-      production_company
-      description
-      start_date
-      end_date
-      create_date
-      create_user_id
-      last_update_user_id
-      last_update_date
-      is_active
-    }
-  }
-`);
-
-const ADD_PROJECT_USER_MUTATION = gql(/* GraphQL */
-`
-  mutation AddProjectUser(
-    $projectId: String!
-    $userId: String!
-    $isTeamLeader: Boolean!
-    $rateId: String
-    $departmentId: String
-    $role: String!
-    $invitation: String
-    $phone_number: String
-    $email: String!
-    $name: String!
-    $surname: String!
-  ) {
-    addProjectUser(
-      projectId: $projectId
-      userId: $userId
-      isTeamLeader: $isTeamLeader
-      rateId: $rateId
-      departmentId: $departmentId
-      role: $role
-      invitation: $invitation
-      phone_number: $phone_number
-      email: $email
-      name: $name
-      surname: $surname
-    ) {
-      id
-      project {
-        id
-      }
-      user {
-        id
-      }
-      is_team_leader
-      role
-    }
-  }
-`);
-
-const ADD_RATE_MUTATION = gql(/* GraphQL */
-`
-  mutation AddRate(
-    $standardRate: Float!
-    $compensationRate: Float!
-    $overtimeHour1: Float!
-    $overtimeHour2: Float!
-    $overtimeHour3: Float!
-    $overtimeHour4: Float!
-  ) {
-    addRate(
-      standard_rate: $standardRate
-      compensation_rate: $compensationRate
-      overtime_hour1: $overtimeHour1
-      overtime_hour2: $overtimeHour2
-      overtime_hour3: $overtimeHour3
-      overtime_hour4: $overtimeHour4
-    ) {
-      id
-    }
-  }
-`);
-
-const ACTIVATE_PROJECT_USER_MUTATION = gql`
-  mutation ActivateProjectUser($userId: String!, $token: String!) {
-    activateProjectUser(userId: $userId, token: $token)
-  }
-`;
-
 export function CreateProjectPage() {
   const navigate = useNavigate();
   const auth = useAuth();
-  const [createRequest, createRequestState] = useMutation(
-    CREATE_PROJECT_MUTATION,
-    {
-      onCompleted: async (data) => {
-        const projectId = data?.addProject?.id;
+
+  const [addProject, { loading: addingProject, error: addProjectError }] =
+    useMutation(ADD_PROJECT);
+
+  const [
+    addProjectUser,
+    { loading: addingProjectUser, error: addProjectUserError },
+  ] = useMutation(ADD_PROJECT_USER);
+
+  const [addRate, { loading: addingRate, error: addRateError }] =
+    useMutation(ADD_RATE);
+
+  const [
+    activateProjectUser,
+    { loading: activatingUser, error: activateProjectUserError },
+  ] = useMutation(ACTIVATE_PROJECT_USER);
+
+  const handleCreateProjectFormSubmit = useCallback(
+    async (variables: FormValues) => {
+      if (!variables.startDate || !variables.endDate) {
+        console.error(
+          'Invalid date(s). Please enter valid start and end dates.',
+        );
+        return;
+      }
+
+      try {
+        const { data: projectData } = await addProject({ variables });
+        const projectId = projectData?.addProject?.id;
+
         if (projectId && auth.user) {
           const { data: rateData } = await addRate({
             variables: {
@@ -135,11 +63,22 @@ export function CreateProjectPage() {
               projectId,
               userId: auth.user.id,
               isTeamLeader: true,
-              rateId: rateId,
-              departmentId: '53964a96-17f1-4c96-a69d-cec10f2b01b6',
+              rateId,
+              departmentId: '8dbf52d6-75e3-4e91-a1f4-24a79cf74cdd', // Replace with your actual department ID
               role: 'ADMIN',
               invitation: projectId,
               phone_number: null,
+              email: auth.user.email,
+              name: auth.user.name,
+              surname: auth.user.surname,
+              position: '',
+            },
+          });
+
+          await activateProjectUser({
+            variables: {
+              userId: auth.user.id,
+              token: projectId,
               email: auth.user.email,
               name: auth.user.name,
               surname: auth.user.surname,
@@ -151,37 +90,21 @@ export function CreateProjectPage() {
               token: projectId,
             },
           });
+
           navigate(`/projects/${projectId}`);
         }
-      },
-      onError: () => {},
-    },
-  );
-
-  const [addProjectUser] = useMutation(ADD_PROJECT_USER_MUTATION, {
-    onError: () => {},
-  });
-
-  const [addRate] = useMutation(ADD_RATE_MUTATION, {
-    onError: () => {},
-  });
-
-  const [activateProjectUser] = useMutation(ACTIVATE_PROJECT_USER_MUTATION, {
-    onError: () => {},
-  });
-
-  const handleCreateProjectFormSubmit = useCallback(
-    (variables: FormValues) => {
-      if (!variables.startDate || !variables.endDate) {
-        console.error(
-          'Invalid date(s). Please enter valid start and end dates.',
-        );
-        return;
+      } catch (error) {
+        console.error('Error during project creation:', error);
       }
-
-      createRequest({ variables });
     },
-    [createRequest],
+    [
+      addProject,
+      addRate,
+      addProjectUser,
+      activateProjectUser,
+      auth.user,
+      navigate,
+    ],
   );
 
   useEffect(() => {
@@ -196,8 +119,15 @@ export function CreateProjectPage() {
 
   return (
     <CreateProjectTemplate
-      isLoading={createRequestState.loading}
-      error={createRequestState.error}
+      isLoading={
+        addingProject || addingRate || addingProjectUser || activatingUser
+      }
+      error={
+        addProjectError ||
+        addRateError ||
+        addProjectUserError ||
+        activateProjectUserError
+      }
       onSubmit={handleCreateProjectFormSubmit}
     />
   );
