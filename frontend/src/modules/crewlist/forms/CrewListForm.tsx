@@ -4,6 +4,7 @@ import {
   Button,
   Divider,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Select,
   SimpleGrid,
@@ -30,7 +31,7 @@ const phoneRegex = /^(\+\d{1,3}[- ]?)?\d{9}$/;
 const schema = zod.object({
   name: zod.string().min(1),
   surname: zod.string().min(1),
-  department: zod.string().min(1),
+  department: zod.string().min(1, { message: 'Department must be selected.' }),
   position: zod.string().min(1),
   phone_number: zod
     .string()
@@ -114,13 +115,13 @@ export function CrewListForm({
             <InputField name="surname" label="Surname" isRequired />
             <Controller
               name="department"
-              render={({ field }) => (
-                <FormControl isRequired>
+              render={({ field, fieldState }) => (
+                <FormControl isRequired isInvalid={!!fieldState.error}>
                   <FormLabel>Department</FormLabel>
                   <Select
                     {...field}
                     placeholder="Select Department"
-                    borderColor={'gray.400'}
+                    borderColor="gray.400"
                     borderWidth={1}
                   >
                     {departments.map((dept) => (
@@ -129,6 +130,9 @@ export function CrewListForm({
                       </option>
                     ))}
                   </Select>
+                  <FormErrorMessage>
+                    {fieldState.error?.message}
+                  </FormErrorMessage>
                 </FormControl>
               )}
             />
