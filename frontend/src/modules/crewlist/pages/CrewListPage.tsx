@@ -1,17 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useApolloClient, useQuery } from '@apollo/client';
+import { AddIcon, ChevronDownIcon, DeleteIcon } from '@chakra-ui/icons';
 import {
-  AddIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-  DeleteIcon,
-} from '@chakra-ui/icons';
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
   Box,
   Button,
   Center,
@@ -67,35 +57,38 @@ export function CrewListPage() {
   const [collapsedDepartments, setCollapsedDepartments] = useState<
     Record<string, boolean>
   >({});
-  const [isAllUsersCollapsed, setIsAllUsersCollapsed] = useState(true); // default collapsed
+  const [isAllUsersCollapsed, setIsAllUsersCollapsed] = useState(false); // default collapsed
 
   const tableRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  // TODO - check commented out tables - might be fine to delete
+  // useEffect(() => {
+  //   const handleScroll = (event: Event) => {
+  //     const target = event.target as HTMLDivElement;
+  //     const scrollLeft = target.scrollLeft;
+  //     const currentTableRefs = { ...tableRefs.current };
+  //     Object.values(currentTableRefs).forEach((ref) => {
+  //       if (ref && ref !== target) {
+  //         ref.scrollLeft = scrollLeft;
+  //       }
+  //     });
+  //   };
 
-  useEffect(() => {
-    const handleScroll = (event: Event) => {
-      const target = event.target as HTMLDivElement;
-      const scrollLeft = target.scrollLeft;
-      Object.values(tableRefs.current).forEach((ref) => {
-        if (ref && ref !== target) {
-          ref.scrollLeft = scrollLeft;
-        }
-      });
-    };
+  //   const currentTableRefs = tableRefs.current;
+  //   Object.values(currentTableRefs).forEach((ref) => {
+  //     if (ref) {
+  //       ref.addEventListener('scroll', handleScroll);
+  //     }
+  //   });
 
-    Object.values(tableRefs.current).forEach((ref) => {
-      if (ref) {
-        ref.addEventListener('scroll', handleScroll);
-      }
-    });
-
-    return () => {
-      Object.values(tableRefs.current).forEach((ref) => {
-        if (ref) {
-          ref.removeEventListener('scroll', handleScroll);
-        }
-      });
-    };
-  }, []);
+  //   return () => {
+  //     const currentTableRefs = { ...tableRefs.current };
+  //     Object.values(currentTableRefs).forEach((ref) => {
+  //       if (ref) {
+  //         ref.removeEventListener('scroll', handleScroll);
+  //       }
+  //     });
+  //   };
+  // }, []);
 
   const sanitizeCrewMemberData = (data: CrewMemberData): CrewMemberData => ({
     ...data,
@@ -1066,6 +1059,258 @@ export function CrewListPage() {
             },
           }}
         >
+          {/* ALL DEPARTMENTS TABLE */}
+          {crewList.userRoleInProject === 'ADMIN' && (
+            <Box
+              mb={8}
+              borderWidth="2px"
+              borderRadius="lg"
+              boxShadow="md"
+              bg="white"
+            >
+              <Box
+                display="flex"
+                alignItems="center"
+                bg="#2D3748"
+                p={2}
+                borderTopRadius="lg"
+                cursor="pointer"
+                onClick={() => setIsAllUsersCollapsed(!isAllUsersCollapsed)}
+              >
+                <Box display="flex" alignItems="center">
+                  <ChevronDownIcon
+                    transform={
+                      isAllUsersCollapsed ? 'rotate(180deg)' : 'rotate(0deg)'
+                    }
+                    transition="transform 0.3s"
+                    color="white"
+                    mr={2}
+                  />
+                  <Box fontWeight="bold" fontSize="xl" textColor="white">
+                    All Departments
+                  </Box>
+                </Box>
+              </Box>
+              <Collapse in={!isAllUsersCollapsed} animateOpacity>
+                <TableContainer className="custom-scrollbar">
+                  <Box
+                    overflowX="auto"
+                    sx={{
+                      '::-webkit-scrollbar': {
+                        height: '12px',
+                      },
+                      '::-webkit-scrollbar-track': {
+                        background: '#2D3748',
+                      },
+                      '::-webkit-scrollbar-thumb': {
+                        background: '#888',
+                        borderRadius: '6px',
+                      },
+                      '::-webkit-scrollbar-thumb:hover': {
+                        background: '#555',
+                      },
+                      scrollbarWidth: 'thin',
+                      scrollbarColor: '#2D3748 white',
+                    }}
+                  >
+                    <Table variant="simple" size="sm">
+                      <Thead>
+                        <Tr bg="#2D3748" textColor="white">
+                          <Th textColor={'white'}>Name</Th>
+                          <Th textColor={'white'}>Surname</Th>
+                          <Th textColor={'white'}>Position</Th>
+                          <Th textColor={'white'}>Role</Th>
+                          <Th textColor={'white'}>Email</Th>
+                          <Th textColor={'white'}>Phone number</Th>
+                          <Th textColor={'white'}>Standard rate</Th>
+                          <TooltipHeader
+                            label="Compensation rate"
+                            textColor="white"
+                          >
+                            Compensation
+                          </TooltipHeader>
+                          <TooltipHeader
+                            label="Overtime hour1"
+                            textColor="white"
+                          >
+                            OH 1
+                          </TooltipHeader>
+                          <TooltipHeader
+                            label="Overtime hour2"
+                            textColor="white"
+                          >
+                            OH 2
+                          </TooltipHeader>
+                          <TooltipHeader
+                            label="Overtime hour3"
+                            textColor="white"
+                          >
+                            OH 3
+                          </TooltipHeader>
+                          <TooltipHeader
+                            label="Overtime hour4"
+                            textColor="white"
+                          >
+                            OH 4
+                          </TooltipHeader>
+                          <Th textColor={'white'}>Invitation</Th>
+                          {crewList.userRoleInProject === 'ADMIN' && (
+                            <Th textColor={'white'}>Delete</Th>
+                          )}
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {crewList.projectUsers.map((user: ProjectUser) => (
+                          <Tr
+                            key={user.id}
+                            onClick={() =>
+                              handleEditMemberClick({
+                                id: user.id,
+                                name: user?.name,
+                                surname: user?.surname,
+                                department:
+                                  user.department?.id || 'No Department',
+                                position: user.position,
+                                phone_number: user.phone_number,
+                                email: user?.email,
+                                standard_rate: user.rate?.standard_rate || 0,
+                                compensation_rate:
+                                  user.rate?.compensation_rate || 0,
+                                overtime_hour1: user.rate?.overtime_hour1 || 0,
+                                overtime_hour2: user.rate?.overtime_hour2 || 0,
+                                overtime_hour3: user.rate?.overtime_hour3 || 0,
+                                overtime_hour4: user.rate?.overtime_hour4 || 0,
+                                role: user.role,
+                                user_id: user.user?.id,
+                                rate_id: user.rate?.id || null,
+                              })
+                            }
+                            _hover={{
+                              cursor: 'pointer',
+                              backgroundColor: 'gray.100',
+                            }}
+                          >
+                            <Td>{user?.name}</Td>
+                            <Td>{user?.surname}</Td>
+                            <Td>{user.position}</Td>
+                            <Td>{user.role}</Td>
+                            <Td>
+                              <Link
+                                href={`mailto:${user?.email}`}
+                                color="blue.500"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                }}
+                              >
+                                {user?.email}
+                              </Link>
+                            </Td>
+                            <Td>
+                              <Link
+                                href={`tel:${user.phone_number}`}
+                                color="blue.500"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                }}
+                              >
+                                <TextPhoneNumber
+                                  phoneNumber={user.phone_number}
+                                ></TextPhoneNumber>
+                              </Link>
+                            </Td>
+                            <Td>
+                              {user.rate?.standard_rate !== 0
+                                ? user.rate?.standard_rate
+                                : ''}
+                            </Td>
+                            <Td>
+                              {user.rate?.compensation_rate !== 0
+                                ? user.rate?.compensation_rate
+                                : ''}
+                            </Td>
+                            <Td>
+                              {user.rate?.overtime_hour1 !== 0
+                                ? user.rate?.overtime_hour1
+                                : ''}
+                            </Td>
+                            <Td>
+                              {user.rate?.overtime_hour2 !== 0
+                                ? user.rate?.overtime_hour2
+                                : ''}
+                            </Td>
+                            <Td>
+                              {user.rate?.overtime_hour3 !== 0
+                                ? user.rate?.overtime_hour3
+                                : ''}
+                            </Td>
+                            <Td>
+                              {user.rate?.overtime_hour4 !== 0
+                                ? user.rate?.overtime_hour4
+                                : ''}
+                            </Td>
+                            <Td>
+                              <Button
+                                colorScheme="orange"
+                                size={'sm'}
+                                isDisabled={
+                                  user.invitation != null && user.is_active
+                                }
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (
+                                    user.invitation == null &&
+                                    !user.is_active
+                                  ) {
+                                    sendInvitation(
+                                      user.id,
+                                      user?.name,
+                                      user?.email,
+                                      false,
+                                    );
+                                  } else if (
+                                    user.invitation != null &&
+                                    !user.is_active
+                                  ) {
+                                    sendInvitation(
+                                      user.id,
+                                      user?.name,
+                                      user?.email,
+                                      true,
+                                    );
+                                  }
+                                }}
+                              >
+                                {user.invitation != null && user.is_active
+                                  ? 'Joined'
+                                  : user.invitation == null && !user.is_active
+                                    ? 'Send invitation'
+                                    : 'Resend invitation'}
+                              </Button>
+                            </Td>
+                            {crewList.userRoleInProject === 'ADMIN' &&
+                              user.user?.id !== auth.user?.id && (
+                                <Td>
+                                  <IconButton
+                                    aria-label="Remove record"
+                                    icon={<DeleteIcon />}
+                                    colorScheme="red"
+                                    size={'sm'}
+                                    onClick={(e) => {
+                                      e.stopPropagation(); // prevent row click
+                                      handleRemoveButtonClick(user.id);
+                                    }}
+                                  />
+                                </Td>
+                              )}
+                          </Tr>
+                        ))}
+                      </Tbody>
+                    </Table>
+                  </Box>
+                </TableContainer>
+              </Collapse>
+            </Box>
+          )}
           {sortedDepartments.map((departmentName) => (
             <Box
               key={departmentName}
@@ -1331,225 +1576,6 @@ export function CrewListPage() {
               </Collapse>
             </Box>
           ))}
-          {/* ALL DEPARTMENTS TABLE */}
-          {crewList.userRoleInProject === 'ADMIN' && (
-            <Box
-              mb={8}
-              borderWidth="2px"
-              borderRadius="lg"
-              boxShadow="md"
-              bg="white"
-            >
-              <Box
-                display="flex"
-                alignItems="center"
-                bg="#2D3748"
-                p={2}
-                borderTopRadius="lg"
-                cursor="pointer"
-                onClick={() => setIsAllUsersCollapsed(!isAllUsersCollapsed)}
-              >
-                <Box display="flex" alignItems="center">
-                  <ChevronDownIcon
-                    transform={
-                      isAllUsersCollapsed ? 'rotate(180deg)' : 'rotate(0deg)'
-                    }
-                    transition="transform 0.3s"
-                    color="white"
-                    mr={2}
-                  />
-                  <Box fontWeight="bold" fontSize="xl" textColor="white">
-                    All Departments
-                  </Box>
-                </Box>
-              </Box>
-              <Collapse in={!isAllUsersCollapsed} animateOpacity>
-                <TableContainer className="custom-scrollbar">
-                  <Table variant="simple" size="sm">
-                    <Thead>
-                      <Tr bg="#2D3748" textColor="white">
-                        <Th textColor={'white'}>Name</Th>
-                        <Th textColor={'white'}>Surname</Th>
-                        <Th textColor={'white'}>Position</Th>
-                        <Th textColor={'white'}>Role</Th>
-                        <Th textColor={'white'}>Email</Th>
-                        <Th textColor={'white'}>Phone number</Th>
-                        <Th textColor={'white'}>Standard rate</Th>
-                        <TooltipHeader
-                          label="Compensation rate"
-                          textColor="white"
-                        >
-                          Compensation
-                        </TooltipHeader>
-                        <TooltipHeader label="Overtime hour1" textColor="white">
-                          OH 1
-                        </TooltipHeader>
-                        <TooltipHeader label="Overtime hour2" textColor="white">
-                          OH 2
-                        </TooltipHeader>
-                        <TooltipHeader label="Overtime hour3" textColor="white">
-                          OH 3
-                        </TooltipHeader>
-                        <TooltipHeader label="Overtime hour4" textColor="white">
-                          OH 4
-                        </TooltipHeader>
-                        <Th textColor={'white'}>Invitation</Th>
-                        {crewList.userRoleInProject === 'ADMIN' && (
-                          <Th textColor={'white'}>Delete</Th>
-                        )}
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {crewList.projectUsers.map((user: ProjectUser) => (
-                        <Tr
-                          key={user.id}
-                          onClick={() =>
-                            handleEditMemberClick({
-                              id: user.id,
-                              name: user?.name,
-                              surname: user?.surname,
-                              department:
-                                user.department?.id || 'No Department',
-                              position: user.position,
-                              phone_number: user.phone_number,
-                              email: user?.email,
-                              standard_rate: user.rate?.standard_rate || 0,
-                              compensation_rate:
-                                user.rate?.compensation_rate || 0,
-                              overtime_hour1: user.rate?.overtime_hour1 || 0,
-                              overtime_hour2: user.rate?.overtime_hour2 || 0,
-                              overtime_hour3: user.rate?.overtime_hour3 || 0,
-                              overtime_hour4: user.rate?.overtime_hour4 || 0,
-                              role: user.role,
-                              user_id: user.user?.id,
-                              rate_id: user.rate?.id || null,
-                            })
-                          }
-                          _hover={{
-                            cursor: 'pointer',
-                            backgroundColor: 'gray.100',
-                          }}
-                        >
-                          <Td>{user?.name}</Td>
-                          <Td>{user?.surname}</Td>
-                          <Td>{user.position}</Td>
-                          <Td>{user.role}</Td>
-                          <Td>
-                            <Link
-                              href={`mailto:${user?.email}`}
-                              color="blue.500"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                              }}
-                            >
-                              {user?.email}
-                            </Link>
-                          </Td>
-                          <Td>
-                            <Link
-                              href={`tel:${user.phone_number}`}
-                              color="blue.500"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                              }}
-                            >
-                              <TextPhoneNumber
-                                phoneNumber={user.phone_number}
-                              ></TextPhoneNumber>
-                            </Link>
-                          </Td>
-                          <Td>
-                            {user.rate?.standard_rate !== 0
-                              ? user.rate?.standard_rate
-                              : ''}
-                          </Td>
-                          <Td>
-                            {user.rate?.compensation_rate !== 0
-                              ? user.rate?.compensation_rate
-                              : ''}
-                          </Td>
-                          <Td>
-                            {user.rate?.overtime_hour1 !== 0
-                              ? user.rate?.overtime_hour1
-                              : ''}
-                          </Td>
-                          <Td>
-                            {user.rate?.overtime_hour2 !== 0
-                              ? user.rate?.overtime_hour2
-                              : ''}
-                          </Td>
-                          <Td>
-                            {user.rate?.overtime_hour3 !== 0
-                              ? user.rate?.overtime_hour3
-                              : ''}
-                          </Td>
-                          <Td>
-                            {user.rate?.overtime_hour4 !== 0
-                              ? user.rate?.overtime_hour4
-                              : ''}
-                          </Td>
-                          <Td>
-                            <Button
-                              colorScheme="orange"
-                              size={'sm'}
-                              isDisabled={
-                                user.invitation != null && user.is_active
-                              }
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                if (
-                                  user.invitation == null &&
-                                  !user.is_active
-                                ) {
-                                  sendInvitation(
-                                    user.id,
-                                    user?.name,
-                                    user?.email,
-                                    false,
-                                  );
-                                } else if (
-                                  user.invitation != null &&
-                                  !user.is_active
-                                ) {
-                                  sendInvitation(
-                                    user.id,
-                                    user?.name,
-                                    user?.email,
-                                    true,
-                                  );
-                                }
-                              }}
-                            >
-                              {user.invitation != null && user.is_active
-                                ? 'Joined'
-                                : user.invitation == null && !user.is_active
-                                  ? 'Send invitation'
-                                  : 'Resend invitation'}
-                            </Button>
-                          </Td>
-                          {crewList.userRoleInProject === 'ADMIN' &&
-                            user.user?.id !== auth.user?.id && (
-                              <Td>
-                                <IconButton
-                                  aria-label="Remove record"
-                                  icon={<DeleteIcon />}
-                                  colorScheme="red"
-                                  size={'sm'}
-                                  onClick={(e) => {
-                                    e.stopPropagation(); // prevent row click
-                                    handleRemoveButtonClick(user.id);
-                                  }}
-                                />
-                              </Td>
-                            )}
-                        </Tr>
-                      ))}
-                    </Tbody>
-                  </Table>
-                </TableContainer>
-              </Collapse>
-            </Box>
-          )}
           ;
         </Box>
       </Box>

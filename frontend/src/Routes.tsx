@@ -12,8 +12,8 @@ import { ForgotPasswordPage } from './modules/auth/pages/ForgotPasswordPage';
 import { NewPasswordPage } from './modules/auth/pages/NewPasswordPage';
 import AboutUsPage from './modules/contact/AboutUsPage';
 import { AcceptInvitationPage } from './modules/crewlist/pages/AcceptInvitationPage';
-//import { CrewListPage } from './modules/crewlist/pages/CrewListPage';
-import { CrewListPage2 } from './modules/crewlist/pages/CrewListPage2';
+import { CrewListPage } from './modules/crewlist/pages/CrewListPage';
+// import { CrewListPage2 } from './modules/crewlist/pages/CrewListPage2';
 import { EditProjectPage } from './modules/editproject/pages/EditProjectPage';
 import { CreateProjectPage } from './modules/myprojects/pages/CreateProjectPage';
 import ProfileSettingsPage from './modules/profilesettings/pages/ProfileSettingsPage';
@@ -35,7 +35,7 @@ function Routes() {
       <Route path={route.newPassword()} element={<NewPasswordPage />} />
       <Route path={route.createProject()} element={<CreateProjectPage />} />
       <Route path={route.about()} element={<AboutUsPage />} />
-      <Route path={route.crewList(':projectId')} element={<CrewListPage2 />} />
+      <Route path={route.crewList(':projectId')} element={<CrewListPage />} />
       <Route
         path={route.timesheets(':projectId')}
         element={<TimesheetPage />}
