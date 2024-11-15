@@ -66,6 +66,21 @@ export class StatementResolver {
     return statementService.getStatementsByUserId(userId);
   }
 
+  @Query(() => [Statement])
+  async getStatementsByDateRangeAndProjectUserId(
+    @Arg('startDate') startDate: Date,
+    @Arg('endDate') endDate: Date,
+    @Arg('projectUserId') projectUserId: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<Statement[]> {
+    const statementService = new StatementService(db);
+    return statementService.getStatementsByDateRangeAndProjectUserId(
+      startDate,
+      endDate,
+      projectUserId,
+    );
+  }
+
   @Mutation(() => Statement)
   async addStatement(
     @Arg('project_user_id') project_user_id: string,

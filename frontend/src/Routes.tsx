@@ -17,6 +17,7 @@ import { CrewListPage } from './modules/crewlist/pages/CrewListPage';
 import { EditProjectPage } from './modules/editproject/pages/EditProjectPage';
 import { CreateProjectPage } from './modules/myprojects/pages/CreateProjectPage';
 import ProfileSettingsPage from './modules/profilesettings/pages/ProfileSettingsPage';
+import { DemoPagePdfGenerator } from './modules/timesheets/pages/DemoPagePdfGenerator';
 import { TimesheetPage } from './modules/timesheets/pages/TimesheetsPage';
 import { ToCPage } from './modules/toc/TocPage';
 import { route } from './route';
@@ -53,6 +54,10 @@ function Routes() {
         element={<AcceptInvitationPage />}
       />
       <Route path={route.profileSettings} element={<ProfileSettingsPage />} />
+      <Route
+        path={route.generatePdfDemo(':projectId')}
+        element={<DemoPagePdfGenerator />}
+      />
     </RouterRoutes>
   );
 }

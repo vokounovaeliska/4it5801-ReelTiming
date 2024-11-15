@@ -45,6 +45,25 @@ export class StatementService {
     }));
   }
 
+  async getStatementsByDateRangeAndProjectUserId(
+    startDate: Date,
+    endDate: Date,
+    projectUserId: string,
+  ) {
+    startDate.setHours(0, 0, 0, 0);
+    endDate.setHours(23, 59, 59, 999);
+    const statementsRecords =
+      await this.statementRepository.getStatementsByDateRangeAndProjectUserId(
+        startDate,
+        endDate,
+        projectUserId,
+      );
+
+    return statementsRecords.map((record) => ({
+      ...record.statement,
+    }));
+  }
+
   async createStatement(data: StatementInput): Promise<Statement> {
     const createdAt = new Date();
     const userId = 'user-id'; // actual user id
