@@ -118,6 +118,7 @@ type Query {
   _empty: String!
   department(id: String!): Department
   departments: [Department!]!
+  getStatementsByDateRangeAndProjectUserId(endDate: DateTimeISO!, projectUserId: String!, startDate: DateTimeISO!): [Statement!]!
   project(id: String!): Project
   projectUser(id: String!): ProjectUser
   projectUsers(projectId: String!): [ProjectUser!]!

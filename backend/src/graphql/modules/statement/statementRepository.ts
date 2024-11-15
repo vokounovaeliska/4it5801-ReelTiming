@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, and, lte, gte } from 'drizzle-orm';
 import { project_user, statement } from '@backend/db/schema';
 import { type Db } from '@backend/types/types';
 
@@ -35,6 +35,25 @@ export function getStatementRepository(db: Db) {
         .from(statement)
         .innerJoin(project_user, eq(statement.project_user_id, project_user.id))
         .where(eq(project_user.user_id, userId));
+      return statementsByProjectUser;
+    },
+    async getStatementsByDateRangeAndProjectUserId(
+      startDate: Date,
+      endDate: Date,
+      projectUserId: string,
+    ) {
+      const statementsByProjectUser = await db
+        .select()
+        .from(statement)
+        .innerJoin(project_user, eq(statement.project_user_id, project_user.id))
+        .where(
+          and(
+            eq(statement.project_user_id, projectUserId),
+            gte(statement.from, startDate),
+            lte(statement.to, endDate),
+          ),
+        )
+        .orderBy(statement.start_date, statement.create_date);
       return statementsByProjectUser;
     },
     async createStatement(data: {
