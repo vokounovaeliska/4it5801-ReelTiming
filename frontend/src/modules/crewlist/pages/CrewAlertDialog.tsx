@@ -9,11 +9,7 @@ import {
   Button,
 } from '@chakra-ui/react';
 
-interface CrewAlertDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-}
+import { CrewAlertDialogProps } from '../interfaces/interfaces';
 
 const CrewAlertDialog: React.FC<CrewAlertDialogProps> = ({
   isOpen,
