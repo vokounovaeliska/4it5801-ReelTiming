@@ -4,10 +4,7 @@ import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
 import { CrewListForm } from '../forms/CrewListForm';
-
-export type CrewListTemplateProps = {
-  projectId: string;
-};
+import { CrewListTemplateProps } from '../interfaces/interfaces';
 
 export function CrewListTemplate({ projectId }: CrewListTemplateProps) {
   return (

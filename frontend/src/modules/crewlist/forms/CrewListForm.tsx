@@ -22,7 +22,7 @@ export type CrewListFormProps = {
   isLoading: boolean;
   departments: { id: string; name: string }[];
   initialValues?: FormValues;
-  mode: 'add' | 'edit'; // TODO - ugly solution, refactor when free ?
+  mode: 'add' | 'edit';
   userRole: 'ADMIN' | 'CREW';
 };
 

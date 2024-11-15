@@ -1,11 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useApolloClient, useQuery } from '@apollo/client';
-import { AddIcon, ChevronDownIcon, DeleteIcon } from '@chakra-ui/icons';
+import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
   Center,
-  Collapse,
   Heading,
   IconButton,
   Link,
@@ -18,7 +17,6 @@ import {
   Th,
   Thead,
   Tr,
-  useToast,
   VStack,
 } from '@chakra-ui/react';
 import {
@@ -32,6 +30,10 @@ import { GET_CREWLIST_INFO } from '@frontend/gql/queries/GetCrewListInfo';
 import { useAuth } from '@frontend/modules/auth';
 import ProjectButtons from '@frontend/modules/myprojects/ProjectButtons';
 import { route } from '@frontend/route';
+import {
+  showErrorToast,
+  showSuccessToast,
+} from '@frontend/shared/components/toastUtils';
 import { TextPhoneNumber } from '@frontend/shared/design-system/atoms/TextPhoneNumber';
 import { TooltipHeader } from '@frontend/shared/design-system/atoms/Tooltip';
 import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
@@ -39,12 +41,12 @@ import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
 import { CrewListForm } from '../forms/CrewListForm';
+import { CrewMemberData, ProjectUser } from '../interfaces/interfaces';
 
 import CrewAlertDialog from './CrewAlertDialog';
 
 export function CrewListPage() {
   const auth = useAuth();
-  const toast = useToast();
   const client = useApolloClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,41 +56,6 @@ export function CrewListPage() {
     useState<CrewMemberData | null>(null);
   const { projectId } = useParams<{ projectId: string }>();
   const location = useLocation();
-  const [collapsedDepartments, setCollapsedDepartments] = useState<
-    Record<string, boolean>
-  >({});
-  const [isAllUsersCollapsed, setIsAllUsersCollapsed] = useState(false); // default collapsed
-
-  const tableRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  // TODO - check commented out tables - might be fine to delete
-  // useEffect(() => {
-  //   const handleScroll = (event: Event) => {
-  //     const target = event.target as HTMLDivElement;
-  //     const scrollLeft = target.scrollLeft;
-  //     const currentTableRefs = { ...tableRefs.current };
-  //     Object.values(currentTableRefs).forEach((ref) => {
-  //       if (ref && ref !== target) {
-  //         ref.scrollLeft = scrollLeft;
-  //       }
-  //     });
-  //   };
-
-  //   const currentTableRefs = tableRefs.current;
-  //   Object.values(currentTableRefs).forEach((ref) => {
-  //     if (ref) {
-  //       ref.addEventListener('scroll', handleScroll);
-  //     }
-  //   });
-
-  //   return () => {
-  //     const currentTableRefs = { ...tableRefs.current };
-  //     Object.values(currentTableRefs).forEach((ref) => {
-  //       if (ref) {
-  //         ref.removeEventListener('scroll', handleScroll);
-  //       }
-  //     });
-  //   };
-  // }, []);
 
   const sanitizeCrewMemberData = (data: CrewMemberData): CrewMemberData => ({
     ...data,
@@ -137,32 +104,14 @@ export function CrewListPage() {
       </Center>
     );
   }
-  interface CrewMemberData {
-    id: string;
-    name: string;
-    surname: string;
-    department: string;
-    position: string;
-    phone_number: string;
-    email: string;
-    standard_rate: number;
-    compensation_rate: number;
-    overtime_hour1: number;
-    overtime_hour2: number;
-    overtime_hour3: number;
-    overtime_hour4: number;
-    role: string;
-    user_id: string | null;
-    rate_id: string | null;
-  }
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-    setSelectedCrewMember(null); // clear selected crew member on close
+    setSelectedCrewMember(null);
   };
 
   const handleAddMemberClick = () => {
-    setSelectedCrewMember(null); // clear selected crew member for adding new
+    setSelectedCrewMember(null);
     setIsModalOpen(true);
   };
 
@@ -190,8 +139,6 @@ export function CrewListPage() {
         is_active: false,
       };
 
-      console.log(newUser);
-
       client.writeQuery({
         query: GET_CREWLIST_INFO,
         variables: { projectId, userId: auth.user?.id },
@@ -208,26 +155,11 @@ export function CrewListPage() {
           email,
         );
       }
-
-      toast({
-        title: 'Success',
-        description: `Crew member added${
-          sendInvite ? ' and invitation sent' : ''
-        } successfully.`,
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
+      showSuccessToast('Crew member added successfully');
       handleModalClose();
     } catch (error) {
       console.error('Error adding new crew member:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to add crew member. Please try again.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
+      showErrorToast('Failed to add crew member. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -268,24 +200,10 @@ export function CrewListPage() {
           projectUsers: updatedUsers,
         },
       });
-
-      toast({
-        title: 'Success',
-        description: 'Invitation email sent successfully.',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
-      // refetchProjectUsers();
+      showSuccessToast('Invitation email sent successfully');
     } catch (error) {
       console.error('Error sending invitation email:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to send invitation email. Please try again.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
+      showErrorToast('Failed to send invitation email. Please try again.');
     }
   };
 
@@ -314,24 +232,12 @@ export function CrewListPage() {
           projectUsers: updatedUsers,
         },
       });
-
-      toast({
-        title: 'Success',
-        description: 'User removed from the project successfully.',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
+      showSuccessToast('Crew member removed successfully');
     } catch (error) {
       console.error('Error removing user from project:', error);
-      toast({
-        title: 'Error',
-        description:
-          'Failed to remove user from the project. Please try again.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
+      showErrorToast(
+        'Failed to remove user from the project. Please try again.',
+      );
     }
   };
 
@@ -343,7 +249,6 @@ export function CrewListPage() {
     return department ? department.id : null;
   };
 
-  // TODO - replace this 12IQ solution - rip
   const handleEditMemberClick = (crewMember: CrewMemberData) => {
     const sanitizedCrewMember = sanitizeCrewMemberData(crewMember);
     setSelectedCrewMember({
@@ -377,7 +282,6 @@ export function CrewListPage() {
         department: data.department,
       };
 
-      console.log('Edit crew member:', updatedData);
       await editCrewMember(updatedData, projectId!);
 
       const cacheData = client.readQuery({
@@ -403,53 +307,15 @@ export function CrewListPage() {
           projectUsers: updatedUsers,
         },
       });
-
-      toast({
-        title: 'Success',
-        description: 'Crew member updated successfully.',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
+      showSuccessToast('Crew member updated successfully');
       handleModalClose();
     } catch (error) {
       console.error('Error updating crew member:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to update crew member. Please try again.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
+      showErrorToast('Failed to update crew member. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  interface ProjectUser {
-    id: string;
-    user: {
-      id: string;
-    };
-    department: { name: string; id: string } | null;
-    role: string;
-    position: string;
-    phone_number: string;
-    is_active: boolean;
-    invitation: string;
-    name: string;
-    surname: string;
-    email: string;
-    rate: {
-      id: string;
-      standard_rate: number;
-      compensation_rate: number;
-      overtime_hour1: number;
-      overtime_hour2: number;
-      overtime_hour3: number;
-      overtime_hour4: number;
-    } | null;
-  }
 
   const groupedByDepartment = crewList.projectUsers.reduce(
     (acc: Record<string, ProjectUser[]>, user: ProjectUser) => {
@@ -467,13 +333,6 @@ export function CrewListPage() {
     },
     {} as Record<string, ProjectUser[]>,
   );
-
-  const toggleDepartmentCollapse = (departmentName: string) => {
-    setCollapsedDepartments((prev) => ({
-      ...prev,
-      [departmentName]: !prev[departmentName],
-    }));
-  };
 
   const sortedDepartments = Object.keys(groupedByDepartment).sort();
 
@@ -539,886 +398,77 @@ export function CrewListPage() {
             </VStack>
           </Center>
         )}
-        {/* ACCORDION NON RESPONSIVE SEMI ALLIGNED*/}
-        {/* <Box overflowX="auto" h="100%" whiteSpace="nowrap" px="32px">
-          <Box
-            mb={8}
-            borderWidth="2px"
-            borderRadius="lg"
-            boxShadow="md"
-            bg="white"
-          >
+        <Box
+          overflowX="scroll"
+          m={4}
+          rounded={'md'}
+          borderWidth={2}
+          borderColor={'gray.100'}
+        >
+          <TableContainer className="custom-scrollbar">
             <Box
-              display="grid"
-              gridTemplateColumns={{
-                base: 'repeat(4, 1fr)',
-                sm: 'repeat(7, minmax(150px, 1fr))',
-                md: 'repeat(14, minmax(150px, 1fr))',
-              }}
-              bg="#2D3748"
-              p={2}
-              textColor="white"
-              fontWeight="bold"
               overflowX="auto"
+              sx={{
+                '::-webkit-scrollbar': {
+                  height: '12px',
+                },
+                '::-webkit-scrollbar-track': {
+                  background: '#2D3748',
+                },
+                '::-webkit-scrollbar-thumb': {
+                  background: '#888',
+                  borderRadius: '6px',
+                },
+                '::-webkit-scrollbar-thumb:hover': {
+                  background: '#555',
+                },
+                scrollbarWidth: 'thin',
+                scrollbarColor: '#2D3748 white',
+              }}
             >
-              <Box>Name</Box>
-              <Box>Surname</Box>
-              <Box>Position</Box>
-              <Box>Role</Box>
-              <Box>Email</Box>
-              <Box>Phone Number</Box>
-              <Box>Standard Rate</Box>
-              <Box>Compensation</Box>
-              <Box>OH 1</Box>
-              <Box>OH 2</Box>
-              <Box>OH 3</Box>
-              <Box>OH 4</Box>
-              <Box>Invitation</Box>
-              {crewList.userRoleInProject === 'ADMIN' && <Box>Delete</Box>}
-            </Box>
-            <Accordion allowMultiple>
-              {Object.keys(groupedByDepartment).map((departmentName) => (
-                <AccordionItem key={departmentName}>
-                  <h2>
-                    <AccordionButton>
-                      <Box
-                        flex="1"
-                        textAlign="left"
-                        fontWeight="bold"
-                        fontSize="md"
-                      >
-                        {departmentName}
-                      </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                  </h2>
-                  <AccordionPanel px={0} pb={4}>
-                    {groupedByDepartment[departmentName].map((user) => (
-                      <Box
-                        key={user.id}
-                        display="grid"
-                        gridTemplateColumns={{
-                          base: 'repeat(4, 1fr)',
-                          sm: 'repeat(7, minmax(150px, 1fr))',
-                          md: 'repeat(14, minmax(150px, 1fr))',
-                        }}
-                        p={2}
-                        _hover={{
-                          cursor: 'pointer',
-                          backgroundColor: 'gray.100',
-                        }}
-                        onClick={() => handleEditMemberClick(user)}
-                      >
-                        <Box
-                          textOverflow="ellipsis"
-                          whiteSpace="nowrap"
-                          overflow="hidden"
-                        >
-                          {user?.name}
-                        </Box>
-                        <Box
-                          textOverflow="ellipsis"
-                          whiteSpace="nowrap"
-                          overflow="hidden"
-                        >
-                          {user?.surname}
-                        </Box>
-                        <Box>{user.position}</Box>
-                        <Box>{user.role}</Box>
-                        <Box>
-                          <Link
-                            href={`mailto:${user?.email}`}
-                            color="blue.500"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {user?.email}
-                          </Link>
-                        </Box>
-                        <Box>
-                          <Link
-                            href={`tel:${user.phone_number}`}
-                            color="blue.500"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {user.phone_number}
-                          </Link>
-                        </Box>
-                        <Box>{user.rate?.standard_rate || ''}</Box>
-                        <Box>{user.rate?.compensation_rate || ''}</Box>
-                        <Box>{user.rate?.overtime_hour1 || ''}</Box>
-                        <Box>{user.rate?.overtime_hour2 || ''}</Box>
-                        <Box>{user.rate?.overtime_hour3 || ''}</Box>
-                        <Box>{user.rate?.overtime_hour4 || ''}</Box>
-                        <Box>
-                          <Button
-                            colorScheme="orange"
-                            size="sm"
-                            isDisabled={user.invitation && user.is_active}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              sendInvitation(
-                                user.id,
-                                user.name,
-                                user.email,
-                                user.invitation != null && !user.is_active,
-                              );
-                            }}
-                          >
-                            {user.invitation && user.is_active
-                              ? 'Joined'
-                              : !user.invitation && !user.is_active
-                                ? 'Send invitation'
-                                : 'Resend invitation'}
-                          </Button>
-                        </Box>
-                        {crewList.userRoleInProject === 'ADMIN' && (
-                          <Box>
-                            <IconButton
-                              aria-label="Remove record"
-                              icon={<DeleteIcon />}
-                              colorScheme="red"
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleRemoveButtonClick(user.id);
-                              }}
-                            />
-                          </Box>
-                        )}
-                      </Box>
-                    ))}
-                  </AccordionPanel>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </Box>
-        </Box> */}
-
-        {/* ACCORDION WITHOUT MAIN HEADER */}
-        {/* <Box overflowX="auto" h="100%" whiteSpace="nowrap" px="32px">
-          <Box
-            mb={8}
-            borderWidth="2px"
-            borderRadius="lg"
-            boxShadow="md"
-            bg="white"
-          >
-            <TableContainer>
-              <Table variant="simple" size="sm" sx={{ tableLayout: 'auto' }}>
+              <Table variant="simple" size="sm">
+                <Thead>
+                  <Tr bg="#2D3748" textColor="white">
+                    <Th textColor="white">Name</Th>
+                    <Th textColor="white">Surname</Th>
+                    <Th textColor="white">Position</Th>
+                    <Th textColor="white">Role</Th>
+                    <Th textColor="white">Email</Th>
+                    <Th textColor="white">Phone number</Th>
+                    <Th textColor="white">Standard rate</Th>
+                    <TooltipHeader label="Compensation rate" textColor="white">
+                      Compensation
+                    </TooltipHeader>
+                    <TooltipHeader label="Overtime hour1" textColor="white">
+                      OH 1
+                    </TooltipHeader>
+                    <TooltipHeader label="Overtime hour2" textColor="white">
+                      OH 2
+                    </TooltipHeader>
+                    <TooltipHeader label="Overtime hour3" textColor="white">
+                      OH 3
+                    </TooltipHeader>
+                    <TooltipHeader label="Overtime hour4" textColor="white">
+                      OH 4
+                    </TooltipHeader>
+                    <Th textColor="white">Invitation</Th>
+                    <Th textColor="white">Delete</Th>
+                  </Tr>
+                </Thead>
                 <Tbody>
-                  {Object.keys(groupedByDepartment).map((departmentName) => (
-                    <Accordion allowMultiple key={departmentName}>
-                      <AccordionItem>
-                        <Tr>
-                          <Td colSpan={14} p={0}>
-                            <AccordionButton>
-                              <Box
-                                flex="1"
-                                textAlign="left"
-                                fontWeight="bold"
-                                fontSize="md"
-                              >
-                                {departmentName}
-                              </Box>
-                              <AccordionIcon />
-                            </AccordionButton>
+                  {sortedDepartments.map((departmentName) => {
+                    return (
+                      <>
+                        <Tr key={departmentName} bg={'gray.200'}>
+                          <Td
+                            colSpan={14}
+                            textColor="#2D3748"
+                            textTransform="uppercase"
+                            fontWeight="bold"
+                          >
+                            {departmentName}
                           </Td>
                         </Tr>
-                        <AccordionPanel px={0} pb={4}>
-                          <Tr bg="#2D3748" textColor="white">
-                            <Th textColor={'white'}>Name</Th>
-                            <Th textColor={'white'}>Surname</Th>
-                            <Th textColor={'white'}>Position</Th>
-                            <Th textColor={'white'}>Role</Th>
-                            <Th textColor={'white'}>Email</Th>
-                            <Th textColor={'white'}>Phone number</Th>
-                            <Th textColor={'white'}>Standard rate</Th>
-                            <Th textColor={'white'}>Compensation</Th>
-                            <Th textColor={'white'}>OH 1</Th>
-                            <Th textColor={'white'}>OH 2</Th>
-                            <Th textColor={'white'}>OH 3</Th>
-                            <Th textColor={'white'}>OH 4</Th>
-                            <Th textColor={'white'}>Invitation</Th>
-                            {crewList.userRoleInProject === 'ADMIN' && (
-                              <Th>Delete</Th>
-                            )}
-                          </Tr>
-                          {groupedByDepartment[departmentName].map((user) => (
-                            <Tr
-                              key={user.id}
-                              onClick={() => handleEditMemberClick(user)}
-                              _hover={{
-                                cursor: 'pointer',
-                                backgroundColor: 'gray.100',
-                              }}
-                            >
-                              <Td>{user?.name}</Td>
-                              <Td>{user?.surname}</Td>
-                              <Td>{user.position}</Td>
-                              <Td>{user.role}</Td>
-                              <Td>
-                                <Link
-                                  href={`mailto:${user?.email}`}
-                                  color="blue.500"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  {user?.email}
-                                </Link>
-                              </Td>
-                              <Td>
-                                <Link
-                                  href={`tel:${user.phone_number}`}
-                                  color="blue.500"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  {user.phone_number}
-                                </Link>
-                              </Td>
-                              <Td>{user.rate?.standard_rate || ''}</Td>
-                              <Td>{user.rate?.compensation_rate || ''}</Td>
-                              <Td>{user.rate?.overtime_hour1 || ''}</Td>
-                              <Td>{user.rate?.overtime_hour2 || ''}</Td>
-                              <Td>{user.rate?.overtime_hour3 || ''}</Td>
-                              <Td>{user.rate?.overtime_hour4 || ''}</Td>
-                              <Td>
-                                <Button
-                                  colorScheme="orange"
-                                  size="sm"
-                                  isDisabled={user.invitation && user.is_active}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    sendInvitation(
-                                      user.id,
-                                      user.name,
-                                      user.email,
-                                      user.invitation != null &&
-                                        !user.is_active,
-                                    );
-                                  }}
-                                >
-                                  {user.invitation && user.is_active
-                                    ? 'Joined'
-                                    : !user.invitation && !user.is_active
-                                      ? 'Send invitation'
-                                      : 'Resend invitation'}
-                                </Button>
-                              </Td>
-                              {crewList.userRoleInProject === 'ADMIN' && (
-                                <Td>
-                                  <IconButton
-                                    aria-label="Remove record"
-                                    icon={<DeleteIcon />}
-                                    colorScheme="red"
-                                    size="sm"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleRemoveButtonClick(user.id);
-                                    }}
-                                  />
-                                </Td>
-                              )}
-                            </Tr>
-                          ))}
-                        </AccordionPanel>
-                      </AccordionItem>
-                    </Accordion>
-                  ))}
-                </Tbody>
-              </Table>
-            </TableContainer>
-          </Box>
-        </Box> */}
-
-        {/* ONE TABLE WITHOUT DEPARTMENTS DIST */}
-        {/* <Box
-          overflowX="auto"
-          h="100%"
-          whiteSpace="nowrap"
-          px="32px"
-          sx={{
-            '::-webkit-scrollbar': {
-              display: 'block',
-            },
-          }}
-        >
-          <Box
-            mb={8}
-            borderWidth="2px"
-            borderRadius="lg"
-            boxShadow="md"
-            bg="white"
-          >
-            <TableContainer>
-              <Box
-                overflowX="auto"
-                sx={{
-                  '::-webkit-scrollbar': {
-                    height: '12px',
-                  },
-                  '::-webkit-scrollbar-track': {
-                    background: '#2D3748',
-                  },
-                  '::-webkit-scrollbar-thumb': {
-                    background: '#888',
-                    borderRadius: '6px',
-                  },
-                  '::-webkit-scrollbar-thumb:hover': {
-                    background: '#555',
-                  },
-                  scrollbarWidth: 'thin',
-                  scrollbarColor: '#2D3748 white',
-                }}
-              >
-                <Table variant="simple" size="sm" sx={{ tableLayout: 'auto' }}>
-                  <Thead>
-                    <Tr
-                      bg="#2D3748"
-                      textColor="white"
-                      borderTopLeftRadius="lg"
-                      borderTopRightRadius="lg"
-                    >
-                      <Th textColor="white" borderTopLeftRadius="lg" p={4}>
-                        Name
-                      </Th>
-                      <Th textColor="white" p={4}>
-                        Surname
-                      </Th>
-                      <Th textColor="white" p={4}>
-                        Position
-                      </Th>
-                      <Th textColor="white" p={4}>
-                        Role
-                      </Th>
-                      <Th textColor="white" p={4}>
-                        Email
-                      </Th>
-                      <Th textColor="white" p={4}>
-                        Phone number
-                      </Th>
-                      <Th textColor="white" p={4}>
-                        Standard rate
-                      </Th>
-                      <TooltipHeader
-                        label="Compensation rate"
-                        textColor="white"
-                      >
-                        Compensation
-                      </TooltipHeader>
-                      <TooltipHeader label="Overtime hour1" textColor="white">
-                        OH 1
-                      </TooltipHeader>
-                      <TooltipHeader label="Overtime hour2" textColor="white">
-                        OH 2
-                      </TooltipHeader>
-                      <TooltipHeader label="Overtime hour3" textColor="white">
-                        OH 3
-                      </TooltipHeader>
-                      <TooltipHeader label="Overtime hour4" textColor="white">
-                        OH 4
-                      </TooltipHeader>
-                      <Th textColor="white" p={4}>
-                        Invitation
-                      </Th>
-                      {crewList.userRoleInProject === 'ADMIN' && (
-                        <Th textColor="white" borderTopRightRadius="lg" p={4}>
-                          Delete
-                        </Th>
-                      )}
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {crewList.projectUsers.map((user: ProjectUser) => (
-                      <Tr
-                        key={user.id}
-                        onClick={() => handleEditMemberClick(user)}
-                        _hover={{
-                          cursor: 'pointer',
-                          backgroundColor: 'gray.100',
-                        }}
-                      >
-                        <Td>{user?.name}</Td>
-                        <Td>{user?.surname}</Td>
-                        <Td>{user.position}</Td>
-                        <Td>{user.role}</Td>
-                        <Td>
-                          <Link
-                            href={`mailto:${user?.email}`}
-                            color="blue.500"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {user?.email}
-                          </Link>
-                        </Td>
-                        <Td>
-                          <Link
-                            href={`tel:${user.phone_number}`}
-                            color="blue.500"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <TextPhoneNumber phoneNumber={user.phone_number} />
-                          </Link>
-                        </Td>
-                        <Td>
-                          {user.rate?.standard_rate !== 0
-                            ? user.rate?.standard_rate
-                            : ''}
-                        </Td>
-                        <Td>
-                          {user.rate?.compensation_rate !== 0
-                            ? user.rate?.compensation_rate
-                            : ''}
-                        </Td>
-                        <Td>
-                          {user.rate?.overtime_hour1 !== 0
-                            ? user.rate?.overtime_hour1
-                            : ''}
-                        </Td>
-                        <Td>
-                          {user.rate?.overtime_hour2 !== 0
-                            ? user.rate?.overtime_hour2
-                            : ''}
-                        </Td>
-                        <Td>
-                          {user.rate?.overtime_hour3 !== 0
-                            ? user.rate?.overtime_hour3
-                            : ''}
-                        </Td>
-                        <Td>
-                          {user.rate?.overtime_hour4 !== 0
-                            ? user.rate?.overtime_hour4
-                            : ''}
-                        </Td>
-                        <Td>
-                          <Button
-                            colorScheme="orange"
-                            size={'sm'}
-                            isDisabled={
-                              user.invitation != null && user.is_active
-                            }
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (user.invitation == null && !user.is_active) {
-                                sendInvitation(
-                                  user.id,
-                                  user?.name,
-                                  user?.email,
-                                  false,
-                                );
-                              } else if (
-                                user.invitation != null &&
-                                !user.is_active
-                              ) {
-                                sendInvitation(
-                                  user.id,
-                                  user?.name,
-                                  user?.email,
-                                  true,
-                                );
-                              }
-                            }}
-                          >
-                            {user.invitation != null && user.is_active
-                              ? 'Joined'
-                              : user.invitation == null && !user.is_active
-                                ? 'Send invitation'
-                                : 'Resend invitation'}
-                          </Button>
-                        </Td>
-                        {crewList.userRoleInProject === 'ADMIN' &&
-                          user.user?.id !== auth.user?.id && (
-                            <Td>
-                              <IconButton
-                                aria-label="Remove record"
-                                icon={<DeleteIcon />}
-                                colorScheme="red"
-                                size={'sm'}
-                                onClick={(e) => {
-                                  e.stopPropagation(); // prevent row click
-                                  handleRemoveButtonClick(user.id);
-                                }}
-                              />
-                            </Td>
-                          )}
-                      </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-              </Box>
-            </TableContainer>
-          </Box>
-        </Box> */}
-
-        <Box
-          overflowX="auto"
-          h="100%"
-          whiteSpace="nowrap"
-          px="32px"
-          sx={{
-            '::-webkit-scrollbar': {
-              display: 'block',
-            },
-          }}
-        >
-          {/* ALL DEPARTMENTS TABLE */}
-          {crewList.userRoleInProject === 'ADMIN' && (
-            <Box
-              mb={8}
-              borderWidth="2px"
-              borderRadius="lg"
-              boxShadow="md"
-              bg="white"
-            >
-              <Box
-                display="flex"
-                alignItems="center"
-                bg="#2D3748"
-                p={2}
-                borderTopRadius="lg"
-                cursor="pointer"
-                onClick={() => setIsAllUsersCollapsed(!isAllUsersCollapsed)}
-              >
-                <Box display="flex" alignItems="center">
-                  <ChevronDownIcon
-                    transform={
-                      isAllUsersCollapsed ? 'rotate(180deg)' : 'rotate(0deg)'
-                    }
-                    transition="transform 0.3s"
-                    color="white"
-                    mr={2}
-                  />
-                  <Box fontWeight="bold" fontSize="xl" textColor="white">
-                    All Departments
-                  </Box>
-                </Box>
-              </Box>
-              <Collapse in={!isAllUsersCollapsed} animateOpacity>
-                <TableContainer className="custom-scrollbar">
-                  <Box
-                    overflowX="auto"
-                    sx={{
-                      '::-webkit-scrollbar': {
-                        height: '12px',
-                      },
-                      '::-webkit-scrollbar-track': {
-                        background: '#2D3748',
-                      },
-                      '::-webkit-scrollbar-thumb': {
-                        background: '#888',
-                        borderRadius: '6px',
-                      },
-                      '::-webkit-scrollbar-thumb:hover': {
-                        background: '#555',
-                      },
-                      scrollbarWidth: 'thin',
-                      scrollbarColor: '#2D3748 white',
-                    }}
-                  >
-                    <Table variant="simple" size="sm">
-                      <Thead>
-                        <Tr bg="#2D3748" textColor="white">
-                          <Th textColor={'white'}>Name</Th>
-                          <Th textColor={'white'}>Surname</Th>
-                          <Th textColor={'white'}>Position</Th>
-                          <Th textColor={'white'}>Role</Th>
-                          <Th textColor={'white'}>Email</Th>
-                          <Th textColor={'white'}>Phone number</Th>
-                          <Th textColor={'white'}>Standard rate</Th>
-                          <TooltipHeader
-                            label="Compensation rate"
-                            textColor="white"
-                          >
-                            Compensation
-                          </TooltipHeader>
-                          <TooltipHeader
-                            label="Overtime hour1"
-                            textColor="white"
-                          >
-                            OH 1
-                          </TooltipHeader>
-                          <TooltipHeader
-                            label="Overtime hour2"
-                            textColor="white"
-                          >
-                            OH 2
-                          </TooltipHeader>
-                          <TooltipHeader
-                            label="Overtime hour3"
-                            textColor="white"
-                          >
-                            OH 3
-                          </TooltipHeader>
-                          <TooltipHeader
-                            label="Overtime hour4"
-                            textColor="white"
-                          >
-                            OH 4
-                          </TooltipHeader>
-                          <Th textColor={'white'}>Invitation</Th>
-                          {crewList.userRoleInProject === 'ADMIN' && (
-                            <Th textColor={'white'}>Delete</Th>
-                          )}
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {crewList.projectUsers.map((user: ProjectUser) => (
-                          <Tr
-                            key={user.id}
-                            onClick={() =>
-                              handleEditMemberClick({
-                                id: user.id,
-                                name: user?.name,
-                                surname: user?.surname,
-                                department:
-                                  user.department?.id || 'No Department',
-                                position: user.position,
-                                phone_number: user.phone_number,
-                                email: user?.email,
-                                standard_rate: user.rate?.standard_rate || 0,
-                                compensation_rate:
-                                  user.rate?.compensation_rate || 0,
-                                overtime_hour1: user.rate?.overtime_hour1 || 0,
-                                overtime_hour2: user.rate?.overtime_hour2 || 0,
-                                overtime_hour3: user.rate?.overtime_hour3 || 0,
-                                overtime_hour4: user.rate?.overtime_hour4 || 0,
-                                role: user.role,
-                                user_id: user.user?.id,
-                                rate_id: user.rate?.id || null,
-                              })
-                            }
-                            _hover={{
-                              cursor: 'pointer',
-                              backgroundColor: 'gray.100',
-                            }}
-                          >
-                            <Td>{user?.name}</Td>
-                            <Td>{user?.surname}</Td>
-                            <Td>{user.position}</Td>
-                            <Td>{user.role}</Td>
-                            <Td>
-                              <Link
-                                href={`mailto:${user?.email}`}
-                                color="blue.500"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                }}
-                              >
-                                {user?.email}
-                              </Link>
-                            </Td>
-                            <Td>
-                              <Link
-                                href={`tel:${user.phone_number}`}
-                                color="blue.500"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                }}
-                              >
-                                <TextPhoneNumber
-                                  phoneNumber={user.phone_number}
-                                ></TextPhoneNumber>
-                              </Link>
-                            </Td>
-                            <Td>
-                              {user.rate?.standard_rate !== 0
-                                ? user.rate?.standard_rate
-                                : ''}
-                            </Td>
-                            <Td>
-                              {user.rate?.compensation_rate !== 0
-                                ? user.rate?.compensation_rate
-                                : ''}
-                            </Td>
-                            <Td>
-                              {user.rate?.overtime_hour1 !== 0
-                                ? user.rate?.overtime_hour1
-                                : ''}
-                            </Td>
-                            <Td>
-                              {user.rate?.overtime_hour2 !== 0
-                                ? user.rate?.overtime_hour2
-                                : ''}
-                            </Td>
-                            <Td>
-                              {user.rate?.overtime_hour3 !== 0
-                                ? user.rate?.overtime_hour3
-                                : ''}
-                            </Td>
-                            <Td>
-                              {user.rate?.overtime_hour4 !== 0
-                                ? user.rate?.overtime_hour4
-                                : ''}
-                            </Td>
-                            <Td>
-                              <Button
-                                colorScheme="orange"
-                                size={'sm'}
-                                isDisabled={
-                                  user.invitation != null && user.is_active
-                                }
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (
-                                    user.invitation == null &&
-                                    !user.is_active
-                                  ) {
-                                    sendInvitation(
-                                      user.id,
-                                      user?.name,
-                                      user?.email,
-                                      false,
-                                    );
-                                  } else if (
-                                    user.invitation != null &&
-                                    !user.is_active
-                                  ) {
-                                    sendInvitation(
-                                      user.id,
-                                      user?.name,
-                                      user?.email,
-                                      true,
-                                    );
-                                  }
-                                }}
-                              >
-                                {user.invitation != null && user.is_active
-                                  ? 'Joined'
-                                  : user.invitation == null && !user.is_active
-                                    ? 'Send invitation'
-                                    : 'Resend invitation'}
-                              </Button>
-                            </Td>
-                            {crewList.userRoleInProject === 'ADMIN' &&
-                              user.user?.id !== auth.user?.id && (
-                                <Td>
-                                  <IconButton
-                                    aria-label="Remove record"
-                                    icon={<DeleteIcon />}
-                                    colorScheme="red"
-                                    size={'sm'}
-                                    onClick={(e) => {
-                                      e.stopPropagation(); // prevent row click
-                                      handleRemoveButtonClick(user.id);
-                                    }}
-                                  />
-                                </Td>
-                              )}
-                          </Tr>
-                        ))}
-                      </Tbody>
-                    </Table>
-                  </Box>
-                </TableContainer>
-              </Collapse>
-            </Box>
-          )}
-          {sortedDepartments.map((departmentName) => (
-            <Box
-              key={departmentName}
-              mb={8}
-              borderWidth="2px"
-              borderRadius="lg"
-              boxShadow="md"
-              bg="white"
-            >
-              <Box
-                display="flex"
-                alignItems="center"
-                bg="#2D3748"
-                p={2}
-                borderTopRadius="lg"
-                cursor="pointer"
-                onClick={() => toggleDepartmentCollapse(departmentName)}
-              >
-                <Box display="flex" alignItems="center">
-                  <ChevronDownIcon
-                    transform={
-                      collapsedDepartments[departmentName]
-                        ? 'rotate(0deg)'
-                        : 'rotate(180deg)'
-                    }
-                    transition="transform 0.3s"
-                    color="white"
-                    mr={2}
-                  />
-                  <Box fontWeight="bold" fontSize="xl" textColor="white">
-                    {departmentName}
-                  </Box>
-                </Box>
-              </Box>
-              <Collapse
-                in={!collapsedDepartments[departmentName]}
-                animateOpacity
-              >
-                <TableContainer className="custom-scrollbar">
-                  <Box
-                    ref={(el) => (tableRefs.current[departmentName] = el)}
-                    overflowX="auto"
-                    sx={{
-                      '::-webkit-scrollbar': {
-                        height: '12px',
-                      },
-                      '::-webkit-scrollbar-track': {
-                        background: '#2D3748',
-                      },
-                      '::-webkit-scrollbar-thumb': {
-                        background: '#888',
-                        borderRadius: '6px',
-                      },
-                      '::-webkit-scrollbar-thumb:hover': {
-                        background: '#555',
-                      },
-                      scrollbarWidth: 'thin',
-                      scrollbarColor: '#2D3748 white',
-                    }}
-                  >
-                    <Table variant="simple" size="sm">
-                      <Thead>
-                        <Tr bg="#2D3748" textColor="white">
-                          <Th textColor={'white'}>Name</Th>
-                          <Th textColor={'white'}>Surname</Th>
-                          <Th textColor={'white'}>Position</Th>
-                          <Th textColor={'white'}>Role</Th>
-                          <Th textColor={'white'}>Email</Th>
-                          <Th textColor={'white'}>Phone number</Th>
-                          <Th textColor={'white'}>Standard rate</Th>
-                          <TooltipHeader
-                            label="Compensation rate"
-                            textColor="white"
-                          >
-                            Compensation
-                          </TooltipHeader>
-                          <TooltipHeader
-                            label="Overtime hour1"
-                            textColor="white"
-                          >
-                            OH 1
-                          </TooltipHeader>
-                          <TooltipHeader
-                            label="Overtime hour2"
-                            textColor="white"
-                          >
-                            OH 2
-                          </TooltipHeader>
-                          <TooltipHeader
-                            label="Overtime hour3"
-                            textColor="white"
-                          >
-                            OH 3
-                          </TooltipHeader>
-                          <TooltipHeader
-                            label="Overtime hour4"
-                            textColor="white"
-                          >
-                            OH 4
-                          </TooltipHeader>
-                          <Th textColor={'white'}>Invitation</Th>
-                          {/*redo to remove gap if we keep this after table change */}
-                          {crewList.userRoleInProject === 'ADMIN' && (
-                            <Th textColor={'white'}>Delete</Th>
-                          )}
-                        </Tr>
-                      </Thead>
-                      <Tbody>
                         {groupedByDepartment[departmentName].map(
                           (user: ProjectUser) => (
                             <Tr
@@ -1451,7 +501,7 @@ export function CrewListPage() {
                               }
                               _hover={{
                                 cursor: 'pointer',
-                                backgroundColor: 'gray.100',
+                                backgroundColor: 'gray.200',
                               }}
                             >
                               <Td>{user?.name}</Td>
@@ -1462,9 +512,7 @@ export function CrewListPage() {
                                 <Link
                                   href={`mailto:${user?.email}`}
                                   color="blue.500"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                  }}
+                                  onClick={(e) => e.stopPropagation()}
                                 >
                                   {user?.email}
                                 </Link>
@@ -1473,9 +521,7 @@ export function CrewListPage() {
                                 <Link
                                   href={`tel:${user.phone_number}`}
                                   color="blue.500"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                  }}
+                                  onClick={(e) => e.stopPropagation()}
                                 >
                                   <TextPhoneNumber
                                     phoneNumber={user.phone_number}
@@ -1551,32 +597,32 @@ export function CrewListPage() {
                                       : 'Resend invitation'}
                                 </Button>
                               </Td>
-                              {crewList.userRoleInProject === 'ADMIN' &&
-                                user.user?.id !== auth.user?.id && (
-                                  <Td>
+
+                              <Td>
+                                {crewList.userRoleInProject === 'ADMIN' &&
+                                  user.user?.id !== auth.user?.id && (
                                     <IconButton
                                       aria-label="Remove record"
                                       icon={<DeleteIcon />}
                                       colorScheme="red"
                                       size={'sm'}
                                       onClick={(e) => {
-                                        e.stopPropagation(); // prevent row click
+                                        e.stopPropagation();
                                         handleRemoveButtonClick(user.id);
                                       }}
                                     />
-                                  </Td>
-                                )}
+                                  )}
+                              </Td>
                             </Tr>
                           ),
                         )}
-                      </Tbody>
-                    </Table>
-                  </Box>
-                </TableContainer>
-              </Collapse>
+                      </>
+                    );
+                  })}
+                </Tbody>
+              </Table>
             </Box>
-          ))}
-          ;
+          </TableContainer>
         </Box>
       </Box>
       <Footer />
