@@ -43,6 +43,13 @@
       "when": 1731071182615,
       "tag": "0005_flaky_firebird",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1731688294746,
+      "tag": "0006_jittery_charles_xavier",
+      "breakpoints": true
     }
   ]
 }

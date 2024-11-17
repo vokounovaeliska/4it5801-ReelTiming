@@ -1,6 +1,7 @@
 import {
   boolean,
   date,
+  datetime,
   int,
   mysqlTable,
   timestamp,
@@ -136,8 +137,8 @@ export const statement = mysqlTable('statement', {
       onDelete: 'cascade',
     }),
   start_date: date('start_date').notNull(),
-  from: timestamp('from').notNull(),
-  to: timestamp('to').notNull(),
+  from: datetime('from').notNull(),
+  to: datetime('to').notNull(),
   shift_lenght: int('shift_lenght').notNull(),
   calculated_overtime: int('calculated_overtime'),
   claimed_overtime: int('claimed_overtime'),

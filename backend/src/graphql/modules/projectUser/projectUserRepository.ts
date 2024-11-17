@@ -1,5 +1,5 @@
 import { and, eq } from 'drizzle-orm';
-import { project, project_user } from '@backend/db/schema';
+import { project, project_user, user } from '@backend/db/schema';
 import { type Db } from '@backend/types/types';
 
 export function getProjectUserRepository(db: Db) {
@@ -100,6 +100,26 @@ export function getProjectUserRepository(db: Db) {
           invitation: token,
         })
         .where(and(eq(project_user.id, id)));
+    },
+    async getProjectUserDetails(userId: string, projectId: string) {
+      const projectUserRecord = await db
+        .select({
+          projectUserId: project_user.id,
+          userId: project_user.user_id,
+          projectId: project_user.project_id,
+          userName: user.name,
+          userSurname: user.surname,
+          userEmail: user.email,
+        })
+        .from(project_user)
+        .innerJoin(user, eq(project_user.user_id, user.id))
+        .where(
+          and(
+            eq(project_user.user_id, userId),
+            eq(project_user.project_id, projectId),
+          ),
+        );
+      return projectUserRecord.length > 0 ? projectUserRecord[0] : null;
     },
   };
 }

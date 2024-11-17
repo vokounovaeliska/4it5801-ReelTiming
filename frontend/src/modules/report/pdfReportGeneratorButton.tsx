@@ -22,7 +22,7 @@ const PdfReportGeneratorButton = ({
     try {
       // Make the request to the backend API
       const response = await fetch(
-        `http://localhost:4000/generate-pdf?projectUserId=${encodeURIComponent(
+        `https://dev-backend-team04-vse.handson.pro=${encodeURIComponent(
           projectUserId,
         )}&startDate=${encodeURIComponent(
           startDate,
