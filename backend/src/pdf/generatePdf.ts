@@ -129,6 +129,12 @@ export async function generatePdf(
   );
   const doc = new PDFDocument({ size: 'A4', margin: 20 });
 
+  const fontPath = path.join(__dirname, 'fonts', 'DejaVuSans.ttf');
+  const boldFontPath = path.join(__dirname, 'fonts', 'DejaVuSans-Bold.ttf');
+  doc.registerFont('DejaVuSans', fontPath);
+  doc.registerFont('DejaVuSans-Bold', boldFontPath);
+  doc.font('DejaVuSans');
+
   doc.pipe(fs.createWriteStream(filePath));
 
   // Add logo
@@ -142,17 +148,17 @@ export async function generatePdf(
     .moveDown(1)
     .fontSize(13)
 
-    .font('Helvetica-Bold')
+    .font('DejaVuSans-Bold')
     .text(`Project: `, { align: 'left', continued: true })
-    .font('Helvetica')
+    .font('DejaVuSans')
     .text(` ${crewInfo.project.name}`)
     .moveDown(0.2)
 
     .fontSize(10)
 
-    .font('Helvetica-Bold')
+    .font('DejaVuSans-Bold')
     .text(`Department: `, { align: 'left', continued: true })
-    .font('Helvetica')
+    .font('DejaVuSans')
     .text(` ${crewInfo.department.name}`, { continued: true })
 
     .fontSize(9)
@@ -169,9 +175,9 @@ export async function generatePdf(
 
     .fontSize(10)
 
-    .font('Helvetica-Bold')
+    .font('DejaVuSans-Bold')
     .text(`Name: `, { align: 'left', continued: true })
-    .font('Helvetica')
+    .font('DejaVuSans')
     .text(`${crewInfo.projectUser.name} ${crewInfo.projectUser.surname}`, {
       continued: true,
     })
@@ -186,15 +192,15 @@ export async function generatePdf(
     .moveDown(0.2)
 
     .fontSize(10)
-    .font('Helvetica-Bold')
+    .font('DejaVuSans-Bold')
     .text(`Email: `, { align: 'left', continued: true })
-    .font('Helvetica')
+    .font('DejaVuSans')
     .text(`${crewInfo.projectUser.email}`)
     .moveDown(0.2)
 
-    .font('Helvetica-Bold')
+    .font('DejaVuSans-Bold')
     .text(`Phone: `, { align: 'left', continued: true })
-    .font('Helvetica')
+    .font('DejaVuSans')
     .text(`${formatPhoneNumber(crewInfo.projectUser.phone_number)}`)
 
     .moveDown(1);
@@ -308,13 +314,13 @@ export async function generatePdf(
   doc
     .moveDown(1)
     .fontSize(10)
-    .font('Helvetica-Bold')
+    .font('DejaVuSans-Bold')
     .text(`Total Overtime: `, { align: 'left', continued: true })
-    .font('Helvetica')
+    .font('DejaVuSans')
     .text(`${totalOvertime} hours`)
-    .font('Helvetica-Bold')
+    .font('DejaVuSans-Bold')
     .text('Total Overtime Amount: ', { align: 'left', continued: true })
-    .font('Helvetica')
+    .font('DejaVuSans')
     .text(`${formatAmount(totalOvertimeAmount)} CZK`);
 
   doc.end();

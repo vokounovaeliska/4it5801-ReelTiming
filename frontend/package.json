@@ -18,26 +18,32 @@
     "graphql-watch": "graphql-codegen --watch",
     "preview": "vite preview",
     "postinstall": "yarn chakra-cli tokens src/shared/design-system/theme/index.ts",
-
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@chakra-ui/icons": "^2.0.0",
     "@apollo/client": "^3.11.8",
+    "@chakra-ui/icons": "^2.0.0",
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@hookform/resolvers": "~3.9.0",
+    "@types/react-select": "^5.0.1",
     "apollo-upload-client": "^18.0.1",
     "cross-fetch": "^4.0.0",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "framer-motion": "^11.5.4",
     "graphql-tag": "^2.12.6",
+    "install": "^0.13.0",
+    "luxon": "^3.5.0",
+    "npm": "^10.9.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.0",
     "react-icons": "^5.3.0",
     "react-router-dom": "6.26.2",
+    "react-select": "^5.8.3",
     "zod": "^3.22.5"
   },
   "devDependencies": {
@@ -52,16 +58,16 @@
     "@testing-library/react": "^16.0.1",
     "@testing-library/user-event": "^14.5.1",
     "@types/apollo-upload-client": "^18.0.0",
+    "@types/luxon": "^3.4.2",
     "@types/node": "^20.16.5",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.0.4",
     "jsdom": "^25.0.0",
     "node-fetch": "^3.3.2",
+    "prettier": "^3.3.3",
     "vite": "^5.4.4",
-    "vitest": "^1.6.0",
-
-    "prettier": "^3.3.3"
+    "vitest": "^1.6.0"
   },
   "browserslist": {
     "production": [

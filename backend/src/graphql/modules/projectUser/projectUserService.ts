@@ -265,4 +265,7 @@ export class ProjectUserService {
     });
     return true;
   }
+  async getProjectUserDetails(userId: string, projectId: string) {
+    return this.projectUserRepository.getProjectUserDetails(userId, projectId);
+  }
 }

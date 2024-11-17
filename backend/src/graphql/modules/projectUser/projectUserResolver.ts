@@ -216,4 +216,39 @@ export class ProjectUserResolver {
     const projectUserService = new ProjectUserService(db);
     return projectUserService.deleteInvitation(projectUserId);
   }
+  @Query(() => ProjectUser, { nullable: true })
+  async projectUserDetails(
+    @Arg('userId') userId: string,
+    @Arg('projectId') projectId: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<ProjectUser | null> {
+    const projectUserService = new ProjectUserService(db);
+    const projectUserDetails = await projectUserService.getProjectUserDetails(
+      userId,
+      projectId,
+    );
+    if (!projectUserDetails) {
+      return null;
+    }
+    return {
+      id: projectUserDetails.projectUserId,
+      project_id: projectUserDetails.projectId,
+      user_id: projectUserDetails.userId,
+      name: projectUserDetails.userName,
+      surname: projectUserDetails.userSurname,
+      email: projectUserDetails.userEmail,
+      is_team_leader: false,
+      rate_id: null,
+      department_id: null,
+      // role: projectUserDetails.role,
+      invitation: null,
+      phone_number: null,
+      position: null,
+      create_date: new Date(),
+      create_user_id: '',
+      last_update_user_id: '',
+      last_update_date: new Date(),
+      is_active: true,
+    };
+  }
 }

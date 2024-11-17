@@ -59,8 +59,8 @@ const RecentCrewMembers: React.FC<RecentCrewMembersProps> = ({
   return (
     <>
       <Text>Recently added crew members</Text>
-      <Box overflowX="scroll">
-        <Table variant="simple" mb={4} size={{ base: 'sm', md: 'md' }}>
+      <Box overflowX="hidden">
+        <Table variant="simple" size={{ base: 'sm', md: 'md' }}>
           <Thead>
             <Tr>
               <Th>Name</Th>

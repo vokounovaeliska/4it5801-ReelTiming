@@ -121,6 +121,7 @@ type Query {
   getStatementsByDateRangeAndProjectUserId(endDate: DateTimeISO!, projectUserId: String!, startDate: DateTimeISO!): [Statement!]!
   project(id: String!): Project
   projectUser(id: String!): ProjectUser
+  projectUserDetails(projectId: String!, userId: String!): ProjectUser
   projectUsers(projectId: String!): [ProjectUser!]!
   projectUsersByToken(token: String!): ProjectUser!
   project_users: [ProjectUser!]!

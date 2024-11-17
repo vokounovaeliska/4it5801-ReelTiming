@@ -15,6 +15,7 @@ interface CustomModalProps {
   title: string;
   children: React.ReactNode;
   footerButtons?: React.ReactNode;
+  size?: string;
 }
 
 const CustomModal: React.FC<CustomModalProps> = ({
@@ -23,9 +24,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
   title,
   children,
   footerButtons,
+  size = '5xl',
 }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size={'5xl'}>
+    <Modal isOpen={isOpen} onClose={onClose} size={size}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{title}</ModalHeader>
