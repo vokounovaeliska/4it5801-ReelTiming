@@ -4,6 +4,7 @@ import { CustomContext } from '../../../types/types';
 
 import { ProjectService } from './projectService';
 import { Project, ProjectInput } from './projectType';
+import { convertToLocalTime } from '@backend/utils/helpers';
 
 @Resolver(() => Project)
 export class ProjectResolver {
@@ -36,8 +37,8 @@ export class ProjectResolver {
       name,
       production_company: productionCompany,
       description,
-      start_date: startDate,
-      end_date: endDate,
+      start_date: convertToLocalTime(startDate),
+      end_date: convertToLocalTime(endDate),
     };
     return projectService.createProject(data);
   }
@@ -58,6 +59,11 @@ export class ProjectResolver {
     @Ctx() { db }: CustomContext,
   ): Promise<Project | null> {
     const projectService = new ProjectService(db);
-    return projectService.updateProject(id, data);
+    var convertedData = {
+      ...data,
+      start_date: data.start_date ? convertToLocalTime(data.start_date) : null,
+      end_date: data.end_date ? convertToLocalTime(data.end_date) : null,
+    } as ProjectInput;
+    return projectService.updateProject(id, convertedData);
   }
 }

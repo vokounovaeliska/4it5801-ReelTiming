@@ -12,6 +12,7 @@ import { Statement, StatementInput } from './statementType';
 import { StatementService } from './statementService';
 import { ProjectUser } from '../projectUser/projectUserType';
 import { ProjectUserService } from '../projectUser/projectUserService';
+import { convertToLocalTime } from '@backend/utils/helpers';
 
 @Resolver(() => Statement)
 export class StatementResolver {
@@ -75,8 +76,8 @@ export class StatementResolver {
   ): Promise<Statement[]> {
     const statementService = new StatementService(db);
     return statementService.getStatementsByDateRangeAndProjectUserId(
-      startDate,
-      endDate,
+      convertToLocalTime(startDate),
+      convertToLocalTime(endDate),
       projectUserId,
     );
   }
@@ -97,9 +98,9 @@ export class StatementResolver {
     const statementService = new StatementService(db);
     const data: StatementInput = {
       project_user_id,
-      start_date,
-      from,
-      to,
+      start_date: convertToLocalTime(start_date),
+      from: convertToLocalTime(from),
+      to: convertToLocalTime(to),
       shift_lenght,
       calculated_overtime,
       claimed_overtime,
@@ -114,7 +115,13 @@ export class StatementResolver {
     @Ctx() { db }: CustomContext,
   ): Promise<Statement | null> {
     const statementService = new StatementService(db);
-    return statementService.updateStatement(id, data);
+    const convertedData = {
+      ...data,
+      start_date: convertToLocalTime(data.start_date),
+      from: convertToLocalTime(data.from),
+      to: convertToLocalTime(data.to),
+    } as StatementInput;
+    return statementService.updateStatement(id, convertedData);
   }
 
   @Mutation(() => Boolean)

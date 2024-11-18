@@ -35,3 +35,9 @@ export const getPublicStorageFilePath = ({
       .join('/')}`,
   };
 };
+
+export const convertToLocalTime = (utcTime: Date): Date => {
+  var offset = utcTime.getTimezoneOffset();
+  var localTimestamp = utcTime.getTime() - offset * 60000;
+  return new Date(localTimestamp);
+};
