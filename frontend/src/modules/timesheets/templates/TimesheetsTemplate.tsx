@@ -1,8 +1,8 @@
-import React from 'react';
-import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
+import React, { useState } from 'react';
+import { DeleteIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Flex,
+  Button,
   Heading,
   IconButton,
   Input,
@@ -12,8 +12,8 @@ import {
   Th,
   Thead,
   Tr,
-  VStack,
 } from '@chakra-ui/react';
+import { MdAddChart, MdFilterAlt } from 'react-icons/md';
 import Select from 'react-select';
 
 import PdfReportGeneratorButton from '@frontend/modules/report/pdfReportGeneratorButton';
@@ -36,40 +36,30 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
   projectUserId,
   authUser,
 }) => {
+  const [showFilters, setShowFilters] = useState(true);
+
   return (
     <Box flex="1" p={4} width="100%" maxWidth="1200px" mx="auto">
-      <Heading mb={4} textAlign="center">
-        Timesheets for Project {projectName}
-      </Heading>
-      <Box textAlign="center" mb={4}>
-        <VStack spacing={3}>
-          <IconButton
-            aria-label="Add statement"
-            colorScheme="orange"
-            bgColor={'orange.500'}
-            onClick={handleAddClick}
-            size="lg"
-            icon={<AddIcon />}
-            borderRadius="full"
-            boxShadow="md"
-            _hover={{
-              bg: 'orange.500',
-              color: 'white',
-              transform: 'scale(1.2)',
-            }}
-            transition="all 0.3s ease"
-          />
-          <Box fontSize="sm">Add Statement</Box>
-          <PdfReportGeneratorButton
-            projectUserId={projectUserId}
-            startDate={startDate}
-            endDate={endDate}
-            authUser={authUser}
-          />
-        </VStack>
+      <Box justifyItems={{ base: 'center', sm: 'flex-start' }}>
+        <Heading mb={4} textAlign="center">
+          Timesheets for Project {projectName}
+        </Heading>
+        <Button
+          variant="ghost"
+          colorScheme="orange"
+          leftIcon={<MdFilterAlt />}
+          onClick={() => setShowFilters((prev) => !prev)}
+        >
+          {showFilters ? 'Hide filters' : 'Show filters'}
+        </Button>
       </Box>
-      <Flex justify="start" mb={4}>
-        <VStack spacing={3} align="flex-start" width="100%">
+      {showFilters && (
+        <Box
+          display={{ base: 'grid', sm: 'flex' }}
+          justifyItems={{ base: 'center', sm: 'flex-start' }}
+          gap="4"
+          p="4"
+        >
           <Input
             type="date"
             placeholder="Start Date"
@@ -101,9 +91,43 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
               }}
             />
           )}
-        </VStack>
-      </Flex>
-      <Table variant="simple">
+        </Box>
+      )}
+      <Box
+        display={{ base: 'grid', sm: 'flex' }}
+        justifyContent={{ base: 'center', sm: 'space-between' }}
+        textAlign="center"
+        alignItems="flex-end"
+        mb={4}
+      >
+        <Box display="grid" fontSize="sm">
+          <Button
+            aria-label="Add statement"
+            colorScheme="orange"
+            bgColor="orange.500"
+            onClick={handleAddClick}
+            size="md"
+            leftIcon={<MdAddChart />}
+            borderRadius="full"
+            boxShadow="md"
+            _hover={{
+              bg: 'orange.500',
+              color: 'white',
+              transform: 'scale(1.2)',
+            }}
+            transition="all 0.3s ease"
+          >
+            Add Statement
+          </Button>
+        </Box>
+        <PdfReportGeneratorButton
+          projectUserId={projectUserId}
+          startDate={startDate}
+          endDate={endDate}
+          authUserId={authUser.id}
+        />
+      </Box>
+      <Table variant="simple" size="sm">
         <Thead>
           <Tr>
             <Th>User</Th>

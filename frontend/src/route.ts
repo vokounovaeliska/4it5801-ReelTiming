@@ -19,6 +19,4 @@ export const route = {
     `/projects/${projectId}/edit`,
   acceptInvitation: () => `/accept-invitation`,
   profileSettings: '/profile-settings',
-  generatePdfDemo: (projectId: string = ':projectId') =>
-    `/projects/${projectId}/pdf-generate`,
 };

@@ -1,18 +1,20 @@
 import { useState } from 'react';
-import { Button, Spinner } from '@chakra-ui/react';
+import { Box, Button, Spinner } from '@chakra-ui/react';
+
+import { config } from '@frontend/config';
 
 type PdfReportGeneratorProps = {
   projectUserId: string;
   startDate: string;
   endDate: string;
-  authUser: string;
+  authUserId: string;
 };
 
 const PdfReportGeneratorButton = ({
   projectUserId,
   startDate,
   endDate,
-  authUser,
+  authUserId,
 }: PdfReportGeneratorProps) => {
   const [loading, setLoading] = useState(false);
 
@@ -20,15 +22,19 @@ const PdfReportGeneratorButton = ({
     setLoading(true);
 
     try {
-      // Make the request to the backend API
+      const apiUrl = config.BACKEND_APP_PDF_API;
+      if (!apiUrl) {
+        console.error('error: `BACKEND_APP_PDF_API` env variable not defined');
+        process.exit(1);
+      }
       const response = await fetch(
-        `https://dev-backend-team04-vse.handson.pro=${encodeURIComponent(
+        `${apiUrl}?projectUserId=${encodeURIComponent(
           projectUserId,
         )}&startDate=${encodeURIComponent(
           startDate,
         )}&endDate=${encodeURIComponent(
           endDate,
-        )}&userId=${encodeURIComponent(authUser)}`,
+        )}&userId=${encodeURIComponent(authUserId)}`,
         {
           method: 'GET',
         },
@@ -56,16 +62,19 @@ const PdfReportGeneratorButton = ({
 
   return (
     <>
-      <Button
-        colorScheme="orange"
-        type="submit"
-        mt="4"
-        isLoading={loading}
-        isDisabled={loading}
-        onClick={handleGeneratePdf}
-      >
-        {loading ? <Spinner size="sm" /> : 'Generate PDF'}
-      </Button>
+      <Box alignItems="center">
+        <Button
+          colorScheme="orange"
+          type="submit"
+          variant="outline"
+          mt="4"
+          isLoading={loading}
+          isDisabled={loading}
+          onClick={handleGeneratePdf}
+        >
+          {loading ? <Spinner size="sm" /> : 'Generate PDF'}
+        </Button>
+      </Box>
     </>
   );
 };

@@ -39,6 +39,8 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
   const { handleSubmit, control, setValue } = useForm<TimesheetFormValues>({
     defaultValues: {
       ...initialValues,
+      from: formatTime(initialValues.from) || '',
+      to: formatTime(initialValues.to) || '',
       start_date:
         initialValues?.start_date || toLocalISOString(new Date()).split('T')[0],
       shift_lenght: initialValues.shift_lenght || 10,
