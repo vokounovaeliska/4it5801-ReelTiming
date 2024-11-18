@@ -60,19 +60,13 @@ export function EditProjectPage() {
     );
   }
 
-  const alterDateHours = (date: Date) => {
-    var alteredDate = new Date(date);
-    alteredDate.setHours(alteredDate.getHours() + 1);
-    return alteredDate.toISOString();
-  };
-
   const userRole = roleData.userRoleInProject;
   const userId = auth.user.id;
 
   const handleEditProject = async (data: FormValues) => {
     console.log(`Updating project info for project id: #${projectId}`);
-    var startDate = alterDateHours(data.startDate);
-    var endDate = data.endDate ? alterDateHours(data.endDate) : null;
+    var startDate = data.startDate;
+    var endDate = data.endDate ?? null;
 
     try {
       await editproject({

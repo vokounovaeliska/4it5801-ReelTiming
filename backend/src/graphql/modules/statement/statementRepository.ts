@@ -75,7 +75,6 @@ export function getStatementRepository(db: Db) {
     async updateStatement(
       id: string,
       data: Partial<{
-        project_user_id?: string;
         start_date?: Date;
         from?: Date;
         to?: Date;
