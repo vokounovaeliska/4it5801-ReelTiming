@@ -28,11 +28,16 @@ const RecentCrewMembers: React.FC<RecentCrewMembersProps> = ({
 }) => {
   const { loading, error, data } = useQuery(GET_CREWLIST_INFO, {
     variables: { projectId, userId },
+    fetchPolicy: 'cache-and-network',
   });
 
-  if (loading) return <p>Loading...</p>;
+  const isDataAvailable = !!data && Object.keys(data).length > 0;
+
+  if (!isDataAvailable && loading) {
+    return <p>Loading...</p>;
+  }
+
   if (error) {
-    console.error('Error loading crew members:', error);
     return <p>Error: {error.message}</p>;
   }
 

@@ -15,9 +15,14 @@ const CrewMemberCount: React.FC<CrewMemberCountProps> = ({
 }) => {
   const { loading, error, data } = useQuery(GET_CREWLIST_INFO, {
     variables: { projectId, userId },
+    fetchPolicy: 'cache-and-network',
   });
 
-  if (loading) return <Spinner size="lg" />;
+  const isDataAvailable = !!data && Object.keys(data).length > 0;
+
+  if (!isDataAvailable && loading) {
+    return <Spinner size="lg" />;
+  }
 
   if (error) {
     return (

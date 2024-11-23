@@ -1,8 +1,19 @@
-import fs from 'fs';
 import path from 'path';
 import PDFDocument from 'pdfkit-table';
-import { CrewInfoPdf, DateRange, StatementPdf } from './pdfTypes';
-import { format } from 'date-fns';
+import {
+  CrewInfoPdf,
+  DateRange,
+  StatementPdf,
+} from './timesheetPdfReportTypes';
+import {
+  calculateOvertimeAmount,
+  formatAmount,
+  formatDate,
+  formatPhoneNumber,
+  formatStatementTime,
+  formatTime,
+} from '../utils/timesheetReportUtils';
+import { Stream } from 'stream';
 
 interface Rect {
   x: number;
@@ -12,134 +23,34 @@ interface Rect {
 }
 
 /**
- * Calculates the overtime payment amount based on the provided statement.
- * @param statement - The statement object containing overtime and rate details.
- * @returns The overtime payment amount.
- */
-function calculateOvertimeAmount(
-  statement: StatementPdf & { rate: CrewInfoPdf['rate'] },
-): number {
-  let overtime = statement.claimed_overtime;
-  let totalOvertimeAmount = 0;
-
-  if (overtime > 0) {
-    totalOvertimeAmount += statement.rate.overtime_hour1;
-    overtime -= 1;
-  }
-  if (overtime > 0) {
-    totalOvertimeAmount += statement.rate.overtime_hour2;
-    overtime -= 1;
-  }
-  if (overtime > 0) {
-    totalOvertimeAmount += statement.rate.overtime_hour3;
-    overtime -= 1;
-  }
-  if (overtime > 0) {
-    totalOvertimeAmount += statement.rate.overtime_hour4 * overtime;
-  }
-
-  return totalOvertimeAmount;
-}
-
-/**
- * Formats the given date into a string (HH:mm).
- * @param date - The date object to format.
- * @returns The formatted time string.
- */
-function formatTime(date: Date): string {
-  const hours = date.getHours().toString().padStart(2, '0');
-  const minutes = date.getMinutes().toString().padStart(2, '0');
-  return `${hours}:${minutes}`;
-}
-
-/**
- * Formats the given date into a string (DD.MM.YYYY).
- * @param date - The date object to format.
- * @returns The formatted date string.
- */
-function formatDate(date: Date): string {
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-based
-  const year = date.getFullYear().toString();
-  return `${day}.${month}.${year}`;
-}
-
-function formatPhoneNumber(phoneNumber: string): string {
-  const cleaned = phoneNumber.replace(/\D/g, '');
-  if (cleaned.length === 9) {
-    const formatted = `+420 ${cleaned.slice(0, 3)} ${cleaned.slice(
-      3,
-      6,
-    )} ${cleaned.slice(6, 9)}`;
-    return formatted;
-  } else if (cleaned.length === 12 && cleaned.startsWith('420')) {
-    const formatted = `+420 ${cleaned.slice(3, 6)} ${cleaned.slice(
-      6,
-      9,
-    )} ${cleaned.slice(9, 12)} ${cleaned.slice(12, 13)}`;
-    return formatted;
-  } else if (cleaned.length === 13 && cleaned.startsWith('+420')) {
-    const formatted = cleaned.replace(
-      /^\+420(\d{3})(\d{3})(\d{3})$/,
-      '+420 $1 $2 $3',
-    );
-    return formatted;
-  }
-  // Return the original phone number if it doesn't match expected format
-  return phoneNumber;
-}
-
-function formatAmount(amount: number): string {
-  return new Intl.NumberFormat('cs-CZ', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount);
-}
-
-/**
  * Generates a PDF file containing crew information and timesheet for the specified date range.
  * @param dateRange - The date range for the timesheet report.
  * @param crewInfo - The crew information to include in the PDF.
  * @param statements - The list of statements to include in the PDF.
  * @returns The file path of the generated PDF.
  */
-export async function generatePdf(
+export async function timesheetPdfReport(
   dateRange: DateRange,
   crewInfo: CrewInfoPdf,
   statements: StatementPdf[],
-): Promise<string> {
-  const outputDirectory = path.join(__dirname, 'output');
-  if (!fs.existsSync(outputDirectory)) {
-    fs.mkdirSync(outputDirectory, { recursive: true });
-  }
-
-  const formattedDate =
-    format(dateRange.start_date, 'dd-MM-yyyy') +
-    '_' +
-    format(dateRange.end_date, 'dd-MM-yyyy');
-  const sanitizedCrewName =
-    `${crewInfo.projectUser.name}_${crewInfo.projectUser.surname}`
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-zA-Z0-9_]/g, '_');
-
-  const filePath = path.join(
-    outputDirectory,
-    `${formattedDate}_${sanitizedCrewName}_timesheet_report.pdf`,
-  );
+): Promise<Stream> {
   const doc = new PDFDocument({ size: 'A4', margin: 20 });
+  // Prepare a stream to return
+  const stream = new Stream.PassThrough();
+  doc.pipe(stream);
 
-  const fontPath = path.join(__dirname, 'fonts', 'DejaVuSans.ttf');
-  const boldFontPath = path.join(__dirname, 'fonts', 'DejaVuSans-Bold.ttf');
+  const fontPath = path.join(__dirname, '../../assets/fonts/DejaVuSans.ttf');
+  const boldFontPath = path.join(
+    __dirname,
+    '../../assets/fonts/DejaVuSans-Bold.ttf',
+  );
   doc.registerFont('DejaVuSans', fontPath);
   doc.registerFont('DejaVuSans-Bold', boldFontPath);
   doc.font('DejaVuSans');
 
-  doc.pipe(fs.createWriteStream(filePath));
-
   // Add logo
   const logoWidth = 130;
-  doc.image(path.join(__dirname, 'logo.png'), 445, doc.y, {
+  doc.image(path.join(__dirname, '../../assets/logo.png'), 445, doc.y, {
     fit: [logoWidth, logoWidth],
   });
 
@@ -284,8 +195,8 @@ export async function generatePdf(
       ...statement,
       rate: crewInfo.rate,
     });
-    const formattedFrom = formatTime(new Date(statement.from));
-    const formattedTo = formatTime(new Date(statement.to));
+    const formattedFrom = formatStatementTime(new Date(statement.from));
+    const formattedTo = formatStatementTime(new Date(statement.to));
 
     table.rows.push([
       formatDate(new Date(statement.start_date)),
@@ -324,6 +235,5 @@ export async function generatePdf(
     .text(`${formatAmount(totalOvertimeAmount)} CZK`);
 
   doc.end();
-  console.log(`PDF generated at: ${filePath}`);
-  return filePath;
+  return stream;
 }

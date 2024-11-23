@@ -1,10 +1,14 @@
 import { Statement } from '@backend/graphql/modules/statement/statementType';
-import { generatePdf } from './generatePdf';
+import { timesheetPdfReport } from './timesheetPdfReport';
 import { ProjectUser } from '@backend/graphql/modules/projectUser/projectUserType';
 import { Rate } from '@backend/graphql/modules/rate/rateType';
 import { Project } from '@backend/graphql/modules/project/projectType';
 import { Department } from '@backend/graphql/modules/department/departmentType';
-import { CrewInfoPdf, DateRange, StatementPdf } from './pdfTypes';
+import {
+  CrewInfoPdf,
+  DateRange,
+  StatementPdf,
+} from './timesheetPdfReportTypes';
 import { ProjectService } from '@backend/graphql/modules/project/projectService';
 import { StatementService } from '@backend/graphql/modules/statement/statementService';
 import { RateService } from '@backend/graphql/modules/rate/rateService';
@@ -12,8 +16,9 @@ import { ProjectUserService } from '@backend/graphql/modules/projectUser/project
 import { DepartmentService } from '@backend/graphql/modules/department/departmentService';
 import { ReportService } from '@backend/graphql/modules/report/reportService';
 import { Db } from '@backend/types/types';
+import { Stream } from 'stream';
 
-export class PdfGeneratorService {
+export class timesheetPdfGeneratorService {
   private statementService: StatementService;
   private rateService: RateService;
   private projectService: ProjectService;
@@ -34,8 +39,7 @@ export class PdfGeneratorService {
     projectUserId: string,
     startDate: Date,
     endDate: Date,
-    userId: string,
-  ): Promise<string> {
+  ): Promise<Stream> {
     try {
       if (!projectUserId || !startDate || !endDate) {
         console.error('Missing parameters');
@@ -109,20 +113,9 @@ export class PdfGeneratorService {
       };
 
       // Generate PDF
-      const filePath = await generatePdf(dateRange, crewInfo, statementList);
+      const file = await timesheetPdfReport(dateRange, crewInfo, statementList);
 
-      //Save path to DB
-      this.reportService.createReport({
-        path: filePath,
-        project_user_id: projectUserId,
-        name: 'Time sheet report',
-        start_date: startDate,
-        end_date: endDate,
-        create_date: new Date(),
-        create_user_id: userId,
-      });
-
-      return filePath;
+      return file;
     } catch (error) {
       console.error('Error fetching statements:', error);
       throw error;

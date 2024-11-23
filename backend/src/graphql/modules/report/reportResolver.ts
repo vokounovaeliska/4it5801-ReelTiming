@@ -16,6 +16,21 @@ import { Project } from '../project/projectType';
 import { ProjectService } from '../project/projectService';
 import { UserService } from '../user/userService';
 import { User } from '../user/userType';
+import { z } from 'zod';
+
+const reportInputSchema = z.object({
+  project_user_id: z.string().uuid().optional(),
+  project_id: z.string().uuid().optional(),
+  start_date: z.date(),
+  end_date: z.date(),
+  name: z.string().min(1),
+  path: z.string().min(1),
+  create_user_id: z.string().uuid(),
+});
+
+const deleteReportSchema = z.object({
+  id: z.string().uuid(),
+});
 
 @Resolver(() => Report)
 export class ReportResolver {
@@ -85,7 +100,6 @@ export class ReportResolver {
     @Arg('create_user_id') create_user_id: string,
     @Ctx() { db }: CustomContext,
   ): Promise<Report> {
-    const reportService = new ReportService(db);
     const data: ReportInput = {
       project_user_id,
       project_id,
@@ -95,14 +109,17 @@ export class ReportResolver {
       path,
       create_user_id,
     };
-    return reportService.createReport(data);
+    const validatedData = reportInputSchema.parse(data);
+    const reportService = new ReportService(db);
+    return reportService.createReport(validatedData);
   }
   @Mutation(() => Boolean)
   async deleteReport(
     @Arg('id') id: string,
     @Ctx() { db }: CustomContext,
   ): Promise<boolean> {
+    const validatedData = deleteReportSchema.parse({ id });
     const reportService = new ReportService(db);
-    return reportService.deleteReportById(id);
+    return reportService.deleteReportById(validatedData.id);
   }
 }

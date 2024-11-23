@@ -1,40 +1,31 @@
 import { forwardRef } from 'react';
 import { Text, TextProps } from '@chakra-ui/react';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 export type TextPhoneNumberProps = TextProps & {
-  phoneNumber?: string; // Ensure 'string' (lowercase) type
+  phoneNumber?: string;
 };
 
 export const TextPhoneNumber = forwardRef<
   HTMLSpanElement,
   TextPhoneNumberProps
 >(function TextPhoneNumber({ phoneNumber, ...rest }, ref) {
-  const formatCzechPhoneNumber = (number?: string) => {
+  const formatPhoneNumber = (number?: string) => {
     if (!number) return '';
 
-    const cleanedNumber = number.replace(/\D/g, '');
-
-    if (cleanedNumber.length === 9) {
-      return cleanedNumber.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
-    } else if (cleanedNumber.length === 12 && cleanedNumber.startsWith('420')) {
-      return cleanedNumber.replace(
-        /^(420)(\d{3})(\d{3})(\d{3})$/,
-        '+420 $2 $3 $4',
-      );
-    } else if (
-      cleanedNumber.length === 13 &&
-      cleanedNumber.startsWith('+420')
-    ) {
-      return cleanedNumber.replace(
-        /^\+420(\d{3})(\d{3})(\d{3})$/,
-        '+420 $1 $2 $3',
-      );
+    try {
+      const phoneNumber = parsePhoneNumberFromString(number, 'CZ');
+      if (phoneNumber) {
+        return phoneNumber.formatInternational();
+      }
+    } catch (error) {
+      console.error('Error formatting phone number:', error);
     }
 
     return number;
   };
 
-  const formattedPhoneNumber = formatCzechPhoneNumber(phoneNumber);
+  const formattedPhoneNumber = formatPhoneNumber(phoneNumber);
 
   return (
     <Text {...rest} ref={ref}>

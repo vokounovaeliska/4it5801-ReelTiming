@@ -37,9 +37,6 @@ export const useCrewMemberMutations = () => {
 
   const addCrewMember = async (data: CrewMemberData, projectId: string) => {
     try {
-      console.log('addcrewmember');
-      console.log(data);
-      console.log(projectId);
       // Add Rate
       const responseRate = await addRate({
         variables: {
@@ -52,7 +49,6 @@ export const useCrewMemberMutations = () => {
         },
       });
       const rateId = responseRate.data?.addRate?.id;
-
       //  Add Project User
       const responseId = await addProjectUser({
         variables: {

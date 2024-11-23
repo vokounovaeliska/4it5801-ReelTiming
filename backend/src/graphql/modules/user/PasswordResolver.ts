@@ -4,6 +4,16 @@ import { CustomContext } from '@backend/types/types';
 
 import { AuthInfo } from './userType';
 import { PasswordService } from './passwordService';
+import { z } from 'zod';
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email(),
+});
+
+const resetPasswordSchema = z.object({
+  token: z.string().min(1),
+  newPassword: z.string().min(6),
+});
 
 @Resolver()
 export class PasswordResolver {
@@ -12,8 +22,9 @@ export class PasswordResolver {
     @Arg('email') email: string,
     @Ctx() { db }: CustomContext,
   ): Promise<boolean> {
+    const validatedData = forgotPasswordSchema.parse({ email });
     const passwordService = new PasswordService(db);
-    return passwordService.forgotPassword(email);
+    return passwordService.forgotPassword(validatedData.email);
   }
 
   @Mutation(() => AuthInfo)
@@ -22,7 +33,11 @@ export class PasswordResolver {
     @Arg('newPassword') newPassword: string,
     @Ctx() { db }: CustomContext,
   ): Promise<AuthInfo> {
+    const validatedData = resetPasswordSchema.parse({ token, newPassword });
     const passwordService = new PasswordService(db);
-    return passwordService.resetPassword(token, newPassword);
+    return passwordService.resetPassword(
+      validatedData.token,
+      validatedData.newPassword,
+    );
   }
 }

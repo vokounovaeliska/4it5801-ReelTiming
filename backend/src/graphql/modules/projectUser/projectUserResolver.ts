@@ -23,6 +23,42 @@ import { RateService } from '../rate/rateService';
 import { DepartmentService } from '../department/departmentService';
 import { CustomContext } from '../../../types/types';
 import { GraphQLError } from 'graphql';
+import { z } from 'zod';
+
+const projectUserInputSchema = z.object({
+  project_id: z.string().uuid(),
+  user_id: z.union([z.string().uuid(), z.null(), z.undefined()]).optional(),
+  department_id: z.string().uuid().nullable(),
+  position: z.string().nullable(),
+  rate_id: z.string().uuid().nullable(),
+  is_team_leader: z.boolean().default(false),
+  is_active: z.boolean().default(false),
+  role: z.string().nullable(),
+  invitation: z.string().nullable(),
+  phone_number: z.string().nullable(),
+  name: z.string().min(1),
+  surname: z.string().min(1),
+  email: z.string().email(),
+});
+
+const deleteProjectUserSchema = z.object({
+  projectUserId: z.string().uuid(),
+});
+
+const activateProjectUserSchema = z.object({
+  token: z.string().min(1),
+  userId: z.string().uuid(),
+});
+
+const deleteInvitationSchema = z.object({
+  projectUserId: z.string().uuid(),
+});
+
+const inviteUserSchema = z.object({
+  projectUserId: z.string().uuid(),
+  name: z.string().min(1),
+  email: z.string().email(),
+});
 
 @Resolver(() => ProjectUser)
 export class ProjectUserResolver {
@@ -122,7 +158,7 @@ export class ProjectUserResolver {
     @Arg('email') email: string,
     @Ctx() { db }: CustomContext,
   ): Promise<ProjectUser> {
-    const projectUserService = new ProjectUserService(db);
+    // const projectUserService = new ProjectUserService(db);
     const data: CreateProjectUserInput = {
       project_id: projectId,
       user_id: userId,
@@ -137,7 +173,9 @@ export class ProjectUserResolver {
       email,
       position,
     };
-    return projectUserService.createProjectUser(data);
+    const validatedData = projectUserInputSchema.parse(data);
+    const projectUserService = new ProjectUserService(db);
+    return projectUserService.createProjectUser(validatedData);
   }
 
   @Query(() => [Project])
@@ -173,11 +211,16 @@ export class ProjectUserResolver {
     @Arg('email') email: string,
     @Ctx() { db }: CustomContext,
   ): Promise<boolean> {
-    const projectUserService = new ProjectUserService(db);
-    return projectUserService.inviteUserToProject(
+    const validatedData = inviteUserSchema.parse({
       projectUserId,
       name,
       email,
+    });
+    const projectUserService = new ProjectUserService(db);
+    return projectUserService.inviteUserToProject(
+      validatedData.projectUserId,
+      validatedData.name,
+      validatedData.email,
       db,
     );
   }
@@ -187,8 +230,9 @@ export class ProjectUserResolver {
     @Arg('projectUserId') projectUserId: string,
     @Ctx() { db }: CustomContext,
   ): Promise<boolean> {
+    const validatedData = deleteProjectUserSchema.parse({ projectUserId });
     const projectUserService = new ProjectUserService(db);
-    return projectUserService.deleteProjectUserById(projectUserId);
+    return projectUserService.deleteProjectUser(validatedData.projectUserId);
   }
   @Mutation(() => Boolean)
   async activateProjectUser(
@@ -196,8 +240,12 @@ export class ProjectUserResolver {
     @Arg('userId') userId: string,
     @Ctx() { db }: CustomContext,
   ): Promise<boolean> {
+    const validatedData = activateProjectUserSchema.parse({ token, userId });
     const projectUserService = new ProjectUserService(db);
-    return projectUserService.activateProjectUserByToken(token, userId);
+    return projectUserService.activateProjectUserByToken(
+      validatedData.token,
+      validatedData.userId,
+    );
   }
   @Mutation(() => ProjectUser)
   async updateProjectUser(
@@ -205,16 +253,18 @@ export class ProjectUserResolver {
     @Arg('data') data: ProjectUserInput,
     @Ctx() { db }: CustomContext,
   ): Promise<ProjectUser | null> {
+    const validatedData = projectUserInputSchema.parse(data);
     const projectUserService = new ProjectUserService(db);
-    return projectUserService.updateProjectUser(id, data);
+    return projectUserService.updateProjectUser(id, validatedData);
   }
   @Mutation(() => Boolean)
   async deleteInvitation(
     @Arg('projectUserId') projectUserId: string,
     @Ctx() { db }: CustomContext,
   ): Promise<boolean> {
+    const validatedData = deleteInvitationSchema.parse({ projectUserId });
     const projectUserService = new ProjectUserService(db);
-    return projectUserService.deleteInvitation(projectUserId);
+    return projectUserService.deleteInvitation(validatedData.projectUserId);
   }
   @Query(() => ProjectUser, { nullable: true })
   async projectUserDetails(

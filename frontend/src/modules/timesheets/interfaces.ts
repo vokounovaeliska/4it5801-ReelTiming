@@ -41,6 +41,10 @@ export interface UserOption {
   label: string;
 }
 
+export interface UserAuth {
+  id: string;
+}
+
 export interface TimesheetsTemplateProps {
   startDate: string;
   endDate: string;
@@ -61,9 +65,7 @@ export interface TimesheetsTemplateProps {
   userRole: string;
   projectName: string;
   projectUserId: string;
-  // TODO - figure out the type of this
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  authUser: any;
+  authUser: UserAuth;
 }
 
 export interface TimesheetsFormProps {

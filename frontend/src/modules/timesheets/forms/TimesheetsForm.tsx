@@ -14,11 +14,8 @@ import { TimesheetFormValues, TimesheetsFormProps } from '../interfaces';
 import { formatDate, formatTime, toLocalISOString } from '../utils/timeUtils';
 
 export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
-  // projectId,
   initialValues = {
-    // start_date: new Date().toISOString().split('T')[0],
     start_date: toLocalISOString(new Date()).split('T')[0],
-    // end_date: new Date().toISOString().split('T')[0],
     end_date: toLocalISOString(new Date()).split('T')[0],
     shift_lenght: 10,
     from: '',

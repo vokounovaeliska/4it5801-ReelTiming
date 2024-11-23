@@ -4,6 +4,38 @@ import { CustomContext } from '@backend/types/types';
 
 import { AuthInfo, User, UserInput } from '../user/userType';
 import { UserService } from './userService';
+import { z } from 'zod';
+
+const signUpSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+  name: z.string().min(1),
+  surname: z.string().min(1),
+  phone_number: z.string().optional(),
+});
+
+const signInSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+});
+
+const updateUserSchema = z.object({
+  name: z.string().min(1).optional(),
+  surname: z.string().min(1).optional(),
+  email: z.string().email().optional(),
+  phone_number: z.string().optional(),
+});
+
+const addInactiveUserSchema = z.object({
+  name: z.string().min(1),
+  surname: z.string().min(1),
+  email: z.string().email(),
+  phone_number: z.string(),
+});
+
+const deleteUserSchema = z.object({
+  userId: z.string().uuid(),
+});
 
 @Resolver(() => User)
 export class UserResolver {
@@ -28,8 +60,9 @@ export class UserResolver {
     @Arg('password') password: string,
     @Ctx() { db }: CustomContext,
   ): Promise<AuthInfo> {
+    const validatedData = signInSchema.parse({ email, password });
     const userService = new UserService(db);
-    return userService.signIn(email, password);
+    return userService.signIn(validatedData.email, validatedData.password);
   }
 
   @Mutation(() => AuthInfo)
@@ -41,8 +74,18 @@ export class UserResolver {
     @Arg('phone_number', { nullable: true }) phone_number: string,
     @Ctx() { db }: CustomContext,
   ): Promise<AuthInfo> {
+    const validatedData = signUpSchema.parse({
+      email,
+      password,
+      name,
+      surname,
+      phone_number,
+    });
     const userService = new UserService(db);
-    return userService.signUp({ email, password, name, surname, phone_number });
+    return userService.signUp({
+      ...validatedData,
+      phone_number: validatedData.phone_number || '',
+    });
   }
 
   @Mutation(() => Boolean)
@@ -50,8 +93,9 @@ export class UserResolver {
     @Arg('userId') id: string,
     @Ctx() { db }: CustomContext,
   ): Promise<boolean> {
+    const validatedData = deleteUserSchema.parse({ userId: id });
     const userService = new UserService(db);
-    return userService.deleteUser(id);
+    return userService.deleteUser(validatedData.userId);
   }
 
   @Mutation(() => User)
@@ -60,8 +104,9 @@ export class UserResolver {
     @Arg('data') data: UserInput,
     @Ctx() { db }: CustomContext,
   ): Promise<User | null> {
+    const validatedData = updateUserSchema.parse(data);
     const userService = new UserService(db);
-    return userService.updateUser(id, data);
+    return userService.updateUser(id, validatedData);
   }
 
   @Mutation(() => User)
@@ -72,7 +117,13 @@ export class UserResolver {
     @Arg('phone_number') phone_number: string,
     @Ctx() { db }: CustomContext,
   ): Promise<User> {
+    const validatedData = addInactiveUserSchema.parse({
+      name,
+      surname,
+      email,
+      phone_number,
+    });
     const userService = new UserService(db);
-    return userService.addInactiveUser({ name, surname, email, phone_number });
+    return userService.addInactiveUser(validatedData);
   }
 }

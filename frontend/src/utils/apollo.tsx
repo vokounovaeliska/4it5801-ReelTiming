@@ -1,6 +1,6 @@
 import 'cross-fetch/polyfill';
 
-import { ReactNode, useCallback, useMemo } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo } from 'react';
 import {
   ApolloClient,
   ApolloLink,
@@ -11,6 +11,7 @@ import {
 import { NetworkError } from '@apollo/client/errors';
 import { onError } from '@apollo/client/link/error';
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
+import { LocalStorageWrapper, persistCache } from 'apollo3-cache-persist';
 import { GraphQLFormattedError } from 'graphql';
 import { useNavigate } from 'react-router-dom';
 
@@ -52,6 +53,13 @@ export function EnhancedApolloProvider({ children }: Props) {
   });
 
   const cache = useMemo(() => new InMemoryCache(), []);
+
+  useEffect(() => {
+    persistCache({
+      cache,
+      storage: new LocalStorageWrapper(window.localStorage),
+    });
+  }, [cache]);
 
   const client = new ApolloClient({
     link: from([logoutLink, authLink, uploadLink]),

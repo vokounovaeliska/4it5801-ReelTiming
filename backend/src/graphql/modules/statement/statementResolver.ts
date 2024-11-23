@@ -13,6 +13,21 @@ import { StatementService } from './statementService';
 import { ProjectUser } from '../projectUser/projectUserType';
 import { ProjectUserService } from '../projectUser/projectUserService';
 import { convertToLocalTime } from '@backend/utils/helpers';
+import { z } from 'zod';
+
+const statementInputSchema = z.object({
+  project_user_id: z.string().uuid(),
+  start_date: z.date(),
+  from: z.date(),
+  to: z.date(),
+  shift_lenght: z.number().nonnegative(),
+  calculated_overtime: z.number().nonnegative().optional(),
+  claimed_overtime: z.number().nonnegative().optional(),
+});
+
+const deleteStatementSchema = z.object({
+  id: z.string().uuid(),
+});
 
 @Resolver(() => Statement)
 export class StatementResolver {
@@ -95,7 +110,7 @@ export class StatementResolver {
     claimed_overtime: number,
     @Ctx() { db }: CustomContext,
   ): Promise<Statement> {
-    const statementService = new StatementService(db);
+    // const statementService = new StatementService(db);
     const data: StatementInput = {
       project_user_id,
       start_date: convertToLocalTime(start_date),
@@ -105,7 +120,10 @@ export class StatementResolver {
       calculated_overtime,
       claimed_overtime,
     };
-    return statementService.createStatement(data);
+
+    const validatedData = statementInputSchema.parse(data);
+    const statementService = new StatementService(db);
+    return statementService.createStatement(validatedData);
   }
 
   @Mutation(() => Statement)
@@ -114,14 +132,16 @@ export class StatementResolver {
     @Arg('data') data: StatementInput,
     @Ctx() { db }: CustomContext,
   ): Promise<Statement | null> {
-    const statementService = new StatementService(db);
+    // const statementService = new StatementService(db);
     const convertedData = {
       ...data,
       start_date: convertToLocalTime(data.start_date),
       from: convertToLocalTime(data.from),
       to: convertToLocalTime(data.to),
     } as StatementInput;
-    return statementService.updateStatement(id, convertedData);
+    const validatedData = statementInputSchema.parse(convertedData);
+    const statementService = new StatementService(db);
+    return statementService.updateStatement(id, validatedData);
   }
 
   @Mutation(() => Boolean)
@@ -129,7 +149,8 @@ export class StatementResolver {
     @Arg('id') id: string,
     @Ctx() { db }: CustomContext,
   ): Promise<boolean> {
+    const validatedData = deleteStatementSchema.parse({ id });
     const statementService = new StatementService(db);
-    return statementService.deleteStatementById(id);
+    return statementService.deleteStatementById(validatedData.id);
   }
 }

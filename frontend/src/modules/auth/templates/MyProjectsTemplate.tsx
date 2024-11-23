@@ -2,7 +2,6 @@ import React from 'react';
 import { AddIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Button,
   Center,
   Flex,
   Heading,
@@ -13,12 +12,10 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { PiProjectorScreenChart } from 'react-icons/pi';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-import { route } from '@frontend/route';
-import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
-import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
+import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
 export type MyProjectsTemplateProps = {
   projects: { id: string; name: string; description: string }[];
@@ -33,8 +30,6 @@ export function MyProjectsTemplate({
   const border = useColorModeValue('gray.300', 'gray.600');
   const textColor = useColorModeValue('2D3748', 'gray.100');
 
-  const location = useLocation();
-
   return (
     <Box
       display="flex"
@@ -42,34 +37,7 @@ export function MyProjectsTemplate({
       minHeight="100vh"
       bgColor={useColorModeValue('gray.50', 'gray.900')}
     >
-      <Navbar>
-        <Button
-          as={ReactRouterLink}
-          to={route.myprojects()}
-          variant="ghost"
-          colorScheme="orange"
-          textColor="white"
-          aria-label="Button going to My Projects page"
-          bg={
-            location.pathname === route.myprojects()
-              ? 'orange.500'
-              : 'transparent'
-          }
-          color="white"
-          _hover={{
-            bg: 'orange.700',
-            color: 'white',
-            boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.2)',
-          }}
-          _active={{
-            bg: 'orange.500',
-            color: 'white',
-            boxShadow: 'inset 0 0 15px rgba(0, 0, 0, 0.3)',
-          }}
-        >
-          My Projects
-        </Button>
-      </Navbar>
+      <ProjectNavbar projectId={''} userRole={''} />
 
       <Box flex="1" p={{ base: 4, md: 6 }}>
         <Box display="flex" justifyContent="center" alignItems="center" p="6">

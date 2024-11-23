@@ -13,17 +13,13 @@ import {
   Spinner,
   Text,
 } from '@chakra-ui/react';
-import {
-  Link as ReactRouterLink,
-  useLocation,
-  useNavigate,
-  useParams,
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ActionMeta, MultiValue } from 'react-select';
 
 import { ADD_STATEMENT } from '@frontend/gql/mutations/AddStatement';
 import { DELETE_STATEMENT } from '@frontend/gql/mutations/DeleteStatement';
 import { EDIT_STATEMENT } from '@frontend/gql/mutations/EditStatement';
+import { GET_ALL_PROJECT_USERS } from '@frontend/gql/queries/GetAllProjectUsers';
 import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/gql/queries/GetCrewUserInfoTimesheets';
 import {
   GET_ADMIN_STATEMENTS,
@@ -31,15 +27,14 @@ import {
 } from '@frontend/gql/queries/GetStatements';
 import { GET_USER_ROLE_IN_PROJECT } from '@frontend/gql/queries/GetUserRoleInProject';
 import { useAuth } from '@frontend/modules/auth';
-import ProjectButtons from '@frontend/modules/myprojects/ProjectButtons';
 import { route } from '@frontend/route';
 import {
   showErrorToast,
   showSuccessToast,
-} from '@frontend/shared/components/toastUtils';
+} from '@frontend/shared/design-system/molecules/toastUtils';
 import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
-import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
+import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
 import { TimesheetsForm } from '../forms/TimesheetsForm';
 import {
@@ -49,17 +44,11 @@ import {
   UserOption,
 } from '../interfaces';
 import TimesheetsTemplate from '../templates/TimesheetsTemplate';
-import {
-  // formatTimeForDatabase,
-  // formatTimeForDisplay,
-  formatTimeForParsing,
-  toLocalISOString,
-} from '../utils/timeUtils';
+import { formatTimeForParsing, toLocalISOString } from '../utils/timeUtils';
 
 export function TimesheetPage() {
   const auth = useAuth();
   const { projectId } = useParams<{ projectId: string }>();
-  const location = useLocation();
   const navigate = useNavigate();
   const [addStatement] = useMutation(ADD_STATEMENT);
   const [editStatement] = useMutation(EDIT_STATEMENT);
@@ -78,6 +67,7 @@ export function TimesheetPage() {
   } = useQuery(GET_CREWUSERINFO_TIMESHEETS, {
     skip: !auth.user,
     variables: { userId: auth.user?.id, projectId },
+    fetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
       setUserInfo(data.projectUserDetails);
     },
@@ -90,6 +80,7 @@ export function TimesheetPage() {
   } = useQuery(GET_USER_ROLE_IN_PROJECT, {
     skip: !auth.user,
     variables: { userId: auth.user?.id, projectId },
+    fetchPolicy: 'cache-and-network',
   });
 
   const {
@@ -99,6 +90,7 @@ export function TimesheetPage() {
   } = useQuery(GET_CREW_STATEMENTS, {
     skip: !auth.user || roleData?.userRoleInProject !== 'CREW',
     variables: { userId: auth.user?.id },
+    fetchPolicy: 'cache-and-network',
   });
 
   const {
@@ -108,39 +100,49 @@ export function TimesheetPage() {
   } = useQuery(GET_ADMIN_STATEMENTS, {
     skip: !auth.user || roleData?.userRoleInProject !== 'ADMIN',
     variables: { projectId },
+    fetchPolicy: 'cache-and-network',
   });
 
-  const userOptions = Array.from(
-    new Set(
-      adminData?.statementsByProjectId.map(
-        (statement: Timesheet) => statement.projectUser.user.id,
-      ) || [],
-    ),
-  ).map((userId) => {
-    const user = adminData?.statementsByProjectId.find(
-      (statement: Timesheet) => statement.projectUser.user.id === userId,
-    )?.projectUser.user;
-    return {
-      value: user?.id || '',
-      label: `${user?.name} ${user?.surname}`,
-    };
+  const {
+    data: allProjectUsersData,
+    loading: allProjectUsersLoading,
+    error: allProjectUsersError,
+  } = useQuery(GET_ALL_PROJECT_USERS, {
+    variables: { projectId },
+    fetchPolicy: 'cache-and-network',
   });
 
-  const userOptionsForAdminAddTimesheet = Array.from(
-    new Set(
-      adminData?.statementsByProjectId.map(
-        (statement: Timesheet) => statement.projectUser.id,
-      ) || [],
-    ),
-  ).map((projectUserId) => {
-    const projectUser = adminData?.statementsByProjectId.find(
-      (statement: Timesheet) => statement.projectUser.id === projectUserId,
-    )?.projectUser;
-    return {
-      value: projectUser?.id || '',
-      label: `${projectUser?.user.name} ${projectUser?.user.surname}`,
-    };
-  });
+  const userOptions =
+    allProjectUsersData?.projectUsers
+      ?.filter(
+        (projectUser: {
+          user: { id: string; name: string; surname: string };
+        }) => projectUser.user !== null,
+      )
+      .map(
+        (projectUser: {
+          user: { id: string; name: string; surname: string };
+        }) => ({
+          value: projectUser.user.id,
+          label: `${projectUser.user.name} ${projectUser.user.surname}`,
+        }),
+      ) || [];
+
+  const userOptionsForAdminAddTimesheet =
+    allProjectUsersData?.projectUsers
+      ?.filter(
+        (projectUser: {
+          user: { id: string; name: string; surname: string };
+        }) => projectUser.user !== null,
+      )
+      .map(
+        (projectUser: {
+          user: { id: string; name: string; surname: string };
+        }) => ({
+          value: projectUser.user.id,
+          label: `${projectUser.user.name} ${projectUser.user.surname}`,
+        }),
+      ) || [];
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -156,9 +158,7 @@ export function TimesheetPage() {
     const today = new Date();
     const threeDaysAgo = new Date();
     threeDaysAgo.setDate(today.getDate() - 3);
-    // setStartDate(threeDaysAgo.toISOString().split('T')[0]);
     setStartDate(toLocalISOString(threeDaysAgo).split('T')[0]);
-    // setEndDate(today.toISOString().split('T')[0]);
     setEndDate(toLocalISOString(today).split('T')[0]);
   }, []);
 
@@ -252,7 +252,6 @@ export function TimesheetPage() {
         id: data.projectUser.id,
         user: { id: '', name: '', surname: '' },
       },
-      // create_date: selectedTimesheet?.create_date || new Date().toISOString(),
       create_date:
         selectedTimesheet?.create_date || toLocalISOString(new Date()),
       shift_lenght: data.shift_lenght || 0,
@@ -266,17 +265,10 @@ export function TimesheetPage() {
       const formattedToTime = formatTimeForParsing(data.to);
       const variables = {
         project_user_id: data.projectUser.id,
-        // start_date: new Date(data.start_date).toISOString(),
         start_date: toLocalISOString(new Date(data.start_date)),
-        // from: new Date(
-        //   `${data.start_date.split('T')[0]}T${formattedFromTime}`,
-        // ).toISOString(),
         from: toLocalISOString(
           new Date(`${data.start_date.split('T')[0]}T${formattedFromTime}`),
         ),
-        // to: new Date(
-        //   `${data.start_date.split('T')[0]}T${formattedToTime}`,
-        // ).toISOString(),
         to: toLocalISOString(
           new Date(`${data.start_date.split('T')[0]}T${formattedToTime}`),
         ),
@@ -353,16 +345,12 @@ export function TimesheetPage() {
         id: selectedTimesheet?.id || '',
         data: {
           project_user_id: userInfo?.id,
-          // start_date: startDate.toISOString(),
           start_date: toLocalISOString(startDate),
-          // from: fromTime.toISOString(),
           from: toLocalISOString(fromTime),
-          // to: toTime.toISOString(),
           to: toLocalISOString(toTime),
           shift_lenght: Number(data.shift_lenght) || 0,
           calculated_overtime: data.calculated_overtime || 0,
           claimed_overtime: data.claimed_overtime || 0,
-          // last_update_date: toLocalISOString(new Date()),
           last_update_date: toLocalISOString(new Date()),
           last_update_user_id: auth.user?.id,
         },
@@ -413,7 +401,20 @@ export function TimesheetPage() {
     }
   };
 
-  if (roleLoading || crewLoading || adminLoading || userInfoLoading) {
+  const isDataAvailable =
+    roleData?.userRoleInProject &&
+    (crewData?.statementsByUserId || adminData?.statementsByProjectId) &&
+    userInfoData?.projectUserDetails &&
+    allProjectUsersData?.projectUsers;
+
+  if (
+    !isDataAvailable &&
+    (roleLoading ||
+      crewLoading ||
+      adminLoading ||
+      userInfoLoading ||
+      allProjectUsersLoading)
+  ) {
     return (
       <Center minHeight="100vh">
         <Spinner size="xl" color="orange.500" />
@@ -424,17 +425,22 @@ export function TimesheetPage() {
 
   if (
     roleError ||
+    userInfoError ||
     crewError ||
     adminError ||
-    userInfoError ||
-    !auth.user ||
-    !roleData?.userRoleInProject
+    allProjectUsersError ||
+    !auth.user
   ) {
     return (
       <Center minHeight="100vh">
         <Text color="red.500">
           Error loading project details:{' '}
-          {roleError?.message || crewError?.message || adminError?.message}
+          {
+            (roleError?.message,
+            userInfoError?.message,
+            crewError?.message,
+            adminError?.message)
+          }
         </Text>
       </Center>
     );
@@ -469,47 +475,21 @@ export function TimesheetPage() {
 
   const sortedTimesheets = filteredTimesheets.sort(
     (a: Timesheet, b: Timesheet) => {
-      const dateA = new Date(a.create_date).getTime();
-      const dateB = new Date(b.create_date).getTime();
-      return dateB - dateA;
+      const startDateA = new Date(a.start_date).getTime();
+      const startDateB = new Date(b.start_date).getTime();
+
+      if (startDateA !== startDateB) {
+        return startDateB - startDateA;
+      }
+      const createDateA = new Date(a.create_date).getTime();
+      const createDateB = new Date(b.create_date).getTime();
+      return createDateB - createDateA;
     },
   );
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
-      <Navbar>
-        <Button
-          as={ReactRouterLink}
-          to={route.myprojects()}
-          variant="ghost"
-          colorScheme="orange"
-          textColor="white"
-          aria-label="Button going to My Projects page"
-          bg={
-            location.pathname === route.myprojects()
-              ? 'orange.500'
-              : 'transparent'
-          }
-          color="white"
-          _hover={{
-            bg: 'orange.700',
-            color: 'white',
-            boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.2)',
-          }}
-          _active={{
-            bg: 'orange.500',
-            color: 'white',
-            boxShadow: 'inset 0 0 15px rgba(0, 0, 0, 0.3)',
-          }}
-        >
-          My Projects
-        </Button>
-        <ProjectButtons
-          projectId={projectId!}
-          activePath={location.pathname}
-          userRole={userRole}
-        />
-      </Navbar>
+      <ProjectNavbar projectId={projectId!} userRole={userRole} />
       <TimesheetsTemplate
         startDate={startDate}
         endDate={endDate}
@@ -530,7 +510,13 @@ export function TimesheetPage() {
       <CustomModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        title={mode === 'add' ? 'Add Timesheet' : 'Edit Timesheet'}
+        title={
+          mode === 'add'
+            ? 'Add Timesheet for ' +
+              userInfoData.projectUserDetails.project.name
+            : 'Edit Timesheet for ' +
+              userInfoData.projectUserDetails.project.name
+        }
         size="2xl"
       >
         <TimesheetsForm

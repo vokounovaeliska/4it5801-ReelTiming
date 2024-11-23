@@ -16,13 +16,13 @@ import { FaClock, FaUsers } from 'react-icons/fa';
 import { FaCirclePlus } from 'react-icons/fa6';
 import { IoPerson } from 'react-icons/io5';
 import { MdBuild } from 'react-icons/md';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
 import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
-import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
+import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 
 import { GET_PROJECT_DETAILS } from '../../../gql/queries/GetProjectDetails';
@@ -30,7 +30,6 @@ import { GET_USER_ROLE_IN_PROJECT } from '../../../gql/queries/GetUserRoleInProj
 import CrewMemberCount from '../CrewMemberCount';
 import DashboardCostsAdmin from '../DashboardCostsAdmin';
 import DashboardEarningsCrew from '../DashboardEarningsCrew';
-import ProjectButtons from '../ProjectButtons';
 import ProjectTimeline from '../ProjectTimeline';
 import RecentCrewMembers from '../RecentCrewMembers';
 import RecentTimesheets from '../RecentTimesheets';
@@ -38,10 +37,15 @@ import RecentTimesheets from '../RecentTimesheets';
 export function MyProjectDetailPage() {
   const auth = useAuth();
   const { id } = useParams<{ id: string }>();
-  const location = useLocation();
-  const { data, loading, error } = useQuery(GET_PROJECT_DETAILS, {
+  const {
+    data,
+    loading: dataLoading,
+    error,
+  } = useQuery(GET_PROJECT_DETAILS, {
     variables: { id },
+    fetchPolicy: 'cache-and-network',
   });
+
   const {
     data: roleData,
     loading: roleLoading,
@@ -49,33 +53,32 @@ export function MyProjectDetailPage() {
   } = useQuery(GET_USER_ROLE_IN_PROJECT, {
     skip: !auth.user,
     variables: { userId: auth.user?.id, projectId: id },
+    fetchPolicy: 'cache-and-network',
   });
 
-  if (loading || roleLoading) {
+  const isDataAvailable =
+    roleData?.userRoleInProject &&
+    data?.project &&
+    !roleLoading &&
+    !dataLoading &&
+    !roleError &&
+    !error;
+
+  if (!isDataAvailable) {
     return (
       <Center minHeight="100vh">
         <Spinner size="xl" color="orange.500" />
+        <Text ml={4}>Loading project details...</Text>
       </Center>
     );
   }
 
-  if (
-    error ||
-    roleError ||
-    !auth.user ||
-    !data?.project ||
-    !roleData?.userRoleInProject
-  ) {
-    return <NotFoundPage />;
-  }
-
-  if (!id) {
+  if (roleError || error || !auth.user || !data?.project) {
     return <NotFoundPage />;
   }
 
   const project = data.project;
   const userRole = roleData.userRoleInProject;
-  // const editPath = `/projects/${id}/edit`;
 
   return (
     <Box
@@ -84,39 +87,7 @@ export function MyProjectDetailPage() {
       minHeight="100vh"
       bgColor="gray.50"
     >
-      <Navbar>
-        <Button
-          as={ReactRouterLink}
-          to={route.myprojects()}
-          variant="ghost"
-          colorScheme="orange"
-          textColor="white"
-          aria-label="Button going to My Projects page"
-          bg={
-            location.pathname === route.myprojects()
-              ? 'orange.500'
-              : 'transparent'
-          }
-          color="white"
-          _hover={{
-            bg: 'orange.700',
-            color: 'white',
-            boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.2)',
-          }}
-          _active={{
-            bg: 'orange.500',
-            color: 'white',
-            boxShadow: 'inset 0 0 15px rgba(0, 0, 0, 0.3)',
-          }}
-        >
-          My Projects
-        </Button>
-        <ProjectButtons
-          projectId={id}
-          activePath={location.pathname}
-          userRole={userRole}
-        />
-      </Navbar>
+      <ProjectNavbar projectId={id} userRole={userRole} />
       <Box
         flex="1"
         p={{ base: 3, md: 8 }}

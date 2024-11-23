@@ -16,8 +16,9 @@ export function EditProjectPage() {
   const auth = useAuth();
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
-  const { data, loading, error } = useQuery(GET_PROJECT_DETAILS, {
+  const { data } = useQuery(GET_PROJECT_DETAILS, {
     variables: { id: projectId },
+    fetchPolicy: 'cache-and-network',
   });
   const [editproject] = useMutation(EDIT_PROJECT, {
     onCompleted: () => {
@@ -33,9 +34,12 @@ export function EditProjectPage() {
   } = useQuery(GET_USER_ROLE_IN_PROJECT, {
     skip: !auth.user,
     variables: { userId: auth.user?.id, projectId },
+    fetchPolicy: 'cache-and-network',
   });
 
-  if (loading || roleLoading) {
+  const isDataAvailable = !!roleData && Object.keys(roleData).length > 0;
+
+  if (!isDataAvailable && roleLoading) {
     return (
       <Center minHeight="100vh">
         <Spinner size="xl" color="orange.500" />
@@ -44,17 +48,11 @@ export function EditProjectPage() {
     );
   }
 
-  if (
-    error ||
-    roleError ||
-    !auth.user ||
-    !data?.project ||
-    !roleData?.userRoleInProject
-  ) {
+  if (roleError || !auth.user) {
     return (
       <Center minHeight="100vh">
         <Text color="red.500">
-          Error loading project details: {error?.message}
+          Error loading project details: {roleError?.message}
         </Text>
       </Center>
     );
