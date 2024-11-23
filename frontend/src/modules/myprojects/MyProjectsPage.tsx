@@ -17,6 +17,7 @@ export function MyProjectsPage() {
 
   const { data, loading, error, refetch } = useQuery(GET_USER_PROJECTS, {
     variables: { userId: auth.user?.id },
+    fetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {
@@ -25,18 +26,23 @@ export function MyProjectsPage() {
     }
   }, [auth.user, navigate]);
 
-  if (loading) {
+  const isDataAvailable = !!data && Object.keys(data).length > 0;
+
+  if (!isDataAvailable && loading) {
     return (
       <Center minHeight="100vh">
         <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading projects...</Text>
+        <Text ml={4}>Loading project details...</Text>
       </Center>
     );
   }
 
-  if (error && auth.user) {
+  if (error || !auth.user) {
     return (
-      <ErrorMyProjectPage errorMessage={error.message} onRetry={refetch} />
+      <ErrorMyProjectPage
+        errorMessage={error?.message ?? ''}
+        onRetry={refetch}
+      />
     );
   }
 

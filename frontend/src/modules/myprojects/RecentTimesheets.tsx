@@ -58,6 +58,7 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
     data: dataTimesheets,
   } = useQuery(GET_CREW_STATEMENTS, {
     variables: { userId },
+    fetchPolicy: 'cache-and-network',
   });
 
   const {
@@ -66,10 +67,22 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
     data: dataUserInfo,
   } = useQuery(GET_CREWUSERINFO_TIMESHEETS, {
     variables: { userId, projectId },
+    fetchPolicy: 'cache-and-network',
   });
 
-  if (loadingTimesheets || loadingUserInfo) return <Text>Loading...</Text>;
-  if (errorTimesheets || errorUserInfo) return <Text>Error loading data!</Text>;
+  const isDataAvailable =
+    dataTimesheets &&
+    Object.keys(dataTimesheets).length > 0 &&
+    dataUserInfo &&
+    Object.keys(dataUserInfo).length > 0;
+
+  if (!isDataAvailable && (loadingTimesheets || loadingUserInfo)) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (errorTimesheets || errorUserInfo) {
+    return <Text>Error loading data!</Text>;
+  }
 
   const timesheets: Timesheet[] = dataTimesheets?.statementsByUserId || [];
 

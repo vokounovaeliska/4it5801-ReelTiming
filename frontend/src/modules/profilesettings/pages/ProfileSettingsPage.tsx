@@ -27,6 +27,7 @@ const ProfileSettingsPage = () => {
     {
       variables: { userId: user?.id },
       skip: !user,
+      fetchPolicy: 'cache-and-network',
     },
   );
 

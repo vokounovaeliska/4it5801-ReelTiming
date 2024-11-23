@@ -11,10 +11,18 @@ interface ProjectTimelineProps {
 const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ projectId }) => {
   const { data, loading, error } = useQuery(GET_PROJECT_DETAILS, {
     variables: { id: projectId },
+    fetchPolicy: 'cache-and-network',
   });
 
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
+  const isDataAvailable = !!data && Object.keys(data).length > 0;
+
+  if (!isDataAvailable && loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
 
   const project = data?.project;
 
@@ -40,6 +48,23 @@ const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ projectId }) => {
   };
 
   const progressValue = calculateProgress(project.start_date, project.end_date);
+
+  const resolveProgressString = (
+    startDate: string,
+    endDate: string,
+  ): string => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const lenght = Math.floor(
+      (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24),
+    );
+    const elapsedDays = Math.floor(
+      (today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24),
+    );
+    var realElapsed = elapsedDays > lenght ? lenght : elapsedDays;
+
+    return `${realElapsed} / ${lenght} days`;
+  };
 
   // Determine the message to display
   const today = new Date();
@@ -73,13 +98,25 @@ const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ projectId }) => {
         //hasArrow
         placement="top"
       >
-        <Progress
-          colorScheme="orange"
-          height="25px"
-          mt={6}
-          mb={2}
-          value={progressValue}
-        />
+        <Box position="relative" width="100%">
+          <Progress
+            colorScheme="orange"
+            height="25px"
+            mt={6}
+            mb={2}
+            value={progressValue}
+          />
+          <Text
+            position="absolute"
+            top="50%"
+            left="50%"
+            transform="translate(-50%, -50%)"
+            color="black"
+            fontWeight="bold"
+          >
+            {resolveProgressString(project.start_date, project.end_date)}
+          </Text>
+        </Box>
       </Tooltip>
       <HStack justify="space-between">
         <Text>

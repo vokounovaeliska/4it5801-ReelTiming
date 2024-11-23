@@ -36,8 +36,6 @@ export const formatTimeForParsing = (timeString: string): string => {
   return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:00`;
 };
 
-// TODO - figure out a way to change from GB to CZ without breaking the rest of format for date
-// formatTime and formatDate are only used in TimesheetsForm.tsx for now
 export const formatTime = (timeString: string) => {
   if (!timeString) {
     return '';
@@ -45,14 +43,12 @@ export const formatTime = (timeString: string) => {
 
   let timePart;
   if (timeString.includes('T')) {
-    timePart = timeString.split('T')[1].split('.')[0]; // extract time
+    timePart = timeString.split('T')[1].split('.')[0];
   } else {
     timePart = timeString;
   }
 
   const date = new Date(`1970-01-01T${timePart}`);
-
-  // 24-hour format (HH:mm)
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
 
@@ -60,6 +56,5 @@ export const formatTime = (timeString: string) => {
 };
 
 export const formatDate = (dateString: string) => {
-  // return new Date(dateString).toISOString().split('T')[0];
   return toLocalISOString(new Date(dateString)).split('T')[0];
 };

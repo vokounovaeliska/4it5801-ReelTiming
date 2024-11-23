@@ -34,9 +34,8 @@ import { RateResolver } from '@backend/graphql/modules/rate/rateResolver';
 import { PasswordResolver } from '@backend/graphql/modules/user/PasswordResolver';
 import { StatementResolver } from '@backend/graphql/modules/statement/statementResolver';
 import { ReportResolver } from '@backend/graphql/modules/report/reportResolver';
-import { PdfGeneratorService } from './pdf/pdfGeneratorService';
-import fs from 'fs';
-import path from 'path';
+import { timesheetPdfGeneratorService } from './pdf/timesheetReport/timesheetPdfGeneratorService';
+import { z } from 'zod';
 
 const init = async () => {
   const app = express();
@@ -93,66 +92,49 @@ const init = async () => {
 
   app.use(express.json());
 
-  app.use('/generate-pdf', cors<cors.CorsRequest>());
+  const pdfRequestSchema = z.object({
+    projectUserId: z.string().uuid(), // Ensure it's a valid UUID
+    startDate: z.string().refine((date) => !isNaN(new Date(date).getTime()), {
+      message: 'Invalid startDate. Must be a valid date string.',
+    }),
+    endDate: z.string().refine((date) => !isNaN(new Date(date).getTime()), {
+      message: 'Invalid endDate. Must be a valid date string.',
+    }),
+  });
 
-  app.get('/generate-pdf', async (req, res) => {
-    const { projectUserId, startDate, endDate, userId } = req.query;
+  app.use('/generate-timesheet-pdf', cors<cors.CorsRequest>());
 
-    if (!projectUserId || !startDate || !endDate || !userId) {
+  app.get('/generate-timesheet-pdf', async (req, res) => {
+    const { projectUserId, startDate, endDate } = pdfRequestSchema.parse(
+      req.query,
+    );
+
+    if (!projectUserId || !startDate || !endDate) {
       res.status(400).send('Missing parameters');
     }
 
-    const filename = `report_${new Date().toISOString()}.pdf`;
-    res.contentType('application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-
     try {
       const drizzle = await getConnection();
-      const pdfGeneratorService = new PdfGeneratorService(drizzle.db);
 
-      const filePathtemp = await pdfGeneratorService.generatePdfReport(
-        projectUserId as string,
-        new Date(startDate as string),
-        new Date(endDate as string),
-        userId as string,
+      const pdfGeneratorService = new timesheetPdfGeneratorService(drizzle.db);
+      const pdfStream = await pdfGeneratorService.generatePdfReport(
+        projectUserId,
+        new Date(startDate),
+        new Date(endDate),
       );
 
-      const filePath = path.resolve(filePathtemp);
+      const filename = `report_${new Date().toISOString()}.pdf`;
 
-      // Wait until the file is generated, check every 500ms for a maximum of 5 seconds (adjust as needed)
-      let retries = 0;
-      const maxRetries = 10; // max retries (5 seconds)
-      while (retries < maxRetries) {
-        if (fs.existsSync(filePath)) {
-          console.log(`PDF found at: ${filePath}`);
-          break;
-        }
-        retries++;
-        await new Promise((resolve) => setTimeout(resolve, 500));
-      }
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="${filename}"`,
+      );
 
-      if (!fs.existsSync(filePath)) {
-        console.log(filePath);
-        console.error('Error finding the file:', filePath);
-        res.status(404).send('PDF file not found');
-      }
-
-      new Promise((resolve, reject) => {
-        // Stream the PDF file as a download
-        res.download(filePath, filename, (err) => {
-          if (err) {
-            console.error('Error sending the file:', err);
-            res.status(500).send('Error streaming PDF');
-            reject(err);
-          } else {
-            console.log(`PDF successfully sent: ${filePath}`);
-            resolve(res);
-          }
-        });
-      });
+      pdfStream.pipe(res);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      res.status(500).send('Error generating PDF: ' + error);
+      res.status(500).send('Error generating PDF');
     }
   });
 

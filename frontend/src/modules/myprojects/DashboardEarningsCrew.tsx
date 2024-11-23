@@ -24,6 +24,8 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error loading data!</Text>;
 
+  // todo - cache grab
+
   return (
     <>
       <Text fontSize="lg">Total earnings</Text>

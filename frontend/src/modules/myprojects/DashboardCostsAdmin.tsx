@@ -19,10 +19,13 @@ const DashboardCostsAdmin: React.FC<DashboardCostsProps> = ({
 }) => {
   const { loading, error } = useQuery(GET_CREWUSERINFO_TIMESHEETS, {
     variables: { userId, projectId },
+    fetchPolicy: 'cache-and-network',
   });
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error loading data!</Text>;
+
+  // todo - cache
 
   return (
     <>

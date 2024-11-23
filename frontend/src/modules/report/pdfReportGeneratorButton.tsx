@@ -2,19 +2,18 @@ import { useState } from 'react';
 import { Box, Button, Spinner } from '@chakra-ui/react';
 
 import { config } from '@frontend/config';
+import { showErrorToast } from '@frontend/shared/design-system/molecules/toastUtils';
 
 type PdfReportGeneratorProps = {
   projectUserId: string;
   startDate: string;
   endDate: string;
-  authUserId: string;
 };
 
 const PdfReportGeneratorButton = ({
   projectUserId,
   startDate,
   endDate,
-  authUserId,
 }: PdfReportGeneratorProps) => {
   const [loading, setLoading] = useState(false);
 
@@ -32,9 +31,7 @@ const PdfReportGeneratorButton = ({
           projectUserId,
         )}&startDate=${encodeURIComponent(
           startDate,
-        )}&endDate=${encodeURIComponent(
-          endDate,
-        )}&userId=${encodeURIComponent(authUserId)}`,
+        )}&endDate=${encodeURIComponent(endDate)}`,
         {
           method: 'GET',
         },
@@ -54,7 +51,7 @@ const PdfReportGeneratorButton = ({
       document.body.removeChild(link);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('Error generating PDF');
+      showErrorToast(`Error generating PDF`);
     } finally {
       setLoading(false);
     }

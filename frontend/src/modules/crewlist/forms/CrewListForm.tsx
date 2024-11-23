@@ -10,6 +10,7 @@ import {
   SimpleGrid,
   Stack,
 } from '@chakra-ui/react';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { Controller } from 'react-hook-form';
 
 import { ErrorBanner } from '@frontend/shared/design-system';
@@ -26,8 +27,6 @@ export type CrewListFormProps = {
   userRole: 'ADMIN' | 'CREW';
 };
 
-const phoneRegex = /^(\+\d{1,3}[- ]?)?\d{9}$/;
-
 const schema = zod.object({
   name: zod.string().min(1),
   surname: zod.string().min(1),
@@ -36,10 +35,16 @@ const schema = zod.object({
   phone_number: zod
     .string()
     .min(1, { message: 'Phone number is required' })
-    .regex(phoneRegex, {
-      message:
-        'Invalid phone number format. Example: +420607887591 or 420607887591',
-    }),
+    .refine(
+      (val) => {
+        const phoneNumber = parsePhoneNumberFromString(val, 'CZ');
+        return phoneNumber?.isValid() ?? false;
+      },
+      {
+        message:
+          'Invalid phone number format. Example: +420607887591 or 420607887591',
+      },
+    ),
   email: zod.string().email().min(1),
   standard_rate: zod.preprocess(
     (val) => (typeof val === 'string' ? parseFloat(val) : val),
@@ -146,17 +151,12 @@ export function CrewListForm({
               isRequired
               isDisabled={userRole !== 'ADMIN'}
             />
-            <InputField
-              name="email"
-              label="Email"
-              isRequired
-              isDisabled={mode !== 'add'}
-            />
+            <InputField name="email" label="Email" isRequired />
             <InputField name="phone_number" label="Phone number" isRequired />
             <Controller
               name="role"
               render={({ field }) => (
-                <FormControl isRequired>
+                <FormControl isRequired isDisabled={userRole !== 'ADMIN'}>
                   <FormLabel>Role</FormLabel>
                   <Select {...field} borderColor={'gray.400'} borderWidth={1}>
                     <option value="CREW">CREW</option>

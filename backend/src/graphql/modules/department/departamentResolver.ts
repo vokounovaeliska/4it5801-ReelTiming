@@ -6,6 +6,15 @@ import { User } from '../user/userType';
 
 import { Department } from './departmentType';
 import { DepartmentService } from './departmentService';
+import { z } from 'zod';
+
+const departmentInputSchema = z.object({
+  name: z.string().min(1),
+});
+
+const deleteDepartmentSchema = z.object({
+  departmentId: z.string().uuid(),
+});
 
 @Resolver(() => User)
 export class DepartmentResolver {
@@ -29,8 +38,9 @@ export class DepartmentResolver {
     @Arg('departmentId') id: string,
     @Ctx() { db }: CustomContext,
   ): Promise<boolean> {
+    const validatedData = deleteDepartmentSchema.parse({ departmentId: id });
     const departmentService = new DepartmentService(db);
-    return departmentService.deleteDepartment(id);
+    return departmentService.deleteDepartment(validatedData.departmentId);
   }
 
   @Mutation(() => Department)
@@ -38,8 +48,9 @@ export class DepartmentResolver {
     @Arg('name') name: string,
     @Ctx() { db }: CustomContext,
   ): Promise<Department | null> {
+    const validatedData = departmentInputSchema.parse({ name });
     const departmentService = new DepartmentService(db);
-    return departmentService.createDepartment(name);
+    return departmentService.createDepartment(validatedData.name);
   }
 
   @Mutation(() => Department)
@@ -48,7 +59,8 @@ export class DepartmentResolver {
     @Arg('name') name: string,
     @Ctx() { db }: CustomContext,
   ): Promise<Department | null> {
+    const validatedData = departmentInputSchema.parse({ name });
     const departmentService = new DepartmentService(db);
-    return departmentService.updateDepartment(id, name);
+    return departmentService.updateDepartment(id, validatedData.name);
   }
 }
