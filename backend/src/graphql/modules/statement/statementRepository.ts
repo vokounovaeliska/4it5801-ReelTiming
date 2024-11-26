@@ -68,6 +68,8 @@ export function getStatementRepository(db: Db) {
       last_update_date: Date;
       create_user_id: string;
       last_update_user_id: string;
+      car_id?: string | null;
+      kilometers?: number | null;
     }) {
       const result = await db.insert(statement).values(data).$returningId();
       return result[0].id;
@@ -83,6 +85,8 @@ export function getStatementRepository(db: Db) {
         claimed_overtime?: number | null;
         last_update_date?: Date;
         last_update_user_id?: string;
+        car_id?: string | null;
+        kilometers?: number | null;
       }>,
     ) {
       return db.update(statement).set(data).where(eq(statement.id, id));

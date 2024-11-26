@@ -96,6 +96,8 @@ export class StatementService {
       claimed_overtime: data.claimed_overtime ?? null,
       last_update_date: data.last_update_date,
       last_update_user_id: data.last_update_user_id,
+      car_id: data.car_id,
+      kilometers: data.kilometers,
     });
     return this.getStatementById(id);
   }

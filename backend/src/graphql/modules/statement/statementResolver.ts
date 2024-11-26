@@ -14,6 +14,9 @@ import { ProjectUser } from '../projectUser/projectUserType';
 import { ProjectUserService } from '../projectUser/projectUserService';
 import { convertToLocalTime } from '@backend/utils/helpers';
 import { z } from 'zod';
+import { Car } from '../car/carType';
+import { CarService } from '../car/carService';
+import { GraphQLError } from 'graphql';
 
 const statementInputSchema = z.object({
   project_user_id: z.string().uuid(),
@@ -23,6 +26,8 @@ const statementInputSchema = z.object({
   shift_lenght: z.number().nonnegative(),
   calculated_overtime: z.number().nonnegative().optional(),
   claimed_overtime: z.number().nonnegative().optional(),
+  car_id: z.string().nullable(),
+  kilometers: z.number().nonnegative().nullable(),
 });
 
 const deleteStatementSchema = z.object({
@@ -44,6 +49,22 @@ export class StatementResolver {
   ): Promise<ProjectUser | null> {
     const projectUserService = new ProjectUserService(db);
     return projectUserService.getProjectUserById(statement.project_user_id);
+  }
+
+  @FieldResolver(() => Car, { nullable: true })
+  async car(
+    @Root() statement: Statement,
+    @Ctx() { db }: CustomContext,
+  ): Promise<Car | null> {
+    const carService = new CarService(db);
+    try {
+      return await carService.getCarById(statement.car_id!);
+    } catch (error) {
+      if (error instanceof GraphQLError && error.message === 'Car not found') {
+        return null;
+      }
+      throw error;
+    }
   }
 
   @Query(() => Statement, { nullable: true })
@@ -108,6 +129,10 @@ export class StatementResolver {
     calculated_overtime: number,
     @Arg('claimed_overtime', { nullable: true, defaultValue: null })
     claimed_overtime: number,
+    @Arg('kilometers', { nullable: true, defaultValue: null })
+    kilometers: number,
+    @Arg('car_id', { nullable: true, defaultValue: null })
+    car_id: string,
     @Ctx() { db }: CustomContext,
   ): Promise<Statement> {
     // const statementService = new StatementService(db);
@@ -119,6 +144,8 @@ export class StatementResolver {
       shift_lenght,
       calculated_overtime,
       claimed_overtime,
+      car_id,
+      kilometers,
     };
 
     const validatedData = statementInputSchema.parse(data);
@@ -132,12 +159,13 @@ export class StatementResolver {
     @Arg('data') data: StatementInput,
     @Ctx() { db }: CustomContext,
   ): Promise<Statement | null> {
-    // const statementService = new StatementService(db);
     const convertedData = {
       ...data,
       start_date: convertToLocalTime(data.start_date),
       from: convertToLocalTime(data.from),
       to: convertToLocalTime(data.to),
+      car_id: data.car_id || null,
+      kilometers: data.kilometers || null,
     } as StatementInput;
     const validatedData = statementInputSchema.parse(convertedData);
     const statementService = new StatementService(db);

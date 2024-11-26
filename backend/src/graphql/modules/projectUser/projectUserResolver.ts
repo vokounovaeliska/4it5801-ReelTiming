@@ -34,7 +34,7 @@ const projectUserInputSchema = z.object({
   is_team_leader: z.boolean().default(false),
   is_active: z.boolean().default(false),
   role: z.string().nullable(),
-  invitation: z.string().nullable(),
+  invitation: z.string().nullable().optional(),
   phone_number: z.string().nullable(),
   name: z.string().min(1),
   surname: z.string().min(1),

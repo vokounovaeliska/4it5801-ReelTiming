@@ -41,7 +41,14 @@ export function CreateProjectPage() {
       }
 
       try {
-        const { data: projectData } = await addProject({ variables });
+        const updatedVariables = {
+          ...variables,
+          create_user_id: auth.user?.id || '',
+        };
+
+        const { data: projectData } = await addProject({
+          variables: updatedVariables,
+        });
         const projectId = projectData?.addProject?.id;
 
         if (projectId && auth.user) {

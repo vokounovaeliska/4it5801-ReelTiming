@@ -34,8 +34,9 @@ import { RateResolver } from '@backend/graphql/modules/rate/rateResolver';
 import { PasswordResolver } from '@backend/graphql/modules/user/PasswordResolver';
 import { StatementResolver } from '@backend/graphql/modules/statement/statementResolver';
 import { ReportResolver } from '@backend/graphql/modules/report/reportResolver';
-import { timesheetPdfGeneratorService } from './pdf/timesheetReport/timesheetPdfGeneratorService';
+import { timesheetPdfGeneratorService } from '@backend/pdf/timesheetReport/timesheetPdfGeneratorService';
 import { z } from 'zod';
+import { CarResolver } from '@backend/graphql/modules/car/carResolver';
 
 const init = async () => {
   const app = express();
@@ -53,6 +54,7 @@ const init = async () => {
       DepartmentResolver,
       StatementResolver,
       ReportResolver,
+      CarResolver,
     ],
     emitSchemaFile: true,
   });

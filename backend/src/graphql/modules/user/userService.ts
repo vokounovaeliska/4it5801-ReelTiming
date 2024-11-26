@@ -98,6 +98,8 @@ export class UserService {
       create_date: Date;
       last_update_date: Date;
       is_active: boolean;
+      create_user_id: string;
+      last_update_user_id: string;
     }>,
   ) {
     const user = await this.getUserById(id);
@@ -186,45 +188,16 @@ export class UserService {
     };
 
     const userId = await this.userRepository.createUser(newUser);
+    await this.userRepository.updateUser(userId, {
+      ...newUser,
+      create_user_id: userId,
+      last_update_user_id: userId,
+    });
     const token = createToken({ id: userId });
 
     return {
       user: { ...newUser, id: userId },
       token,
-    };
-  }
-
-  /**
-   * Add new crew member - inactive user
-   * @param data - object containing user data
-   */
-  async addInactiveUser(data: {
-    name: string;
-    surname: string;
-    email: string;
-    phone_number: string;
-  }) {
-    const passwordHash = await argon2.hash('default');
-    const currentDate = new Date();
-
-    const newUser = {
-      email: data.email,
-      password: passwordHash,
-      name: data.name,
-      surname: data.surname,
-      phone_number: data.phone_number,
-      create_date: currentDate,
-      create_user_id: 'user-id',
-      last_update_date: currentDate,
-      last_update_user_id: 'user-id',
-      is_active: false,
-    };
-
-    const userId = await this.userRepository.createUser(newUser);
-
-    return {
-      ...newUser,
-      id: userId,
     };
   }
 }

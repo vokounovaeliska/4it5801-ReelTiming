@@ -2,6 +2,7 @@ import {
   boolean,
   date,
   datetime,
+  double,
   int,
   mysqlTable,
   timestamp,
@@ -48,6 +49,7 @@ export const project = mysqlTable('project', {
     .onUpdateNow(),
   is_active: boolean('is_active').default(true),
   description: varchar('description', { length: 500 }),
+  currency: varchar('currency', { length: 3 }).default('CZK').notNull(),
 });
 
 export const project_user = mysqlTable(
@@ -149,6 +151,10 @@ export const statement = mysqlTable('statement', {
     .notNull()
     .defaultNow()
     .onUpdateNow(),
+  car_id: varchar('car_id', { length: 36 }).references(() => car.id, {
+    onDelete: 'restrict',
+  }),
+  kilometers: int('kilometers'),
 });
 
 export const report = mysqlTable('report', {
@@ -173,4 +179,29 @@ export const report = mysqlTable('report', {
   ),
   create_date: timestamp('create_date').notNull().defaultNow(),
   create_user_id: varchar('create_user_id', { length: 36 }).notNull(),
+});
+
+export const car = mysqlTable('car', {
+  id: varchar('id', { length: 36 })
+    .$defaultFn(() => uuidv4())
+    .primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  kilometer_allow: int('kilometer_allow').default(0).notNull(),
+  kilometer_rate: double('kilometer_rate', {
+    precision: 10,
+    scale: 2,
+  }).notNull(),
+  project_user_id: varchar('project_user_id', { length: 36 }).references(
+    () => project_user.id,
+    {
+      onDelete: 'cascade',
+    },
+  ),
+  create_date: timestamp('create_date').notNull().defaultNow(),
+  create_user_id: varchar('create_user_id', { length: 36 }).notNull(),
+  last_update_user_id: varchar('last_update_user_id', { length: 36 }).notNull(),
+  last_update_date: timestamp('last_update_date')
+    .notNull()
+    .defaultNow()
+    .onUpdateNow(),
 });

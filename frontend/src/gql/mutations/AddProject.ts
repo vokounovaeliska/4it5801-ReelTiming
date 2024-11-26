@@ -7,6 +7,7 @@ export const ADD_PROJECT = gql`
     $endDate: DateTimeISO
     $startDate: DateTimeISO
     $description: String
+    $create_user_id: String
   ) {
     addProject(
       production_company: $productionCompany
@@ -14,6 +15,7 @@ export const ADD_PROJECT = gql`
       end_date: $endDate
       start_date: $startDate
       description: $description
+      create_user_id: $create_user_id
     ) {
       id
       name

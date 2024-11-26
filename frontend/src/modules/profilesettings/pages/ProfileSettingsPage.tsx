@@ -52,7 +52,13 @@ const ProfileSettingsPage = () => {
     try {
       await updateUser({
         variables: {
-          data: { name, surname, email, phone_number },
+          data: {
+            name,
+            surname,
+            email,
+            phone_number,
+            last_update_user_id: user?.id,
+          },
           userId: user?.id,
         },
       });
