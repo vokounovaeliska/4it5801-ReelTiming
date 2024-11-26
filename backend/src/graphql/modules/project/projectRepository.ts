@@ -26,6 +26,7 @@ export function getProjectRepository(db: Db) {
       is_active: boolean;
       create_user_id: string;
       last_update_user_id: string;
+      currency: string;
     }) {
       const result = await db
         .insert(project)
@@ -40,6 +41,7 @@ export function getProjectRepository(db: Db) {
           is_active: data.is_active,
           create_user_id: data.create_user_id,
           last_update_user_id: data.last_update_user_id,
+          currency: data.currency,
         })
         .$returningId();
       return result[0].id;
@@ -54,6 +56,8 @@ export function getProjectRepository(db: Db) {
         end_date?: Date;
         last_update_date?: Date;
         is_active?: boolean;
+        currency?: string;
+        last_update_user_id?: string;
       }>,
     ) {
       return db.update(project).set(data).where(eq(project.id, id));

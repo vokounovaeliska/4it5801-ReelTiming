@@ -18,7 +18,11 @@ import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
 export type MyProjectsTemplateProps = {
-  projects: { id: string; name: string; description: string }[];
+  projects: {
+    id: string;
+    name: string;
+    description: string;
+  }[];
   onAddProject: () => void;
 };
 

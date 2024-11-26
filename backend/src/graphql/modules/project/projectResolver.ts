@@ -13,6 +13,9 @@ const projectInputSchema = z.object({
   description: z.string().optional(),
   start_date: z.date().optional(),
   end_date: z.date().optional(),
+  currency: z.string().default('CZK'),
+  create_user_id: z.string().uuid().optional(),
+  last_update_user_id: z.string().uuid().optional(),
 });
 
 const deleteProjectSchema = z.object({
@@ -43,6 +46,8 @@ export class ProjectResolver {
     @Arg('description', { nullable: true }) description: string,
     @Arg('start_date', { nullable: true }) startDate: Date,
     @Arg('end_date', { nullable: true }) endDate: Date,
+    @Arg('currency', { nullable: true }) currency: string,
+    @Arg('create_user_id', { nullable: true }) create_user_id: string,
     @Ctx() { db }: CustomContext,
   ): Promise<Project> {
     const validatedData = projectInputSchema.parse({
@@ -51,6 +56,8 @@ export class ProjectResolver {
       description,
       start_date: startDate,
       end_date: endDate,
+      currency,
+      create_user_id,
     });
     const projectService = new ProjectService(db);
     return projectService.createProject(validatedData);

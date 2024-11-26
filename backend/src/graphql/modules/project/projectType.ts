@@ -34,23 +34,26 @@ export class Project {
 
   @Field(() => Boolean)
   is_active: boolean = true;
+
+  @Field(() => String)
+  currency!: string;
 }
 
 @InputType()
 export class ProjectInput {
-  @Field(() => String, { nullable: true })
+  @Field(() => String)
   name?: string;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => String)
   production_company?: string;
 
   @Field(() => String)
   description?: string | null;
 
-  @Field(() => Date, { nullable: true })
+  @Field(() => Date)
   start_date?: Date | null;
 
-  @Field(() => Date, { nullable: true })
+  @Field(() => Date)
   end_date?: Date | null;
 
   @Field(() => Date, { nullable: true })
@@ -67,4 +70,7 @@ export class ProjectInput {
 
   @Field(() => Boolean, { nullable: true })
   is_active?: boolean;
+
+  @Field(() => String, { nullable: true })
+  currency!: string;
 }

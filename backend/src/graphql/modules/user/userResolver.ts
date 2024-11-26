@@ -24,13 +24,7 @@ const updateUserSchema = z.object({
   surname: z.string().min(1).optional(),
   email: z.string().email().optional(),
   phone_number: z.string().optional(),
-});
-
-const addInactiveUserSchema = z.object({
-  name: z.string().min(1),
-  surname: z.string().min(1),
-  email: z.string().email(),
-  phone_number: z.string(),
+  last_update_user_id: z.string().uuid().optional(),
 });
 
 const deleteUserSchema = z.object({
@@ -107,23 +101,5 @@ export class UserResolver {
     const validatedData = updateUserSchema.parse(data);
     const userService = new UserService(db);
     return userService.updateUser(id, validatedData);
-  }
-
-  @Mutation(() => User)
-  async addInactiveUser(
-    @Arg('name') name: string,
-    @Arg('surname') surname: string,
-    @Arg('email') email: string,
-    @Arg('phone_number') phone_number: string,
-    @Ctx() { db }: CustomContext,
-  ): Promise<User> {
-    const validatedData = addInactiveUserSchema.parse({
-      name,
-      surname,
-      email,
-      phone_number,
-    });
-    const userService = new UserService(db);
-    return userService.addInactiveUser(validatedData);
   }
 }

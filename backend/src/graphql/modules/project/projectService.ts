@@ -44,8 +44,9 @@ export class ProjectService {
       create_date: createdAt,
       last_update_date: createdAt,
       is_active: true,
-      create_user_id: '',
-      last_update_user_id: '',
+      create_user_id: data.create_user_id ?? '',
+      last_update_user_id: data.create_user_id ?? '',
+      currency: data.currency,
     });
     const project = await this.getProjectById(projectId);
     if (!project) {
