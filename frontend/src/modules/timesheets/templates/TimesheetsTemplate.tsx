@@ -67,6 +67,9 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
   const isGeneratePdfDisabled =
     !startDate || !endDate || selectedUsers.length > 1;
 
+  const shouldShowCarColumns = sortedTimesheets.some(
+    (ts) => ts.car_id !== null && ts.car !== null,
+  );
   return (
     <Box flex="1" p={4} width="100%" maxWidth="1200px" mx="auto">
       <Box
@@ -148,6 +151,12 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
               <Th>Time (from - to)</Th>
               <Th textAlign="center">Calculated OT</Th>
               <Th textAlign="center">Claimed OT</Th>
+              {shouldShowCarColumns && (
+                <>
+                  <Th textAlign="center">KM</Th>
+                  <Th textAlign="center">Vehicle</Th>
+                </>
+              )}
               <Th textAlign="center">Delete</Th>
             </Tr>
           </Thead>
@@ -157,6 +166,7 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
               const userId = ts.projectUser.id;
               const key = `${userId}-${date}`;
               const isDuplicate = duplicates[key];
+              const hasCar = ts.car_id !== null && ts.car !== null;
               return (
                 <Tr
                   key={ts.id}
@@ -187,6 +197,12 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
                   </Td>
                   <Td textAlign="center">{ts.calculated_overtime}</Td>
                   <Td textAlign="center">{ts.claimed_overtime}</Td>
+                  {shouldShowCarColumns && (
+                    <>
+                      <Td textAlign="center">{hasCar ? ts.kilometers : ''}</Td>
+                      <Td textAlign="center">{hasCar ? ts.car?.name : ''}</Td>
+                    </>
+                  )}
                   <Td>
                     <IconButton
                       aria-label="Delete timesheet"

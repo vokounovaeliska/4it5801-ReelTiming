@@ -22,6 +22,11 @@ export interface Timesheet {
     surname: string;
   };
   create_date: string;
+  car?: {
+    name: string;
+  };
+  car_id?: string;
+  kilometers?: number;
 }
 
 export interface TimesheetFormValues {
