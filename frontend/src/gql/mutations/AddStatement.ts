@@ -9,6 +9,8 @@ export const ADD_STATEMENT = gql`
     $shift_lenght: Float!
     $calculated_overtime: Float
     $claimed_overtime: Float
+    $car_id: String
+    $kilometers: Float
   ) {
     addStatement(
       project_user_id: $project_user_id
@@ -18,6 +20,8 @@ export const ADD_STATEMENT = gql`
       shift_lenght: $shift_lenght
       calculated_overtime: $calculated_overtime
       claimed_overtime: $claimed_overtime
+      car_id: $car_id
+      kilometers: $kilometers
     ) {
       id
       projectUser {

@@ -20,6 +20,7 @@ import { ADD_STATEMENT } from '@frontend/gql/mutations/AddStatement';
 import { DELETE_STATEMENT } from '@frontend/gql/mutations/DeleteStatement';
 import { EDIT_STATEMENT } from '@frontend/gql/mutations/EditStatement';
 import { GET_ALL_PROJECT_USERS } from '@frontend/gql/queries/GetAllProjectUsers';
+import { GET_CARS_BY_PROJECT_USER_ID } from '@frontend/gql/queries/GetCarsByProjectUserId';
 import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/gql/queries/GetCrewUserInfoTimesheets';
 import {
   GET_ADMIN_STATEMENTS,
@@ -59,6 +60,8 @@ export function TimesheetPage() {
   const [timesheetIdToDelete, setTimesheetIdToDelete] = useState<string | null>(
     null,
   );
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [userCars, setUserCars] = useState<{ id: string; name: string }[]>([]);
 
   const {
     data: userInfoData,
@@ -110,6 +113,15 @@ export function TimesheetPage() {
   } = useQuery(GET_ALL_PROJECT_USERS, {
     variables: { projectId },
     fetchPolicy: 'cache-and-network',
+  });
+
+  const { data: carsData } = useQuery(GET_CARS_BY_PROJECT_USER_ID, {
+    variables: { projectUserId: selectedUser || userInfo?.id },
+    skip: !selectedUser && !userInfo?.id,
+    fetchPolicy: 'cache-and-network',
+    onCompleted: (carsData) => {
+      setUserCars(carsData.carsByProjectUserId);
+    },
   });
 
   const userOptions =
@@ -268,6 +280,8 @@ export function TimesheetPage() {
         shift_lenght: Number(data.shift_lenght) || 0,
         calculated_overtime: data.calculated_overtime || 0,
         claimed_overtime: data.claimed_overtime || 0,
+        car_id: data.car_id || null,
+        kilometers: data.kilometers || null,
       };
       console.log('Adding statement:', variables);
 
@@ -534,6 +548,8 @@ export function TimesheetPage() {
           userRole={userRole}
           userOptions={userOptionsForAdminAddTimesheet}
           userInfo={userInfo}
+          userCars={userCars}
+          setSelectedUser={setSelectedUser}
         />
       </CustomModal>
       <AlertDialog
