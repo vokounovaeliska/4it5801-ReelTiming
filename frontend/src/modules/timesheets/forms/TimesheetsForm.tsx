@@ -21,6 +21,8 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
   userRole,
   userOptions,
   userInfo,
+  userCars,
+  setSelectedUser,
 }) => {
   const defaultValues: TimesheetFormValues = {
     start_date: toLocalISOString(new Date()).split('T')[0],
@@ -88,6 +90,12 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
     }
   }, [from, to, shift, setValue, initialValues]);
 
+  useEffect(() => {
+    if (userInfo?.id) {
+      setSelectedUser(userInfo.id);
+    }
+  }, [userInfo, setSelectedUser]);
+
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
       {userRole === 'ADMIN' && mode === 'add' && (
@@ -101,6 +109,7 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
                 {...field}
                 onChange={(e) => {
                   field.onChange(e);
+                  setSelectedUser(e.target.value);
                 }}
               >
                 {userOptions.map((user) => (
@@ -203,6 +212,35 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
           )}
         />
       </FormControl>
+      {userCars.length > 0 && (
+        <>
+          <FormControl>
+            <FormLabel>Car</FormLabel>
+            <Controller
+              name="carId"
+              control={control}
+              render={({ field }) => (
+                <Select {...field}>
+                  {userCars.map((car) => (
+                    <option key={car.id} value={car.id}>
+                      {car.name}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Kilometers</FormLabel>
+            <Controller
+              name="kilometers"
+              control={control}
+              render={({ field }) => <Input {...field} type="number" onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+              value={field.value} />}
+            />
+          </FormControl>
+        </>
+      )}
       <Box
         display={{ base: 'grid', sm: 'flex' }}
         justifyContent="right"
