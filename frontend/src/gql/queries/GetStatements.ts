@@ -1,16 +1,13 @@
 import { gql } from '@apollo/client';
 
 export const GET_CREW_STATEMENTS = gql`
-  query GetCrewStatements($userId: String!) {
-    statementsByUserId(userId: $userId) {
+  query GetCrewStatements($projectUserId: String!) {
+    statementsByProjectUserId(projectUserId: $projectUserId) {
       id
       projectUser {
         id
-        user {
-          id
-          name
-          surname
-        }
+        name
+        surname
       }
       start_date
       from
@@ -29,11 +26,8 @@ export const GET_ADMIN_STATEMENTS = gql`
       id
       projectUser {
         id
-        user {
-          id
-          name
-          surname
-        }
+        name
+        surname
       }
       start_date
       from

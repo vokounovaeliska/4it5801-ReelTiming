@@ -89,7 +89,7 @@ export function TimesheetPage() {
     error: crewError,
   } = useQuery(GET_CREW_STATEMENTS, {
     skip: !auth.user || roleData?.userRoleInProject !== 'CREW',
-    variables: { userId: auth.user?.id },
+    variables: { projectUserId: userInfoData?.projectUserDetails?.id },
     fetchPolicy: 'cache-and-network',
   });
 
@@ -115,34 +115,24 @@ export function TimesheetPage() {
   const userOptions =
     allProjectUsersData?.projectUsers
       ?.filter(
-        (projectUser: {
-          user: { id: string; name: string; surname: string };
-        }) => projectUser.user !== null,
+        (projectUser: { id: string; name: string; surname: string }) =>
+          projectUser.id !== null,
       )
-      .map(
-        (projectUser: {
-          user: { id: string; name: string; surname: string };
-        }) => ({
-          value: projectUser.user.id,
-          label: `${projectUser.user.name} ${projectUser.user.surname}`,
-        }),
-      ) || [];
+      .map((projectUser: { id: string; name: string; surname: string }) => ({
+        value: projectUser.id,
+        label: `${projectUser.name} ${projectUser.surname}`,
+      })) || [];
 
   const userOptionsForAdminAddTimesheet =
     allProjectUsersData?.projectUsers
       ?.filter(
-        (projectUser: {
-          user: { id: string; name: string; surname: string };
-        }) => projectUser.user !== null,
+        (projectUser: { id: string; name: string; surname: string }) =>
+          projectUser.id !== null,
       )
-      .map(
-        (projectUser: {
-          user: { id: string; name: string; surname: string };
-        }) => ({
-          value: projectUser.user.id,
-          label: `${projectUser.user.name} ${projectUser.user.surname}`,
-        }),
-      ) || [];
+      .map((projectUser: { id: string; name: string; surname: string }) => ({
+        value: projectUser.id,
+        label: `${projectUser.name} ${projectUser.surname}`,
+      })) || [];
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -226,7 +216,9 @@ export function TimesheetPage() {
             query:
               userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
             variables:
-              userRole === 'ADMIN' ? { projectId } : { userId: auth.user?.id },
+              userRole === 'ADMIN'
+                ? { projectId }
+                : { projectUserId: userInfoData?.projectUserDetails?.id },
           },
         ],
       });
@@ -250,7 +242,8 @@ export function TimesheetPage() {
       id: selectedTimesheet?.id || '',
       projectUser: selectedTimesheet?.projectUser || {
         id: data.projectUser.id,
-        user: { id: '', name: '', surname: '' },
+        name: data.projectUser?.name || '',
+        surname: data.projectUser?.surname || '',
       },
       create_date:
         selectedTimesheet?.create_date || toLocalISOString(new Date()),
@@ -285,7 +278,9 @@ export function TimesheetPage() {
             query:
               userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
             variables:
-              userRole === 'ADMIN' ? { projectId } : { userId: auth.user?.id },
+              userRole === 'ADMIN'
+                ? { projectId }
+                : { projectUserId: userInfoData?.projectUserDetails?.id },
           },
         ],
       });
@@ -293,7 +288,9 @@ export function TimesheetPage() {
         query:
           userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
         variables:
-          userRole === 'ADMIN' ? { projectId } : { userId: auth.user?.id },
+          userRole === 'ADMIN'
+            ? { projectId }
+            : { projectUserId: userInfoData?.projectUserDetails?.id },
       });
       const newTimesheet = {
         ...variables,
@@ -304,14 +301,16 @@ export function TimesheetPage() {
         query:
           userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
         variables:
-          userRole === 'ADMIN' ? { projectId } : { userId: auth.user?.id },
+          userRole === 'ADMIN'
+            ? { projectId }
+            : { projectUserId: userInfoData?.projectUserDetails?.id },
         data: {
           ...cacheData,
           statementsByProjectId:
             userRole === 'ADMIN'
               ? [...cacheData.statementsByProjectId, newTimesheet]
-              : cacheData.statementsByUserId
-                ? [...cacheData.statementsByUserId, newTimesheet]
+              : cacheData.statementsByProjectUserId
+                ? [...cacheData.statementsByProjectUserId, newTimesheet]
                 : [],
         },
       });
@@ -362,7 +361,9 @@ export function TimesheetPage() {
             query:
               userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
             variables:
-              userRole === 'ADMIN' ? { projectId } : { userId: auth.user?.id },
+              userRole === 'ADMIN'
+                ? { projectId }
+                : { projectUserId: userInfoData?.projectUserDetails?.id },
           },
         ],
       });
@@ -370,7 +371,9 @@ export function TimesheetPage() {
         query:
           userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
         variables:
-          userRole === 'ADMIN' ? { projectId } : { userId: auth.user?.id },
+          userRole === 'ADMIN'
+            ? { projectId }
+            : { projectUserId: userInfoData?.projectUserDetails?.id },
       });
       const updatedTimesheet = {
         ...variables.data,
@@ -381,7 +384,9 @@ export function TimesheetPage() {
         query:
           userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
         variables:
-          userRole === 'ADMIN' ? { projectId } : { userId: auth.user?.id },
+          userRole === 'ADMIN'
+            ? { projectId }
+            : { projectUserId: userInfoData?.projectUserDetails?.id },
         data: {
           ...cacheData,
           statementsByProjectId:
@@ -389,7 +394,7 @@ export function TimesheetPage() {
               ? cacheData.statementsByProjectId.map((ts: Timesheet) =>
                   ts.id === selectedTimesheet?.id ? updatedTimesheet : ts,
                 )
-              : cacheData.statementsByUserId.map((ts: Timesheet) =>
+              : cacheData.statementsByProjectUserId.map((ts: Timesheet) =>
                   ts.id === selectedTimesheet?.id ? updatedTimesheet : ts,
                 ),
         },
@@ -403,7 +408,7 @@ export function TimesheetPage() {
 
   const isDataAvailable =
     roleData?.userRoleInProject &&
-    (crewData?.statementsByUserId || adminData?.statementsByProjectId) &&
+    (crewData?.statementsByProjectUserId || adminData?.statementsByProjectId) &&
     userInfoData?.projectUserDetails &&
     allProjectUsersData?.projectUsers;
 
@@ -456,7 +461,7 @@ export function TimesheetPage() {
   const timesheets =
     userRole === 'ADMIN'
       ? adminData?.statementsByProjectId
-      : crewData?.statementsByUserId;
+      : crewData?.statementsByProjectUserId;
 
   const filteredTimesheets = timesheets.filter((ts: Timesheet) => {
     const tsDate = new Date(ts.start_date).getTime();
@@ -467,7 +472,7 @@ export function TimesheetPage() {
     const isUserSelected =
       selectedUsers.length === 0 ||
       selectedUsers.some(
-        (user: UserOption) => user.value === ts.projectUser.user.id,
+        (user: UserOption) => user.value === ts.projectUser.id,
       );
 
     return isWithinDateRange && isUserSelected;
@@ -505,6 +510,7 @@ export function TimesheetPage() {
         userRole={userRole}
         projectUserId={userInfoData.projectUserDetails.id}
         authUser={auth.user}
+        selectedUsers={selectedUsers}
       />
       <Footer />
       <CustomModal

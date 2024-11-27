@@ -15,11 +15,8 @@ interface Timesheet {
   create_date: string;
   projectUser: {
     id: string;
-    user: {
-      id: string;
-      name: string;
-      surname: string;
-    };
+    name: string;
+    surname: string;
   };
 }
 
@@ -53,20 +50,20 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
   userId,
 }) => {
   const {
-    loading: loadingTimesheets,
-    error: errorTimesheets,
-    data: dataTimesheets,
-  } = useQuery(GET_CREW_STATEMENTS, {
-    variables: { userId },
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const {
     loading: loadingUserInfo,
     error: errorUserInfo,
     data: dataUserInfo,
   } = useQuery(GET_CREWUSERINFO_TIMESHEETS, {
     variables: { userId, projectId },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const {
+    loading: loadingTimesheets,
+    error: errorTimesheets,
+    data: dataTimesheets,
+  } = useQuery(GET_CREW_STATEMENTS, {
+    variables: { projectUserId: dataUserInfo.projectUserDetails.id },
     fetchPolicy: 'cache-and-network',
   });
 
@@ -84,13 +81,15 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
     return <Text>Error loading data!</Text>;
   }
 
-  const timesheets: Timesheet[] = dataTimesheets?.statementsByUserId || [];
+  const timesheets: Timesheet[] =
+    dataTimesheets?.statementsByProjectUserId || [];
 
   const userProjectInfo: UserProjectInfo =
     dataUserInfo?.projectUserDetails || {};
 
   const userTimesheets = timesheets.filter(
-    (timesheet) => timesheet.projectUser.user.id === userId,
+    (timesheet) =>
+      timesheet.projectUser.id === dataUserInfo.projectUserDetails?.id,
   );
 
   const recentTimesheets = userTimesheets

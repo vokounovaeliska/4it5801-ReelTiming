@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
-import { DeleteIcon } from '@chakra-ui/icons';
+import { DeleteIcon, WarningTwoIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
   Heading,
   IconButton,
-  Input,
   Table,
   Tbody,
   Td,
   Th,
   Thead,
+  Tooltip,
   Tr,
 } from '@chakra-ui/react';
 import { MdAddChart, MdFilterAlt } from 'react-icons/md';
-import Select from 'react-select';
 
 import PdfReportGeneratorButton from '@frontend/modules/report/pdfReportGeneratorButton';
 
-import { TimesheetsTemplateProps } from '../interfaces';
+import { Timesheet, TimesheetsTemplateProps } from '../interfaces';
+import { TimesheetFilter } from '../timesheetFilter';
 import { formatDate, formatTime } from '../utils/timeUtils';
 
 const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
@@ -34,8 +34,38 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
   userRole,
   projectName,
   projectUserId,
+  selectedUsers,
 }) => {
   const [showFilters, setShowFilters] = useState(true);
+
+  const duplicateStatements = sortedTimesheets.reduce(
+    (acc, ts) => {
+      const date = ts.start_date.split('T')[0];
+      const userId = ts.projectUser.id;
+      const key = `${userId}-${date}`;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(ts);
+      return acc;
+    },
+    {} as Record<string, Timesheet[]>,
+  );
+
+  const duplicates = Object.keys(duplicateStatements).reduce(
+    (acc, key) => {
+      if (duplicateStatements[key].length > 1) {
+        acc[key] = true;
+      }
+      return acc;
+    },
+    {} as Record<string, boolean>,
+  );
+
+  const hasDuplicates = Object.keys(duplicates).length > 0;
+
+  const isGeneratePdfDisabled =
+    !startDate || !endDate || selectedUsers.length > 1;
 
   return (
     <Box flex="1" p={4} width="100%" maxWidth="1200px" mx="auto">
@@ -56,46 +86,14 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
         </Button>
       </Box>
       {showFilters && (
-        <Box
-          display={{ base: 'grid', sm: 'flex' }}
-          justifyItems={{ base: 'center', sm: 'flex-start' }}
-          gap="4"
-          px={{ base: '8', sm: '2' }}
-          pb={{ base: '4', sm: '2' }}
-          pt={{ base: '0', sm: '4' }}
-        >
-          <Input
-            type="date"
-            placeholder="Start Date"
-            value={startDate}
-            onChange={(e) => handleDateChange(e, 'start')}
-            width={{ base: '100%', sm: '250px', md: '300px' }}
-          />
-          <Input
-            borderWidth={2}
-            borderColor={'gray.200'}
-            type="date"
-            placeholder="End Date"
-            value={endDate}
-            onChange={(e) => handleDateChange(e, 'end')}
-            width={{ base: '100%', sm: '250px', md: '300px' }}
-          />
-          {userRole === 'ADMIN' && (
-            <Select
-              isMulti
-              options={userOptions}
-              placeholder="Select Users"
-              onChange={handleUserChange}
-              styles={{
-                container: (provided) => ({
-                  ...provided,
-                  width: '100%',
-                  maxWidth: '350px',
-                }),
-              }}
-            />
-          )}
-        </Box>
+        <TimesheetFilter
+          startDate={startDate}
+          endDate={endDate}
+          userRole={userRole}
+          handleDateChange={handleDateChange}
+          userOptions={userOptions}
+          handleUserChange={handleUserChange}
+        />
       )}
       <Box
         display={{ base: 'grid', sm: 'flex' }}
@@ -126,15 +124,24 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
           </Button>
         </Box>
         <PdfReportGeneratorButton
-          projectUserId={projectUserId}
+          projectUserId={
+            selectedUsers.length === 1 ? selectedUsers[0]?.value : projectUserId
+          }
           startDate={startDate}
           endDate={endDate}
+          label={
+            selectedUsers.length === 1
+              ? `Generate PDF for ` + selectedUsers[0]?.label
+              : 'Generate my PDF'
+          }
+          isDisabled={isGeneratePdfDisabled}
         />
       </Box>
       <Box overflow="scroll">
         <Table variant="simple" size="sm">
           <Thead>
             <Tr>
+              {hasDuplicates && <Th>Warning</Th>}
               <Th>User</Th>
               <Th>Date</Th>
               <Th textAlign="center">Shift type</Th>
@@ -145,40 +152,56 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
             </Tr>
           </Thead>
           <Tbody>
-            {sortedTimesheets.map((ts) => (
-              <Tr
-                key={ts.id}
-                onClick={() => handleRowClick(ts)}
-                _hover={{
-                  cursor: 'pointer',
-                  backgroundColor: 'gray.100',
-                }}
-              >
-                <Td>
-                  {ts.projectUser?.user?.name ?? 'Unknown'}{' '}
-                  {ts.projectUser?.user?.surname ?? 'User'}
-                </Td>
-                <Td>{formatDate(ts.start_date)}</Td>
-                <Td textAlign="center">{ts.shift_lenght}</Td>
-                <Td>
-                  {formatTime(ts.from)} - {formatTime(ts.to)}
-                </Td>
-                <Td textAlign="center">{ts.calculated_overtime}</Td>
-                <Td textAlign="center">{ts.claimed_overtime}</Td>
-                <Td>
-                  <IconButton
-                    aria-label="Delete timesheet"
-                    icon={<DeleteIcon />}
-                    colorScheme="red"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeleteClick(ts.id);
-                    }}
-                  />
-                </Td>
-              </Tr>
-            ))}
+            {sortedTimesheets.map((ts) => {
+              const date = ts.start_date.split('T')[0];
+              const userId = ts.projectUser.id;
+              const key = `${userId}-${date}`;
+              const isDuplicate = duplicates[key];
+              return (
+                <Tr
+                  key={ts.id}
+                  onClick={() => handleRowClick(ts)}
+                  _hover={{
+                    cursor: 'pointer',
+                    backgroundColor: isDuplicate ? 'yellow.100' : 'gray.100',
+                  }}
+                  bg={isDuplicate ? 'yellow.200' : 'transparent'}
+                >
+                  {hasDuplicates && (
+                    <Td>
+                      {isDuplicate && (
+                        <Tooltip label="Duplicate date statement">
+                          <WarningTwoIcon color="red.500" />
+                        </Tooltip>
+                      )}
+                    </Td>
+                  )}
+                  <Td>
+                    {ts.projectUser?.name ?? 'Unknown'}{' '}
+                    {ts.projectUser?.surname ?? 'User'}
+                  </Td>
+                  <Td>{formatDate(ts.start_date)}</Td>
+                  <Td textAlign="center">{ts.shift_lenght}</Td>
+                  <Td>
+                    {formatTime(ts.from)} - {formatTime(ts.to)}
+                  </Td>
+                  <Td textAlign="center">{ts.calculated_overtime}</Td>
+                  <Td textAlign="center">{ts.claimed_overtime}</Td>
+                  <Td>
+                    <IconButton
+                      aria-label="Delete timesheet"
+                      icon={<DeleteIcon />}
+                      colorScheme="red"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteClick(ts.id);
+                      }}
+                    />
+                  </Td>
+                </Tr>
+              );
+            })}
           </Tbody>
         </Table>
       </Box>
