@@ -107,9 +107,9 @@ export function getProjectUserRepository(db: Db) {
           projectUserId: project_user.id,
           userId: project_user.user_id,
           projectId: project_user.project_id,
-          userName: user.name,
-          userSurname: user.surname,
-          userEmail: user.email,
+          userName: project_user.name,
+          userSurname: project_user.surname,
+          userEmail: project_user.email,
         })
         .from(project_user)
         .innerJoin(user, eq(project_user.user_id, user.id))

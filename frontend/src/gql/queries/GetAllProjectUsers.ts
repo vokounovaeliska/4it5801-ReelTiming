@@ -4,11 +4,8 @@ export const GET_ALL_PROJECT_USERS = gql`
   query GetAllProjectUsers($projectId: String!) {
     projectUsers(projectId: $projectId) {
       id
-      user {
-        id
-        name
-        surname
-      }
+      name
+      surname
     }
   }
 `;

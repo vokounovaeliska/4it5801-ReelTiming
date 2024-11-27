@@ -18,7 +18,8 @@ export interface Timesheet {
   claimed_overtime: number;
   projectUser: {
     id: string;
-    user: UserInfo;
+    name: string;
+    surname: string;
   };
   create_date: string;
 }
@@ -33,6 +34,8 @@ export interface TimesheetFormValues {
   claimed_overtime: number;
   projectUser: {
     id: string;
+    name: string;
+    surname: string;
   };
 }
 
@@ -66,6 +69,7 @@ export interface TimesheetsTemplateProps {
   projectName: string;
   projectUserId: string;
   authUser: UserAuth;
+  selectedUsers: UserOption[];
 }
 
 export interface TimesheetsFormProps {

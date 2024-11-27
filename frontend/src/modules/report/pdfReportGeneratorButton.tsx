@@ -1,19 +1,25 @@
 import { useState } from 'react';
-import { Box, Button, Spinner } from '@chakra-ui/react';
+import { Box, Button, ButtonProps, Spinner } from '@chakra-ui/react';
 
 import { config } from '@frontend/config';
 import { showErrorToast } from '@frontend/shared/design-system/molecules/toastUtils';
+
+export type InputFieldProps = ButtonProps;
 
 type PdfReportGeneratorProps = {
   projectUserId: string;
   startDate: string;
   endDate: string;
+  label?: string;
+  isDisabled?: boolean;
 };
 
 const PdfReportGeneratorButton = ({
   projectUserId,
   startDate,
   endDate,
+  label,
+  isDisabled,
 }: PdfReportGeneratorProps) => {
   const [loading, setLoading] = useState(false);
 
@@ -61,15 +67,16 @@ const PdfReportGeneratorButton = ({
     <>
       <Box alignItems="center">
         <Button
+          size={'sm'}
           colorScheme="orange"
           type="submit"
           variant="outline"
           mt="4"
           isLoading={loading}
-          isDisabled={loading}
+          isDisabled={loading || isDisabled}
           onClick={handleGeneratePdf}
         >
-          {loading ? <Spinner size="sm" /> : 'Generate PDF'}
+          {loading ? <Spinner size="sm" /> : (label ?? 'Generate PDF')}
         </Button>
       </Box>
     </>
