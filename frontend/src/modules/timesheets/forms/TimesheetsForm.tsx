@@ -14,7 +14,15 @@ import { TimesheetFormValues, TimesheetsFormProps } from '../interfaces';
 import { formatDate, formatTime, toLocalISOString } from '../utils/timeUtils';
 
 export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
-  initialValues = {
+  initialValues,
+  onClose,
+  mode,
+  onSubmit,
+  userRole,
+  userOptions,
+  userInfo,
+}) => {
+  const defaultValues: TimesheetFormValues = {
     start_date: toLocalISOString(new Date()).split('T')[0],
     end_date: toLocalISOString(new Date()).split('T')[0],
     shift_lenght: 10,
@@ -23,28 +31,30 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
     calculated_overtime: 0,
     claimed_overtime: 0,
     projectUser: {
-      id: '',
+      id: userInfo?.id || '',
+      name: userInfo?.name || '',
+      surname: userInfo?.surname || '',
     },
-  },
-  onClose,
-  mode,
-  onSubmit,
-  userRole,
-  userOptions,
-  userInfo,
-}) => {
+  };
+
+  const mergedValues = {
+    ...defaultValues,
+    ...initialValues,
+    from: initialValues?.from
+      ? formatTime(initialValues.from)
+      : defaultValues.from,
+    to: initialValues?.to ? formatTime(initialValues.to) : defaultValues.to,
+    projectUser: {
+      id: initialValues?.projectUser?.id || defaultValues.projectUser.id,
+      name: initialValues?.projectUser?.name || defaultValues.projectUser.name,
+      surname:
+        initialValues?.projectUser?.surname ||
+        defaultValues.projectUser.surname,
+    },
+  };
+
   const { handleSubmit, control, setValue } = useForm<TimesheetFormValues>({
-    defaultValues: {
-      ...initialValues,
-      from: formatTime(initialValues.from) || '',
-      to: formatTime(initialValues.to) || '',
-      start_date:
-        initialValues?.start_date || toLocalISOString(new Date()).split('T')[0],
-      shift_lenght: initialValues.shift_lenght || 10,
-      projectUser: {
-        id: initialValues.projectUser.id || userInfo?.id,
-      },
-    },
+    defaultValues: mergedValues,
   });
 
   const from = useWatch({ control, name: 'from' });
@@ -66,13 +76,18 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
       if (workedHours > shift) {
         const overtime = Math.ceil(workedHours - shift);
         setValue('calculated_overtime', overtime);
-        setValue('claimed_overtime', overtime);
+        if (!initialValues?.claimed_overtime) {
+          setValue('claimed_overtime', overtime);
+        }
       } else {
         setValue('calculated_overtime', 0);
-        setValue('claimed_overtime', 0);
+        if (!initialValues?.claimed_overtime) {
+          setValue('claimed_overtime', 0);
+        }
       }
     }
-  }, [from, to, shift, setValue]);
+  }, [from, to, shift, setValue, initialValues]);
+
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
       {userRole === 'ADMIN' && mode === 'add' && (
