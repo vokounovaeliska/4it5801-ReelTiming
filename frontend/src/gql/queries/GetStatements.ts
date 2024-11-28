@@ -22,6 +22,7 @@ export const GET_CREW_STATEMENTS = gql`
         kilometer_rate
         name
       }
+      kilometers
     }
   }
 `;
@@ -48,6 +49,7 @@ export const GET_ADMIN_STATEMENTS = gql`
         kilometer_rate
         name
       }
+      kilometers
     }
   }
 `;

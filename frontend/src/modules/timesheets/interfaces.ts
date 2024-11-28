@@ -44,6 +44,7 @@ export interface TimesheetFormValues {
   };
   carId?: string;
   kilometers?: number;
+  userCars?: { id: string; name: string }[];
 }
 
 export interface UserOption {
@@ -88,8 +89,9 @@ export interface TimesheetsFormProps {
   userRole: string;
   userOptions: UserOption[];
   userInfo: UserInfo | null;
-  userCars: Car[];
+  userCars?: { id: string; name: string }[];
   setSelectedUser: (userId: string) => void;
+  setSelectedCar: (carId: string) => void;
 }
 
 export interface Car {

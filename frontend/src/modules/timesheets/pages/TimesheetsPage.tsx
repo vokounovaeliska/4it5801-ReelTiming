@@ -61,6 +61,7 @@ export function TimesheetPage() {
     null,
   );
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [selectedCar, setSelectedCar] = useState<string | null>(null);
   const [userCars, setUserCars] = useState<{ id: string; name: string }[]>([]);
 
   const {
@@ -119,8 +120,8 @@ export function TimesheetPage() {
     variables: { projectUserId: selectedUser || userInfo?.id },
     skip: !selectedUser && !userInfo?.id,
     fetchPolicy: 'cache-and-network',
-    onCompleted: (carsData) => {
-      setUserCars(carsData.carsByProjectUserId);
+    onCompleted: (data) => {
+      setUserCars(data.carsByProjectUserId);
     },
   });
 
@@ -249,6 +250,8 @@ export function TimesheetPage() {
   };
 
   const handleFormSubmitWrapper = (data: TimesheetFormValues) => {
+    console.log('WRAPPER', data.carId);
+    console.log('selectedcar',selectedCar)
     const timesheet: Timesheet = {
       ...data,
       id: selectedTimesheet?.id || '',
@@ -260,6 +263,7 @@ export function TimesheetPage() {
       create_date:
         selectedTimesheet?.create_date || toLocalISOString(new Date()),
       shift_lenght: data.shift_lenght || 0,
+      car_id: data.carId || undefined,
     };
     handleFormSubmit(timesheet);
   };
@@ -541,7 +545,8 @@ export function TimesheetPage() {
       >
         <TimesheetsForm
           projectId={projectId!}
-          initialValues={selectedTimesheet || undefined}
+          // initialValues={selectedTimesheet || undefined}
+          initialValues={{ ...selectedTimesheet, userCars }}
           onClose={handleModalClose}
           mode={mode}
           onSubmit={handleFormSubmitWrapper}
@@ -550,6 +555,7 @@ export function TimesheetPage() {
           userInfo={userInfo}
           userCars={userCars}
           setSelectedUser={setSelectedUser}
+          setSelectedCar={setSelectedCar}
         />
       </CustomModal>
       <AlertDialog
