@@ -97,6 +97,7 @@ export interface TimesheetsFormProps {
   userCars?: { id: string; name: string }[];
   setSelectedUser: (userId: string) => void;
   setSelectedCar: (carId: string) => void;
+  allCarsOnProject: Car[];
 }
 
 export interface Car {

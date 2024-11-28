@@ -103,6 +103,7 @@ input ProjectInput {
 }
 
 type ProjectUser {
+  car: [Car!]
   create_date: DateTimeISO!
   create_user_id: String!
   department: Department

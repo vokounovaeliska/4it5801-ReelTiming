@@ -19,6 +19,7 @@ import { ActionMeta, MultiValue } from 'react-select';
 import { ADD_STATEMENT } from '@frontend/gql/mutations/AddStatement';
 import { DELETE_STATEMENT } from '@frontend/gql/mutations/DeleteStatement';
 import { EDIT_STATEMENT } from '@frontend/gql/mutations/EditStatement';
+import { GET_ALL_CARS_ON_PROJECT_BY_PROJECTUSER_ID } from '@frontend/gql/queries/GetAllCarsOnProjectByProjectUserId';
 import { GET_ALL_PROJECT_USERS } from '@frontend/gql/queries/GetAllProjectUsers';
 import { GET_CARS_BY_PROJECT_USER_ID } from '@frontend/gql/queries/GetCarsByProjectUserId';
 import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/gql/queries/GetCrewUserInfoTimesheets';
@@ -116,6 +117,15 @@ export function TimesheetPage() {
     fetchPolicy: 'cache-and-network',
   });
 
+  const {
+    data: allCarsOnProjectData,
+    loading: allCarsOnProjectLoading,
+    error: allCarsOnProjectError,
+  } = useQuery(GET_ALL_CARS_ON_PROJECT_BY_PROJECTUSER_ID, {
+    variables: { projectId },
+    fetchPolicy: 'cache-and-network',
+  });
+
   const { data: carsData } = useQuery(GET_CARS_BY_PROJECT_USER_ID, {
     variables: { projectUserId: selectedUser || userInfo?.id },
     skip: !selectedUser && !userInfo?.id,
@@ -186,11 +196,6 @@ export function TimesheetPage() {
 
   const handleRowClick = (timesheet: Timesheet) => {
     setSelectedTimesheet(timesheet);
-    // setSelectedTimesheet({
-    //   ...timesheet,
-    //   car_id: timesheet.car_id,
-    //   kilometers: timesheet.kilometers,
-    // });
     setMode('edit');
     setIsModalOpen(true);
   };
@@ -256,7 +261,7 @@ export function TimesheetPage() {
 
   const handleFormSubmitWrapper = (data: TimesheetFormValues) => {
     console.log('WRAPPER', data.carId);
-    console.log('selectedcar',selectedCar)
+    console.log('selectedcar', selectedCar);
     const timesheet: Timesheet = {
       ...data,
       id: selectedTimesheet?.id || '',
@@ -436,7 +441,8 @@ export function TimesheetPage() {
     roleData?.userRoleInProject &&
     (crewData?.statementsByProjectUserId || adminData?.statementsByProjectId) &&
     userInfoData?.projectUserDetails &&
-    allProjectUsersData?.projectUsers;
+    allProjectUsersData?.projectUsers &&
+    allCarsOnProjectData?.cars;
 
   if (
     !isDataAvailable &&
@@ -444,7 +450,8 @@ export function TimesheetPage() {
       crewLoading ||
       adminLoading ||
       userInfoLoading ||
-      allProjectUsersLoading)
+      allProjectUsersLoading ||
+      allCarsOnProjectLoading)
   ) {
     return (
       <Center minHeight="100vh">
@@ -460,6 +467,7 @@ export function TimesheetPage() {
     crewError ||
     adminError ||
     allProjectUsersError ||
+    allCarsOnProjectError ||
     !auth.user
   ) {
     return (
@@ -564,6 +572,7 @@ export function TimesheetPage() {
           userCars={userCars}
           setSelectedUser={setSelectedUser}
           setSelectedCar={setSelectedCar}
+          allCarsOnProject={allCarsOnProjectData}
         />
       </CustomModal>
       <AlertDialog

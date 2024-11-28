@@ -269,4 +269,7 @@ export class ProjectUserService {
   async getProjectUserDetails(userId: string, projectId: string) {
     return this.projectUserRepository.getProjectUserDetails(userId, projectId);
   }
+  async getCarsByProjectUserId(projectUserId: string) {
+    return this.projectUserRepository.getCarsByProjectUserId(projectUserId);
+  }
 }
