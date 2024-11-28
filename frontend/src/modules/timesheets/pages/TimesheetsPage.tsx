@@ -269,6 +269,7 @@ export function TimesheetPage() {
         selectedTimesheet?.create_date || toLocalISOString(new Date()),
       shift_lenght: data.shift_lenght || 0,
       car_id: data.carId || undefined,
+      kilometers: data.kilometers,
     };
     handleFormSubmit(timesheet);
   };
@@ -375,6 +376,8 @@ export function TimesheetPage() {
           claimed_overtime: data.claimed_overtime || 0,
           last_update_date: toLocalISOString(new Date()),
           last_update_user_id: auth.user?.id,
+          car_id: data.car_id || null,
+          kilometers: data.kilometers || null,
         },
       };
       await editStatement({
