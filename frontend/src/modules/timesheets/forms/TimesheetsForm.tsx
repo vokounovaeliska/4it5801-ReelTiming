@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -22,8 +22,13 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
   userOptions,
   userInfo,
   setSelectedUser,
-  setSelectedCar,
+  // setSelectedCar,
 }) => {
+  console.log(initialValues, 'init');
+  console.log(initialValues?.car?.id, 'CARID');
+  const [selectedCar, setSelectedCar] = useState<string | null>(
+    initialValues?.carId || null,
+  );
   const defaultValues: TimesheetFormValues = {
     ...initialValues,
     start_date: toLocalISOString(new Date()).split('T')[0],
@@ -103,6 +108,12 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
       setSelectedUser(userInfo.id);
     }
   }, [userInfo, setSelectedUser]);
+
+  useEffect(() => {
+    if (initialValues?.carId) {
+      setSelectedCar(initialValues.carId);
+    }
+  }, [initialValues]);
 
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
@@ -244,6 +255,7 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
               )}
             />
           </FormControl>
+          {/* {initialValues?.car?.id && ( */}
           <FormControl>
             <FormLabel>Kilometers</FormLabel>
             <Controller
@@ -259,6 +271,7 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
               )}
             />
           </FormControl>
+          {/* // )} */}
         </>
       )}
       <Box
