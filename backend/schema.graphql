@@ -121,6 +121,7 @@ type ProjectUser {
   project: Project!
   rate: Rate
   role: String
+  statement: [Statement!]!
   surname: String!
   user: User
 }

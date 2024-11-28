@@ -25,6 +25,8 @@ import { CustomContext } from '../../../types/types';
 import { GraphQLError } from 'graphql';
 import { z } from 'zod';
 import { Car } from '../car/carType';
+import { StatementService } from '../statement/statementService';
+import { Statement } from '../statement/statementType';
 
 const projectUserInputSchema = z.object({
   project_id: z.string().uuid(),
@@ -310,5 +312,13 @@ export class ProjectUserResolver {
       last_update_date: new Date(),
       is_active: true,
     };
+  }
+  @FieldResolver(() => [Statement])
+  async statement(
+    @Root() projectUser: ProjectUser,
+    @Ctx() { db }: CustomContext,
+  ): Promise<Statement[]> {
+    const statementService = new StatementService(db);
+    return statementService.getStatementsByProjectUserId(projectUser.id);
   }
 }
