@@ -24,6 +24,7 @@ export interface Timesheet {
   create_date: string;
   car?: {
     name: string;
+    id: string;
   };
   car_id?: string;
   kilometers?: number;
@@ -45,6 +46,10 @@ export interface TimesheetFormValues {
   carId?: string;
   kilometers?: number;
   userCars?: { id: string; name: string }[];
+  car?: {
+    name: string;
+    id: string;
+  };
 }
 
 export interface UserOption {

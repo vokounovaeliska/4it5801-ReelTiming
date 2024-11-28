@@ -186,6 +186,11 @@ export function TimesheetPage() {
 
   const handleRowClick = (timesheet: Timesheet) => {
     setSelectedTimesheet(timesheet);
+    // setSelectedTimesheet({
+    //   ...timesheet,
+    //   car_id: timesheet.car_id,
+    //   kilometers: timesheet.kilometers,
+    // });
     setMode('edit');
     setIsModalOpen(true);
   };
