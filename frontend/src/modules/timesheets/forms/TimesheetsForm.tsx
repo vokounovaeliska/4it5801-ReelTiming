@@ -21,10 +21,11 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
   userRole,
   userOptions,
   userInfo,
-  userCars,
   setSelectedUser,
+  setSelectedCar,
 }) => {
   const defaultValues: TimesheetFormValues = {
+    ...initialValues,
     start_date: toLocalISOString(new Date()).split('T')[0],
     end_date: toLocalISOString(new Date()).split('T')[0],
     shift_lenght: 10,
@@ -37,6 +38,7 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
       name: userInfo?.name || '',
       surname: userInfo?.surname || '',
     },
+    carId: '',
   };
 
   const mergedValues = {
@@ -53,6 +55,13 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
         initialValues?.projectUser?.surname ||
         defaultValues.projectUser.surname,
     },
+    carId:
+      // 22IQ solution - will cry if debugging needed
+      (initialValues?.carId ||
+        (initialValues?.userCars && initialValues.userCars.length > 0
+          ? initialValues.userCars[0].id
+          : '')) ??
+      '',
   };
 
   const { handleSubmit, control, setValue } = useForm<TimesheetFormValues>({
@@ -62,7 +71,6 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
   const from = useWatch({ control, name: 'from' });
   const to = useWatch({ control, name: 'to' });
   const shift = useWatch({ control, name: 'shift_lenght' });
-
   useEffect(() => {
     if (from && to && shift) {
       const fromTime = new Date(`1970-01-01T${from}:00`);
@@ -212,7 +220,7 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
           )}
         />
       </FormControl>
-      {userCars.length > 0 && (
+      {(initialValues?.userCars?.length ?? 0) > 0 && (
         <>
           <FormControl>
             <FormLabel>Car</FormLabel>
@@ -220,8 +228,14 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
               name="carId"
               control={control}
               render={({ field }) => (
-                <Select {...field}>
-                  {userCars.map((car) => (
+                <Select
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    setSelectedCar(e.target.value);
+                  }}
+                >
+                  {initialValues?.userCars?.map((car) => (
                     <option key={car.id} value={car.id}>
                       {car.name}
                     </option>
@@ -235,8 +249,14 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
             <Controller
               name="kilometers"
               control={control}
-              render={({ field }) => <Input {...field} type="number" onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
-              value={field.value} />}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="number"
+                  onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                  value={field.value}
+                />
+              )}
             />
           </FormControl>
         </>
