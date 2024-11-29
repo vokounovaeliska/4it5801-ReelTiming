@@ -7,13 +7,13 @@ import {
 } from './timesheetPdfReportTypes';
 import {
   calculateOvertimeAmount,
-  formatAmount,
   formatDate,
   formatPhoneNumber,
   formatStatementTime,
   formatTime,
 } from '../utils/timesheetReportUtils';
 import { Stream } from 'stream';
+import { currencyUtil } from '@shared/currencyUtil';
 
 interface Rect {
   x: number;
@@ -174,11 +174,12 @@ export async function timesheetPdfReport(
           if (rectCell && typeof value !== 'undefined') {
             const textWidth = doc.widthOfString(String(value));
             const xPosition = rectCell.x + rectCell.width - textWidth - margin;
+            doc.font('DejaVuSans');
             doc.text(String(value), xPosition, rectCell.y + 5, {
               align: 'left', // Rendered align is "left" because the position is manually calculated
             });
           }
-          return ''; // Ensures the default rendering is overridden
+          return '';
         },
       },
     ],
@@ -204,7 +205,7 @@ export async function timesheetPdfReport(
       `${formattedFrom} - ${formattedTo}`,
       statement.calculated_overtime.toString(),
       statement.claimed_overtime.toString(),
-      formatAmount(overtimeAmount),
+      currencyUtil.formatAmount(overtimeAmount, crewInfo.project.currency, 2),
     ]);
 
     totalOvertime += statement.claimed_overtime;
@@ -232,7 +233,13 @@ export async function timesheetPdfReport(
     .font('DejaVuSans-Bold')
     .text('Total Overtime Amount: ', { align: 'left', continued: true })
     .font('DejaVuSans')
-    .text(`${formatAmount(totalOvertimeAmount)} CZK`);
+    .text(
+      `${currencyUtil.formatAmount(
+        totalOvertimeAmount,
+        crewInfo.project.currency,
+        2,
+      )}`,
+    );
 
   doc.end();
   return stream;

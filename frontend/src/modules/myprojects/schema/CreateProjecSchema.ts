@@ -19,10 +19,11 @@ export const createProjectSchema = z
 
     endDate: zod
       .date()
-      .nullable() // Allow end date to be nullable
+      .nullable()
       .refine((date) => date === null || !isNaN(date.getTime()), {
         message: 'End date must be a valid date or empty',
       }),
+    currency: zod.string().length(3, { message: 'Currency must be selected.' }),
   })
   .superRefine((data, ctx) => {
     const startDate = data.startDate.setHours(0, 0, 0, 0);

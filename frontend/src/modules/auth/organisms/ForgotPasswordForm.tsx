@@ -100,7 +100,9 @@ export function ForgotPasswordForm({
             </Button>
           </Stack>
           {children}
-          <RequiredInfo />
+          <Box textAlign="center">
+            <RequiredInfo />
+          </Box>
         </Form>
       </Box>
     </Box>

@@ -16,6 +16,7 @@ export const GET_PROJECT_USER_BY_TOKEN = gql`
         id
         name
         description
+        currency
       }
       rate {
         standard_rate

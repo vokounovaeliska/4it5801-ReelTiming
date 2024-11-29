@@ -14,6 +14,7 @@ export const GET_PROJECT_DETAILS = gql`
       create_user_id
       last_update_date
       last_update_user_id
+      currency
     }
   }
   ${PROJECT_BASIC_INFO}

@@ -1,5 +1,4 @@
 import { type ReactNode } from 'react';
-import { Text } from '@chakra-ui/react';
 import { useSearchParams } from 'react-router-dom';
 
 import {
@@ -121,9 +120,6 @@ export function NewPasswordForm({
               autoCorrect="off"
               autoCapitalize="off"
             />
-            <Text color="gray.500" fontSize="xs" textAlign="left">
-              Password must be at least 10 characters long
-            </Text>
             <InputField
               name="newPasswordConfirmation"
               label="Confirm password"
@@ -133,6 +129,9 @@ export function NewPasswordForm({
               autoCorrect="off"
               autoCapitalize="off"
             />
+            <Box textAlign="left">
+              <RequiredInfo />
+            </Box>
             <Button
               w="full"
               size="lg"
@@ -146,7 +145,6 @@ export function NewPasswordForm({
             </Button>
           </Stack>
           {children}
-          <RequiredInfo />
         </Form>
       </Box>
     </Box>

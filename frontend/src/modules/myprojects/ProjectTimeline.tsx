@@ -78,17 +78,23 @@ const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ projectId }) => {
     daysLeft = Math.ceil(
       (startDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
     );
-    message = `There ${daysLeft === 1 ? 'is' : 'are'} ${daysLeft} day${daysLeft === 1 ? '' : 's'} left until the start.`;
+    message = `There ${daysLeft === 1 ? 'is' : 'are'} ${daysLeft} day${
+      daysLeft === 1 ? '' : 's'
+    } left until the start.`;
   } else if (today >= startDate && today < endDate) {
     daysLeft = Math.ceil(
       (endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
     );
-    message = `There ${daysLeft === 1 ? 'is' : 'are'} ${daysLeft} day${daysLeft === 1 ? '' : 's'} left until the end.`;
+    message = `There ${daysLeft === 1 ? 'is' : 'are'} ${daysLeft} day${
+      daysLeft === 1 ? '' : 's'
+    } left until the end.`;
   } else {
     daysLeft = Math.ceil(
       (today.getTime() - endDate.getTime()) / (1000 * 60 * 60 * 24),
     );
-    message = `The project ended ${daysLeft} day${daysLeft === 1 ? '' : 's'} ago.`;
+    message = `The project ended ${daysLeft} day${
+      daysLeft === 1 ? '' : 's'
+    } ago.`;
   }
 
   return (

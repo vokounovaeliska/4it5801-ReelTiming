@@ -13,6 +13,7 @@ export const GET_CREWLIST_INFO = gql`
       create_user_id
       last_update_date
       last_update_user_id
+      currency
     }
     departments {
       id

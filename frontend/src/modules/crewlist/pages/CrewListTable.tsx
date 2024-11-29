@@ -16,6 +16,7 @@ import {
 
 import { TextPhoneNumber } from '@frontend/shared/design-system/atoms/TextPhoneNumber';
 import { TooltipHeader } from '@frontend/shared/design-system/atoms/Tooltip';
+import { currencyUtil } from '@shared/currencyUtil';
 
 import { CrewMemberData, ProjectUser } from '../interfaces/interfaces';
 
@@ -32,6 +33,7 @@ interface CrewListTableProps {
   ) => void;
   userRoleInProject: string;
   authUserId: string | undefined;
+  projectCurrency: string;
 }
 
 const CrewListTable: React.FC<CrewListTableProps> = ({
@@ -42,6 +44,7 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
   sendInvitation,
   userRoleInProject,
   authUserId,
+  projectCurrency,
 }) => {
   return (
     <Box
@@ -75,9 +78,39 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
           <Table variant="simple" size="sm">
             <Thead>
               <Tr bg="#2D3748" textColor="white">
-                <Th textColor="white">Name</Th>
-                <Th textColor="white">Surname</Th>
-                <Th textColor="white">Position</Th>
+                <Th
+                  textColor="white"
+                  position={{ base: 'relative', md: 'sticky' }}
+                  left="0"
+                  zIndex={2}
+                  bg="#2D3748"
+                  whiteSpace="nowrap"
+                  minWidth="max-content"
+                >
+                  Name
+                </Th>
+                <Th
+                  textColor="white"
+                  position="sticky"
+                  left={{ base: '0', md: '104px' }}
+                  zIndex={2}
+                  bg="#2D3748"
+                  whiteSpace="nowrap"
+                  minWidth="max-content"
+                >
+                  Surname
+                </Th>
+                <Th
+                  textColor="white"
+                  position={{ base: 'relative', md: 'sticky' }}
+                  left={{ base: '0', md: '208px' }}
+                  zIndex={1}
+                  bg="#2D3748"
+                  whiteSpace="nowrap"
+                  minWidth="max-content"
+                >
+                  Position
+                </Th>
                 <Th textColor="white">Role</Th>
                 <Th textColor="white">Email</Th>
                 <Th textColor="white">Phone number</Th>
@@ -106,13 +139,18 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                 <React.Fragment key={departmentName}>
                   <Tr key={departmentName} bg={'gray.200'}>
                     <Td
-                      colSpan={14}
+                      colSpan={2}
                       textColor="#2D3748"
                       textTransform="uppercase"
                       fontWeight="bold"
+                      position="sticky"
+                      left="0"
+                      zIndex={1}
+                      bg={'gray.200'}
                     >
                       {departmentName}
                     </Td>
+                    <Td colSpan={12} bg={'gray.200'}></Td>
                   </Tr>
                   {groupedByDepartment[departmentName].map(
                     (user: ProjectUser) => (
@@ -144,9 +182,35 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                           backgroundColor: 'gray.200',
                         }}
                       >
-                        <Td>{user?.name}</Td>
-                        <Td>{user?.surname}</Td>
-                        <Td>{user.position}</Td>
+                        <Td
+                          position="sticky"
+                          left="0"
+                          bg="white"
+                          zIndex={2}
+                          minWidth="max-content"
+                        >
+                          {user?.name}
+                        </Td>
+                        <Td
+                          position="sticky"
+                          left={{ base: '0', md: '104px' }}
+                          bg="white"
+                          zIndex={2}
+                          minWidth="max-content"
+                        >
+                          {user?.surname}
+                        </Td>
+                        <Td
+                          position={{ base: 'relative', md: 'sticky' }}
+                          left={{ base: '0', md: '208px' }}
+                          bg="white"
+                          zIndex={1}
+                          minWidth="max-content"
+                          borderRight={50}
+                          borderRightColor={'black'}
+                        >
+                          {user.position}
+                        </Td>
                         <Td>{user.role}</Td>
                         <Td>
                           <Link
@@ -168,34 +232,52 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                             ></TextPhoneNumber>
                           </Link>
                         </Td>
-                        <Td>
+                        <Td textAlign="center">
                           {user.rate?.standard_rate !== 0
-                            ? user.rate?.standard_rate
+                            ? currencyUtil.formatAmount(
+                                user.rate?.standard_rate,
+                                projectCurrency,
+                              )
                             : ''}
                         </Td>
-                        <Td>
+                        <Td textAlign="center">
                           {user.rate?.compensation_rate !== 0
-                            ? user.rate?.compensation_rate
+                            ? currencyUtil.formatAmount(
+                                user.rate?.compensation_rate,
+                                projectCurrency,
+                              )
                             : ''}
                         </Td>
-                        <Td>
+                        <Td textAlign="center">
                           {user.rate?.overtime_hour1 !== 0
-                            ? user.rate?.overtime_hour1
+                            ? currencyUtil.formatAmount(
+                                user.rate?.overtime_hour1,
+                                projectCurrency,
+                              )
                             : ''}
                         </Td>
-                        <Td>
+                        <Td textAlign="center">
                           {user.rate?.overtime_hour2 !== 0
-                            ? user.rate?.overtime_hour2
+                            ? currencyUtil.formatAmount(
+                                user.rate?.overtime_hour2,
+                                projectCurrency,
+                              )
                             : ''}
                         </Td>
-                        <Td>
+                        <Td textAlign="center">
                           {user.rate?.overtime_hour3 !== 0
-                            ? user.rate?.overtime_hour3
+                            ? currencyUtil.formatAmount(
+                                user.rate?.overtime_hour3,
+                                projectCurrency,
+                              )
                             : ''}
                         </Td>
-                        <Td>
+                        <Td textAlign="center">
                           {user.rate?.overtime_hour4 !== 0
-                            ? user.rate?.overtime_hour4
+                            ? currencyUtil.formatAmount(
+                                user.rate?.overtime_hour4,
+                                projectCurrency,
+                              )
                             : ''}
                         </Td>
                         <Td>
