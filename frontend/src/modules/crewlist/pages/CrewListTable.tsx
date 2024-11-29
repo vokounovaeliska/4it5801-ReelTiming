@@ -16,6 +16,7 @@ import {
 
 import { TextPhoneNumber } from '@frontend/shared/design-system/atoms/TextPhoneNumber';
 import { TooltipHeader } from '@frontend/shared/design-system/atoms/Tooltip';
+import { currencyUtil } from '@shared/currencyUtil';
 
 import { CrewMemberData, ProjectUser } from '../interfaces/interfaces';
 
@@ -32,6 +33,7 @@ interface CrewListTableProps {
   ) => void;
   userRoleInProject: string;
   authUserId: string | undefined;
+  projectCurrency: string;
 }
 
 const CrewListTable: React.FC<CrewListTableProps> = ({
@@ -42,6 +44,7 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
   sendInvitation,
   userRoleInProject,
   authUserId,
+  projectCurrency,
 }) => {
   return (
     <Box
@@ -168,34 +171,52 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                             ></TextPhoneNumber>
                           </Link>
                         </Td>
-                        <Td>
+                        <Td textAlign="center">
                           {user.rate?.standard_rate !== 0
-                            ? user.rate?.standard_rate
+                            ? currencyUtil.formatAmount(
+                                user.rate?.standard_rate,
+                                projectCurrency,
+                              )
                             : ''}
                         </Td>
-                        <Td>
+                        <Td textAlign="center">
                           {user.rate?.compensation_rate !== 0
-                            ? user.rate?.compensation_rate
+                            ? currencyUtil.formatAmount(
+                                user.rate?.compensation_rate,
+                                projectCurrency,
+                              )
                             : ''}
                         </Td>
-                        <Td>
+                        <Td textAlign="center">
                           {user.rate?.overtime_hour1 !== 0
-                            ? user.rate?.overtime_hour1
+                            ? currencyUtil.formatAmount(
+                                user.rate?.overtime_hour1,
+                                projectCurrency,
+                              )
                             : ''}
                         </Td>
-                        <Td>
+                        <Td textAlign="center">
                           {user.rate?.overtime_hour2 !== 0
-                            ? user.rate?.overtime_hour2
+                            ? currencyUtil.formatAmount(
+                                user.rate?.overtime_hour2,
+                                projectCurrency,
+                              )
                             : ''}
                         </Td>
-                        <Td>
+                        <Td textAlign="center">
                           {user.rate?.overtime_hour3 !== 0
-                            ? user.rate?.overtime_hour3
+                            ? currencyUtil.formatAmount(
+                                user.rate?.overtime_hour3,
+                                projectCurrency,
+                              )
                             : ''}
                         </Td>
-                        <Td>
+                        <Td textAlign="center">
                           {user.rate?.overtime_hour4 !== 0
-                            ? user.rate?.overtime_hour4
+                            ? currencyUtil.formatAmount(
+                                user.rate?.overtime_hour4,
+                                projectCurrency,
+                              )
                             : ''}
                         </Td>
                         <Td>

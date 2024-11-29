@@ -6,7 +6,10 @@ import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 import { CrewListForm } from '../forms/CrewListForm';
 import { CrewListTemplateProps } from '../interfaces/interfaces';
 
-export function CrewListTemplate({ projectId }: CrewListTemplateProps) {
+export function CrewListTemplate({
+  projectId,
+  projectCurrency,
+}: CrewListTemplateProps) {
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <Navbar children={undefined}></Navbar>
@@ -28,6 +31,7 @@ export function CrewListTemplate({ projectId }: CrewListTemplateProps) {
             departments={[]}
             mode={'edit'} // could cause a bug
             userRole={'CREW'}
+            projectCurrency={projectCurrency}
           />
         </Box>
       </Box>

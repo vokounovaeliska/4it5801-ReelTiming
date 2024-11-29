@@ -9,6 +9,7 @@ export const EDIT_PROJECT = gql(`
             end_date,
             is_active,
             last_update_user_id,
+            currency,
             # start_date
         }
     } 

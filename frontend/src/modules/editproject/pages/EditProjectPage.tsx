@@ -20,6 +20,7 @@ export function EditProjectPage() {
     variables: { id: projectId },
     fetchPolicy: 'cache-and-network',
   });
+
   const [editproject] = useMutation(EDIT_PROJECT, {
     onCompleted: () => {
       navigate(`/projects/${projectId}`);
@@ -77,6 +78,7 @@ export function EditProjectPage() {
             start_date: startDate,
             end_date: endDate,
             last_update_user_id: userId,
+            currency: data.currency,
           },
         },
       });
@@ -121,4 +123,5 @@ export interface ProjectData {
   production_company: string;
   start_date: Date;
   end_date: Date;
+  currency: string;
 }

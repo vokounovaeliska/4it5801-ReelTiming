@@ -8,6 +8,7 @@ export const ADD_PROJECT = gql`
     $startDate: DateTimeISO
     $description: String
     $create_user_id: String
+    $currency: String
   ) {
     addProject(
       production_company: $productionCompany
@@ -16,6 +17,7 @@ export const ADD_PROJECT = gql`
       start_date: $startDate
       description: $description
       create_user_id: $create_user_id
+      currency: $currency
     ) {
       id
       name
@@ -28,6 +30,7 @@ export const ADD_PROJECT = gql`
       last_update_user_id
       last_update_date
       is_active
+      currency
     }
   }
 `;
