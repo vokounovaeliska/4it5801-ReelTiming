@@ -48,6 +48,21 @@ import {
 import TimesheetsTemplate from '../templates/TimesheetsTemplate';
 import { formatTimeForParsing, toLocalISOString } from '../utils/timeUtils';
 
+export function getAvailableCarsForProjectUserId(
+  projectUserId,
+  allCarsOnProjectData,
+) {
+  const filteredCarsOnProject = allCarsOnProjectData?.projectUsers.filter(
+    (projectUser) => projectUser.id === projectUserId,
+  );
+
+  const carDetails = filteredCarsOnProject?.flatMap((projectUser) =>
+    projectUser.car.map((car) => ({ id: car.id, name: car.name })),
+  );
+
+  return carDetails;
+}
+
 export function TimesheetPage() {
   const auth = useAuth();
   const { projectId } = useParams<{ projectId: string }>();
@@ -63,7 +78,6 @@ export function TimesheetPage() {
   );
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [selectedCar, setSelectedCar] = useState<string | null>(null);
-  const [userCars, setUserCars] = useState<{ id: string; name: string }[]>([]);
 
   const {
     data: userInfoData,
@@ -126,16 +140,23 @@ export function TimesheetPage() {
     fetchPolicy: 'cache-and-network',
   });
 
-  const { data: carsData } = useQuery(GET_CARS_BY_PROJECT_USER_ID, {
+  const {
+    data: userCarsData,
+    loading: userCarsLoading,
+    error: userCarsError,
+  } = useQuery(GET_CARS_BY_PROJECT_USER_ID, {
     variables: { projectUserId: selectedUser || userInfo?.id },
     skip: !selectedUser && !userInfo?.id,
     fetchPolicy: 'cache-and-network',
-    onCompleted: (data) => {
-      setUserCars(data.carsByProjectUserId);
-    },
   });
 
-  const userOptions =
+  const carOptionsForLoggedInUser =
+    userCarsData?.carsByProjectUserId?.map((car) => ({
+      value: car.id,
+      label: car.name,
+    })) || [];
+
+  const userOptionsForUserFilter =
     allProjectUsersData?.projectUsers
       ?.filter(
         (projectUser: { id: string; name: string; surname: string }) =>
@@ -540,7 +561,7 @@ export function TimesheetPage() {
         onDeleteClick={handleDeleteClick}
         projectId={projectId!}
         projectName={userInfoData.projectUserDetails.project.name}
-        userOptions={userOptions}
+        userOptions={userOptionsForUserFilter}
         userRole={userRole}
         projectUserId={userInfoData.projectUserDetails.id}
         authUser={auth.user}
@@ -561,18 +582,19 @@ export function TimesheetPage() {
       >
         <TimesheetsForm
           projectId={projectId!}
-          // initialValues={selectedTimesheet || undefined}
-          initialValues={{ ...selectedTimesheet, userCars }}
+          initialValues={selectedTimesheet || undefined}
+          // initialValues={{ ...selectedTimesheet, userCars }}
           onClose={handleModalClose}
           mode={mode}
           onSubmit={handleFormSubmitWrapper}
           userRole={userRole}
           userOptions={userOptionsForAdminAddTimesheet}
           userInfo={userInfo}
-          userCars={userCars}
+          // userCars={userCarsData}
           setSelectedUser={setSelectedUser}
           setSelectedCar={setSelectedCar}
           allCarsOnProject={allCarsOnProjectData}
+          carOptionsForLoggedInUser={carOptionsForLoggedInUser}
         />
       </CustomModal>
       <AlertDialog

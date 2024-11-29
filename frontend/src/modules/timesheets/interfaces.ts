@@ -98,6 +98,7 @@ export interface TimesheetsFormProps {
   setSelectedUser: (userId: string) => void;
   setSelectedCar: (carId: string) => void;
   allCarsOnProject: Car[];
+  carOptionsForLoggedInUser: Car[];
 }
 
 export interface Car {

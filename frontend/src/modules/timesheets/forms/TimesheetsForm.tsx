@@ -11,6 +11,7 @@ import {
 import { Controller, useForm, useWatch } from 'react-hook-form';
 
 import { TimesheetFormValues, TimesheetsFormProps } from '../interfaces';
+import { getAvailableCarsForProjectUserId } from '../pages/TimesheetsPage';
 import { formatDate, formatTime, toLocalISOString } from '../utils/timeUtils';
 
 export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
@@ -19,16 +20,20 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
   mode,
   onSubmit,
   userRole,
-  userOptions,
+  userOptions, // users to offer in the User <Select> - only for admin
   userInfo,
-  setSelectedUser,
+  // setSelectedUser,
+  allCarsOnProject, // unfiltered query response - json of projectusers list and their cars/statement data
+  carOptionsForLoggedInUser, // list of cars for logged in user either crew/admin
   // setSelectedCar,
 }) => {
-  console.log(initialValues, 'init');
-  console.log(initialValues?.car?.id, 'CARID');
+  // console.log(initialValues, 'init');
+  // console.log(carOptionsForLoggedInUser);
+
   const [selectedCar, setSelectedCar] = useState<string | null>(
     initialValues?.carId || null,
   );
+
   const defaultValues: TimesheetFormValues = {
     ...initialValues,
     start_date: toLocalISOString(new Date()).split('T')[0],
@@ -60,6 +65,13 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
         initialValues?.projectUser?.surname ||
         defaultValues.projectUser.surname,
     },
+    // carId:
+    //   // 22IQ solution - will cry if debugging needed
+    //   (initialValues?.carId ||
+    //     (initialValues?.userCars && initialValues.userCars.length > 0
+    //       ? initialValues.userCars[0].id
+    //       : '')) ??
+    //   '',
     carId:
       // 22IQ solution - will cry if debugging needed
       (initialValues?.carId ||
@@ -69,6 +81,9 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
       '',
   };
 
+  console.log(mergedValues,' MERGED VALUES')
+  console.log(initialValues?.userCars, 'USERCARSINITIALVALUE')
+
   const { handleSubmit, control, setValue } = useForm<TimesheetFormValues>({
     defaultValues: mergedValues,
   });
@@ -76,11 +91,11 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
   const from = useWatch({ control, name: 'from' });
   const to = useWatch({ control, name: 'to' });
   const shift = useWatch({ control, name: 'shift_lenght' });
+
   useEffect(() => {
     if (from && to && shift) {
       const fromTime = new Date(`1970-01-01T${from}:00`);
       let toTime = new Date(`1970-01-01T${to}:00`);
-      // check if the end time is earlier than the start time (overnight shift)
       if (toTime < fromTime) {
         toTime.setDate(toTime.getDate() + 1);
       }
@@ -103,11 +118,11 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
     }
   }, [from, to, shift, setValue, initialValues]);
 
-  useEffect(() => {
-    if (userInfo?.id) {
-      setSelectedUser(userInfo.id);
-    }
-  }, [userInfo, setSelectedUser]);
+  // useEffect(() => {
+  //   if (userInfo?.id) {
+  //     setSelectedUser(userInfo.id);
+  //   }
+  // }, [userInfo, setSelectedUser]);
 
   useEffect(() => {
     if (initialValues?.carId) {
@@ -128,7 +143,7 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
                 {...field}
                 onChange={(e) => {
                   field.onChange(e);
-                  setSelectedUser(e.target.value);
+                  // setSelectedUser(e.target.value);
                 }}
               >
                 {userOptions.map((user) => (
