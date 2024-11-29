@@ -12,9 +12,11 @@ import {
 } from '@chakra-ui/react';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { Controller } from 'react-hook-form';
+import { FaCarSide } from 'react-icons/fa6';
 
 import { ErrorBanner } from '@frontend/shared/design-system';
 import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
+import { CarFormWithTable } from '@frontend/shared/forms/VehicleEnrollment';
 
 export type CrewListFormProps = {
   projectId: string;
@@ -102,6 +104,8 @@ export function CrewListForm({
   userRole,
 }: CrewListFormProps) {
   const [sendInvite, setSendInvite] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
   return (
     <Form
       onSubmit={(data) => {
@@ -114,126 +118,166 @@ export function CrewListForm({
     >
       <Stack justify="center">
         {errorMessage && <ErrorBanner title={errorMessage} />}
-        <Box display={{ base: 'block', lg: 'flex' }} gap={6} p="2">
-          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-            <InputField name="name" label="Name" isRequired />
-            <InputField name="surname" label="Surname" isRequired />
-            <Controller
-              name="department"
-              render={({ field, fieldState }) => (
-                <FormControl
-                  isRequired={userRole === 'ADMIN'}
-                  isInvalid={!!fieldState.error}
-                >
-                  <FormLabel>Department</FormLabel>
-                  <Select
-                    {...field}
-                    placeholder="Select Department"
-                    borderColor="gray.400"
-                    borderWidth={1}
-                    isDisabled={userRole !== 'ADMIN'}
-                  >
-                    {departments.map((dept) => (
-                      <option key={dept.id} value={dept.id}>
-                        {dept.name}
-                      </option>
-                    ))}
-                  </Select>
-                  <FormErrorMessage>
-                    {fieldState.error?.message}
-                  </FormErrorMessage>
-                </FormControl>
-              )}
-            />
-            <InputField
-              name="position"
-              label="Position"
-              isRequired
-              isDisabled={userRole !== 'ADMIN'}
-            />
-            <InputField name="email" label="Email" isRequired />
-            <InputField name="phone_number" label="Phone number" isRequired />
-            <Controller
-              name="role"
-              render={({ field }) => (
-                <FormControl isRequired isDisabled={userRole !== 'ADMIN'}>
-                  <FormLabel>Role</FormLabel>
-                  <Select {...field} borderColor={'gray.400'} borderWidth={1}>
-                    <option value="CREW">CREW</option>
-                    <option value="ADMIN">ADMIN</option>
-                  </Select>
-                </FormControl>
-              )}
-            />
-          </SimpleGrid>
-          <Divider
-            orientation="vertical"
-            display={{ base: 'none', lg: 'block' }}
-          />
-          <Divider
-            orientation="horizontal"
-            display={{ base: 'block', lg: 'none' }}
-          />
 
-          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-            <InputField name="standard_rate" label="Standard rate" isRequired />
-            <InputField
-              name="compensation_rate"
-              label="Compensation rate"
-              isRequired
-              type="number"
+        {currentPage === 1 && (
+          <Box display={{ base: 'block', lg: 'flex' }} gap={6} p="2">
+            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+              <InputField name="name" label="Name" isRequired />
+              <InputField name="surname" label="Surname" isRequired />
+              <Controller
+                name="department"
+                render={({ field, fieldState }) => (
+                  <FormControl
+                    isRequired={userRole === 'ADMIN'}
+                    isInvalid={!!fieldState.error}
+                  >
+                    <FormLabel>Department</FormLabel>
+                    <Select
+                      {...field}
+                      placeholder="Select Department"
+                      borderColor="gray.400"
+                      borderWidth={1}
+                      isDisabled={userRole !== 'ADMIN'}
+                    >
+                      {departments.map((dept) => (
+                        <option key={dept.id} value={dept.id}>
+                          {dept.name}
+                        </option>
+                      ))}
+                    </Select>
+                    <FormErrorMessage>
+                      {fieldState.error?.message}
+                    </FormErrorMessage>
+                  </FormControl>
+                )}
+              />
+              <InputField
+                name="position"
+                label="Position"
+                isRequired
+                isDisabled={userRole !== 'ADMIN'}
+              />
+              <InputField name="email" label="Email" isRequired />
+              <InputField name="phone_number" label="Phone number" isRequired />
+              <Controller
+                name="role"
+                render={({ field }) => (
+                  <FormControl isRequired isDisabled={userRole !== 'ADMIN'}>
+                    <FormLabel>Role</FormLabel>
+                    <Select {...field} borderColor={'gray.400'} borderWidth={1}>
+                      <option value="CREW">CREW</option>
+                      <option value="ADMIN">ADMIN</option>
+                    </Select>
+                  </FormControl>
+                )}
+              />
+            </SimpleGrid>
+            <Divider
+              orientation="vertical"
+              display={{ base: 'none', lg: 'block' }}
             />
-            <InputField
-              name="overtime_hour1"
-              label="1. Overtime hour"
-              isRequired
-              type="number"
+            <Divider
+              orientation="horizontal"
+              display={{ base: 'block', lg: 'none' }}
             />
-            <InputField
-              name="overtime_hour2"
-              label="2. Overtime hour"
-              isRequired
-              type="number"
-            />
-            <InputField
-              name="overtime_hour3"
-              label="3. Overtime hour"
-              isRequired
-              type="number"
-            />
-            <InputField
-              name="overtime_hour4"
-              label="4. Overtime hour"
-              isRequired
-              type="number"
-            />
-          </SimpleGrid>
-        </Box>
-      </Stack>
-      <Stack m={4} spacing={6}>
-        {mode === 'add' ? (
-          <>
-            <Button
-              type="submit"
-              colorScheme="orange"
-              width="100%"
-              isLoading={isLoading}
-              onClick={() => setSendInvite(true)}
-            >
-              Add Member and Send Invitation
-            </Button>
-            <Button
-              type="submit"
-              colorScheme="gray"
-              width="100%"
-              isLoading={isLoading}
-              onClick={() => setSendInvite(false)}
-            >
-              Add Member without Invitation
-            </Button>
-          </>
-        ) : (
-          <>
+
+            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+              <InputField
+                name="standard_rate"
+                label="Standard rate"
+                isRequired
+              />
+              <InputField
+                name="compensation_rate"
+                label="Compensation rate"
+                isRequired
+                type="number"
+              />
+              <InputField
+                name="overtime_hour1"
+                label="1. Overtime hour"
+                isRequired
+                type="number"
+              />
+              <InputField
+                name="overtime_hour2"
+                label="2. Overtime hour"
+                isRequired
+                type="number"
+              />
+              <InputField
+                name="overtime_hour3"
+                label="3. Overtime hour"
+                isRequired
+                type="number"
+              />
+              <InputField
+                name="overtime_hour4"
+                label="4. Overtime hour"
+                isRequired
+                type="number"
+              />
+            </SimpleGrid>
+          </Box>
+        )}
+
+        {currentPage === 2 && <CarFormWithTable />}
+
+        {mode !== 'add' && (
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            m={4}
+          >
+            {/* Back Button on the Left */}
+            {currentPage > 1 && (
+              <Button
+                colorScheme="gray"
+                onClick={() => setCurrentPage((prev) => prev - 1)}
+              >
+                Back
+              </Button>
+            )}
+            {/* Spacer to push Add Car to the Right */}
+            <Box flex="1" />
+            {/* Add Car Button on the Right */}
+            {currentPage < 2 && (
+              <Button
+                colorScheme="orange"
+                variant="outline"
+                rightIcon={<FaCarSide />}
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+              >
+                Add Car
+              </Button>
+            )}
+          </Box>
+        )}
+
+        <Stack m={4} spacing={6}>
+          {mode === 'add' ? (
+            <>
+              <Button
+                type="submit"
+                colorScheme="orange"
+                width="100%"
+                isLoading={isLoading}
+                onClick={() => setSendInvite(true)}
+              >
+                Add Member and Send Invitation
+              </Button>
+              <Button
+                type="submit"
+                colorScheme="gray"
+                width="100%"
+                isLoading={isLoading}
+                onClick={() => setSendInvite(false)}
+              >
+                Add Member without Invitation
+              </Button>
+            </>
+          ) : (
             <Button
               type="submit"
               colorScheme="orange"
@@ -242,8 +286,8 @@ export function CrewListForm({
             >
               Save Changes
             </Button>
-          </>
-        )}
+          )}
+        </Stack>
       </Stack>
     </Form>
   );

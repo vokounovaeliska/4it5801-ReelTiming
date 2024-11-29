@@ -15,6 +15,7 @@ import { AuthUser } from '@frontend/modules/auth/auth-core';
 import { ErrorBanner } from '@frontend/shared/design-system';
 import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
 import { FormSection } from '@frontend/shared/forms/molecules/FormSection';
+import { CarFormWithTable } from '@frontend/shared/forms/VehicleEnrollment';
 
 export type AcceptInvitationFormProps = {
   errorMessage?: string;
@@ -219,7 +220,12 @@ export function AcceptInvitationForm({
               isRequired
             />
           </FormSection>
-
+          <FormSection
+            title="Transport & Milage"
+            description="Please fill in your transport and milage compensation rates."
+          >
+            <CarFormWithTable />
+          </FormSection>
           <Stack align="flex-end">
             <Button
               type="submit"
