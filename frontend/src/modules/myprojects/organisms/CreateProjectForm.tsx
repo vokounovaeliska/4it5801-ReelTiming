@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 import { SimpleGrid } from '@chakra-ui/react';
 import { addDays } from 'date-fns';
 
+import RequiredInfo from '@frontend/modules/auth/organisms/RequiredInfo';
 import { route } from '@frontend/route';
 import {
   Box,
@@ -18,6 +19,7 @@ import {
   zod,
   zodResolver,
 } from '@frontend/shared/forms';
+import { CurrencySelectField } from '@frontend/shared/forms/molecules/fields/CurrencySelectField';
 import { RouterNavLink } from '@frontend/shared/navigation/atoms';
 
 import { createProjectSchema } from '../schema/CreateProjecSchema';
@@ -31,6 +33,7 @@ const initialValues: FormValues = {
   productionCompany: '',
   startDate: today,
   endDate: addDays(today, 3),
+  currency: 'CZK',
 };
 
 export type CreateProjectFormProps = {
@@ -96,16 +99,25 @@ export function CreateProjectForm({
               autoCapitalize="off"
               mb={2}
             />
-            <InputField
-              name="productionCompany"
-              label="Production company"
-              autoFocus
-              autoComplete="on"
-              autoCorrect="off"
-              autoCapitalize="off"
-              isRequired
-              mb={2}
-            />
+            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+              <InputField
+                name="productionCompany"
+                label="Production company"
+                autoFocus
+                autoComplete="on"
+                autoCorrect="off"
+                autoCapitalize="off"
+                isRequired
+                mb={2}
+              />
+              <CurrencySelectField
+                id="currency"
+                name="currency"
+                label="Project currency"
+                isRequired
+              />
+            </SimpleGrid>
+
             <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
               <DateInputField
                 name="startDate"
@@ -123,7 +135,11 @@ export function CreateProjectForm({
                 autoCapitalize="off"
               />
             </SimpleGrid>
+            <Box textAlign="left">
+              <RequiredInfo />
+            </Box>
           </Stack>
+
           <SimpleGrid columns={2} spacing={6} pt={8} pb={3}>
             <Button
               as={RouterNavLink}

@@ -22,6 +22,7 @@ export interface CrewInfoPdf {
   project: {
     name: string;
     description: string;
+    currency: string;
   };
   rate: {
     standard_rate: number;

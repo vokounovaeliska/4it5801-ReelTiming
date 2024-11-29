@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Button, SimpleGrid, Text } from '@chakra-ui/react';
 
+import RequiredInfo from '@frontend/modules/auth/organisms/RequiredInfo';
 import { FormValues } from '@frontend/modules/myprojects/organisms/CreateProjectForm';
 import { createProjectSchema } from '@frontend/modules/myprojects/schema/CreateProjecSchema';
 import {
@@ -10,6 +11,7 @@ import {
   TextAreaField,
   zodResolver,
 } from '@frontend/shared/forms';
+import { CurrencySelectField } from '@frontend/shared/forms/molecules/fields/CurrencySelectField';
 
 import { ProjectData } from '../pages/EditProjectPage';
 
@@ -19,7 +21,6 @@ type EditProjectFormProps = {
   onSubmit: (data: FormValues) => void;
 };
 
-// export function EditProjectForm({ projectId }: { projectId: string }) {
 export function EditProjectForm({
   projectId: _projectId,
   project,
@@ -35,6 +36,7 @@ export function EditProjectForm({
     productionCompany: project.production_company,
     startDate: new Date(project?.start_date),
     endDate: new Date(project?.end_date),
+    currency: project.currency,
   };
 
   return (
@@ -86,18 +88,24 @@ export function EditProjectForm({
           />
         </Box>
 
-        <Box mb={4}>
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
           <InputField
             name="productionCompany"
-            label="Production Company"
+            label="Production company"
+            autoFocus
             autoComplete="on"
             autoCorrect="off"
             autoCapitalize="off"
             isRequired
             mb={2}
-            width="100%"
           />
-        </Box>
+          <CurrencySelectField
+            id="currency"
+            name="currency"
+            label="Project currency"
+            isRequired
+          />
+        </SimpleGrid>
 
         <Text fontSize="md" fontWeight="semibold" mt={6} mb={2}>
           Project Dates
@@ -111,6 +119,9 @@ export function EditProjectForm({
             autoCorrect="off"
             autoCapitalize="off"
           />
+          <Box textAlign="left">
+            <RequiredInfo />
+          </Box>
         </SimpleGrid>
 
         <Button

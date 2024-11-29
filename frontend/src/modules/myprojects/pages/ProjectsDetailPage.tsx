@@ -24,6 +24,7 @@ import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
+import { currencyUtil } from '@shared/currencyUtil';
 
 import { GET_PROJECT_DETAILS } from '../../../gql/queries/GetProjectDetails';
 import { GET_USER_ROLE_IN_PROJECT } from '../../../gql/queries/GetUserRoleInProject';
@@ -391,6 +392,13 @@ export function MyProjectDetailPage() {
                   </Box>
                   <strong>Production Company:</strong>{' '}
                   {project.production_company || 'N/A'}
+                </Text>
+                <Text fontSize="md" color="gray.600" mb={2}>
+                  <Box as="span" mr={2} color="green.500">
+                    💰
+                  </Box>
+                  <strong>Project currency:</strong>{' '}
+                  {currencyUtil.getLabel(project.currency)}
                 </Text>
                 <Text fontSize="md" color="gray.600" mb={2}>
                   <Box as="span" mr={2} color="blue.500">

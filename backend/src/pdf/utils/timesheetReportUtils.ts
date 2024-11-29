@@ -94,10 +94,3 @@ export const formatPhoneNumber = (phoneNumber: string): string => {
   // Return the original phone number if it doesn't match expected format
   return phoneNumber;
 };
-
-export const formatAmount = (amount: number): string => {
-  return new Intl.NumberFormat('cs-CZ', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount);
-};
