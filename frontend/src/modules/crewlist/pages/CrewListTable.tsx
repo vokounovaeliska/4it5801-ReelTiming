@@ -78,9 +78,39 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
           <Table variant="simple" size="sm">
             <Thead>
               <Tr bg="#2D3748" textColor="white">
-                <Th textColor="white">Name</Th>
-                <Th textColor="white">Surname</Th>
-                <Th textColor="white">Position</Th>
+                <Th
+                  textColor="white"
+                  position={{ base: 'relative', md: 'sticky' }}
+                  left="0"
+                  zIndex={2}
+                  bg="#2D3748"
+                  whiteSpace="nowrap"
+                  minWidth="max-content"
+                >
+                  Name
+                </Th>
+                <Th
+                  textColor="white"
+                  position="sticky"
+                  left={{ base: '0', md: '104px' }}
+                  zIndex={2}
+                  bg="#2D3748"
+                  whiteSpace="nowrap"
+                  minWidth="max-content"
+                >
+                  Surname
+                </Th>
+                <Th
+                  textColor="white"
+                  position={{ base: 'relative', md: 'sticky' }}
+                  left={{ base: '0', md: '208px' }}
+                  zIndex={1}
+                  bg="#2D3748"
+                  whiteSpace="nowrap"
+                  minWidth="max-content"
+                >
+                  Position
+                </Th>
                 <Th textColor="white">Role</Th>
                 <Th textColor="white">Email</Th>
                 <Th textColor="white">Phone number</Th>
@@ -109,13 +139,18 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                 <React.Fragment key={departmentName}>
                   <Tr key={departmentName} bg={'gray.200'}>
                     <Td
-                      colSpan={14}
+                      colSpan={2}
                       textColor="#2D3748"
                       textTransform="uppercase"
                       fontWeight="bold"
+                      position="sticky"
+                      left="0"
+                      zIndex={1}
+                      bg={'gray.200'}
                     >
                       {departmentName}
                     </Td>
+                    <Td colSpan={12} bg={'gray.200'}></Td>
                   </Tr>
                   {groupedByDepartment[departmentName].map(
                     (user: ProjectUser) => (
@@ -147,9 +182,35 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                           backgroundColor: 'gray.200',
                         }}
                       >
-                        <Td>{user?.name}</Td>
-                        <Td>{user?.surname}</Td>
-                        <Td>{user.position}</Td>
+                        <Td
+                          position="sticky"
+                          left="0"
+                          bg="white"
+                          zIndex={2}
+                          minWidth="max-content"
+                        >
+                          {user?.name}
+                        </Td>
+                        <Td
+                          position="sticky"
+                          left={{ base: '0', md: '104px' }}
+                          bg="white"
+                          zIndex={2}
+                          minWidth="max-content"
+                        >
+                          {user?.surname}
+                        </Td>
+                        <Td
+                          position={{ base: 'relative', md: 'sticky' }}
+                          left={{ base: '0', md: '208px' }}
+                          bg="white"
+                          zIndex={1}
+                          minWidth="max-content"
+                          borderRight={50}
+                          borderRightColor={'black'}
+                        >
+                          {user.position}
+                        </Td>
                         <Td>{user.role}</Td>
                         <Td>
                           <Link
