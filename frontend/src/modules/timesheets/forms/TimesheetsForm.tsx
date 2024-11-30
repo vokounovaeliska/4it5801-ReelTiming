@@ -6,9 +6,9 @@ import {
   FormLabel,
   Input,
   Select,
+  SimpleGrid,
   Text,
 } from '@chakra-ui/react';
-import { initial } from 'lodash';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 
 import { TimesheetFormValues, TimesheetsFormProps } from '../interfaces';
@@ -143,191 +143,203 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
   console.log(mode, userRole);
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
-      {userRole === 'ADMIN' && mode === 'add' && (
-        <FormControl>
-          <FormLabel>User</FormLabel>
-          <Controller
-            name="projectUser.id"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                onChange={(e) => {
-                  const selectedUserId = e.target.value;
-                  setSelectedUser(selectedUserId);
-                  field.onChange(selectedUserId);
-                }}
-              >
-                {userOptions.map((user) => (
-                  <option key={user.value} value={user.value}>
-                    {user.label}
-                  </option>
-                ))}
-              </Select>
-            )}
-          />
-        </FormControl>
-      )}
-      <FormControl>
-        <FormLabel>Start Date</FormLabel>
-        <Controller
-          name="start_date"
-          control={control}
-          render={({ field }) => (
-            <Input type="date" {...field} value={formatDate(field.value)} />
-          )}
-        />
-      </FormControl>
-      <FormControl mt={4}>
-        <FormLabel>Shift</FormLabel>
-        <Controller
-          name="shift_lenght"
-          control={control}
-          render={({ field }) => (
-            <Select {...field}>
-              <option value={10}>10h</option>
-              <option value={12}>12h</option>
-            </Select>
-          )}
-        />
-      </FormControl>
-      <Box
-        display={{ base: 'grid', sm: 'flex' }}
-        justifyContent="space-between"
-        textAlign="center"
-        gridTemplateColumns={{ base: '1fr', sm: '1fr 1fr' }}
-        gap="5"
-      >
-        <FormControl mt={4}>
-          <FormLabel>Time From</FormLabel>
-          <Controller
-            name="from"
-            control={control}
-            render={({ field }) => (
-              <Input
-                type="time"
-                {...field}
-                value={formatTime(field.value)}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  field.onChange(value);
-                }}
+      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+        <Box>
+          {userRole === 'ADMIN' && mode === 'add' && (
+            <FormControl>
+              <FormLabel>User</FormLabel>
+              <Controller
+                name="projectUser.id"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    onChange={(e) => {
+                      const selectedUserId = e.target.value;
+                      setSelectedUser(selectedUserId);
+                      field.onChange(selectedUserId);
+                    }}
+                  >
+                    {userOptions.map((user) => (
+                      <option key={user.value} value={user.value}>
+                        {user.label}
+                      </option>
+                    ))}
+                  </Select>
+                )}
               />
-            )}
-          />
-        </FormControl>
-        <FormControl mt={4}>
-          <FormLabel>Time To</FormLabel>
-          <Controller
-            name="to"
-            control={control}
-            render={({ field }) => (
-              <Input
-                type="time"
-                {...field}
-                value={formatTime(field.value)}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  field.onChange(value);
-                }}
-              />
-            )}
-          />
-        </FormControl>
-      </Box>
-      <FormControl mt={4}>
-        <FormLabel>Calculated Overtime</FormLabel>
-        <Controller
-          name="calculated_overtime"
-          control={control}
-          render={({ field }) => <Text>{field.value} h</Text>}
-        />
-      </FormControl>
-      <FormControl mt={4}>
-        <FormLabel>Claimed Overtime</FormLabel>
-        <Controller
-          name="claimed_overtime"
-          control={control}
-          render={({ field }) => (
-            <Input
-              type="number"
-              {...field}
-              onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
-              value={field.value}
-            />
+            </FormControl>
           )}
-        />
-      </FormControl>
-      {/* my favorite game is crying */}
-      {(carOptionsForLoggedInUser && userRole === 'CREW') ||
-      getAvailableCarsForProjectUserId(
-        initialValues?.projectUser.id, // statement users id
-        allCarsOnProject,
-      ).length > 0 ||
-      (mode === 'add' &&
-        getAvailableCarsForProjectUserId(selectedUser, allCarsOnProject)
-          .length > 0) ? (
-        <>
           <FormControl>
-            <FormLabel>Car</FormLabel>
+            <FormLabel>Start Date</FormLabel>
             <Controller
-              name="carId"
+              name="start_date"
               control={control}
               render={({ field }) => (
-                <Select
-                  {...field}
-                  onChange={(e) => {
-                    field.onChange(e);
-                    setSelectedCar(e.target.value);
-                  }}
-                >
-                  {userRole === 'ADMIN' && mode === 'add'
-                    ? getAvailableCarsForProjectUserId(
-                        selectedUser,
-                        allCarsOnProject,
-                      ).map((carDetails) => (
-                        <option key={carDetails.id} value={carDetails.id}>
-                          {carDetails.name}
-                        </option>
-                      ))
-                    : userRole === 'CREW' && mode === 'add'
-                      ? getAvailableCarsForProjectUserId(
-                          selectedUser,
-                          allCarsOnProject,
-                        ).map((car) => (
-                          <option key={car.id} value={car.id}>
-                            {car.name}
-                          </option>
-                        ))
-                      : getAvailableCarsForProjectUserId(
-                          initialValues?.projectUser.id,
-                          allCarsOnProject,
-                        ).map((car) => (
-                          <option key={car.id} value={car.id}>
-                            {car.name}
-                          </option>
-                        ))}
+                <Input type="date" {...field} value={formatDate(field.value)} />
+              )}
+            />
+          </FormControl>
+          <FormControl mt={4}>
+            <FormLabel>Shift</FormLabel>
+            <Controller
+              name="shift_lenght"
+              control={control}
+              render={({ field }) => (
+                <Select {...field}>
+                  <option value={10}>10h</option>
+                  <option value={12}>12h</option>
                 </Select>
               )}
             />
           </FormControl>
-          <FormControl>
-            <FormLabel>Kilometers</FormLabel>
+          <Box
+            display={{ base: 'grid', sm: 'flex' }}
+            justifyContent="space-between"
+            textAlign="center"
+            gridTemplateColumns={{ base: '1fr', sm: '1fr 1fr' }}
+            gap="5"
+          >
+            <FormControl mt={4}>
+              <FormLabel>Time From</FormLabel>
+              <Controller
+                name="from"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    type="time"
+                    {...field}
+                    value={formatTime(field.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value);
+                    }}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormControl mt={4}>
+              <FormLabel>Time To</FormLabel>
+              <Controller
+                name="to"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    type="time"
+                    {...field}
+                    value={formatTime(field.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value);
+                    }}
+                  />
+                )}
+              />
+            </FormControl>
+          </Box>
+          <FormControl mt={4}>
+            <FormLabel>Calculated Overtime</FormLabel>
             <Controller
-              name="kilometers"
+              name="calculated_overtime"
+              control={control}
+              render={({ field }) => <Text>{field.value} h</Text>}
+            />
+          </FormControl>
+          <FormControl mt={4}>
+            <FormLabel>Claimed Overtime</FormLabel>
+            <Controller
+              name="claimed_overtime"
               control={control}
               render={({ field }) => (
                 <Input
-                  {...field}
                   type="number"
+                  {...field}
                   onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
                   value={field.value}
                 />
               )}
             />
           </FormControl>
-        </>
-      ) : null}
+          {/* my favorite game is crying */}
+          {(carOptionsForLoggedInUser && userRole === 'CREW') ||
+          getAvailableCarsForProjectUserId(
+            initialValues?.projectUser.id, // statement users id
+            allCarsOnProject,
+          ).length > 0 ||
+          (mode === 'add' &&
+            getAvailableCarsForProjectUserId(selectedUser, allCarsOnProject)
+              .length > 0) ? (
+            <>
+              <FormControl>
+                <FormLabel>Car</FormLabel>
+                <Controller
+                  name="carId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setSelectedCar(e.target.value);
+                      }}
+                    >
+                      {userRole === 'ADMIN' && mode === 'add'
+                        ? getAvailableCarsForProjectUserId(
+                            selectedUser,
+                            allCarsOnProject,
+                          ).map((carDetails) => (
+                            <option key={carDetails.id} value={carDetails.id}>
+                              {carDetails.name}
+                            </option>
+                          ))
+                        : userRole === 'CREW' && mode === 'add'
+                          ? getAvailableCarsForProjectUserId(
+                              selectedUser,
+                              allCarsOnProject,
+                            ).map((car) => (
+                              <option key={car.id} value={car.id}>
+                                {car.name}
+                              </option>
+                            ))
+                          : getAvailableCarsForProjectUserId(
+                              initialValues?.projectUser.id,
+                              allCarsOnProject,
+                            ).map((car) => (
+                              <option key={car.id} value={car.id}>
+                                {car.name}
+                              </option>
+                            ))}
+                    </Select>
+                  )}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Kilometers</FormLabel>
+                <Controller
+                  name="kilometers"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="number"
+                      onChange={(e) =>
+                        field.onChange(parseInt(e.target.value, 10))
+                      }
+                      value={field.value}
+                    />
+                  )}
+                />
+              </FormControl>
+            </>
+          ) : null}
+        </Box>
+        <Box display="flex" justifyContent="center" alignItems="center">
+          {/* <Text textAlign="center">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec
+            odio. Praesent libero. Sed cursus ante dapibus diam.
+          </Text> */}
+        </Box>
+      </SimpleGrid>
       <Box
         display={{ base: 'grid', sm: 'flex' }}
         justifyContent="right"
