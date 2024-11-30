@@ -95,7 +95,7 @@ export interface TimesheetsFormProps {
   userOptions: UserOption[];
   userInfo: UserInfo | null;
   userCars?: { id: string; name: string }[];
-  setSelectedUser: (userId: string) => void;
+  // setSelectedUser: (userId: string) => void;
   setSelectedCar: (carId: string) => void;
   allCarsOnProject: Car[];
   carOptionsForLoggedInUser: Car[];

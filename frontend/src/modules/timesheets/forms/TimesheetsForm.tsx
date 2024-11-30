@@ -11,7 +11,6 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { SourceTextModule } from 'vm';
 
 import { TimesheetFormValues, TimesheetsFormProps } from '../interfaces';
 import { getAvailableCarsForProjectUserId } from '../pages/TimesheetsPage';
@@ -162,7 +161,7 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
       setSelectedCar(initialCarId);
       setValue('carId', initialCarId);
     }
-  
+
     if (mode === 'edit') {
       setIsCarVisible(true);
     }
@@ -377,9 +376,7 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
             )}
         </Box>
         <Box display="flex" justifyContent="center" alignItems="center">
-          <Text textAlign="center">
-            insert info about $$$ etc here
-          </Text>
+          <Text textAlign="center">insert info about $$$ etc here</Text>
         </Box>
       </SimpleGrid>
       <Box

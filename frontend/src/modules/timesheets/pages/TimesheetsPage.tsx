@@ -460,7 +460,8 @@ export function TimesheetPage() {
     (crewData?.statementsByProjectUserId || adminData?.statementsByProjectId) &&
     userInfoData?.projectUserDetails &&
     allProjectUsersData?.projectUsers &&
-    allCarsOnProjectData?.cars;
+    allCarsOnProjectData?.cars &&
+    userCarsData;
 
   if (
     !isDataAvailable &&
@@ -469,7 +470,8 @@ export function TimesheetPage() {
       adminLoading ||
       userInfoLoading ||
       allProjectUsersLoading ||
-      allCarsOnProjectLoading)
+      allCarsOnProjectLoading ||
+      userCarsLoading)
   ) {
     return (
       <Center minHeight="100vh">
@@ -486,6 +488,7 @@ export function TimesheetPage() {
     adminError ||
     allProjectUsersError ||
     allCarsOnProjectError ||
+    userCarsError ||
     !auth.user
   ) {
     return (
