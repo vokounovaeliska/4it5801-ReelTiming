@@ -28,14 +28,12 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
   carOptionsForLoggedInUser, // list of cars for logged in user either crew/admin
   // setSelectedCar,
 }) => {
-  // console.log(initialValues, 'init');
-  // console.log(carOptionsForLoggedInUser);
-
   const [selectedCar, setSelectedCar] = useState<string | null>(
     initialValues?.carId || null,
   );
 
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
+
   const defaultValues: TimesheetFormValues = {
     ...initialValues,
     start_date: toLocalISOString(new Date()).split('T')[0],
@@ -51,6 +49,7 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
       surname: userInfo?.surname || '',
     },
     carId: '',
+    kilometers: 0,
   };
 
   const mergedValues = {
@@ -82,9 +81,6 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
           : '')) ??
       '',
   };
-
-  // console.log(mergedValues,' MERGED VALUES')
-  // console.log(initialValues?.userCars, 'USERCARSINITIALVALUE')
 
   const { handleSubmit, control, setValue } = useForm<TimesheetFormValues>({
     defaultValues: mergedValues,
@@ -132,6 +128,19 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
     }
   }, [initialValues]);
 
+  // console.log(mergedValues,' MERGED VALUES')
+  // console.log(initialValues?.userCars, 'USERCARSINITIALVALUE')
+  // console.log(initialValues, 'init');
+  console.log(carOptionsForLoggedInUser, 'caroptionsforloggedin');
+
+  console.log(allCarsOnProject);
+  console.log(selectedUser);
+  console.log(
+    getAvailableCarsForProjectUserId(selectedUser, allCarsOnProject),
+    'fce',
+  );
+
+  console.log(mode, userRole);
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
       {userRole === 'ADMIN' && mode === 'add' && (
@@ -144,8 +153,9 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
               <Select
                 {...field}
                 onChange={(e) => {
-                  field.onChange(e);
-                  setSelectedUser(e.target.value);
+                  const selectedUserId = e.target.value;
+                  setSelectedUser(selectedUserId);
+                  field.onChange(selectedUserId);
                 }}
               >
                 {userOptions.map((user) => (
@@ -248,9 +258,10 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
           )}
         />
       </FormControl>
+      {/* my favorite game is crying */}
       {(carOptionsForLoggedInUser && userRole === 'CREW') ||
       getAvailableCarsForProjectUserId(
-        initialValues?.projectUser.id,
+        initialValues?.projectUser.id, // statement users id
         allCarsOnProject,
       ).length > 0 ||
       (mode === 'add' &&
@@ -270,11 +281,32 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
                     setSelectedCar(e.target.value);
                   }}
                 >
-                  {initialValues?.userCars?.map((car) => (
-                    <option key={car.id} value={car.id}>
-                      {car.name}
-                    </option>
-                  ))}
+                  {userRole === 'ADMIN' && mode === 'add'
+                    ? getAvailableCarsForProjectUserId(
+                        selectedUser,
+                        allCarsOnProject,
+                      ).map((carDetails) => (
+                        <option key={carDetails.id} value={carDetails.id}>
+                          {carDetails.name}
+                        </option>
+                      ))
+                    : userRole === 'CREW' && mode === 'add'
+                      ? getAvailableCarsForProjectUserId(
+                          selectedUser,
+                          allCarsOnProject,
+                        ).map((car) => (
+                          <option key={car.id} value={car.id}>
+                            {car.name}
+                          </option>
+                        ))
+                      : getAvailableCarsForProjectUserId(
+                          initialValues?.projectUser.id,
+                          allCarsOnProject,
+                        ).map((car) => (
+                          <option key={car.id} value={car.id}>
+                            {car.name}
+                          </option>
+                        ))}
                 </Select>
               )}
             />

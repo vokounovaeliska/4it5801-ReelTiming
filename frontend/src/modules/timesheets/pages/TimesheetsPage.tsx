@@ -48,9 +48,9 @@ import {
 import TimesheetsTemplate from '../templates/TimesheetsTemplate';
 import { formatTimeForParsing, toLocalISOString } from '../utils/timeUtils';
 
-export function getAvailableCarsForProjectUserId(projectUserId, allCarsOnProjectData) {
+export function getAvailableCarsForProjectUserId(givenUser, allCarsOnProjectData) {
   const filteredCarsOnProject = allCarsOnProjectData?.projectUsers.filter(
-    (projectUser) => projectUser.id === projectUserId,
+    (projectUser) => projectUser.id === givenUser,
   );
 
   const carDetails = filteredCarsOnProject?.flatMap((projectUser) =>
@@ -588,7 +588,7 @@ export function TimesheetPage() {
           userOptions={userOptionsForAdminAddTimesheet}
           userInfo={userInfo}
           // userCars={userCarsData}
-          setSelectedUser={setSelectedUser}
+          // setSelectedUser={setSelectedUser}
           setSelectedCar={setSelectedCar}
           allCarsOnProject={allCarsOnProjectData}
           carOptionsForLoggedInUser={carOptionsForLoggedInUser}
