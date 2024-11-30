@@ -580,15 +580,12 @@ export function TimesheetPage() {
         <TimesheetsForm
           projectId={projectId!}
           initialValues={selectedTimesheet || undefined}
-          // initialValues={{ ...selectedTimesheet, userCars }}
           onClose={handleModalClose}
           mode={mode}
           onSubmit={handleFormSubmitWrapper}
           userRole={userRole}
           userOptions={userOptionsForAdminAddTimesheet}
           userInfo={userInfo}
-          // userCars={userCarsData}
-          // setSelectedUser={setSelectedUser}
           setSelectedCar={setSelectedCar}
           allCarsOnProject={allCarsOnProjectData}
           carOptionsForLoggedInUser={carOptionsForLoggedInUser}

@@ -45,7 +45,7 @@ export interface TimesheetFormValues {
   };
   carId?: string;
   kilometers?: number;
-  userCars?: { id: string; name: string }[];
+  // userCars?: { id: string; name: string }[];
   car?: {
     name: string;
     id: string;

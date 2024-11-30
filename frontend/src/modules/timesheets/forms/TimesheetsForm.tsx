@@ -7,9 +7,11 @@ import {
   Input,
   Select,
   SimpleGrid,
+  Switch,
   Text,
 } from '@chakra-ui/react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
+import { SourceTextModule } from 'vm';
 
 import { TimesheetFormValues, TimesheetsFormProps } from '../interfaces';
 import { getAvailableCarsForProjectUserId } from '../pages/TimesheetsPage';
@@ -23,16 +25,16 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
   userRole,
   userOptions, // users to offer in the User <Select> - only for admin
   userInfo,
-  // setSelectedUser,
   allCarsOnProject, // unfiltered query response - json of projectusers list and their cars/statement data
   carOptionsForLoggedInUser, // list of cars for logged in user either crew/admin
-  // setSelectedCar,
 }) => {
-  const [selectedCar, setSelectedCar] = useState<string | null>(
-    initialValues?.carId || null,
-  );
+  // const [selectedCar, setSelectedCar] = useState<string | null>(
+  //   initialValues?.carId || null,
+  // );
+  const [selectedCar, setSelectedCar] = useState<string | null>(null);
 
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [isCarVisible, setIsCarVisible] = useState(false);
 
   const defaultValues: TimesheetFormValues = {
     ...initialValues,
@@ -48,6 +50,7 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
       name: userInfo?.name || '',
       surname: userInfo?.surname || '',
     },
+    // carId: initialValues?.carId || '',
     carId: '',
     kilometers: 0,
   };
@@ -73,14 +76,13 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
     //       ? initialValues.userCars[0].id
     //       : '')) ??
     //   '',
-    carId:
-      // 22IQ solution - will cry if debugging needed
-      (initialValues?.carId ||
-        (initialValues?.userCars && initialValues.userCars.length > 0
-          ? initialValues.userCars[0].id
-          : '')) ??
-      '',
+    carId: selectedCar || undefined,
   };
+
+  console.log(initialValues?.carId, 'caridINIT');
+  console.log(defaultValues?.carId, 'caridDEFAULT');
+  console.log(mergedValues?.carId, 'caridMERGED');
+  console.log(carOptionsForLoggedInUser, 'c');
 
   const { handleSubmit, control, setValue } = useForm<TimesheetFormValues>({
     defaultValues: mergedValues,
@@ -131,16 +133,41 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
   // console.log(mergedValues,' MERGED VALUES')
   // console.log(initialValues?.userCars, 'USERCARSINITIALVALUE')
   // console.log(initialValues, 'init');
-  console.log(carOptionsForLoggedInUser, 'caroptionsforloggedin');
+  // console.log(carOptionsForLoggedInUser, 'caroptionsforloggedin');
 
-  console.log(allCarsOnProject);
-  console.log(selectedUser);
-  console.log(
-    getAvailableCarsForProjectUserId(selectedUser, allCarsOnProject),
-    'fce',
-  );
+  // console.log(allCarsOnProject);
+  // console.log(selectedUser);
+  // console.log(
+  //   getAvailableCarsForProjectUserId(selectedUser, allCarsOnProject),
+  //   'fce',
+  // );
 
-  console.log(mode, userRole);
+  const getAvailableCars = () => {
+    if (userRole === 'ADMIN' && mode === 'add') {
+      return getAvailableCarsForProjectUserId(selectedUser, allCarsOnProject);
+    } else if (userRole === 'CREW' && mode === 'add') {
+      return getAvailableCarsForProjectUserId(selectedUser, allCarsOnProject);
+    } else {
+      return getAvailableCarsForProjectUserId(
+        initialValues?.projectUser.id,
+        allCarsOnProject,
+      );
+    }
+  };
+
+  useEffect(() => {
+    const availableCars = getAvailableCars();
+    if (availableCars.length > 0) {
+      const initialCarId = initialValues?.carId || availableCars[0].id;
+      setSelectedCar(initialCarId);
+      setValue('carId', initialCarId);
+    }
+  
+    if (mode === 'edit') {
+      setIsCarVisible(true);
+    }
+  }, [initialValues, allCarsOnProject, setSelectedCar, setValue, mode]);
+
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
@@ -158,6 +185,7 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
                       const selectedUserId = e.target.value;
                       setSelectedUser(selectedUserId);
                       field.onChange(selectedUserId);
+                      setIsCarVisible(false);
                     }}
                   >
                     {userOptions.map((user) => (
@@ -260,84 +288,98 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
               )}
             />
           </FormControl>
+          <FormControl display="flex" alignItems="center" mb={4}>
+            {mode === 'add' &&
+              ((carOptionsForLoggedInUser && userRole === 'CREW') ||
+                getAvailableCarsForProjectUserId(
+                  initialValues?.projectUser.id, // statement users id
+                  allCarsOnProject,
+                ).length > 0 ||
+                (mode === 'add' &&
+                  getAvailableCarsForProjectUserId(
+                    selectedUser,
+                    allCarsOnProject,
+                  ).length > 0 && (
+                    <>
+                      <FormLabel htmlFor="car-switch" mb="0">
+                        Add Mileage
+                      </FormLabel>
+                      <Switch
+                        id="car-switch"
+                        isChecked={isCarVisible}
+                        onChange={() => {
+                          setIsCarVisible(!isCarVisible);
+                          if (!isCarVisible) {
+                            const availableCars = getAvailableCars();
+                            if (availableCars.length > 0) {
+                              const initialCarId = availableCars[0].id;
+                              setSelectedCar(initialCarId);
+                              setValue('carId', initialCarId);
+                            }
+                          }
+                        }}
+                      />
+                    </>
+                  )))}
+          </FormControl>
           {/* my favorite game is crying */}
-          {(carOptionsForLoggedInUser && userRole === 'CREW') ||
-          getAvailableCarsForProjectUserId(
-            initialValues?.projectUser.id, // statement users id
-            allCarsOnProject,
-          ).length > 0 ||
-          (mode === 'add' &&
-            getAvailableCarsForProjectUserId(selectedUser, allCarsOnProject)
-              .length > 0) ? (
-            <>
-              <FormControl>
-                <FormLabel>Car</FormLabel>
-                <Controller
-                  name="carId"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        setSelectedCar(e.target.value);
-                      }}
-                    >
-                      {userRole === 'ADMIN' && mode === 'add'
-                        ? getAvailableCarsForProjectUserId(
-                            selectedUser,
-                            allCarsOnProject,
-                          ).map((carDetails) => (
-                            <option key={carDetails.id} value={carDetails.id}>
-                              {carDetails.name}
-                            </option>
-                          ))
-                        : userRole === 'CREW' && mode === 'add'
-                          ? getAvailableCarsForProjectUserId(
-                              selectedUser,
-                              allCarsOnProject,
-                            ).map((car) => (
-                              <option key={car.id} value={car.id}>
-                                {car.name}
-                              </option>
-                            ))
-                          : getAvailableCarsForProjectUserId(
-                              initialValues?.projectUser.id,
-                              allCarsOnProject,
-                            ).map((car) => (
-                              <option key={car.id} value={car.id}>
-                                {car.name}
-                              </option>
-                            ))}
-                    </Select>
-                  )}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Kilometers</FormLabel>
-                <Controller
-                  name="kilometers"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="number"
-                      onChange={(e) =>
-                        field.onChange(parseInt(e.target.value, 10))
-                      }
-                      value={field.value}
-                    />
-                  )}
-                />
-              </FormControl>
-            </>
-          ) : null}
+          {isCarVisible &&
+            ((carOptionsForLoggedInUser && userRole === 'CREW') ||
+              getAvailableCarsForProjectUserId(
+                initialValues?.projectUser.id, // statement users id
+                allCarsOnProject,
+              ).length > 0 ||
+              (mode === 'add' &&
+                getAvailableCarsForProjectUserId(selectedUser, allCarsOnProject)
+                  .length > 0)) && (
+              <>
+                <FormControl>
+                  <FormLabel>Car</FormLabel>
+                  <Controller
+                    name="carId"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                          setSelectedCar(e.target.value);
+                        }}
+                        value={field.value || ''}
+                      >
+                        {getAvailableCars().map((car) => (
+                          <option key={car.id} value={car.id}>
+                            {car.name}
+                          </option>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Kilometers</FormLabel>
+                  <Controller
+                    name="kilometers"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="number"
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value, 10))
+                        }
+                        value={field.value}
+                      />
+                    )}
+                  />
+                </FormControl>
+              </>
+            )}
         </Box>
         <Box display="flex" justifyContent="center" alignItems="center">
-          {/* <Text textAlign="center">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec
-            odio. Praesent libero. Sed cursus ante dapibus diam.
-          </Text> */}
+          <Text textAlign="center">
+            insert info about $$$ etc here
+          </Text>
         </Box>
       </SimpleGrid>
       <Box
