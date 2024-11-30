@@ -24,7 +24,7 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
   userRole,
   userOptions, // users to offer in the User <Select> - only for admin
   userInfo,
-  allCarsOnProject, // unfiltered query response - json of projectusers list and their cars/statement data
+  allCarsOnProjectData, // unfiltered query response - json of projectusers list and their cars/statement data
   carOptionsForLoggedInUser, // list of cars for logged in user either crew/admin
 }) => {
   // const [selectedCar, setSelectedCar] = useState<string | null>(
@@ -134,22 +134,28 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
   // console.log(initialValues, 'init');
   // console.log(carOptionsForLoggedInUser, 'caroptionsforloggedin');
 
-  // console.log(allCarsOnProject);
+  // console.log(allCarsOnProjectData);
   // console.log(selectedUser);
   // console.log(
-  //   getAvailableCarsForProjectUserId(selectedUser, allCarsOnProject),
+  //   getAvailableCarsForProjectUserId(selectedUser, allCarsOnProjectData),
   //   'fce',
   // );
 
   const getAvailableCars = () => {
     if (userRole === 'ADMIN' && mode === 'add') {
-      return getAvailableCarsForProjectUserId(selectedUser, allCarsOnProject);
+      return getAvailableCarsForProjectUserId(
+        selectedUser || '',
+        allCarsOnProjectData,
+      );
     } else if (userRole === 'CREW' && mode === 'add') {
-      return getAvailableCarsForProjectUserId(selectedUser, allCarsOnProject);
+      return getAvailableCarsForProjectUserId(
+        selectedUser || '',
+        allCarsOnProjectData,
+      );
     } else {
       return getAvailableCarsForProjectUserId(
-        initialValues?.projectUser.id,
-        allCarsOnProject,
+        initialValues?.projectUser.id || '',
+        allCarsOnProjectData,
       );
     }
   };
@@ -165,7 +171,7 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
     if (mode === 'edit') {
       setIsCarVisible(true);
     }
-  }, [initialValues, allCarsOnProject, setSelectedCar, setValue, mode]);
+  }, [initialValues, allCarsOnProjectData, setSelectedCar, setValue, mode]);
 
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
@@ -291,13 +297,13 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
             {mode === 'add' &&
               ((carOptionsForLoggedInUser && userRole === 'CREW') ||
                 getAvailableCarsForProjectUserId(
-                  initialValues?.projectUser.id, // statement users id
-                  allCarsOnProject,
+                  initialValues?.projectUser.id || '', // statement users id
+                  allCarsOnProjectData,
                 ).length > 0 ||
                 (mode === 'add' &&
                   getAvailableCarsForProjectUserId(
-                    selectedUser,
-                    allCarsOnProject,
+                    selectedUser || '',
+                    allCarsOnProjectData,
                   ).length > 0 && (
                     <>
                       <FormLabel htmlFor="car-switch" mb="0">
@@ -325,12 +331,14 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
           {isCarVisible &&
             ((carOptionsForLoggedInUser && userRole === 'CREW') ||
               getAvailableCarsForProjectUserId(
-                initialValues?.projectUser.id, // statement users id
-                allCarsOnProject,
+                initialValues?.projectUser.id || '', // statement users id
+                allCarsOnProjectData,
               ).length > 0 ||
               (mode === 'add' &&
-                getAvailableCarsForProjectUserId(selectedUser, allCarsOnProject)
-                  .length > 0)) && (
+                getAvailableCarsForProjectUserId(
+                  selectedUser || '',
+                  allCarsOnProjectData,
+                ).length > 0)) && (
               <>
                 <FormControl>
                   <FormLabel>Car</FormLabel>

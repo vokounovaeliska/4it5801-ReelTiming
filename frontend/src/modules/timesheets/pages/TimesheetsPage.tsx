@@ -40,6 +40,8 @@ import ProjectNavbar from '@frontend/shared/navigation/components/navbar/Project
 
 import { TimesheetsForm } from '../forms/TimesheetsForm';
 import {
+  AllCarsOnProjectData,
+  Car,
   Timesheet,
   TimesheetFormValues,
   UserInfo,
@@ -48,16 +50,21 @@ import {
 import TimesheetsTemplate from '../templates/TimesheetsTemplate';
 import { formatTimeForParsing, toLocalISOString } from '../utils/timeUtils';
 
-export function getAvailableCarsForProjectUserId(givenUser, allCarsOnProjectData) {
+// TODO FIX PROBABLY MAKE UTILS
+// eslint-disable-next-line react-refresh/only-export-components
+export function getAvailableCarsForProjectUserId(
+  givenUser: string,
+  allCarsOnProjectData: AllCarsOnProjectData,
+): Car[] {
   const filteredCarsOnProject = allCarsOnProjectData?.projectUsers.filter(
     (projectUser) => projectUser.id === givenUser,
   );
 
   const carDetails = filteredCarsOnProject?.flatMap((projectUser) =>
-    projectUser.car.map((car) => ({ id: car.id, name: car.name })),
+    projectUser.car?.map((car) => ({ id: car.id, name: car.name })),
   );
 
-  return carDetails;
+  return carDetails?.filter((car): car is Car => car !== undefined) || [];
 }
 
 export function TimesheetPage() {
@@ -73,7 +80,7 @@ export function TimesheetPage() {
   const [timesheetIdToDelete, setTimesheetIdToDelete] = useState<string | null>(
     null,
   );
-  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  // const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [selectedCar, setSelectedCar] = useState<string | null>(null);
 
   const {
@@ -142,13 +149,15 @@ export function TimesheetPage() {
     loading: userCarsLoading,
     error: userCarsError,
   } = useQuery(GET_CARS_BY_PROJECT_USER_ID, {
-    variables: { projectUserId: selectedUser || userInfo?.id },
-    skip: !selectedUser && !userInfo?.id,
+    variables: { projectUserId: userInfo?.id },
+    // variables: { projectUserId: selectedUser || userInfo?.id },
+    skip: !userInfo?.id,
+    // skip: !selectedUser && !userInfo?.id,
     fetchPolicy: 'cache-and-network',
   });
 
   const carOptionsForLoggedInUser =
-    userCarsData?.carsByProjectUserId?.map((car) => ({
+    userCarsData?.carsByProjectUserId?.map((car: Car) => ({
       value: car.id,
       label: car.name,
     })) || [];
@@ -590,7 +599,7 @@ export function TimesheetPage() {
           userOptions={userOptionsForAdminAddTimesheet}
           userInfo={userInfo}
           setSelectedCar={setSelectedCar}
-          allCarsOnProject={allCarsOnProjectData}
+          allCarsOnProjectData={allCarsOnProjectData}
           carOptionsForLoggedInUser={carOptionsForLoggedInUser}
         />
       </CustomModal>

@@ -1,3 +1,5 @@
+import { Car } from '@frontend/modules/timesheets/interfaces';
+
 export interface CrewMemberData {
   id: string;
   name: string;
@@ -40,6 +42,7 @@ export interface ProjectUser {
     overtime_hour3: number;
     overtime_hour4: number;
   } | null;
+  car: Car[] | null;
 }
 
 export interface CrewAlertDialogProps {
