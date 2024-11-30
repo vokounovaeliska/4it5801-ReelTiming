@@ -48,10 +48,7 @@ import {
 import TimesheetsTemplate from '../templates/TimesheetsTemplate';
 import { formatTimeForParsing, toLocalISOString } from '../utils/timeUtils';
 
-export function getAvailableCarsForProjectUserId(
-  projectUserId,
-  allCarsOnProjectData,
-) {
+export function getAvailableCarsForProjectUserId(projectUserId, allCarsOnProjectData) {
   const filteredCarsOnProject = allCarsOnProjectData?.projectUsers.filter(
     (projectUser) => projectUser.id === projectUserId,
   );

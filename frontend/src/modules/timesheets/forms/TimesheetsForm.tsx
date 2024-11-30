@@ -8,6 +8,7 @@ import {
   Select,
   Text,
 } from '@chakra-ui/react';
+import { initial } from 'lodash';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 
 import { TimesheetFormValues, TimesheetsFormProps } from '../interfaces';
@@ -34,6 +35,7 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
     initialValues?.carId || null,
   );
 
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const defaultValues: TimesheetFormValues = {
     ...initialValues,
     start_date: toLocalISOString(new Date()).split('T')[0],
@@ -81,8 +83,8 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
       '',
   };
 
-  console.log(mergedValues,' MERGED VALUES')
-  console.log(initialValues?.userCars, 'USERCARSINITIALVALUE')
+  // console.log(mergedValues,' MERGED VALUES')
+  // console.log(initialValues?.userCars, 'USERCARSINITIALVALUE')
 
   const { handleSubmit, control, setValue } = useForm<TimesheetFormValues>({
     defaultValues: mergedValues,
@@ -118,11 +120,11 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
     }
   }, [from, to, shift, setValue, initialValues]);
 
-  // useEffect(() => {
-  //   if (userInfo?.id) {
-  //     setSelectedUser(userInfo.id);
-  //   }
-  // }, [userInfo, setSelectedUser]);
+  useEffect(() => {
+    if (userInfo?.id) {
+      setSelectedUser(userInfo.id);
+    }
+  }, [userInfo, setSelectedUser]);
 
   useEffect(() => {
     if (initialValues?.carId) {
@@ -143,7 +145,7 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
                 {...field}
                 onChange={(e) => {
                   field.onChange(e);
-                  // setSelectedUser(e.target.value);
+                  setSelectedUser(e.target.value);
                 }}
               >
                 {userOptions.map((user) => (
@@ -246,7 +248,14 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
           )}
         />
       </FormControl>
-      {(initialValues?.userCars?.length ?? 0) > 0 && (
+      {(carOptionsForLoggedInUser && userRole === 'CREW') ||
+      getAvailableCarsForProjectUserId(
+        initialValues?.projectUser.id,
+        allCarsOnProject,
+      ).length > 0 ||
+      (mode === 'add' &&
+        getAvailableCarsForProjectUserId(selectedUser, allCarsOnProject)
+          .length > 0) ? (
         <>
           <FormControl>
             <FormLabel>Car</FormLabel>
@@ -270,7 +279,6 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
               )}
             />
           </FormControl>
-          {/* {initialValues?.car?.id && ( */}
           <FormControl>
             <FormLabel>Kilometers</FormLabel>
             <Controller
@@ -286,9 +294,8 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
               )}
             />
           </FormControl>
-          {/* // )} */}
         </>
-      )}
+      ) : null}
       <Box
         display={{ base: 'grid', sm: 'flex' }}
         justifyContent="right"
