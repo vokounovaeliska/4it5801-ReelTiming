@@ -27,9 +27,6 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
   allCarsOnProjectData, // unfiltered query response - json of projectusers list and their cars/statement data
   carOptionsForLoggedInUser, // list of cars for logged in user either crew/admin
 }) => {
-  // const [selectedCar, setSelectedCar] = useState<string | null>(
-  //   initialValues?.carId || null,
-  // );
   const [selectedCar, setSelectedCar] = useState<string | null>(null);
 
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
@@ -49,7 +46,6 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
       name: userInfo?.name || '',
       surname: userInfo?.surname || '',
     },
-    // carId: initialValues?.carId || '',
     carId: '',
     kilometers: 0,
   };
@@ -68,20 +64,8 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
         initialValues?.projectUser?.surname ||
         defaultValues.projectUser.surname,
     },
-    // carId:
-    //   // 22IQ solution - will cry if debugging needed
-    //   (initialValues?.carId ||
-    //     (initialValues?.userCars && initialValues.userCars.length > 0
-    //       ? initialValues.userCars[0].id
-    //       : '')) ??
-    //   '',
     carId: selectedCar || undefined,
   };
-
-  console.log(initialValues?.carId, 'caridINIT');
-  console.log(defaultValues?.carId, 'caridDEFAULT');
-  console.log(mergedValues?.carId, 'caridMERGED');
-  console.log(carOptionsForLoggedInUser, 'c');
 
   const { handleSubmit, control, setValue } = useForm<TimesheetFormValues>({
     defaultValues: mergedValues,
@@ -129,18 +113,6 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
     }
   }, [initialValues]);
 
-  // console.log(mergedValues,' MERGED VALUES')
-  // console.log(initialValues?.userCars, 'USERCARSINITIALVALUE')
-  // console.log(initialValues, 'init');
-  // console.log(carOptionsForLoggedInUser, 'caroptionsforloggedin');
-
-  // console.log(allCarsOnProjectData);
-  // console.log(selectedUser);
-  // console.log(
-  //   getAvailableCarsForProjectUserId(selectedUser, allCarsOnProjectData),
-  //   'fce',
-  // );
-
   const getAvailableCars = () => {
     if (userRole === 'ADMIN' && mode === 'add') {
       return getAvailableCarsForProjectUserId(
@@ -171,6 +143,7 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
     if (mode === 'edit') {
       setIsCarVisible(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialValues, allCarsOnProjectData, setSelectedCar, setValue, mode]);
 
   return (
