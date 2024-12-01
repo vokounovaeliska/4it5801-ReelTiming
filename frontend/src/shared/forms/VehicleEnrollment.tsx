@@ -20,13 +20,17 @@ import {
   Td,
   Th,
   Thead,
+  Toast,
   Tr,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import { FaCarSide } from 'react-icons/fa6';
 import { MdModeEdit } from 'react-icons/md';
 
 import { Car } from '@frontend/modules/timesheets/interfaces';
+import useToastNotification from '../design-system/molecules/Toast';
+import { showErrorToast } from '../design-system/molecules/toastUtils';
 
 interface CarFormWithTableProps {
   onCarCollectionChange: (cars: Car[]) => void;
@@ -55,6 +59,12 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
   const [carToDeleteIndex, setCarToDeleteIndex] = useState<number | null>(null);
 
   const handleAddCar = () => {
+    if (carDetails.kilometer_allow <= 0) {
+      showErrorToast('Allowed mileage has to be greater than 0!');
+    }
+    if (carDetails.kilometer_rate <= 0) {
+      showErrorToast('Extra km price has to be greater than 0!');
+    }
     if (carDetails.name.trim()) {
       const updatedCarCollection = [
         ...carCollection,
@@ -69,7 +79,7 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
       });
       onCarCollectionChange(updatedCarCollection);
     } else {
-      alert('Please fill out all fields before adding a car.');
+      showErrorToast('Name has to be filled!');
     }
   };
 
@@ -255,3 +265,6 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
     </Box>
   );
 };
+function useChakraToast() {
+  throw new Error('Function not implemented.');
+}
