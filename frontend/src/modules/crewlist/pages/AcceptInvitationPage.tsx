@@ -70,21 +70,8 @@ export function AcceptInvitationPage() {
     }
   };
 
-  const handleFormSubmit = async (formData: FormValues, cars: Car[]) => {
-    try {
-      await addCarsForUser(cars);
-    } catch (error) {
-      console.error('Error adding Cars to project user:', error);
-      toast({
-        title: 'Error',
-        description: 'Error adding Cars to project user: ' + error,
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-
-    await UpdateAdActivateProjectUser({
+  const handleFormSubmit = (formData: FormValues, cars: Car[]) => {
+    UpdateAdActivateProjectUser({
       variables: {
         updateProjectUserId: projectUser.id!,
         data: {
@@ -111,6 +98,7 @@ export function AcceptInvitationPage() {
         rateId: projectUser.rate?.id,
       },
     })
+      .then(() => addCarsForUser(cars))
       .then(() => {
         navigate(`/projects/${projectUser.project?.id}`);
       })
