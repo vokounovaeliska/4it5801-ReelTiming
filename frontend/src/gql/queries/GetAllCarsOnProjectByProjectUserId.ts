@@ -9,6 +9,8 @@ export const GET_ALL_CARS_ON_PROJECT_BY_PROJECTUSER_ID = gql`
       car {
         id
         name
+        kilometer_allow
+        kilometer_rate
       }
       statement {
         id

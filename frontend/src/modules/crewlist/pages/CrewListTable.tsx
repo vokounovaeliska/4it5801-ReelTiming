@@ -175,7 +175,7 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                             role: user.role,
                             user_id: user.user?.id,
                             rate_id: user.rate?.id || null,
-                            cars: user.cars || null,
+                            cars: user.car || null,
                           })
                         }
                         _hover={{

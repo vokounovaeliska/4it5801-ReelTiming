@@ -6,7 +6,8 @@ import { EDIT_RATE } from './EditRate';
 import { EDIT_PROJECT_USER } from './EditProjectUser';
 import { DELETE_PROJECT_USER } from '../queries/DeleteProjectUser';
 import { DELETE_INVITATION } from './DeleteInvitation';
-import { ADD_CAR } from './AddCar';
+import { ADD_CAR, DELETE_CAR, UPDATE_CAR } from './AddCar';
+import { Car } from '@frontend/modules/timesheets/interfaces';
 
 interface CrewMemberData {
   id: string;
@@ -25,13 +26,7 @@ interface CrewMemberData {
   role: string;
   user_id: string | null;
   rate_id: string | null;
-  cars: CarData[] | null;
-}
-
-interface CarData {
-  vehicle_name: string;
-  included_mileage: number;
-  extra_mileage: number;
+  cars: Car[] | null;
 }
 
 export const useCrewMemberMutations = () => {
@@ -43,6 +38,8 @@ export const useCrewMemberMutations = () => {
   const [deleteProjectUser] = useMutation(DELETE_PROJECT_USER);
   const [deleteProjectInvitation] = useMutation(DELETE_INVITATION);
   const [addCar] = useMutation(ADD_CAR);
+  const [deleteCar] = useMutation(DELETE_CAR);
+  const [updateCar] = useMutation(UPDATE_CAR);
 
   const addCrewMember = async (data: CrewMemberData, projectId: string) => {
     try {
@@ -103,7 +100,72 @@ export const useCrewMemberMutations = () => {
     }
   };
 
-  const editCrewMember = async (data: CrewMemberData, projectId: string) => {
+  const handleUpdateCars = async (data: CrewMemberData, oldCars: Car[]) => {
+    if (data.cars !== null) {
+      const deletePromises = [];
+      const addOrUpdatePromises = [];
+
+      for (const oldCar of oldCars) {
+        const carExistsInNew = data.cars.some(
+          (newCar) => newCar.id === oldCar.id,
+        );
+
+        if (!carExistsInNew) {
+          deletePromises.push(
+            deleteCar({
+              variables: {
+                deleteCarId: oldCar.id,
+              },
+            }),
+          );
+        }
+      }
+
+      for (const newCar of data.cars) {
+        const existingCar = oldCars.find((oldCar) => oldCar.id === newCar.id);
+
+        if (existingCar) {
+          addOrUpdatePromises.push(
+            updateCar({
+              variables: {
+                data: {
+                  kilometer_allow: newCar.kilometer_allow,
+                  kilometer_rate: newCar.kilometer_rate,
+                  name: newCar.name,
+                  project_user_id: data.id,
+                },
+                updateCarId: newCar.id,
+              },
+            }),
+          );
+        } else {
+          addOrUpdatePromises.push(
+            addCar({
+              variables: {
+                kilometerRate: newCar.kilometer_rate,
+                kilometerAllow: newCar.kilometer_allow,
+                name: newCar.name,
+                projectUserId: data.id,
+              },
+            }),
+          );
+        }
+      }
+      if (deletePromises.length > 0) {
+        await Promise.all(deletePromises);
+      }
+
+      if (addOrUpdatePromises.length > 0) {
+        await Promise.all(addOrUpdatePromises);
+      }
+    }
+  };
+
+  const editCrewMember = async (
+    data: CrewMemberData,
+    projectId: string,
+    oldCars: Car[] | null,
+  ) => {
     try {
       await editRate({
         variables: {
@@ -119,18 +181,7 @@ export const useCrewMemberMutations = () => {
         },
       });
 
-      if (data.cars !== null) {
-        for (const car of data.cars) {
-          await addCar({
-            variables: {
-              kilometerRate: car.included_mileage,
-              kilometerAllow: car.extra_mileage,
-              name: car.vehicle_name,
-              projectUserId: data.id,
-            },
-          });
-        }
-      }
+      await handleUpdateCars(data, oldCars ? oldCars : []);
 
       await editProjectUser({
         variables: {

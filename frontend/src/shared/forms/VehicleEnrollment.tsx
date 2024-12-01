@@ -14,17 +14,12 @@ import {
   Tr,
 } from '@chakra-ui/react';
 
+import { Car } from '@frontend/modules/timesheets/interfaces';
 import { Form } from '@frontend/shared/forms';
-
-export interface Car {
-  vehicle_name: string;
-  included_mileage: number;
-  extra_mileage: number;
-}
 
 interface CarFormWithTableProps {
   onCarCollectionChange: (cars: Car[]) => void;
-  cars: Car[];
+  cars: Car[] | null;
 }
 
 export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
@@ -32,22 +27,24 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
   cars,
 }) => {
   const [carDetails, setCarDetails] = useState<Car>({
-    vehicle_name: '',
-    included_mileage: 0,
-    extra_mileage: 0,
+    id: '',
+    name: '',
+    kilometer_allow: 0,
+    kilometer_rate: 0,
   });
 
-  const [carCollection, setCarCollection] = useState<Car[]>(cars);
+  const [carCollection, setCarCollection] = useState<Car[]>(cars ? cars : []);
 
   const handleAddCar = () => {
     // Validate fields
-    if (carDetails.vehicle_name.trim()) {
+    if (carDetails.name.trim()) {
       const updatedCarCollection = [...carCollection, carDetails];
       setCarCollection(updatedCarCollection); // Add car to collection
       setCarDetails({
-        vehicle_name: '',
-        included_mileage: 0,
-        extra_mileage: 0,
+        id: '',
+        name: '',
+        kilometer_allow: 0,
+        kilometer_rate: 0,
       }); // Reset fields
       console.log('Car details:', carDetails); // Log state for debugging
       onCarCollectionChange(updatedCarCollection);
@@ -57,11 +54,15 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
   };
 
   const handleRemoveCar = (indexToRemove: number) => {
-    // Remove the car at the specified index
-    setCarCollection((prev) =>
-      prev.filter((_, index) => index !== indexToRemove),
-    );
-    onCarCollectionChange(carCollection);
+    setCarCollection((prev) => {
+      const updatedCarCollection = prev.filter(
+        (_, index) => index !== indexToRemove,
+      );
+
+      onCarCollectionChange(updatedCarCollection);
+
+      return updatedCarCollection;
+    });
   };
 
   return (
@@ -71,23 +72,23 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
           <FormControl>
             <FormLabel>Vehicle Name</FormLabel>
             <Input
-              value={carDetails.vehicle_name}
+              value={carDetails.name}
               placeholder="ex. personal, van, truck..."
               onChange={(e) =>
-                setCarDetails({ ...carDetails, vehicle_name: e.target.value })
+                setCarDetails({ ...carDetails, name: e.target.value })
               }
             />
           </FormControl>
           <FormControl>
             <FormLabel>Included Mileage</FormLabel>
             <Input
-              value={carDetails.included_mileage}
+              value={carDetails.kilometer_allow}
               placeholder="ex. 50"
               type="number"
               onChange={(e) =>
                 setCarDetails({
                   ...carDetails,
-                  included_mileage: parseFloat(e.target.value),
+                  kilometer_allow: parseFloat(e.target.value),
                 })
               }
             />
@@ -95,13 +96,13 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
           <FormControl>
             <FormLabel>Extra Mileage Price</FormLabel>
             <Input
-              value={carDetails.extra_mileage}
+              value={carDetails.kilometer_rate}
               placeholder="ex. 10"
               type="number"
               onChange={(e) =>
                 setCarDetails({
                   ...carDetails,
-                  extra_mileage: parseFloat(e.target.value),
+                  kilometer_rate: parseFloat(e.target.value),
                 })
               }
             />
@@ -127,9 +128,9 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
             <Tbody>
               {carCollection.map((car, index) => (
                 <Tr key={index}>
-                  <Td>{car.vehicle_name}</Td>
-                  <Td>{car.included_mileage}</Td>
-                  <Td>{car.extra_mileage}</Td>
+                  <Td>{car.name}</Td>
+                  <Td>{car.kilometer_allow}</Td>
+                  <Td>{car.kilometer_rate}</Td>
                   <Td>
                     <Button
                       colorScheme="red"

@@ -17,7 +17,7 @@ export interface CrewMemberData {
   role: string;
   user_id: string | null;
   rate_id: string | null;
-  cars: CarData[] | null;
+  cars: Car[] | null;
   // cars:
   //   | [
   //       {

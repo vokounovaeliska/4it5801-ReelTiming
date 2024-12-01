@@ -20,3 +20,20 @@ export const ADD_CAR = gql`
     }
   }
 `;
+
+export const DELETE_CAR = gql`
+  mutation DeleteCar($deleteCarId: String!) {
+    deleteCar(id: $deleteCarId)
+  }
+`;
+
+export const UPDATE_CAR = gql`
+  mutation UpdateCar($data: CarInput!, $updateCarId: String!) {
+    updateCar(data: $data, id: $updateCarId) {
+      kilometer_allow
+      kilometer_rate
+      name
+      id
+    }
+  }
+`;

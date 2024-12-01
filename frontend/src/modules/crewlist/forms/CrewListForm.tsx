@@ -15,25 +15,26 @@ import {
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { Controller } from 'react-hook-form';
 
+import { Car } from '@frontend/modules/timesheets/interfaces';
 import { ErrorBanner } from '@frontend/shared/design-system';
 import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
-import {
-  Car,
-  CarFormWithTable,
-} from '@frontend/shared/forms/VehicleEnrollment';
-
-import { CarData } from '../interfaces/interfaces';
+import { CarFormWithTable } from '@frontend/shared/forms/VehicleEnrollment';
 
 export type CrewListFormProps = {
   projectId: string;
   errorMessage?: string;
-  onSubmit: (data: FormValues, sendInvite: boolean, cars: Car[]) => void;
+  onSubmit: (
+    data: FormValues,
+    sendInvite: boolean,
+    cars: Car[],
+    oldCars: Car[],
+  ) => void;
   isLoading: boolean;
   departments: { id: string; name: string }[];
   initialValues?: FormValues;
   mode: 'add' | 'edit';
   userRole: 'ADMIN' | 'CREW';
-  cars?: CarData[] | null;
+  cars: Car[] | null;
   projectCurrency: string;
 };
 
@@ -112,8 +113,8 @@ export function CrewListForm({
   initialValues: formInitialValues = initialValues,
   mode,
   userRole,
-  cars,
   projectCurrency,
+  cars,
 }: CrewListFormProps) {
   const [sendInvite, setSendInvite] = useState(false);
 
@@ -123,17 +124,7 @@ export function CrewListForm({
     setIsOpen(!isOpen);
   };
 
-  function transformedCars(carData: CarData[] | null | undefined): Car[] {
-    console.log(carData);
-    if (carData === null || carData === undefined) {
-      return [];
-    }
-    return carData.map((car) => ({
-      vehicle_name: car.vehicle_name,
-      included_mileage: car.included_mileage,
-      extra_mileage: car.extra_mileage,
-    }));
-  }
+  const oldCars = cars;
 
   const [carData, setCarData] = useState<Car[]>([]);
 
@@ -145,7 +136,7 @@ export function CrewListForm({
   return (
     <Form
       onSubmit={(data) => {
-        onSubmit(data, sendInvite, carData);
+        onSubmit(data, sendInvite, carData, oldCars ? oldCars : []);
         setSendInvite(false);
       }}
       defaultValues={formInitialValues}
@@ -273,7 +264,7 @@ export function CrewListForm({
           <Box p="4">
             <CarFormWithTable
               onCarCollectionChange={handleCarCollectionChange}
-              cars={carData}
+              cars={cars}
             />
           </Box>
         </Collapse>
