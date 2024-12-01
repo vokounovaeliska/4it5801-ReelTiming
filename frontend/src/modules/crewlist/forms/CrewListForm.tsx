@@ -246,29 +246,6 @@ export function CrewListForm({
           </SimpleGrid>
         </Box>
 
-        <Box position="relative" padding="2">
-          <Divider />
-          <AbsoluteCenter px="4">
-            <Button
-              onClick={toggleCollapse}
-              variant="ghost"
-              bg="white"
-              colorScheme="orange"
-              size="sm"
-            >
-              {isOpen ? 'Hide Car Mileage' : 'Show Car Mileage'}
-            </Button>
-          </AbsoluteCenter>
-        </Box>
-        <Collapse in={isOpen} animateOpacity>
-          <Box p="4">
-            <CarFormWithTable
-              onCarCollectionChange={handleCarCollectionChange}
-              cars={cars}
-            />
-          </Box>
-        </Collapse>
-
         <Stack m={4} spacing={6}>
           {mode === 'add' ? (
             <>
@@ -292,14 +269,38 @@ export function CrewListForm({
               </Button>
             </>
           ) : (
-            <Button
-              type="submit"
-              colorScheme="orange"
-              width="100%"
-              isLoading={isLoading}
-            >
-              Save Changes
-            </Button>
+            <>
+              <Box position="relative" padding="2">
+                <Divider />
+                <AbsoluteCenter px="4">
+                  <Button
+                    onClick={toggleCollapse}
+                    variant="ghost"
+                    bg="white"
+                    colorScheme="orange"
+                    size="sm"
+                  >
+                    {isOpen ? 'Hide Car Mileage' : 'Show Car Mileage'}
+                  </Button>
+                </AbsoluteCenter>
+              </Box>
+              <Collapse in={isOpen} animateOpacity>
+                <Box p="4">
+                  <CarFormWithTable
+                    onCarCollectionChange={handleCarCollectionChange}
+                    cars={cars}
+                  />
+                </Box>
+              </Collapse>
+              <Button
+                type="submit"
+                colorScheme="orange"
+                width="100%"
+                isLoading={isLoading}
+              >
+                Save Changes
+              </Button>
+            </>
           )}
         </Stack>
       </Stack>
