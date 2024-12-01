@@ -6,11 +6,11 @@ export const DEFAULT_CURRENCY: CurrencyCode = 'CZK';
 
 export const currencyUtil = {
   formatAmount(
-    value: number | undefined,
+    value: number | undefined | null,
     currency: CurrencyCode = DEFAULT_CURRENCY,
     minimumFractionDigits: number = 0,
   ): string {
-    if (!value) return '';
+    if (!value && value !== 0) return '';
     const formatter = new Intl.NumberFormat('cs-CZ', {
       style: 'currency',
       currency,

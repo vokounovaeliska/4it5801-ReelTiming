@@ -65,7 +65,8 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
   const hasDuplicates = Object.keys(duplicates).length > 0;
 
   const isGeneratePdfDisabled =
-    !startDate || !endDate || selectedUsers.length > 1;
+    (!startDate || !endDate || selectedUsers.length !== 1) &&
+    userRole === 'ADMIN';
 
   return (
     <Box flex="1" p={4} width="100%" maxWidth="1200px" mx="auto">
@@ -132,7 +133,7 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
           label={
             selectedUsers.length === 1
               ? `Generate PDF for ` + selectedUsers[0]?.label
-              : 'Generate my PDF'
+              : 'Generate PDF'
           }
           isDisabled={isGeneratePdfDisabled}
         />
