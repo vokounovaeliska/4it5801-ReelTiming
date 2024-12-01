@@ -15,6 +15,22 @@ export interface CrewMemberData {
   role: string;
   user_id: string | null;
   rate_id: string | null;
+  cars: CarData[] | null;
+  // cars:
+  //   | [
+  //       {
+  //         vehicle_name: string;
+  //         included_mileage: number;
+  //         extra_mileage: number;
+  //       },
+  //     ]
+  //   | null;
+}
+
+export interface CarData {
+  vehicle_name: string;
+  included_mileage: number;
+  extra_mileage: number;
 }
 
 export interface ProjectUser {
@@ -40,6 +56,16 @@ export interface ProjectUser {
     overtime_hour3: number;
     overtime_hour4: number;
   } | null;
+  // cars:
+  //   | [
+  //       {
+  //         vehicle_name: string;
+  //         included_mileage: string;
+  //         extra_mileage: string;
+  //       },
+  //     ]
+  //   | null;
+  cars: CarData[] | null;
 }
 
 export interface CrewAlertDialogProps {

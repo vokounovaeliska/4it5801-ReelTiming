@@ -16,34 +16,41 @@ import {
 
 import { Form } from '@frontend/shared/forms';
 
-interface Car {
+export interface Car {
   vehicle_name: string;
-  milage: string;
-  km_price: string;
+  included_mileage: number;
+  extra_mileage: number;
 }
 
-export function CarFormWithTable() {
+interface CarFormWithTableProps {
+  onCarCollectionChange: (cars: Car[]) => void;
+  cars: Car[];
+}
+
+export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
+  onCarCollectionChange,
+  cars,
+}) => {
   const [carDetails, setCarDetails] = useState<Car>({
     vehicle_name: '',
-    milage: '',
-    km_price: '',
+    included_mileage: 0,
+    extra_mileage: 0,
   });
 
-  const [carCollection, setCarCollection] = useState<Car[]>([
-    { vehicle_name: 'Van', milage: '50', km_price: '10' },
-  ]);
+  const [carCollection, setCarCollection] = useState<Car[]>(cars);
 
   const handleAddCar = () => {
-    console.log('Car details:', carDetails); // Log state for debugging
-
     // Validate fields
-    if (
-      carDetails.vehicle_name.trim() &&
-      carDetails.milage.trim() &&
-      carDetails.km_price.trim()
-    ) {
-      setCarCollection([...carCollection, carDetails]); // Add car to collection
-      setCarDetails({ vehicle_name: '', milage: '', km_price: '' }); // Reset fields
+    if (carDetails.vehicle_name.trim()) {
+      const updatedCarCollection = [...carCollection, carDetails];
+      setCarCollection(updatedCarCollection); // Add car to collection
+      setCarDetails({
+        vehicle_name: '',
+        included_mileage: 0,
+        extra_mileage: 0,
+      }); // Reset fields
+      console.log('Car details:', carDetails); // Log state for debugging
+      onCarCollectionChange(updatedCarCollection);
     } else {
       alert('Please fill out all fields before adding a car.');
     }
@@ -54,6 +61,7 @@ export function CarFormWithTable() {
     setCarCollection((prev) =>
       prev.filter((_, index) => index !== indexToRemove),
     );
+    onCarCollectionChange(carCollection);
   };
 
   return (
@@ -73,20 +81,28 @@ export function CarFormWithTable() {
           <FormControl>
             <FormLabel>Included Mileage</FormLabel>
             <Input
-              value={carDetails.milage}
+              value={carDetails.included_mileage}
               placeholder="ex. 50"
+              type="number"
               onChange={(e) =>
-                setCarDetails({ ...carDetails, milage: e.target.value })
+                setCarDetails({
+                  ...carDetails,
+                  included_mileage: parseFloat(e.target.value),
+                })
               }
             />
           </FormControl>
           <FormControl>
             <FormLabel>Extra Mileage Price</FormLabel>
             <Input
-              value={carDetails.km_price}
+              value={carDetails.extra_mileage}
               placeholder="ex. 10"
+              type="number"
               onChange={(e) =>
-                setCarDetails({ ...carDetails, km_price: e.target.value })
+                setCarDetails({
+                  ...carDetails,
+                  extra_mileage: parseFloat(e.target.value),
+                })
               }
             />
           </FormControl>
@@ -112,8 +128,8 @@ export function CarFormWithTable() {
               {carCollection.map((car, index) => (
                 <Tr key={index}>
                   <Td>{car.vehicle_name}</Td>
-                  <Td>{car.milage}</Td>
-                  <Td>{car.km_price}</Td>
+                  <Td>{car.included_mileage}</Td>
+                  <Td>{car.extra_mileage}</Td>
                   <Td>
                     <Button
                       colorScheme="red"
@@ -131,4 +147,4 @@ export function CarFormWithTable() {
       </Form>
     </Box>
   );
-}
+};

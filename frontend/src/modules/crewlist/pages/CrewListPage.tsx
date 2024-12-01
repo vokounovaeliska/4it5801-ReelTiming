@@ -134,17 +134,18 @@ export function CrewListPage() {
       >
         <CrewListForm
           projectId={projectId!}
-          onSubmit={(data, sendInvite) => {
+          onSubmit={(data, sendInvite, cars) => {
             if (selectedCrewMember) {
               handleUpdateCrewMember({
                 ...data,
                 id: selectedCrewMember.id,
                 user_id: selectedCrewMember.user_id,
                 rate_id: selectedCrewMember.rate_id,
+                cars: cars,
               });
             } else {
               handleAddNewCrewMember(
-                { ...data, id: '', user_id: null, rate_id: null },
+                { ...data, id: '', user_id: null, rate_id: null, cars: null },
                 sendInvite,
                 data.name,
                 data.email,
@@ -156,6 +157,7 @@ export function CrewListPage() {
           initialValues={selectedCrewMember || undefined}
           mode={selectedCrewMember ? 'edit' : 'add'}
           userRole={crewList.userRoleInProject}
+          cars={selectedCrewMember ? selectedCrewMember.cars : []}
         />
       </CustomModal>
       <CrewAlertDialog

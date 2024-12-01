@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import {
+  AbsoluteCenter,
   Box,
   Button,
+  Collapse,
   Divider,
   FormControl,
   FormErrorMessage,
@@ -12,21 +14,26 @@ import {
 } from '@chakra-ui/react';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { Controller } from 'react-hook-form';
-import { FaCarSide } from 'react-icons/fa6';
 
 import { ErrorBanner } from '@frontend/shared/design-system';
 import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
-import { CarFormWithTable } from '@frontend/shared/forms/VehicleEnrollment';
+import {
+  Car,
+  CarFormWithTable,
+} from '@frontend/shared/forms/VehicleEnrollment';
+
+import { CarData } from '../interfaces/interfaces';
 
 export type CrewListFormProps = {
   projectId: string;
   errorMessage?: string;
-  onSubmit: (data: FormValues, sendInvite: boolean) => void;
+  onSubmit: (data: FormValues, sendInvite: boolean, cars: Car[]) => void;
   isLoading: boolean;
   departments: { id: string; name: string }[];
   initialValues?: FormValues;
   mode: 'add' | 'edit';
   userRole: 'ADMIN' | 'CREW';
+  cars?: CarData[] | null;
 };
 
 const schema = zod.object({
@@ -73,9 +80,10 @@ const schema = zod.object({
     zod.number().nonnegative({ message: 'Must be a non-negative number' }),
   ),
   role: zod.string().default('CREW'),
+  // cars: zod.array(carSchema).default([]),
 });
 
-type FormValues = zod.infer<typeof schema>;
+export type FormValues = zod.infer<typeof schema>;
 
 const initialValues: FormValues = {
   name: '',
@@ -91,6 +99,7 @@ const initialValues: FormValues = {
   overtime_hour4: 0,
   compensation_rate: 0,
   role: 'CREW',
+  // cars: [],
 };
 
 export function CrewListForm({
@@ -102,14 +111,39 @@ export function CrewListForm({
   initialValues: formInitialValues = initialValues,
   mode,
   userRole,
+  cars,
 }: CrewListFormProps) {
   const [sendInvite, setSendInvite] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleCollapse = () => {
+    setIsOpen(!isOpen);
+  };
+
+  function transformedCars(carData: CarData[] | null | undefined): Car[] {
+    console.log(carData);
+    if (carData === null || carData === undefined) {
+      return [];
+    }
+    return carData.map((car) => ({
+      vehicle_name: car.vehicle_name,
+      included_mileage: car.included_mileage,
+      extra_mileage: car.extra_mileage,
+    }));
+  }
+
+  const [carData, setCarData] = useState<Car[]>([]);
+
+  const handleCarCollectionChange = (cars: Car[]) => {
+    setCarData(cars);
+    console.log('Updated car collection in parent:', cars);
+  };
 
   return (
     <Form
       onSubmit={(data) => {
-        onSubmit(data, sendInvite);
+        onSubmit(data, sendInvite, carData);
         setSendInvite(false);
       }}
       defaultValues={formInitialValues}
@@ -119,141 +153,124 @@ export function CrewListForm({
       <Stack justify="center">
         {errorMessage && <ErrorBanner title={errorMessage} />}
 
-        {currentPage === 1 && (
-          <Box display={{ base: 'block', lg: 'flex' }} gap={6} p="2">
-            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-              <InputField name="name" label="Name" isRequired />
-              <InputField name="surname" label="Surname" isRequired />
-              <Controller
-                name="department"
-                render={({ field, fieldState }) => (
-                  <FormControl
-                    isRequired={userRole === 'ADMIN'}
-                    isInvalid={!!fieldState.error}
+        <Box display={{ base: 'block', lg: 'flex' }} gap={6} p="2">
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+            <InputField name="name" label="Name" isRequired />
+            <InputField name="surname" label="Surname" isRequired />
+            <Controller
+              name="department"
+              render={({ field, fieldState }) => (
+                <FormControl
+                  isRequired={userRole === 'ADMIN'}
+                  isInvalid={!!fieldState.error}
+                >
+                  <FormLabel>Department</FormLabel>
+                  <Select
+                    {...field}
+                    placeholder="Select Department"
+                    borderColor="gray.400"
+                    borderWidth={1}
+                    isDisabled={userRole !== 'ADMIN'}
                   >
-                    <FormLabel>Department</FormLabel>
-                    <Select
-                      {...field}
-                      placeholder="Select Department"
-                      borderColor="gray.400"
-                      borderWidth={1}
-                      isDisabled={userRole !== 'ADMIN'}
-                    >
-                      {departments.map((dept) => (
-                        <option key={dept.id} value={dept.id}>
-                          {dept.name}
-                        </option>
-                      ))}
-                    </Select>
-                    <FormErrorMessage>
-                      {fieldState.error?.message}
-                    </FormErrorMessage>
-                  </FormControl>
-                )}
-              />
-              <InputField
-                name="position"
-                label="Position"
-                isRequired
-                isDisabled={userRole !== 'ADMIN'}
-              />
-              <InputField name="email" label="Email" isRequired />
-              <InputField name="phone_number" label="Phone number" isRequired />
-              <Controller
-                name="role"
-                render={({ field }) => (
-                  <FormControl isRequired isDisabled={userRole !== 'ADMIN'}>
-                    <FormLabel>Role</FormLabel>
-                    <Select {...field} borderColor={'gray.400'} borderWidth={1}>
-                      <option value="CREW">CREW</option>
-                      <option value="ADMIN">ADMIN</option>
-                    </Select>
-                  </FormControl>
-                )}
-              />
-            </SimpleGrid>
-            <Divider
-              orientation="vertical"
-              display={{ base: 'none', lg: 'block' }}
+                    {departments.map((dept) => (
+                      <option key={dept.id} value={dept.id}>
+                        {dept.name}
+                      </option>
+                    ))}
+                  </Select>
+                  <FormErrorMessage>
+                    {fieldState.error?.message}
+                  </FormErrorMessage>
+                </FormControl>
+              )}
             />
-            <Divider
-              orientation="horizontal"
-              display={{ base: 'block', lg: 'none' }}
+            <InputField
+              name="position"
+              label="Position"
+              isRequired
+              isDisabled={userRole !== 'ADMIN'}
             />
+            <InputField name="email" label="Email" isRequired />
+            <InputField name="phone_number" label="Phone number" isRequired />
+            <Controller
+              name="role"
+              render={({ field }) => (
+                <FormControl isRequired isDisabled={userRole !== 'ADMIN'}>
+                  <FormLabel>Role</FormLabel>
+                  <Select {...field} borderColor={'gray.400'} borderWidth={1}>
+                    <option value="CREW">CREW</option>
+                    <option value="ADMIN">ADMIN</option>
+                  </Select>
+                </FormControl>
+              )}
+            />
+          </SimpleGrid>
+          <Divider
+            orientation="vertical"
+            display={{ base: 'none', lg: 'block' }}
+          />
+          <Divider
+            orientation="horizontal"
+            display={{ base: 'block', lg: 'none' }}
+          />
 
-            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-              <InputField
-                name="standard_rate"
-                label="Standard rate"
-                isRequired
-              />
-              <InputField
-                name="compensation_rate"
-                label="Compensation rate"
-                isRequired
-                type="number"
-              />
-              <InputField
-                name="overtime_hour1"
-                label="1. Overtime hour"
-                isRequired
-                type="number"
-              />
-              <InputField
-                name="overtime_hour2"
-                label="2. Overtime hour"
-                isRequired
-                type="number"
-              />
-              <InputField
-                name="overtime_hour3"
-                label="3. Overtime hour"
-                isRequired
-                type="number"
-              />
-              <InputField
-                name="overtime_hour4"
-                label="4. Overtime hour"
-                isRequired
-                type="number"
-              />
-            </SimpleGrid>
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+            <InputField name="standard_rate" label="Standard rate" isRequired />
+            <InputField
+              name="compensation_rate"
+              label="Compensation rate"
+              isRequired
+              type="number"
+            />
+            <InputField
+              name="overtime_hour1"
+              label="1. Overtime hour"
+              isRequired
+              type="number"
+            />
+            <InputField
+              name="overtime_hour2"
+              label="2. Overtime hour"
+              isRequired
+              type="number"
+            />
+            <InputField
+              name="overtime_hour3"
+              label="3. Overtime hour"
+              isRequired
+              type="number"
+            />
+            <InputField
+              name="overtime_hour4"
+              label="4. Overtime hour"
+              isRequired
+              type="number"
+            />
+          </SimpleGrid>
+        </Box>
+
+        <Box position="relative" padding="2">
+          <Divider />
+          <AbsoluteCenter px="4">
+            <Button
+              onClick={toggleCollapse}
+              variant="ghost"
+              bg="white"
+              colorScheme="orange"
+              size="sm"
+            >
+              {isOpen ? 'Hide Car Mileage' : 'Show Car Mileage'}
+            </Button>
+          </AbsoluteCenter>
+        </Box>
+        <Collapse in={isOpen} animateOpacity>
+          <Box p="4">
+            <CarFormWithTable
+              onCarCollectionChange={handleCarCollectionChange}
+              cars={carData}
+            />
           </Box>
-        )}
-
-        {currentPage === 2 && <CarFormWithTable />}
-
-        {mode !== 'add' && (
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            m={4}
-          >
-            {/* Back Button on the Left */}
-            {currentPage > 1 && (
-              <Button
-                colorScheme="gray"
-                onClick={() => setCurrentPage((prev) => prev - 1)}
-              >
-                Back
-              </Button>
-            )}
-            {/* Spacer to push Add Car to the Right */}
-            <Box flex="1" />
-            {/* Add Car Button on the Right */}
-            {currentPage < 2 && (
-              <Button
-                colorScheme="orange"
-                variant="outline"
-                rightIcon={<FaCarSide />}
-                onClick={() => setCurrentPage((prev) => prev + 1)}
-              >
-                Add Car
-              </Button>
-            )}
-          </Box>
-        )}
+        </Collapse>
 
         <Stack m={4} spacing={6}>
           {mode === 'add' ? (

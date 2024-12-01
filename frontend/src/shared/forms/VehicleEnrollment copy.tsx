@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -11,170 +11,116 @@ import {
   Tr,
 } from '@chakra-ui/react';
 
-import { Form, InputField } from './molecules';
-import { zod, zodResolver } from '.';
+import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
 
-const schema = zod.object({
-  vehicle_name: zod.string().min(1),
-  included_mileage: zod.number().min(1),
-  extra_mileage: zod.number().min(1),
+export const carSchema = zod.object({
+  vehicle_name: zod.string().min(1, { message: 'Vehicle name is required' }),
+  included_mileage: zod
+    .number()
+    .nonnegative({ message: 'Must be a non-negative number' }),
+  extra_mileage: zod
+    .number()
+    .nonnegative({ message: 'Must be a non-negative number' }),
 });
 
-// Define the Car type
-interface Car {
-  vehicle_name: string;
-  milage: string;
-  km_price: string;
+export type Car = zod.infer<typeof carSchema>;
+
+const initialValues: Car = {
+  vehicle_name: '',
+  included_mileage: 0,
+  extra_mileage: 0,
+};
+
+interface CarFormWithTableProps {
+  onCarCollectionChange: (cars: Car[]) => void;
+  cars: Car[];
 }
 
-// export type VehicleFormValues = zod.infer<typeof schema>;
+export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
+  onCarCollectionChange,
+  cars,
+}) => {
+  const [carCollection, setCarCollection] = useState<Car[]>(cars);
 
-export function CarFormWithTable() {
-  // Strongly typed state for car details and the collection
-  const [carDetails, setCarDetails] = useState<Car>({
-    vehicle_name: '',
-    milage: '',
-    km_price: '',
-  });
-
-  const initialValues: VehicleFormValues = {
-    vehicle_name: '',
-    included_mileage: 0,
-    extra_mileage: 0,
+  const handleAddCar = (data: Car) => {
+    const updatedCars = [...carCollection, data];
+    setCarCollection(updatedCars);
+    onCarCollectionChange(updatedCars);
   };
 
-  const [carCollection, setCarCollection] = useState<Car[]>([]);
-
-  const handleAddCar = () => {
-    // Validate that all fields are filled
-    if (
-      carDetails.vehicle_name.trim() &&
-      carDetails.milage.trim() &&
-      carDetails.km_price.trim()
-    ) {
-      // Add the car details to the collection
-      setCarCollection([...carCollection, carDetails]);
-      // Clear the input fields
-      setCarDetails({ vehicle_name: '', milage: '', km_price: '' });
-    } else {
-      alert('Please fill out all fields before adding a car.');
-    }
-  };
-
-  const handleRemoveCar = (indexToRemove: number) => {
-    // Remove the car at the specified index
-    setCarCollection((prev) =>
-      prev.filter((_, index) => index !== indexToRemove),
-    );
+  const handleRemoveCar = (index: number) => {
+    const updatedCars = carCollection.filter((_, i) => i !== index);
+    setCarCollection(updatedCars);
+    onCarCollectionChange(updatedCars);
   };
 
   return (
-    <Box display="block" p="2">
+    <Box display="block" p="4">
+      {/* Form */}
       <Form
-        onSubmit={() => {}}
-        resolver={zodResolver(schema)}
+        onSubmit={(data) => {
+          handleAddCar(data);
+        }}
         defaultValues={initialValues}
-        noValidate
+        resolver={zodResolver(carSchema)}
       >
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
-          <Box>
-            <InputField
-              name="vehicle_name"
-              type="text"
-              value={carDetails.vehicle_name}
-              label="Vehicle Name"
-              placeholder="ex. personal, van, truck..."
-              onChange={(e) =>
-                setCarDetails({ ...carDetails, vehicle_name: e.target.value })
-              }
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                marginTop: '4px',
-              }}
-            />
-          </Box>
-          <Box>
-            <InputField
-              name="included_mileage"
-              label="Included mileage"
-              type="text"
-              value={carDetails.milage}
-              placeholder="ex. 50"
-              onChange={(e) =>
-                setCarDetails({ ...carDetails, milage: e.target.value })
-              }
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                marginTop: '4px',
-              }}
-            />
-          </Box>
-          <Box>
-            <InputField
-              name="extra_mileage"
-              label="Extra Mileage Price"
-              type="text"
-              value={carDetails.km_price}
-              placeholder="ex. 10"
-              onChange={(e) =>
-                setCarDetails({ ...carDetails, km_price: e.target.value })
-              }
-              style={{
-                width: '100%',
-                padding: '8px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                marginTop: '4px',
-              }}
-            />
-          </Box>
+          <InputField
+            name="vehicle_name"
+            label="Vehicle Name"
+            placeholder="e.g., personal, van, truck..."
+          />
+          <InputField
+            name="included_mileage"
+            label="Included Mileage"
+            type="number"
+            placeholder="e.g., 50"
+          />
+          <InputField
+            name="extra_mileage"
+            label="Extra Mileage Price"
+            type="number"
+            placeholder="e.g., 10"
+          />
         </SimpleGrid>
 
-        {/* Add Car Button */}
         <Box display="flex" justifyContent="flex-end" mt={4}>
-          <Button colorScheme="orange" onClick={handleAddCar}>
+          <Button colorScheme="orange" type="submit">
             Add Car
           </Button>
         </Box>
-
-        {/* Display Table */}
-        <Box mt={6}>
-          <Table variant="striped" colorScheme="gray">
-            <Thead>
-              <Tr>
-                <Th>Vehicle Name</Th>
-                <Th>Included Mileage</Th>
-                <Th>Extra Mileage Price</Th>
-                <Th>Actions</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {carCollection.map((car, index) => (
-                <Tr key={index}>
-                  <Td>{car.vehicle_name}</Td>
-                  <Td>{car.milage}</Td>
-                  <Td>{car.km_price}</Td>
-                  <Td>
-                    <Button
-                      colorScheme="red"
-                      size="sm"
-                      onClick={() => handleRemoveCar(index)}
-                    >
-                      Remove
-                    </Button>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </Box>
       </Form>
+
+      <Box mt={6}>
+        <Table variant="striped" colorScheme="gray">
+          <Thead>
+            <Tr>
+              <Th>Vehicle Name</Th>
+              <Th>Included Mileage</Th>
+              <Th>Extra Mileage Price</Th>
+              <Th>Actions</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {carCollection.map((car, index) => (
+              <Tr key={index}>
+                <Td>{car.vehicle_name}</Td>
+                <Td>{car.included_mileage}</Td>
+                <Td>{car.extra_mileage}</Td>
+                <Td>
+                  <Button
+                    colorScheme="red"
+                    size="sm"
+                    onClick={() => handleRemoveCar(index)}
+                  >
+                    Remove
+                  </Button>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </Box>
     </Box>
   );
-}
+};

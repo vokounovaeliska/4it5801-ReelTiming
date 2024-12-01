@@ -6,6 +6,7 @@ import { EDIT_RATE } from './EditRate';
 import { EDIT_PROJECT_USER } from './EditProjectUser';
 import { DELETE_PROJECT_USER } from '../queries/DeleteProjectUser';
 import { DELETE_INVITATION } from './DeleteInvitation';
+import { ADD_CAR } from './AddCar';
 
 interface CrewMemberData {
   id: string;
@@ -24,6 +25,13 @@ interface CrewMemberData {
   role: string;
   user_id: string | null;
   rate_id: string | null;
+  cars: CarData[] | null;
+}
+
+interface CarData {
+  vehicle_name: string;
+  included_mileage: number;
+  extra_mileage: number;
 }
 
 export const useCrewMemberMutations = () => {
@@ -34,6 +42,7 @@ export const useCrewMemberMutations = () => {
   const [editProjectUser] = useMutation(EDIT_PROJECT_USER);
   const [deleteProjectUser] = useMutation(DELETE_PROJECT_USER);
   const [deleteProjectInvitation] = useMutation(DELETE_INVITATION);
+  const [addCar] = useMutation(ADD_CAR);
 
   const addCrewMember = async (data: CrewMemberData, projectId: string) => {
     try {
@@ -48,6 +57,7 @@ export const useCrewMemberMutations = () => {
           overtimeHour4: data.overtime_hour4,
         },
       });
+
       const rateId = responseRate.data?.addRate?.id;
       //  Add Project User
       const responseId = await addProjectUser({
@@ -108,6 +118,19 @@ export const useCrewMemberMutations = () => {
           rateId: data.rate_id,
         },
       });
+
+      if (data.cars !== null) {
+        for (const car of data.cars) {
+          await addCar({
+            variables: {
+              kilometerRate: car.included_mileage,
+              kilometerAllow: car.extra_mileage,
+              name: car.vehicle_name,
+              projectUserId: data.id,
+            },
+          });
+        }
+      }
 
       await editProjectUser({
         variables: {
