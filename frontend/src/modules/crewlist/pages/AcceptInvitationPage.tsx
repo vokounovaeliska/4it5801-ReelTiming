@@ -1,11 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { useToast } from '@chakra-ui/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
+import { ADD_CAR } from '@frontend/gql/mutations/AddCar';
 import { UPDATE_AND_ACTIVATE_PROJECT_USER } from '@frontend/gql/mutations/UpdateAdActivateProjectUser';
 import { GET_DEPARTMENTS } from '@frontend/gql/queries/GetDepartments';
 import { useAuth } from '@frontend/modules/auth';
+import { Car } from '@frontend/modules/timesheets/interfaces';
 import { route } from '@frontend/route';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
@@ -32,6 +34,8 @@ export function AcceptInvitationPage() {
     UPDATE_AND_ACTIVATE_PROJECT_USER,
   );
 
+  const [addCar] = useMutation(ADD_CAR);
+
   useEffect(() => {
     if (!token) {
       navigate('/');
@@ -53,7 +57,33 @@ export function AcceptInvitationPage() {
   const departments = departmentsData?.departments || [];
   const projectUser = data?.projectUsersByToken;
 
-  const handleFormSubmit = async (formData: FormValues) => {
+  const addCarsForUser = async (cars: Car[]) => {
+    for (const car of cars) {
+      await addCar({
+        variables: {
+          kilometerRate: car.kilometer_rate,
+          kilometerAllow: car.kilometer_allow,
+          name: car.name,
+          projectUserId: projectUser.id,
+        },
+      });
+    }
+  };
+
+  const handleFormSubmit = async (formData: FormValues, cars: Car[]) => {
+    try {
+      await addCarsForUser(cars);
+    } catch (error) {
+      console.error('Error adding Cars to project user:', error);
+      toast({
+        title: 'Error',
+        description: 'Error adding Cars to project user: ' + error,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+
     await UpdateAdActivateProjectUser({
       variables: {
         updateProjectUserId: projectUser.id!,
@@ -94,6 +124,13 @@ export function AcceptInvitationPage() {
       });
   };
 
+  const [carData, setCarData] = useState<Car[]>([]);
+
+  const handleCarCollectionChange = (cars: Car[]) => {
+    setCarData(cars);
+    console.log('Updated car collection in parent:', cars);
+  };
+
   if (loading || departmentsLoading) return <p>Loading...</p>;
   if (error || departmentsError)
     return <p>Error: {error?.message ?? departmentsError?.message}</p>;
@@ -103,11 +140,13 @@ export function AcceptInvitationPage() {
       <Navbar children={undefined} />
       <AcceptInvitationTemplate
         onSubmit={handleFormSubmit}
+        onCarCollectionChange={handleCarCollectionChange}
         projectUserData={projectUser}
         departments={departments}
         errorMessage={error}
         isLoading={loading}
         authUser={user!}
+        cars={carData}
       />
       <Footer />
     </div>

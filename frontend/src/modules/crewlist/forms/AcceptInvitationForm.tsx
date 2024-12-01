@@ -12,6 +12,7 @@ import {
 import { Controller } from 'react-hook-form';
 
 import { AuthUser } from '@frontend/modules/auth/auth-core';
+import { Car } from '@frontend/modules/timesheets/interfaces';
 import { ErrorBanner } from '@frontend/shared/design-system';
 import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
 import { FormSection } from '@frontend/shared/forms/molecules/FormSection';
@@ -19,11 +20,13 @@ import { CarFormWithTable } from '@frontend/shared/forms/VehicleEnrollment';
 
 export type AcceptInvitationFormProps = {
   errorMessage?: string;
-  onSubmit: (data: FormValues) => void;
+  onCarCollectionChange: (cars: Car[]) => void;
+  onSubmit: (data: FormValues, cars: Car[]) => void;
   isLoading: boolean;
   projectUserData: ProjectUserData;
   departments: { id: string; name: string }[];
   authUser: AuthUser;
+  cars: Car[];
 };
 
 export type ProjectUserData = {
@@ -98,10 +101,12 @@ export type FormValues = zod.infer<typeof schema>;
 
 export function AcceptInvitationForm({
   errorMessage,
+  onCarCollectionChange,
   onSubmit,
   isLoading,
   departments,
   projectUserData,
+  cars,
 }: AcceptInvitationFormProps) {
   const initialValues: FormValues = {
     name: projectUserData?.name || '',
@@ -132,7 +137,9 @@ export function AcceptInvitationForm({
         {errorMessage && <ErrorBanner title={errorMessage} />}
       </Box>
       <Form
-        onSubmit={onSubmit}
+        onSubmit={(data) => {
+          onSubmit(data, cars);
+        }}
         defaultValues={initialValues}
         resolver={zodResolver(schema)}
         noValidate
@@ -229,7 +236,10 @@ export function AcceptInvitationForm({
             title="Transport & Milage"
             description="Please fill in your transport and milage compensation rates."
           >
-            <CarFormWithTable />
+            <CarFormWithTable
+              onCarCollectionChange={onCarCollectionChange}
+              cars={cars}
+            />
           </FormSection>
           <Stack align="flex-end">
             <Button
