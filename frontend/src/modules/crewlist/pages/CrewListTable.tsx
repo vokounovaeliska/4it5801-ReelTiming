@@ -48,7 +48,7 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
   projectCurrency,
 }) => {
   return (
-    <Box overflowX="scroll" m={{ base: 2, md: 4 }}>
+    <Box overflowX="auto" m={{ base: 2, md: 4 }}>
       <TableContainer className="custom-scrollbar">
         <Box
           overflowX="auto"
