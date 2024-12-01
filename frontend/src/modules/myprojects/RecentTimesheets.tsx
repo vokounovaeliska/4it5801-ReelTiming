@@ -111,7 +111,7 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
       </Text>
 
       <Box overflowX="auto">
-        <Table variant="simple" size={{ base: 'sm', md: 'md' }}>
+        <Table variant="simple" size={{ base: 'sm', 'dash-break': 'md' }}>
           <Thead>
             <Tr>
               <Th>Date</Th>
@@ -127,7 +127,7 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
                   {new Date(timesheet.start_date).toLocaleDateString()}
                 </Td>
                 <Td>{timesheet.shift_lenght}</Td>
-                <Td whiteSpace="nowrap">
+                <Td whiteSpace={{ base: 'nowrap', md: 'normal' }}>
                   {formatTime(timesheet.from)} - {formatTime(timesheet.to)}
                 </Td>
                 <Td>{timesheet.claimed_overtime}</Td>

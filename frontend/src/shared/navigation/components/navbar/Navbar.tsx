@@ -49,7 +49,11 @@ const Navbar: React.FC<{
           <Logo />
           <AppHeading />
         </Flex>
-        <HStack spacing={4} display={{ base: 'none', md: 'flex' }} ml={0}>
+        <HStack
+          spacing={4}
+          display={{ base: 'none', 'admin-nav': 'flex' }}
+          ml={0}
+        >
           {React.Children.map(children, (child) => {
             if (React.isValidElement(child)) {
               return React.cloneElement(child, { ...buttonStyle });
@@ -59,7 +63,7 @@ const Navbar: React.FC<{
         </HStack>
 
         <Flex
-          display={{ base: 'none', md: 'flex' }}
+          display={{ base: 'none', 'admin-nav': 'flex' }}
           ml="auto"
           alignItems="center"
         >
@@ -71,7 +75,7 @@ const Navbar: React.FC<{
           aria-label="Open Menu"
           icon={<HamburgerIcon />}
           size="lg"
-          display={{ base: 'block', md: 'none' }}
+          display={{ base: 'block', 'admin-nav': 'none' }}
           onClick={onOpen}
           colorScheme="orange"
           ml="auto"

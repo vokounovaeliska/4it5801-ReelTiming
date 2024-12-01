@@ -1,38 +1,61 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import { Box, Button, HStack, Text } from '@chakra-ui/react';
+import { Box, HStack, Text } from '@chakra-ui/react';
 import { FaClock, FaCoins } from 'react-icons/fa';
-import { Link as ReactRouterLink } from 'react-router-dom';
 
-import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/gql/queries/GetCrewUserInfoTimesheets';
-//import { GET_ADMIN_STATEMENTS } from '@frontend/gql/queries/GetStatements';
+//import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/gql/queries/GetCrewUserInfoTimesheets';
+import { GET_ADMIN_STATEMENTS } from '@frontend/gql/queries/GetStatements';
 import { route } from '@frontend/route';
+import { currencyUtil } from '@shared/currencyUtil';
+
+import DashButton from './DashButton';
+
+interface Statement {
+  kilometers: number | null;
+  // zde přidat další vlastnosti ze statement
+}
 
 interface DashboardCostsProps {
   projectId: string;
-  userId: string;
+  currency: string;
 }
 
 const DashboardCostsAdmin: React.FC<DashboardCostsProps> = ({
   projectId,
-  userId,
+  currency,
 }) => {
-  const { loading, error } = useQuery(GET_CREWUSERINFO_TIMESHEETS, {
-    variables: { userId, projectId },
+  const { data, loading, error } = useQuery(GET_ADMIN_STATEMENTS, {
+    variables: { projectId },
     fetchPolicy: 'cache-and-network',
   });
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error loading data!</Text>;
 
-  // todo - cache
+  const statements: Statement[] = data?.statementsByProjectId || [];
+
+  const totalMileage = statements.reduce(
+    (total: number, statement: Statement) => {
+      return total + (statement.kilometers || 0);
+    },
+    0,
+  );
+
+  // Získání symbolu měny
+  const currencySymbol = currencyUtil.getCurrencySymbol(currency);
+
+  const totalMileageText = `${totalMileage} km`;
+
+  //   totalMileage > 0 ? `${totalKilometers} km`: 'N/A';
+
+  // TODO - cache grab
 
   return (
     <>
       <Text fontSize="lg">Total costs</Text>
       <HStack spacing={2} align="center" mb={4}>
         <FaCoins size="64px" />
-        <Text fontSize="6xl">N/A</Text>
+        <Text fontSize="6xl">N/A {currencySymbol}</Text>
       </HStack>
 
       <Text mb={1}>Costs by category</Text>
@@ -89,32 +112,24 @@ const DashboardCostsAdmin: React.FC<DashboardCostsProps> = ({
           borderRadius="md"
           textAlign="center"
         >
-          <Text>Equipment rental costs</Text>
+          <Text>Total mileage</Text>
           <HStack spacing={2} align="center" justify="center">
-            <Text fontSize="2xl">N/A</Text>
+            <Text fontSize="2xl">{totalMileageText}</Text>
           </HStack>
         </Box>
       </HStack>
 
       <Box
         display="flex"
-        justifyContent={{ base: 'center', md: 'flex-start' }}
+        justifyContent={{ base: 'center', 'dash-break1': 'flex-start' }} //PŮVODNĚ TU BYLO md
         mt={4}
       >
-        <Button
-          as={ReactRouterLink}
+        <DashButton
+          text="Timesheets"
+          icon={<FaClock />}
+          ariaLabel="Timesheets"
           to={route.timesheets(projectId)}
-          leftIcon={<FaClock />}
-          aria-label="Timesheets"
-          colorScheme="orange"
-          variant="outline"
-          size={{ base: 'xl', md: 'lg' }}
-          padding="16px 32px"
-          fontSize={{ base: '2xl', md: 'xl' }}
-          _hover={{ bg: 'orange.600', color: 'white' }}
-        >
-          Timesheets
-        </Button>
+        />
       </Box>
     </>
   );
