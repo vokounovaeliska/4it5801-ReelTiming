@@ -7,14 +7,12 @@ import {
   Center,
   Divider,
   Heading,
-  HStack,
   SimpleGrid,
   Spinner,
   Text,
 } from '@chakra-ui/react';
 import { FaClock, FaUsers } from 'react-icons/fa';
 import { FaCirclePlus } from 'react-icons/fa6';
-import { IoPerson } from 'react-icons/io5';
 import { MdBuild } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
 
@@ -28,12 +26,12 @@ import { currencyUtil } from '@shared/currencyUtil';
 
 import { GET_PROJECT_DETAILS } from '../../../gql/queries/GetProjectDetails';
 import { GET_USER_ROLE_IN_PROJECT } from '../../../gql/queries/GetUserRoleInProject';
-import CrewMemberCount from '../CrewMemberCount';
+import CrewInfo from '../CrewInfo';
 import DashboardCostsAdmin from '../DashboardCostsAdmin';
 import DashboardEarningsCrew from '../DashboardEarningsCrew';
 import ProjectTimeline from '../ProjectTimeline';
-import RecentCrewMembers from '../RecentCrewMembers';
-import RecentTimesheets from '../RecentTimesheets';
+import ShiftInfo from '../ShiftInfo';
+import TopDashButton from '../TopDashButton';
 
 export function MyProjectDetailPage() {
   const auth = useAuth();
@@ -93,19 +91,14 @@ export function MyProjectDetailPage() {
         flex="1"
         p={{ base: 3, md: 8 }}
         width={{
-          base: '95%',
+          base: '100%',
           sm: '95%',
           md: '90%',
           xl: '85%',
-          '2xl': '75%',
+          '2xl': '80%',
         }}
         maxWidth="2000px"
         mx="auto"
-        my={8}
-        bg="white"
-        boxShadow="xs"
-        borderRadius="md"
-        borderWidth={1}
       >
         <Box
           display="flex"
@@ -189,7 +182,8 @@ export function MyProjectDetailPage() {
           >
             <Text
               fontSize={{ base: 'md', md: 'lg' }}
-              width={{ base: '100%', md: '75%' }}
+              //width={{ base: '100%', md: '75%' }}
+              maxWidth="58rem"
             >
               {project?.description}
             </Text>
@@ -197,53 +191,31 @@ export function MyProjectDetailPage() {
           <Box mt={5} justifyContent="space-between" width="100%">
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
               {userRole === 'CREW' && (
-                <Button
-                  as={ReactRouterLink}
-                  to={route.timesheets(project.id)}
-                  leftIcon={<FaCirclePlus />}
-                  aria-label="Submit shift times"
-                  colorScheme="orange"
-                  variant="outline"
-                  _hover={{ bg: 'orange.600', color: 'white' }}
-                  size={{ base: 'xl', md: 'md' }}
-                  fontSize={{ base: '2xl', md: 'md' }}
-                  padding="16px 32px"
-                >
-                  Report shift
-                </Button>
+                <>
+                  <TopDashButton
+                    text="Report shift"
+                    icon={<FaCirclePlus />}
+                    ariaLabel="Submit shift times"
+                    to={route.timesheets(project.id)}
+                  />
+                </>
               )}
-              <Button
-                as={ReactRouterLink}
+              <TopDashButton
+                text={userRole === 'CREW' ? 'Personal Pay Rates' : 'Crew List'}
+                icon={<FaUsers />}
                 to={route.crewList(project.id)}
-                leftIcon={<FaUsers />}
-                aria-label={
+                ariaLabel={
                   userRole === 'CREW'
                     ? 'View and edit Personal Pay Rates'
                     : 'View Crew List'
                 }
-                colorScheme="orange"
-                variant="outline"
-                _hover={{ bg: 'orange.600', color: 'white' }}
-                size={{ base: 'xl', md: 'md' }}
-                fontSize={{ base: '2xl', md: 'md' }}
-                padding="16px 32px"
-              >
-                {userRole === 'CREW' ? 'Personal Pay Rates' : 'Crew List'}
-              </Button>
-              <Button
-                as={ReactRouterLink}
+              />
+              <TopDashButton
+                text="Timesheets"
+                icon={<FaClock />}
+                ariaLabel="Timesheets"
                 to={route.timesheets(project.id)}
-                leftIcon={<FaClock />}
-                aria-label="Timesheets"
-                colorScheme="orange"
-                variant="outline"
-                _hover={{ bg: 'orange.600', color: 'white' }}
-                size={{ base: 'xl', md: 'md' }}
-                fontSize={{ base: '2xl', md: 'md' }}
-                padding="16px 32px"
-              >
-                Timesheets
-              </Button>
+              />
             </SimpleGrid>
           </Box>
         </Box>
@@ -251,7 +223,7 @@ export function MyProjectDetailPage() {
         <Box
           mb={6}
           display="flex"
-          flexDirection={{ base: 'column', md: 'row' }}
+          flexDirection={{ base: 'column', 'dash-break1': 'row' }} // PŮVODNĚ TU BYLO md: 'row'. KDYBY TO BYLO OŠKLIVÉ, PŘEPSAT NA PŮV.
           gap={4}
         >
           <Box
@@ -262,71 +234,10 @@ export function MyProjectDetailPage() {
             flex="1"
             borderWidth={1}
           >
-            {userRole === 'ADMIN' && (
-              <>
-                <Text fontSize="lg">Number of crew members</Text>
-                <HStack spacing={2} align="center" mb={4}>
-                  <IoPerson size="64px" />
-                  <Box as="span" fontSize="6xl">
-                    <CrewMemberCount
-                      projectId={project.id}
-                      userId={auth.user.id}
-                    />
-                  </Box>
-                </HStack>
-                <RecentCrewMembers
-                  projectId={project.id}
-                  userId={auth.user.id}
-                />
-                <Box
-                  display="flex"
-                  justifyContent={{ base: 'center', md: 'flex-start' }}
-                  mt={4}
-                >
-                  <Button
-                    as={ReactRouterLink}
-                    to={route.crewList(project.id)}
-                    leftIcon={<FaUsers />}
-                    aria-label="View Crew List"
-                    colorScheme="orange"
-                    variant="outline"
-                    size={{ base: 'xl', md: 'lg' }}
-                    padding="16px 32px"
-                    fontSize={{ base: '2xl', md: 'xl' }}
-                    _hover={{ bg: 'orange.600', color: 'white' }}
-                  >
-                    Crew List
-                  </Button>
-                </Box>
-              </>
-            )}
-            {userRole === 'CREW' && (
-              <>
-                <RecentTimesheets
-                  projectId={project.id}
-                  userId={auth.user.id}
-                />
-                <Box
-                  display="flex"
-                  justifyContent={{ base: 'center', md: 'flex-start' }}
-                  mt={4}
-                >
-                  <Button
-                    as={ReactRouterLink}
-                    to={route.timesheets(project.id)}
-                    leftIcon={<FaCirclePlus />}
-                    aria-label="Submit shift times"
-                    colorScheme="orange"
-                    variant="outline"
-                    size={{ base: 'xl', md: 'lg' }}
-                    padding="16px 32px"
-                    fontSize={{ base: '2xl', md: 'xl' }}
-                    _hover={{ bg: 'orange.600', color: 'white' }}
-                  >
-                    Report Shift
-                  </Button>
-                </Box>
-              </>
+            {userRole === 'ADMIN' ? (
+              <CrewInfo projectId={project.id} userId={auth.user.id} />
+            ) : (
+              <ShiftInfo projectId={project.id} userId={auth.user.id} />
             )}
           </Box>
 
@@ -341,12 +252,14 @@ export function MyProjectDetailPage() {
             {userRole === 'ADMIN' ? (
               <DashboardCostsAdmin
                 projectId={project.id}
-                userId={auth.user.id}
+                currency={project.currency}
+                //userId={auth.user.id}
               />
             ) : (
               <DashboardEarningsCrew
                 projectId={project.id}
                 userId={auth.user.id}
+                currency={project.currency}
               />
             )}
           </Box>
@@ -360,7 +273,6 @@ export function MyProjectDetailPage() {
           borderWidth={1}
           mb={6}
         >
-          <Text>Project timeline</Text>
           <ProjectTimeline projectId={project.id} />
         </Box>
 

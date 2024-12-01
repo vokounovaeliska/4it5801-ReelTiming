@@ -47,7 +47,7 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
   };
 
   const StackComponent =
-    useBreakpointValue({ base: VStack, md: HStack }) || VStack;
+    useBreakpointValue({ base: VStack, 'admin-nav': HStack }) || VStack;
 
   return (
     <Box>

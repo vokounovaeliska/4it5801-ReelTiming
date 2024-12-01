@@ -28,4 +28,15 @@ export const currencyUtil = {
       ? `${foundCurrency.currency} (${foundCurrency.code})`
       : currency;
   },
+
+  // Nová funkce pro získání symbolu měny (např. Kč)
+  getCurrencySymbol(currency: CurrencyCode): string {
+    const formatter = new Intl.NumberFormat('cs-CZ', {
+      style: 'currency',
+      currency,
+    });
+    const formatted = formatter.format(123.45);
+    const symbol = formatted.replace(/[\d.,\s]/g, '');
+    return symbol;
+  },
 };
