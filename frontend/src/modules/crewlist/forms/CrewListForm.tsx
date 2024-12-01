@@ -34,6 +34,7 @@ export type CrewListFormProps = {
   mode: 'add' | 'edit';
   userRole: 'ADMIN' | 'CREW';
   cars?: CarData[] | null;
+  projectCurrency: string;
 };
 
 const schema = zod.object({
@@ -112,6 +113,7 @@ export function CrewListForm({
   mode,
   userRole,
   cars,
+  projectCurrency,
 }: CrewListFormProps) {
   const [sendInvite, setSendInvite] = useState(false);
 
@@ -215,34 +217,38 @@ export function CrewListForm({
           />
 
           <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-            <InputField name="standard_rate" label="Standard rate" isRequired />
+            <InputField
+              name="standard_rate"
+              label={`Standard rate (${projectCurrency})`}
+              isRequired
+            />
             <InputField
               name="compensation_rate"
-              label="Compensation rate"
+              label={`Compensation rate (${projectCurrency})`}
               isRequired
               type="number"
             />
             <InputField
               name="overtime_hour1"
-              label="1. Overtime hour"
+              label={`1. Overtime hour (${projectCurrency})`}
               isRequired
               type="number"
             />
             <InputField
               name="overtime_hour2"
-              label="2. Overtime hour"
+              label={`2. Overtime hour (${projectCurrency})`}
               isRequired
               type="number"
             />
             <InputField
               name="overtime_hour3"
-              label="3. Overtime hour"
+              label={`3. Overtime hour (${projectCurrency})`}
               isRequired
               type="number"
             />
             <InputField
               name="overtime_hour4"
-              label="4. Overtime hour"
+              label={`4. Overtime hour (${projectCurrency})`}
               isRequired
               type="number"
             />

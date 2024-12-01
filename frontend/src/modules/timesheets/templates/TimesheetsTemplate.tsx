@@ -144,9 +144,13 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
         <Table variant="simple" size="sm">
           <Thead>
             <Tr>
-              {hasDuplicates && <Th>Warning</Th>}
-              <Th>User</Th>
-              <Th>Date</Th>
+              {hasDuplicates && <Th>Info</Th>}
+              <Th position="sticky" left="0" bg="white">
+                User
+              </Th>
+              <Th position="sticky" left="104" bg="white">
+                Date
+              </Th>
               <Th textAlign="center">Shift type</Th>
               <Th>Time (from - to)</Th>
               <Th textAlign="center">Calculated OT</Th>
@@ -181,16 +185,33 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
                     <Td>
                       {isDuplicate && (
                         <Tooltip label="Duplicate date statement">
-                          <WarningTwoIcon color="red.500" />
+                          <Box
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            w="100%"
+                          >
+                            <WarningTwoIcon color="red.500" boxSize={5} />
+                          </Box>
                         </Tooltip>
                       )}
                     </Td>
                   )}
-                  <Td>
+                  <Td
+                    position="sticky"
+                    left="0"
+                    bg={isDuplicate ? 'yellow.200' : 'white'}
+                  >
                     {ts.projectUser?.name ?? 'Unknown'}{' '}
                     {ts.projectUser?.surname ?? 'User'}
                   </Td>
-                  <Td>{formatDate(ts.start_date)}</Td>
+                  <Td
+                    position="sticky"
+                    left="104"
+                    bg={isDuplicate ? 'yellow.200' : 'white'}
+                  >
+                    {formatDate(ts.start_date)}
+                  </Td>
                   <Td textAlign="center">{ts.shift_lenght}</Td>
                   <Td>
                     {formatTime(ts.from)} - {formatTime(ts.to)}

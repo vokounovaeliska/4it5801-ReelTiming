@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useApolloClient, useMutation, useQuery } from '@apollo/client';
+import { useApolloClient, useMutation } from '@apollo/client';
 import {
   AlertDialog,
   AlertDialogBody,
@@ -19,15 +19,15 @@ import { ActionMeta, MultiValue } from 'react-select';
 import { ADD_STATEMENT } from '@frontend/gql/mutations/AddStatement';
 import { DELETE_STATEMENT } from '@frontend/gql/mutations/DeleteStatement';
 import { EDIT_STATEMENT } from '@frontend/gql/mutations/EditStatement';
-import { GET_ALL_CARS_ON_PROJECT_BY_PROJECTUSER_ID } from '@frontend/gql/queries/GetAllCarsOnProjectByProjectUserId';
-import { GET_ALL_PROJECT_USERS } from '@frontend/gql/queries/GetAllProjectUsers';
-import { GET_CARS_BY_PROJECT_USER_ID } from '@frontend/gql/queries/GetCarsByProjectUserId';
-import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/gql/queries/GetCrewUserInfoTimesheets';
+// import { GET_ALL_CARS_ON_PROJECT_BY_PROJECTUSER_ID } from '@frontend/gql/queries/GetAllCarsOnProjectByProjectUserId';
+// import { GET_ALL_PROJECT_USERS } from '@frontend/gql/queries/GetAllProjectUsers';
+// import { GET_CARS_BY_PROJECT_USER_ID } from '@frontend/gql/queries/GetCarsByProjectUserId';
+// import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/gql/queries/GetCrewUserInfoTimesheets';
 import {
   GET_ADMIN_STATEMENTS,
   GET_CREW_STATEMENTS,
 } from '@frontend/gql/queries/GetStatements';
-import { GET_USER_ROLE_IN_PROJECT } from '@frontend/gql/queries/GetUserRoleInProject';
+// import { GET_USER_ROLE_IN_PROJECT } from '@frontend/gql/queries/GetUserRoleInProject';
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
 import {
@@ -40,6 +40,8 @@ import ProjectNavbar from '@frontend/shared/navigation/components/navbar/Project
 
 import { TimesheetsForm } from '../forms/TimesheetsForm';
 import {
+  AllCarsOnProjectData,
+  Car,
   Timesheet,
   TimesheetFormValues,
   UserInfo,
@@ -47,6 +49,33 @@ import {
 } from '../interfaces';
 import TimesheetsTemplate from '../templates/TimesheetsTemplate';
 import { formatTimeForParsing, toLocalISOString } from '../utils/timeUtils';
+
+import {
+  useAdminStatements,
+  useAllCarsOnProjectByProjectUserId,
+  useAllProjectUsers,
+  useCarsByProjectUserId,
+  useCrewStatements,
+  useCrewUserInfoTimesheets,
+  useUserRoleInProject,
+} from './queryHooks';
+
+// TODO FIX PROBABLY MAKE UTILS
+// eslint-disable-next-line react-refresh/only-export-components
+export function getAvailableCarsForProjectUserId(
+  givenUser: string,
+  allCarsOnProjectData: AllCarsOnProjectData,
+): Car[] {
+  const filteredCarsOnProject = allCarsOnProjectData?.projectUsers.filter(
+    (projectUser) => projectUser.id === givenUser,
+  );
+
+  const carDetails = filteredCarsOnProject?.flatMap((projectUser) =>
+    projectUser.car?.map((car) => ({ id: car.id, name: car.name })),
+  );
+
+  return carDetails?.filter((car): car is Car => car !== undefined) || [];
+}
 
 export function TimesheetPage() {
   const auth = useAuth();
@@ -61,81 +90,41 @@ export function TimesheetPage() {
   const [timesheetIdToDelete, setTimesheetIdToDelete] = useState<string | null>(
     null,
   );
-  const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [selectedCar, setSelectedCar] = useState<string | null>(null);
-  const [userCars, setUserCars] = useState<{ id: string; name: string }[]>([]);
 
+  const { userInfoData, userInfoLoading, userInfoError } =
+    useCrewUserInfoTimesheets(auth.user?.id, projectId);
+  const { roleData, roleLoading, roleError } = useUserRoleInProject(
+    auth.user?.id,
+    projectId,
+  );
+  const { crewData, crewLoading, crewError } = useCrewStatements(
+    userInfoData?.projectUserDetails?.id,
+  );
+  const { adminData, adminLoading, adminError } = useAdminStatements(projectId);
+  const { allProjectUsersData, allProjectUsersLoading, allProjectUsersError } =
+    useAllProjectUsers(projectId);
   const {
-    data: userInfoData,
-    loading: userInfoLoading,
-    error: userInfoError,
-  } = useQuery(GET_CREWUSERINFO_TIMESHEETS, {
-    skip: !auth.user,
-    variables: { userId: auth.user?.id, projectId },
-    fetchPolicy: 'cache-and-network',
-    onCompleted: (data) => {
-      setUserInfo(data.projectUserDetails);
-    },
-  });
+    allCarsOnProjectData,
+    allCarsOnProjectLoading,
+    allCarsOnProjectError,
+  } = useAllCarsOnProjectByProjectUserId(projectId);
+  const { userCarsData, userCarsLoading, userCarsError } =
+    useCarsByProjectUserId(userInfo?.id);
 
-  const {
-    data: roleData,
-    loading: roleLoading,
-    error: roleError,
-  } = useQuery(GET_USER_ROLE_IN_PROJECT, {
-    skip: !auth.user,
-    variables: { userId: auth.user?.id, projectId },
-    fetchPolicy: 'cache-and-network',
-  });
+  useEffect(() => {
+    if (userInfoData?.projectUserDetails) {
+      setUserInfo(userInfoData.projectUserDetails);
+    }
+  }, [userInfoData]);
 
-  const {
-    data: crewData,
-    loading: crewLoading,
-    error: crewError,
-  } = useQuery(GET_CREW_STATEMENTS, {
-    skip: !auth.user || roleData?.userRoleInProject !== 'CREW',
-    variables: { projectUserId: userInfoData?.projectUserDetails?.id },
-    fetchPolicy: 'cache-and-network',
-  });
+  const carOptionsForLoggedInUser =
+    userCarsData?.carsByProjectUserId?.map((car: Car) => ({
+      value: car.id,
+      label: car.name,
+    })) || [];
 
-  const {
-    data: adminData,
-    loading: adminLoading,
-    error: adminError,
-  } = useQuery(GET_ADMIN_STATEMENTS, {
-    skip: !auth.user || roleData?.userRoleInProject !== 'ADMIN',
-    variables: { projectId },
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const {
-    data: allProjectUsersData,
-    loading: allProjectUsersLoading,
-    error: allProjectUsersError,
-  } = useQuery(GET_ALL_PROJECT_USERS, {
-    variables: { projectId },
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const {
-    data: allCarsOnProjectData,
-    loading: allCarsOnProjectLoading,
-    error: allCarsOnProjectError,
-  } = useQuery(GET_ALL_CARS_ON_PROJECT_BY_PROJECTUSER_ID, {
-    variables: { projectId },
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const { data: carsData } = useQuery(GET_CARS_BY_PROJECT_USER_ID, {
-    variables: { projectUserId: selectedUser || userInfo?.id },
-    skip: !selectedUser && !userInfo?.id,
-    fetchPolicy: 'cache-and-network',
-    onCompleted: (data) => {
-      setUserCars(data.carsByProjectUserId);
-    },
-  });
-
-  const userOptions =
+  const userOptionsForUserFilter =
     allProjectUsersData?.projectUsers
       ?.filter(
         (projectUser: { id: string; name: string; surname: string }) =>
@@ -442,7 +431,8 @@ export function TimesheetPage() {
     (crewData?.statementsByProjectUserId || adminData?.statementsByProjectId) &&
     userInfoData?.projectUserDetails &&
     allProjectUsersData?.projectUsers &&
-    allCarsOnProjectData?.cars;
+    allCarsOnProjectData?.cars &&
+    userCarsData;
 
   if (
     !isDataAvailable &&
@@ -451,7 +441,8 @@ export function TimesheetPage() {
       adminLoading ||
       userInfoLoading ||
       allProjectUsersLoading ||
-      allCarsOnProjectLoading)
+      allCarsOnProjectLoading ||
+      userCarsLoading)
   ) {
     return (
       <Center minHeight="100vh">
@@ -468,6 +459,7 @@ export function TimesheetPage() {
     adminError ||
     allProjectUsersError ||
     allCarsOnProjectError ||
+    userCarsError ||
     !auth.user
   ) {
     return (
@@ -540,7 +532,7 @@ export function TimesheetPage() {
         onDeleteClick={handleDeleteClick}
         projectId={projectId!}
         projectName={userInfoData.projectUserDetails.project.name}
-        userOptions={userOptions}
+        userOptions={userOptionsForUserFilter}
         userRole={userRole}
         projectUserId={userInfoData.projectUserDetails.id}
         authUser={auth.user}
@@ -561,18 +553,16 @@ export function TimesheetPage() {
       >
         <TimesheetsForm
           projectId={projectId!}
-          // initialValues={selectedTimesheet || undefined}
-          initialValues={{ ...selectedTimesheet, userCars }}
+          initialValues={selectedTimesheet || undefined}
           onClose={handleModalClose}
           mode={mode}
           onSubmit={handleFormSubmitWrapper}
           userRole={userRole}
           userOptions={userOptionsForAdminAddTimesheet}
           userInfo={userInfo}
-          userCars={userCars}
-          setSelectedUser={setSelectedUser}
           setSelectedCar={setSelectedCar}
-          allCarsOnProject={allCarsOnProjectData}
+          allCarsOnProjectData={allCarsOnProjectData}
+          carOptionsForLoggedInUser={carOptionsForLoggedInUser}
         />
       </CustomModal>
       <AlertDialog

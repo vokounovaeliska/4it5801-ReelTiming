@@ -124,6 +124,7 @@ export function CrewListPage() {
           sendInvitation={sendInvitation}
           userRoleInProject={crewList.userRoleInProject}
           authUserId={auth.user?.id}
+          projectCurrency={crewList.project?.currency}
         ></CrewListTable>
       </Box>
       <Footer />
@@ -158,6 +159,7 @@ export function CrewListPage() {
           mode={selectedCrewMember ? 'edit' : 'add'}
           userRole={crewList.userRoleInProject}
           cars={selectedCrewMember ? selectedCrewMember.cars : []}
+          projectCurrency={crewList.project?.currency}
         />
       </CustomModal>
       <CrewAlertDialog

@@ -32,6 +32,7 @@ export type ProjectUserData = {
     id: string;
     name: string;
     description: string;
+    currency: string;
   };
   department: { id: string; name: string };
   position: string;
@@ -188,34 +189,38 @@ export function AcceptInvitationForm({
             title="Rates & Compensation"
             description="Please confirm your standard and overtime rates."
           >
-            <InputField name="standard_rate" label="Standard Rate" isRequired />
+            <InputField
+              name="standard_rate"
+              label={`Standard rate (${projectUserData.project.currency})`}
+              isRequired
+            />
             <InputField
               name="compensation_rate"
-              label="Compensation Rate"
+              label={`Compensation rate (${projectUserData.project.currency})`}
               type="number"
               isRequired
             />
             <InputField
               name="overtime_hour1"
-              label="1. Overtime Hour"
+              label={`1. Overtime Hour (${projectUserData.project.currency})`}
               type="number"
               isRequired
             />
             <InputField
               name="overtime_hour2"
-              label="2. Overtime Hour"
+              label={`2. Overtime Hour (${projectUserData.project.currency})`}
               type="number"
               isRequired
             />
             <InputField
               name="overtime_hour3"
-              label="3. Overtime Hour"
+              label={`3. Overtime Hour (${projectUserData.project.currency})`}
               type="number"
               isRequired
             />
             <InputField
               name="overtime_hour4"
-              label="4. Overtime Hour"
+              label={`4. Overtime Hour (${projectUserData.project.currency})`}
               type="number"
               isRequired
             />
