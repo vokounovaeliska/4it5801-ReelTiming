@@ -29,9 +29,6 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
     (!startDate || !endDate || selectedUsers.length !== 1) &&
     userRole === 'ADMIN';
 
-  const shouldShowCarColumns = sortedTimesheets.some(
-    (ts) => ts.car_id !== null && ts.car !== null,
-  );
   return (
     <Box flex="1" p={4} width="100%" maxWidth="1400px" mx="auto">
       <Box
