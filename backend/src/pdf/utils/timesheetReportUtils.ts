@@ -94,3 +94,33 @@ export const formatPhoneNumber = (phoneNumber: string): string => {
   // Return the original phone number if it doesn't match expected format
   return phoneNumber;
 };
+
+export const calculateKilometersOver = (
+  statement: StatementPdf,
+): number | null => {
+  const allow = statement.kilometer_allow ?? 0;
+  const kilometers = statement.kilometers ?? 0;
+
+  if (!statement.kilometer_allow || !statement.kilometers) return null;
+
+  if (allow >= kilometers) {
+    return 0;
+  } else {
+    return kilometers - allow;
+  }
+};
+
+export const calculateKilometerSum = (
+  statement: StatementPdf,
+): number | null => {
+  const over = calculateKilometersOver(statement);
+  const rate = statement.kilometer_rate ?? 0;
+
+  if (over == null || !rate) return null;
+
+  if (over === 0) {
+    return 0;
+  } else {
+    return over * rate;
+  }
+};
