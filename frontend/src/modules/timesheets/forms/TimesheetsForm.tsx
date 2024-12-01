@@ -296,6 +296,7 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
                             }
                           }
                         }}
+                        colorScheme="orange"
                       />
                     </>
                   )))}
