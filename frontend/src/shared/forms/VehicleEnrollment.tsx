@@ -20,16 +20,14 @@ import {
   Td,
   Th,
   Thead,
-  Toast,
   Tr,
   useDisclosure,
-  useToast,
 } from '@chakra-ui/react';
 import { FaCarSide } from 'react-icons/fa6';
 import { MdModeEdit } from 'react-icons/md';
 
 import { Car } from '@frontend/modules/timesheets/interfaces';
-import useToastNotification from '../design-system/molecules/Toast';
+
 import { showErrorToast } from '../design-system/molecules/toastUtils';
 
 interface CarFormWithTableProps {
@@ -265,6 +263,3 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
     </Box>
   );
 };
-function useChakraToast() {
-  throw new Error('Function not implemented.');
-}
