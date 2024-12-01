@@ -125,19 +125,25 @@ export const useCrewMemberMutations = () => {
         const existingCar = oldCars.find((oldCar) => oldCar.id === newCar.id);
 
         if (existingCar) {
-          addOrUpdatePromises.push(
-            updateCar({
-              variables: {
-                data: {
-                  kilometer_allow: newCar.kilometer_allow,
-                  kilometer_rate: newCar.kilometer_rate,
-                  name: newCar.name,
-                  project_user_id: data.id,
+          if (
+            existingCar.kilometer_allow !== newCar.kilometer_allow ||
+            existingCar.kilometer_rate !== newCar.kilometer_rate ||
+            existingCar.name !== newCar.name
+          ) {
+            addOrUpdatePromises.push(
+              updateCar({
+                variables: {
+                  data: {
+                    kilometer_allow: newCar.kilometer_allow,
+                    kilometer_rate: newCar.kilometer_rate,
+                    name: newCar.name,
+                    project_user_id: data.id,
+                  },
+                  updateCarId: newCar.id,
                 },
-                updateCarId: newCar.id,
-              },
-            }),
-          );
+              }),
+            );
+          }
         } else {
           addOrUpdatePromises.push(
             addCar({

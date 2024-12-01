@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   Box,
   Button,
+  Flex,
   FormControl,
   FormLabel,
   Input,
@@ -34,11 +35,15 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
   });
 
   const [carCollection, setCarCollection] = useState<Car[]>(cars ? cars : []);
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   const handleAddCar = () => {
     // Validate fields
     if (carDetails.name.trim()) {
-      const updatedCarCollection = [...carCollection, carDetails];
+      const updatedCarCollection = [
+        ...carCollection,
+        { ...carDetails, id: `${Date.now()}` },
+      ];
       setCarCollection(updatedCarCollection); // Add car to collection
       setCarDetails({
         id: '',
@@ -63,6 +68,31 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
 
       return updatedCarCollection;
     });
+  };
+
+  const handleEditCar = (indexToEdit: number) => {
+    const carToEdit = carCollection[indexToEdit];
+    setCarDetails(carToEdit);
+    setIsEditMode(true);
+  };
+
+  const handleUpdateCar = () => {
+    if (carDetails.name.trim()) {
+      const updatedCarCollection = carCollection.map((car) =>
+        car.id === carDetails.id ? carDetails : car,
+      );
+      setCarCollection(updatedCarCollection); // Update car in collection
+      setCarDetails({
+        id: '',
+        name: '',
+        kilometer_allow: 0,
+        kilometer_rate: 0,
+      }); // Reset fields
+      setIsEditMode(false);
+      onCarCollectionChange(updatedCarCollection);
+    } else {
+      alert('Please fill out all fields before updating a car.');
+    }
   };
 
   return (
@@ -110,9 +140,15 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
         </SimpleGrid>
 
         <Box display="flex" justifyContent="flex-end" mt={4}>
-          <Button colorScheme="orange" onClick={handleAddCar}>
-            Add Car
-          </Button>
+          {isEditMode ? (
+            <Button colorScheme="blue" onClick={handleUpdateCar}>
+              Update Car
+            </Button>
+          ) : (
+            <Button colorScheme="orange" onClick={handleAddCar}>
+              Add Car
+            </Button>
+          )}
         </Box>
 
         <Box mt={6}>
@@ -132,13 +168,22 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
                   <Td>{car.kilometer_allow}</Td>
                   <Td>{car.kilometer_rate}</Td>
                   <Td>
-                    <Button
-                      colorScheme="red"
-                      size="sm"
-                      onClick={() => handleRemoveCar(index)}
-                    >
-                      Remove
-                    </Button>
+                    <Flex justifyContent="center" gap={2}>
+                      <Button
+                        colorScheme="blue"
+                        size="xs"
+                        onClick={() => handleEditCar(index)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        colorScheme="red"
+                        size="xs"
+                        onClick={() => handleRemoveCar(index)}
+                      >
+                        Remove
+                      </Button>
+                    </Flex>
                   </Td>
                 </Tr>
               ))}
