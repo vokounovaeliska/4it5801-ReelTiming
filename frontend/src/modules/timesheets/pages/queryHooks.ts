@@ -81,11 +81,14 @@ export const useAdminStatements = (projectId: string) => {
   return { adminData, adminLoading, adminError };
 };
 
-export const useAllCarsOnProjectByProjectUserId = (projectId: string) => {
+export const useAllCarsOnProjectByProjectUserId = (
+  projectId: string | undefined,
+) => {
   const {
     data: allCarsOnProjectData,
     loading: allCarsOnProjectLoading,
     error: allCarsOnProjectError,
+    refetch,
   } = useQuery(GET_ALL_CARS_ON_PROJECT_BY_PROJECTUSER_ID, {
     variables: { projectId },
     fetchPolicy: 'cache-and-network',
@@ -95,6 +98,7 @@ export const useAllCarsOnProjectByProjectUserId = (projectId: string) => {
     allCarsOnProjectData,
     allCarsOnProjectLoading,
     allCarsOnProjectError,
+    refetch, // Return refetch so it can be used outside the hook
   };
 };
 

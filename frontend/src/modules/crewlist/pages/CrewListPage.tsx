@@ -69,7 +69,7 @@ export function CrewListPage() {
   } = useCrewListPageUtils();
 
   const isDataAvailable = !!crewList && Object.keys(crewList).length > 0;
-  const { allCarsOnProjectData } =
+  const { allCarsOnProjectData, refetch: refetchAllCarsOnProjectData } =
     useAllCarsOnProjectByProjectUserId(projectId);
 
   if (!isDataAvailable && crewListLoading) {
@@ -162,9 +162,9 @@ export function CrewListPage() {
       >
         <CrewListForm
           projectId={projectId!}
-          onSubmit={(data, sendInvite, cars, oldCars) => {
+          onSubmit={async (data, sendInvite, cars, oldCars) => {
             if (selectedCrewMember) {
-              handleUpdateCrewMember(
+              await handleUpdateCrewMember(
                 {
                   ...data,
                   id: selectedCrewMember.id,
@@ -175,13 +175,14 @@ export function CrewListPage() {
                 oldCars,
               );
             } else {
-              handleAddNewCrewMember(
+              await handleAddNewCrewMember(
                 { ...data, id: '', user_id: null, rate_id: null, cars: null },
                 sendInvite,
                 data.name,
                 data.email,
               );
             }
+            refetchAllCarsOnProjectData(); // Trigger data refresh
           }}
           isLoading={isSubmitting}
           departments={crewList.departments}
