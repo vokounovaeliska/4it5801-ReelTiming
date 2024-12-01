@@ -1,5 +1,5 @@
 import { and, eq } from 'drizzle-orm';
-import { project, project_user, user } from '@backend/db/schema';
+import { car, project, project_user, user } from '@backend/db/schema';
 import { type Db } from '@backend/types/types';
 
 export function getProjectUserRepository(db: Db) {
@@ -120,6 +120,12 @@ export function getProjectUserRepository(db: Db) {
           ),
         );
       return projectUserRecord.length > 0 ? projectUserRecord[0] : null;
+    },
+    async getCarsByProjectUserId(projectUserId: string) {
+      return db
+        .select()
+        .from(car)
+        .where(eq(car.project_user_id, projectUserId));
     },
   };
 }

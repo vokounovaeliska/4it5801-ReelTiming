@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useApolloClient, useMutation, useQuery } from '@apollo/client';
+import { useApolloClient, useMutation } from '@apollo/client';
 import {
   AlertDialog,
   AlertDialogBody,
@@ -19,13 +19,15 @@ import { ActionMeta, MultiValue } from 'react-select';
 import { ADD_STATEMENT } from '@frontend/gql/mutations/AddStatement';
 import { DELETE_STATEMENT } from '@frontend/gql/mutations/DeleteStatement';
 import { EDIT_STATEMENT } from '@frontend/gql/mutations/EditStatement';
-import { GET_ALL_PROJECT_USERS } from '@frontend/gql/queries/GetAllProjectUsers';
-import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/gql/queries/GetCrewUserInfoTimesheets';
+// import { GET_ALL_CARS_ON_PROJECT_BY_PROJECTUSER_ID } from '@frontend/gql/queries/GetAllCarsOnProjectByProjectUserId';
+// import { GET_ALL_PROJECT_USERS } from '@frontend/gql/queries/GetAllProjectUsers';
+// import { GET_CARS_BY_PROJECT_USER_ID } from '@frontend/gql/queries/GetCarsByProjectUserId';
+// import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/gql/queries/GetCrewUserInfoTimesheets';
 import {
   GET_ADMIN_STATEMENTS,
   GET_CREW_STATEMENTS,
 } from '@frontend/gql/queries/GetStatements';
-import { GET_USER_ROLE_IN_PROJECT } from '@frontend/gql/queries/GetUserRoleInProject';
+// import { GET_USER_ROLE_IN_PROJECT } from '@frontend/gql/queries/GetUserRoleInProject';
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
 import {
@@ -38,6 +40,8 @@ import ProjectNavbar from '@frontend/shared/navigation/components/navbar/Project
 
 import { TimesheetsForm } from '../forms/TimesheetsForm';
 import {
+  AllCarsOnProjectData,
+  Car,
   Timesheet,
   TimesheetFormValues,
   UserInfo,
@@ -45,6 +49,33 @@ import {
 } from '../interfaces';
 import TimesheetsTemplate from '../templates/TimesheetsTemplate';
 import { formatTimeForParsing, toLocalISOString } from '../utils/timeUtils';
+
+import {
+  useAdminStatements,
+  useAllCarsOnProjectByProjectUserId,
+  useAllProjectUsers,
+  useCarsByProjectUserId,
+  useCrewStatements,
+  useCrewUserInfoTimesheets,
+  useUserRoleInProject,
+} from './queryHooks';
+
+// TODO FIX PROBABLY MAKE UTILS
+// eslint-disable-next-line react-refresh/only-export-components
+export function getAvailableCarsForProjectUserId(
+  givenUser: string,
+  allCarsOnProjectData: AllCarsOnProjectData,
+): Car[] {
+  const filteredCarsOnProject = allCarsOnProjectData?.projectUsers.filter(
+    (projectUser) => projectUser.id === givenUser,
+  );
+
+  const carDetails = filteredCarsOnProject?.flatMap((projectUser) =>
+    projectUser.car?.map((car) => ({ id: car.id, name: car.name })),
+  );
+
+  return carDetails?.filter((car): car is Car => car !== undefined) || [];
+}
 
 export function TimesheetPage() {
   const auth = useAuth();
@@ -59,60 +90,43 @@ export function TimesheetPage() {
   const [timesheetIdToDelete, setTimesheetIdToDelete] = useState<string | null>(
     null,
   );
+  const [selectedCar, setSelectedCar] = useState<string | null>(null);
 
+  const { userInfoData, userInfoLoading, userInfoError } =
+    useCrewUserInfoTimesheets(auth.user?.id ?? '', projectId ?? '');
+  const { roleData, roleLoading, roleError } = useUserRoleInProject(
+    auth.user?.id ?? '',
+    projectId ?? '',
+  );
+  const { crewData, crewLoading, crewError } = useCrewStatements(
+    userInfoData?.projectUserDetails?.id,
+  );
+  const { adminData, adminLoading, adminError } = useAdminStatements(
+    projectId ?? '',
+  );
+  const { allProjectUsersData, allProjectUsersLoading, allProjectUsersError } =
+    useAllProjectUsers(projectId ?? '');
   const {
-    data: userInfoData,
-    loading: userInfoLoading,
-    error: userInfoError,
-  } = useQuery(GET_CREWUSERINFO_TIMESHEETS, {
-    skip: !auth.user,
-    variables: { userId: auth.user?.id, projectId },
-    fetchPolicy: 'cache-and-network',
-    onCompleted: (data) => {
-      setUserInfo(data.projectUserDetails);
-    },
-  });
+    allCarsOnProjectData,
+    allCarsOnProjectLoading,
+    allCarsOnProjectError,
+  } = useAllCarsOnProjectByProjectUserId(projectId ?? '');
+  const { userCarsData, userCarsLoading, userCarsError } =
+    useCarsByProjectUserId(userInfo?.id ?? '');
 
-  const {
-    data: roleData,
-    loading: roleLoading,
-    error: roleError,
-  } = useQuery(GET_USER_ROLE_IN_PROJECT, {
-    skip: !auth.user,
-    variables: { userId: auth.user?.id, projectId },
-    fetchPolicy: 'cache-and-network',
-  });
+  useEffect(() => {
+    if (userInfoData?.projectUserDetails) {
+      setUserInfo(userInfoData.projectUserDetails);
+    }
+  }, [userInfoData]);
 
-  const {
-    data: crewData,
-    loading: crewLoading,
-    error: crewError,
-  } = useQuery(GET_CREW_STATEMENTS, {
-    skip: !auth.user || roleData?.userRoleInProject !== 'CREW',
-    variables: { projectUserId: userInfoData?.projectUserDetails?.id },
-    fetchPolicy: 'cache-and-network',
-  });
+  const carOptionsForLoggedInUser =
+    userCarsData?.carsByProjectUserId?.map((car: Car) => ({
+      value: car.id,
+      label: car.name,
+    })) || [];
 
-  const {
-    data: adminData,
-    loading: adminLoading,
-    error: adminError,
-  } = useQuery(GET_ADMIN_STATEMENTS, {
-    skip: !auth.user || roleData?.userRoleInProject !== 'ADMIN',
-    variables: { projectId },
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const {
-    data: allProjectUsersData,
-    loading: allProjectUsersLoading,
-    error: allProjectUsersError,
-  } = useQuery(GET_ALL_PROJECT_USERS, {
-    variables: { projectId },
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const userOptions =
+  const userOptionsForUserFilter =
     allProjectUsersData?.projectUsers
       ?.filter(
         (projectUser: { id: string; name: string; surname: string }) =>
@@ -237,6 +251,8 @@ export function TimesheetPage() {
   };
 
   const handleFormSubmitWrapper = (data: TimesheetFormValues) => {
+    console.log('WRAPPER', data.carId);
+    console.log('selectedcar', selectedCar);
     const timesheet: Timesheet = {
       ...data,
       id: selectedTimesheet?.id || '',
@@ -248,6 +264,8 @@ export function TimesheetPage() {
       create_date:
         selectedTimesheet?.create_date || toLocalISOString(new Date()),
       shift_lenght: data.shift_lenght || 0,
+      car_id: data.carId || undefined,
+      kilometers: data.kilometers,
     };
     handleFormSubmit(timesheet);
   };
@@ -268,6 +286,8 @@ export function TimesheetPage() {
         shift_lenght: Number(data.shift_lenght) || 0,
         calculated_overtime: data.calculated_overtime || 0,
         claimed_overtime: data.claimed_overtime || 0,
+        car_id: data.car_id || null,
+        kilometers: data.kilometers || null,
       };
       console.log('Adding statement:', variables);
 
@@ -352,6 +372,8 @@ export function TimesheetPage() {
           claimed_overtime: data.claimed_overtime || 0,
           last_update_date: toLocalISOString(new Date()),
           last_update_user_id: auth.user?.id,
+          car_id: data.car_id || null,
+          kilometers: data.kilometers || null,
         },
       };
       await editStatement({
@@ -410,7 +432,9 @@ export function TimesheetPage() {
     roleData?.userRoleInProject &&
     (crewData?.statementsByProjectUserId || adminData?.statementsByProjectId) &&
     userInfoData?.projectUserDetails &&
-    allProjectUsersData?.projectUsers;
+    allProjectUsersData?.projectUsers &&
+    allCarsOnProjectData?.cars &&
+    userCarsData;
 
   if (
     !isDataAvailable &&
@@ -418,7 +442,9 @@ export function TimesheetPage() {
       crewLoading ||
       adminLoading ||
       userInfoLoading ||
-      allProjectUsersLoading)
+      allProjectUsersLoading ||
+      allCarsOnProjectLoading ||
+      userCarsLoading)
   ) {
     return (
       <Center minHeight="100vh">
@@ -434,6 +460,8 @@ export function TimesheetPage() {
     crewError ||
     adminError ||
     allProjectUsersError ||
+    allCarsOnProjectError ||
+    userCarsError ||
     !auth.user
   ) {
     return (
@@ -506,7 +534,7 @@ export function TimesheetPage() {
         onDeleteClick={handleDeleteClick}
         projectId={projectId!}
         projectName={userInfoData.projectUserDetails.project.name}
-        userOptions={userOptions}
+        userOptions={userOptionsForUserFilter}
         userRole={userRole}
         projectUserId={userInfoData.projectUserDetails.id}
         authUser={auth.user}
@@ -534,6 +562,9 @@ export function TimesheetPage() {
           userRole={userRole}
           userOptions={userOptionsForAdminAddTimesheet}
           userInfo={userInfo}
+          setSelectedCar={setSelectedCar}
+          allCarsOnProjectData={allCarsOnProjectData}
+          carOptionsForLoggedInUser={carOptionsForLoggedInUser}
         />
       </CustomModal>
       <AlertDialog

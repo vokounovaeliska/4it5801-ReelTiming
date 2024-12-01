@@ -16,6 +16,13 @@ export const GET_CREW_STATEMENTS = gql`
       calculated_overtime
       claimed_overtime
       create_date
+      car {
+        id
+        kilometer_allow
+        kilometer_rate
+        name
+      }
+      kilometers
     }
   }
 `;
@@ -36,6 +43,13 @@ export const GET_ADMIN_STATEMENTS = gql`
       calculated_overtime
       claimed_overtime
       create_date
+      car {
+        id
+        kilometer_allow
+        kilometer_rate
+        name
+      }
+      kilometers
     }
   }
 `;

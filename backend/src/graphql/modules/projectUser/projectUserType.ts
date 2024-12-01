@@ -1,4 +1,5 @@
 import { Field, ID, InputType, ObjectType } from 'type-graphql';
+import { Car } from '../car/carType';
 
 @ObjectType()
 export class ProjectUser {
@@ -54,6 +55,9 @@ export class ProjectUser {
 
   @Field(() => String, { nullable: true })
   phone_number?: string | null;
+
+  @Field(() => [Car], { nullable: true })
+  car?: Car[];
 }
 
 @InputType()

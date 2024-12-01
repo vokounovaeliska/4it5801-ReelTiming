@@ -1,5 +1,6 @@
 import { MultiValue, ActionMeta } from 'react-select';
 import React from 'react';
+import { ProjectUser } from '../crewlist/interfaces/interfaces';
 
 export interface UserInfo {
   id: string;
@@ -22,6 +23,12 @@ export interface Timesheet {
     surname: string;
   };
   create_date: string;
+  car?: {
+    name: string;
+    id: string;
+  };
+  car_id?: string;
+  kilometers?: number;
 }
 
 export interface TimesheetFormValues {
@@ -36,6 +43,13 @@ export interface TimesheetFormValues {
     id: string;
     name: string;
     surname: string;
+  };
+  carId?: string;
+  kilometers?: number;
+  // userCars?: { id: string; name: string }[];
+  car?: {
+    name: string;
+    id: string;
   };
 }
 
@@ -81,4 +95,21 @@ export interface TimesheetsFormProps {
   userRole: string;
   userOptions: UserOption[];
   userInfo: UserInfo | null;
+  userCars?: { id: string; name: string }[];
+  // setSelectedUser: (userId: string) => void;
+  setSelectedCar: (carId: string) => void;
+  // allCarsOnProject: Car[];
+  carOptionsForLoggedInUser: Car[];
+  allCarsOnProjectData: AllCarsOnProjectData;
+}
+
+export interface Car {
+  id: string;
+  name: string;
+  kilometer_allow: number;
+  kilometer_rate: number;
+}
+
+export interface AllCarsOnProjectData {
+  projectUsers: ProjectUser[];
 }

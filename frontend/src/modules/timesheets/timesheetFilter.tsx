@@ -64,6 +64,7 @@ export function TimesheetFilter({
               ...provided,
               width: '100%',
               maxWidth: '350px',
+              zIndex: 100,
             }),
           }}
         />

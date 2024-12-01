@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -6,15 +6,34 @@ import {
   FormLabel,
   Input,
   Select,
+  SimpleGrid,
+  Switch,
   Text,
 } from '@chakra-ui/react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 
 import { TimesheetFormValues, TimesheetsFormProps } from '../interfaces';
+import { getAvailableCarsForProjectUserId } from '../pages/TimesheetsPage';
 import { formatDate, formatTime, toLocalISOString } from '../utils/timeUtils';
 
 export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
-  initialValues = {
+  initialValues,
+  onClose,
+  mode,
+  onSubmit,
+  userRole,
+  userOptions, // users to offer in the User <Select> - only for admin
+  userInfo,
+  allCarsOnProjectData, // unfiltered query response - json of projectusers list and their cars/statement data
+  carOptionsForLoggedInUser, // list of cars for logged in user either crew/admin
+}) => {
+  const [selectedCar, setSelectedCar] = useState<string | null>(null);
+
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [isCarVisible, setIsCarVisible] = useState(false);
+
+  const defaultValues: TimesheetFormValues = {
+    ...initialValues,
     start_date: toLocalISOString(new Date()).split('T')[0],
     end_date: toLocalISOString(new Date()).split('T')[0],
     shift_lenght: 10,
@@ -23,28 +42,33 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
     calculated_overtime: 0,
     claimed_overtime: 0,
     projectUser: {
-      id: '',
+      id: userInfo?.id || '',
+      name: userInfo?.name || '',
+      surname: userInfo?.surname || '',
     },
-  },
-  onClose,
-  mode,
-  onSubmit,
-  userRole,
-  userOptions,
-  userInfo,
-}) => {
+    carId: '',
+    kilometers: 0,
+  };
+
+  const mergedValues = {
+    ...defaultValues,
+    ...initialValues,
+    from: initialValues?.from
+      ? formatTime(initialValues.from)
+      : defaultValues.from,
+    to: initialValues?.to ? formatTime(initialValues.to) : defaultValues.to,
+    projectUser: {
+      id: initialValues?.projectUser?.id || defaultValues.projectUser.id,
+      name: initialValues?.projectUser?.name || defaultValues.projectUser.name,
+      surname:
+        initialValues?.projectUser?.surname ||
+        defaultValues.projectUser.surname,
+    },
+    carId: selectedCar || undefined,
+  };
+
   const { handleSubmit, control, setValue } = useForm<TimesheetFormValues>({
-    defaultValues: {
-      ...initialValues,
-      from: formatTime(initialValues.from) || '',
-      to: formatTime(initialValues.to) || '',
-      start_date:
-        initialValues?.start_date || toLocalISOString(new Date()).split('T')[0],
-      shift_lenght: initialValues.shift_lenght || 10,
-      projectUser: {
-        id: initialValues.projectUser.id || userInfo?.id,
-      },
-    },
+    defaultValues: mergedValues,
   });
 
   const from = useWatch({ control, name: 'from' });
@@ -55,7 +79,6 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
     if (from && to && shift) {
       const fromTime = new Date(`1970-01-01T${from}:00`);
       let toTime = new Date(`1970-01-01T${to}:00`);
-      // check if the end time is earlier than the start time (overnight shift)
       if (toTime < fromTime) {
         toTime.setDate(toTime.getDate() + 1);
       }
@@ -66,128 +89,278 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
       if (workedHours > shift) {
         const overtime = Math.ceil(workedHours - shift);
         setValue('calculated_overtime', overtime);
-        setValue('claimed_overtime', overtime);
+        if (!initialValues?.claimed_overtime) {
+          setValue('claimed_overtime', overtime);
+        }
       } else {
         setValue('calculated_overtime', 0);
-        setValue('claimed_overtime', 0);
+        if (!initialValues?.claimed_overtime) {
+          setValue('claimed_overtime', 0);
+        }
       }
     }
-  }, [from, to, shift, setValue]);
+  }, [from, to, shift, setValue, initialValues]);
+
+  useEffect(() => {
+    if (userInfo?.id) {
+      setSelectedUser(userInfo.id);
+    }
+  }, [userInfo, setSelectedUser]);
+
+  useEffect(() => {
+    if (initialValues?.carId) {
+      setSelectedCar(initialValues.carId);
+    }
+  }, [initialValues]);
+
+  const getAvailableCars = () => {
+    if (userRole === 'ADMIN' && mode === 'add') {
+      return getAvailableCarsForProjectUserId(
+        selectedUser || '',
+        allCarsOnProjectData,
+      );
+    } else if (userRole === 'CREW' && mode === 'add') {
+      return getAvailableCarsForProjectUserId(
+        selectedUser || '',
+        allCarsOnProjectData,
+      );
+    } else {
+      return getAvailableCarsForProjectUserId(
+        initialValues?.projectUser.id || '',
+        allCarsOnProjectData,
+      );
+    }
+  };
+
+  useEffect(() => {
+    const availableCars = getAvailableCars();
+    if (availableCars.length > 0) {
+      const initialCarId = initialValues?.carId || availableCars[0].id;
+      setSelectedCar(initialCarId);
+      setValue('carId', initialCarId);
+    }
+
+    if (mode === 'edit') {
+      setIsCarVisible(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialValues, allCarsOnProjectData, setSelectedCar, setValue, mode]);
+
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
-      {userRole === 'ADMIN' && mode === 'add' && (
-        <FormControl>
-          <FormLabel>User</FormLabel>
-          <Controller
-            name="projectUser.id"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                onChange={(e) => {
-                  field.onChange(e);
-                }}
-              >
-                {userOptions.map((user) => (
-                  <option key={user.value} value={user.value}>
-                    {user.label}
-                  </option>
-                ))}
-              </Select>
-            )}
-          />
-        </FormControl>
-      )}
-      <FormControl>
-        <FormLabel>Start Date</FormLabel>
-        <Controller
-          name="start_date"
-          control={control}
-          render={({ field }) => (
-            <Input type="date" {...field} value={formatDate(field.value)} />
-          )}
-        />
-      </FormControl>
-      <FormControl mt={4}>
-        <FormLabel>Shift</FormLabel>
-        <Controller
-          name="shift_lenght"
-          control={control}
-          render={({ field }) => (
-            <Select {...field}>
-              <option value={10}>10h</option>
-              <option value={12}>12h</option>
-            </Select>
-          )}
-        />
-      </FormControl>
-      <Box
-        display={{ base: 'grid', sm: 'flex' }}
-        justifyContent="space-between"
-        textAlign="center"
-        gridTemplateColumns={{ base: '1fr', sm: '1fr 1fr' }}
-        gap="5"
-      >
-        <FormControl mt={4}>
-          <FormLabel>Time From</FormLabel>
-          <Controller
-            name="from"
-            control={control}
-            render={({ field }) => (
-              <Input
-                type="time"
-                {...field}
-                value={formatTime(field.value)}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  field.onChange(value);
-                }}
+      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+        <Box>
+          {userRole === 'ADMIN' && mode === 'add' && (
+            <FormControl>
+              <FormLabel>User</FormLabel>
+              <Controller
+                name="projectUser.id"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    onChange={(e) => {
+                      const selectedUserId = e.target.value;
+                      setSelectedUser(selectedUserId);
+                      field.onChange(selectedUserId);
+                      setIsCarVisible(false);
+                    }}
+                  >
+                    {userOptions.map((user) => (
+                      <option key={user.value} value={user.value}>
+                        {user.label}
+                      </option>
+                    ))}
+                  </Select>
+                )}
               />
-            )}
-          />
-        </FormControl>
-        <FormControl mt={4}>
-          <FormLabel>Time To</FormLabel>
-          <Controller
-            name="to"
-            control={control}
-            render={({ field }) => (
-              <Input
-                type="time"
-                {...field}
-                value={formatTime(field.value)}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  field.onChange(value);
-                }}
-              />
-            )}
-          />
-        </FormControl>
-      </Box>
-      <FormControl mt={4}>
-        <FormLabel>Calculated Overtime</FormLabel>
-        <Controller
-          name="calculated_overtime"
-          control={control}
-          render={({ field }) => <Text>{field.value} h</Text>}
-        />
-      </FormControl>
-      <FormControl mt={4}>
-        <FormLabel>Claimed Overtime</FormLabel>
-        <Controller
-          name="claimed_overtime"
-          control={control}
-          render={({ field }) => (
-            <Input
-              type="number"
-              {...field}
-              onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
-              value={field.value}
+            </FormControl>
+          )}
+          <FormControl>
+            <FormLabel>Start Date</FormLabel>
+            <Controller
+              name="start_date"
+              control={control}
+              render={({ field }) => (
+                <Input type="date" {...field} value={formatDate(field.value)} />
+              )}
             />
-          )}
-        />
-      </FormControl>
+          </FormControl>
+          <FormControl mt={4}>
+            <FormLabel>Shift</FormLabel>
+            <Controller
+              name="shift_lenght"
+              control={control}
+              render={({ field }) => (
+                <Select {...field}>
+                  <option value={10}>10h</option>
+                  <option value={12}>12h</option>
+                </Select>
+              )}
+            />
+          </FormControl>
+          <Box
+            display={{ base: 'grid', sm: 'flex' }}
+            justifyContent="space-between"
+            textAlign="center"
+            gridTemplateColumns={{ base: '1fr', sm: '1fr 1fr' }}
+            gap="5"
+          >
+            <FormControl mt={4}>
+              <FormLabel>Time From</FormLabel>
+              <Controller
+                name="from"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    type="time"
+                    {...field}
+                    value={formatTime(field.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value);
+                    }}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormControl mt={4}>
+              <FormLabel>Time To</FormLabel>
+              <Controller
+                name="to"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    type="time"
+                    {...field}
+                    value={formatTime(field.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value);
+                    }}
+                  />
+                )}
+              />
+            </FormControl>
+          </Box>
+          <FormControl mt={4}>
+            <FormLabel>Calculated Overtime</FormLabel>
+            <Controller
+              name="calculated_overtime"
+              control={control}
+              render={({ field }) => <Text>{field.value} h</Text>}
+            />
+          </FormControl>
+          <FormControl mt={4}>
+            <FormLabel>Claimed Overtime</FormLabel>
+            <Controller
+              name="claimed_overtime"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  type="number"
+                  {...field}
+                  onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                  value={field.value}
+                />
+              )}
+            />
+          </FormControl>
+          <FormControl display="flex" alignItems="center" mb={4}>
+            {mode === 'add' &&
+              ((carOptionsForLoggedInUser && userRole === 'CREW') ||
+                getAvailableCarsForProjectUserId(
+                  initialValues?.projectUser.id || '', // statement users id
+                  allCarsOnProjectData,
+                ).length > 0 ||
+                (mode === 'add' &&
+                  getAvailableCarsForProjectUserId(
+                    selectedUser || '',
+                    allCarsOnProjectData,
+                  ).length > 0 && (
+                    <>
+                      <FormLabel htmlFor="car-switch" mb="0">
+                        Add Mileage
+                      </FormLabel>
+                      <Switch
+                        id="car-switch"
+                        isChecked={isCarVisible}
+                        onChange={() => {
+                          setIsCarVisible(!isCarVisible);
+                          if (!isCarVisible) {
+                            const availableCars = getAvailableCars();
+                            if (availableCars.length > 0) {
+                              const initialCarId = availableCars[0].id;
+                              setSelectedCar(initialCarId);
+                              setValue('carId', initialCarId);
+                            }
+                          }
+                        }}
+                        colorScheme="orange"
+                      />
+                    </>
+                  )))}
+          </FormControl>
+          {/* my favorite game is crying */}
+          {isCarVisible &&
+            ((carOptionsForLoggedInUser && userRole === 'CREW') ||
+              getAvailableCarsForProjectUserId(
+                initialValues?.projectUser.id || '', // statement users id
+                allCarsOnProjectData,
+              ).length > 0 ||
+              (mode === 'add' &&
+                getAvailableCarsForProjectUserId(
+                  selectedUser || '',
+                  allCarsOnProjectData,
+                ).length > 0)) && (
+              <>
+                <FormControl>
+                  <FormLabel>Car</FormLabel>
+                  <Controller
+                    name="carId"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                          setSelectedCar(e.target.value);
+                        }}
+                        value={field.value || ''}
+                      >
+                        {getAvailableCars().map((car) => (
+                          <option key={car.id} value={car.id}>
+                            {car.name}
+                          </option>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Kilometers</FormLabel>
+                  <Controller
+                    name="kilometers"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="number"
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value, 10))
+                        }
+                        value={field.value}
+                      />
+                    )}
+                  />
+                </FormControl>
+              </>
+            )}
+        </Box>
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <Text textAlign="center">insert info about $$$ etc here</Text>
+        </Box>
+      </SimpleGrid>
       <Box
         display={{ base: 'grid', sm: 'flex' }}
         justifyContent="right"
