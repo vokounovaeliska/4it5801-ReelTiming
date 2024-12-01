@@ -48,7 +48,13 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
   projectCurrency,
 }) => {
   return (
-    <Box overflowX="auto" m={{ base: 2, md: 4 }}>
+    <Box
+      overflowX="scroll"
+      m={{ base: 2, md: 4 }}
+      rounded={'md'}
+      borderWidth={2}
+      borderColor={'gray.100'}
+    >
       <TableContainer className="custom-scrollbar">
         <Box
           overflowX="auto"
@@ -78,7 +84,6 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
             mb={2}
             pr={2}
             sx={{
-              td: { padding: '2', paddingBlock: '1', fontSize: '0.8rem' },
               'tr:hover td': {
                 backgroundColor: 'gray.200',
               },
@@ -94,14 +99,14 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                   zIndex={10}
                   bg="#2D3748"
                   whiteSpace="nowrap"
-                  minWidth="160px"
+                  minWidth="185px"
                 >
                   Surname
                 </Th>
                 <Th
                   textColor="white"
                   position={'sticky'}
-                  left={{ base: '0', md: '160px' }}
+                  left={{ base: '0', md: '185px' }}
                   zIndex={9}
                   top={0}
                   bg="#2D3748"
@@ -115,7 +120,7 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                 <Th
                   textColor="white"
                   position={'sticky'}
-                  left={{ base: '0', md: '266px' }}
+                  left={{ base: '0', md: '291px' }}
                   zIndex={8}
                   top={0}
                   bg="#2D3748"
@@ -177,11 +182,11 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                       position="sticky"
                       left="0"
                       zIndex={1}
-                      bg={'white'}
+                      bg="gray.100"
                     >
                       {departmentName}
                     </Td>
-                    <Td colSpan={13} bg={'white'}></Td>
+                    <Td colSpan={13} bg="gray.100"></Td>
                   </Tr>
 
                   {groupedByDepartment[departmentName].map(
@@ -213,16 +218,16 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                         <Td
                           position="sticky"
                           left={{ base: '0', md: 'max-content' }}
-                          bg="gray.100"
+                          bg="#f7f9fa"
                           zIndex={7}
-                          minWidth="160px"
+                          minWidth="185px"
                         >
                           {user?.surname}
                         </Td>
                         <Td
                           position="sticky"
-                          left={{ base: '0', md: '160px' }}
-                          bg={{ md: 'gray.100' }}
+                          left={{ base: '0', md: '185px' }}
+                          bg={{ md: '#f7f9fa' }}
                           zIndex={6}
                           minWidth="90px"
                         >
@@ -230,8 +235,8 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                         </Td>
                         <Td
                           position={{ base: 'relative', md: 'sticky' }}
-                          left={{ base: '0', md: '266px' }}
-                          bg={{ md: 'gray.100' }}
+                          left={{ base: '0', md: '291px' }}
+                          bg={{ md: '#f7f9fa' }}
                           zIndex={5}
                           minWidth="90px"
                         >
