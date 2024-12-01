@@ -97,6 +97,8 @@ export function AcceptInvitationPage() {
           position: formData.position,
           department_id: formData.department,
           is_active: true,
+          role: projectUser.role,
+          rate_id: projectUser.rate?.id,
         },
         updateRateData: {
           standard_rate: formData.standard_rate,
