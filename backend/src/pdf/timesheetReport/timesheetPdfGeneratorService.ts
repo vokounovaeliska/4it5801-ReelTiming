@@ -14,9 +14,9 @@ import { StatementService } from '@backend/graphql/modules/statement/statementSe
 import { RateService } from '@backend/graphql/modules/rate/rateService';
 import { ProjectUserService } from '@backend/graphql/modules/projectUser/projectUserService';
 import { DepartmentService } from '@backend/graphql/modules/department/departmentService';
-import { ReportService } from '@backend/graphql/modules/report/reportService';
 import { Db } from '@backend/types/types';
 import { Stream } from 'stream';
+import { CarService } from '@backend/graphql/modules/car/carService';
 
 export class timesheetPdfGeneratorService {
   private statementService: StatementService;
@@ -24,7 +24,7 @@ export class timesheetPdfGeneratorService {
   private projectService: ProjectService;
   private projectUserService: ProjectUserService;
   private departmentService: DepartmentService;
-  private reportService: ReportService;
+  private carService: CarService;
 
   constructor(private db: Db) {
     this.statementService = new StatementService(db);
@@ -32,7 +32,7 @@ export class timesheetPdfGeneratorService {
     this.projectService = new ProjectService(db);
     this.projectUserService = new ProjectUserService(db);
     this.departmentService = new DepartmentService(db);
-    this.reportService = new ReportService(db);
+    this.carService = new CarService(db);
   }
 
   async generatePdfReport(
@@ -76,16 +76,27 @@ export class timesheetPdfGeneratorService {
         end_date: endDate,
       };
 
-      // Map statements to StatementPdf format
-      const statementList: StatementPdf[] = statements.map((statement) => ({
-        start_date: statement.start_date,
-        from: statement.from,
-        to: statement.to,
-        shift_lenght: statement.shift_lenght,
-        calculated_overtime: statement.calculated_overtime ?? 0,
-        claimed_overtime: statement.claimed_overtime ?? 0,
-      }));
+      // Map statements to StatementPdf format and add car information
+      const statementList: StatementPdf[] = await Promise.all(
+        statements.map(async (statement) => {
+          const car = statement.car_id
+            ? await this.carService.getCarById(statement.car_id)
+            : null;
 
+          return {
+            start_date: statement.start_date,
+            from: statement.from,
+            to: statement.to,
+            shift_lenght: statement.shift_lenght,
+            calculated_overtime: statement.calculated_overtime ?? 0,
+            claimed_overtime: statement.claimed_overtime ?? 0,
+            kilometers: statement.kilometers ?? null,
+            car_name: car?.name ?? null,
+            kilometer_allow: car?.kilometer_allow ?? null,
+            kilometer_rate: car?.kilometer_rate ?? null,
+          };
+        }),
+      );
       const crewInfo: CrewInfoPdf = {
         projectUser: {
           id: projectUser.id,

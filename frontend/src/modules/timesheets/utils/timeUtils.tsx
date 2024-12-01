@@ -1,3 +1,5 @@
+import { parseISO } from 'date-fns';
+
 export const toLocalISOString = (date: Date): string => {
   if (!(date instanceof Date) || isNaN(date.getTime())) {
     throw new Error('Invalid date object');
@@ -57,4 +59,14 @@ export const formatTime = (timeString: string) => {
 
 export const formatDate = (dateString: string) => {
   return toLocalISOString(new Date(dateString)).split('T')[0];
+};
+
+export const formatDateToDisplay = (date: Date | string): string => {
+  if (typeof date === 'string') {
+    date = parseISO(date);
+  }
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear().toString();
+  return `${day}.${month}.${year}`;
 };

@@ -15,10 +15,11 @@ import {
 } from '@chakra-ui/react';
 
 import { TextPhoneNumber } from '@frontend/shared/design-system/atoms/TextPhoneNumber';
-import { TooltipHeader } from '@frontend/shared/design-system/atoms/Tooltip';
 import { currencyUtil } from '@shared/currencyUtil';
 
 import { CrewMemberData, ProjectUser } from '../interfaces/interfaces';
+
+import { CrewlistTableHeader } from './CrewlistTableHeader';
 
 interface CrewListTableProps {
   sortedDepartments: string[];
@@ -47,16 +48,12 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
   projectCurrency,
 }) => {
   return (
-    <Box
-      overflowX="scroll"
-      m={4}
-      rounded={'md'}
-      borderWidth={2}
-      borderColor={'gray.100'}
-    >
+    <Box overflowX="scroll" m={{ base: 2, md: 4 }}>
       <TableContainer className="custom-scrollbar">
         <Box
           overflowX="auto"
+          overflowY="auto"
+          maxHeight={'70vh'}
           sx={{
             '::-webkit-scrollbar': {
               height: '12px',
@@ -75,83 +72,118 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
             scrollbarColor: '#2D3748 white',
           }}
         >
-          <Table variant="simple" size="sm">
+          <Table
+            variant="simple"
+            size="sm"
+            mb={2}
+            pr={2}
+            sx={{
+              td: { padding: '2', paddingBlock: '1', fontSize: '0.8rem' },
+              'tr:hover td': {
+                backgroundColor: 'gray.200',
+              },
+            }}
+          >
             <Thead>
               <Tr bg="#2D3748" textColor="white">
                 <Th
                   textColor="white"
-                  position={{ base: 'relative', md: 'sticky' }}
-                  left="0"
-                  zIndex={2}
+                  position={'sticky'}
+                  left={0}
+                  top={0}
+                  zIndex={10}
                   bg="#2D3748"
                   whiteSpace="nowrap"
-                  minWidth="max-content"
-                >
-                  Name
-                </Th>
-                <Th
-                  textColor="white"
-                  position="sticky"
-                  left={{ base: '0', md: '104px' }}
-                  zIndex={2}
-                  bg="#2D3748"
-                  whiteSpace="nowrap"
-                  minWidth="max-content"
+                  minWidth="160px"
                 >
                   Surname
                 </Th>
                 <Th
                   textColor="white"
-                  position={{ base: 'relative', md: 'sticky' }}
-                  left={{ base: '0', md: '208px' }}
-                  zIndex={1}
+                  position={'sticky'}
+                  left={{ base: '0', md: '160px' }}
+                  zIndex={9}
+                  top={0}
                   bg="#2D3748"
                   whiteSpace="nowrap"
-                  minWidth="max-content"
+                  minWidth="106px"
+                  textAlign="left"
+                >
+                  Name
+                </Th>
+
+                <Th
+                  textColor="white"
+                  position={'sticky'}
+                  left={{ base: '0', md: '266px' }}
+                  zIndex={8}
+                  top={0}
+                  bg="#2D3748"
+                  whiteSpace="nowrap"
+                  minWidth="90px"
+                  textAlign="left"
                 >
                   Position
                 </Th>
-                <Th textColor="white">Role</Th>
-                <Th textColor="white">Email</Th>
-                <Th textColor="white">Phone number</Th>
-                <Th textColor="white">Standard rate</Th>
-                <TooltipHeader label="Compensation rate" textColor="white">
+                <CrewlistTableHeader label="Project role">
+                  Role
+                </CrewlistTableHeader>
+                <CrewlistTableHeader label="Email adress">
+                  Email
+                </CrewlistTableHeader>
+                <CrewlistTableHeader label="Phone number">
+                  Phone number
+                </CrewlistTableHeader>
+                <CrewlistTableHeader label="Standard rate">
+                  Rate
+                </CrewlistTableHeader>
+                <CrewlistTableHeader label="Compensation rate">
                   Compensation
-                </TooltipHeader>
-                <TooltipHeader label="Overtime hour1" textColor="white">
+                </CrewlistTableHeader>
+                <CrewlistTableHeader label="Overtime hour1">
                   OH 1
-                </TooltipHeader>
-                <TooltipHeader label="Overtime hour2" textColor="white">
+                </CrewlistTableHeader>
+                <CrewlistTableHeader label="Overtime hour2">
                   OH 2
-                </TooltipHeader>
-                <TooltipHeader label="Overtime hour3" textColor="white">
+                </CrewlistTableHeader>
+                <CrewlistTableHeader label="Overtime hour3">
                   OH 3
-                </TooltipHeader>
-                <TooltipHeader label="Overtime hour4" textColor="white">
+                </CrewlistTableHeader>
+                <CrewlistTableHeader label="Overtime hour4">
                   OH 4
-                </TooltipHeader>
-                <Th textColor="white">Invitation</Th>
-                <Th textColor="white">Delete</Th>
+                </CrewlistTableHeader>
+                <CrewlistTableHeader label="Invitation to project">
+                  Invitation
+                </CrewlistTableHeader>
+                <CrewlistTableHeader label="Delete crewmember">
+                  Delete
+                </CrewlistTableHeader>
               </Tr>
             </Thead>
             <Tbody>
               {sortedDepartments.map((departmentName) => (
                 <React.Fragment key={departmentName}>
-                  <Tr key={departmentName} bg={'gray.200'}>
+                  <Tr
+                    key={departmentName}
+                    borderTop={'solid'}
+                    borderBottom={'solid'}
+                    borderColor={'gray.600'}
+                  >
                     <Td
-                      colSpan={2}
+                      colSpan={1}
                       textColor="#2D3748"
                       textTransform="uppercase"
                       fontWeight="bold"
                       position="sticky"
                       left="0"
                       zIndex={1}
-                      bg={'gray.200'}
+                      bg={'white'}
                     >
                       {departmentName}
                     </Td>
-                    <Td colSpan={12} bg={'gray.200'}></Td>
+                    <Td colSpan={13} bg={'white'}></Td>
                   </Tr>
+
                   {groupedByDepartment[departmentName].map(
                     (user: ProjectUser) => (
                       <Tr
@@ -178,41 +210,41 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                             cars: user.car || null,
                           })
                         }
-                        _hover={{
-                          cursor: 'pointer',
-                          backgroundColor: 'gray.200',
-                        }}
                       >
                         <Td
                           position="sticky"
-                          left="0"
-                          bg="white"
-                          zIndex={2}
-                          minWidth="max-content"
-                        >
-                          {user?.name}
-                        </Td>
-                        <Td
-                          position="sticky"
-                          left={{ base: '0', md: '104px' }}
-                          bg="white"
-                          zIndex={2}
-                          minWidth="max-content"
+                          left={{ base: '0', md: 'max-content' }}
+                          bg="gray.100"
+                          zIndex={7}
+                          minWidth="160px"
                         >
                           {user?.surname}
                         </Td>
                         <Td
+                          position="sticky"
+                          left={{ base: '0', md: '160px' }}
+                          bg={{ md: 'gray.100' }}
+                          zIndex={6}
+                          minWidth="90px"
+                        >
+                          {user?.name}
+                        </Td>
+                        <Td
                           position={{ base: 'relative', md: 'sticky' }}
-                          left={{ base: '0', md: '208px' }}
-                          bg="white"
-                          zIndex={1}
-                          minWidth="max-content"
-                          borderRight={50}
-                          borderRightColor={'black'}
+                          left={{ base: '0', md: '266px' }}
+                          bg={{ md: 'gray.100' }}
+                          zIndex={5}
+                          minWidth="90px"
                         >
                           {user.position}
                         </Td>
-                        <Td>{user.role}</Td>
+                        <Td
+                          textColor={
+                            user.role === 'ADMIN' ? 'orange.500' : 'black'
+                          }
+                        >
+                          {user.role}
+                        </Td>
                         <Td>
                           <Link
                             href={`mailto:${user?.email}`}
@@ -281,11 +313,12 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                               )
                             : ''}
                         </Td>
-                        <Td>
+                        <Td textAlign="center">
                           <Button
+                            variant="link"
                             colorScheme="orange"
                             variant={'ghost'}
-                            size={'sm'}
+                            size={'xs'}
                             isDisabled={
                               user.invitation != null && user.is_active
                             }
@@ -318,14 +351,14 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                                 : 'Resend invitation'}
                           </Button>
                         </Td>
-                        <Td>
+                        <Td textAlign="center">
                           {userRoleInProject === 'ADMIN' &&
                             user.user?.id !== authUserId && (
                               <IconButton
                                 aria-label="Remove record"
                                 icon={<DeleteIcon />}
                                 colorScheme="red"
-                                size={'sm'}
+                                size={'xs'}
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   handleRemoveButtonClick(user.id);

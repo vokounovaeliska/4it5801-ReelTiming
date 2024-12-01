@@ -1,25 +1,12 @@
 import React, { useState } from 'react';
-import { DeleteIcon, WarningTwoIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  Button,
-  Heading,
-  IconButton,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tooltip,
-  Tr,
-} from '@chakra-ui/react';
+import { Box, Button, Heading } from '@chakra-ui/react';
 import { MdAddChart, MdFilterAlt } from 'react-icons/md';
 
 import PdfReportGeneratorButton from '@frontend/modules/report/pdfReportGeneratorButton';
 
-import { Timesheet, TimesheetsTemplateProps } from '../interfaces';
+import { TimesheetsTemplateProps } from '../interfaces';
+import TimesheetTable from '../table/TimesheetsTable';
 import { TimesheetFilter } from '../timesheetFilter';
-import { formatDate, formatTime } from '../utils/timeUtils';
 
 const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
   startDate,
@@ -38,40 +25,15 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
 }) => {
   const [showFilters, setShowFilters] = useState(true);
 
-  const duplicateStatements = sortedTimesheets.reduce(
-    (acc, ts) => {
-      const date = ts.start_date.split('T')[0];
-      const userId = ts.projectUser.id;
-      const key = `${userId}-${date}`;
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      acc[key].push(ts);
-      return acc;
-    },
-    {} as Record<string, Timesheet[]>,
-  );
-
-  const duplicates = Object.keys(duplicateStatements).reduce(
-    (acc, key) => {
-      if (duplicateStatements[key].length > 1) {
-        acc[key] = true;
-      }
-      return acc;
-    },
-    {} as Record<string, boolean>,
-  );
-
-  const hasDuplicates = Object.keys(duplicates).length > 0;
-
   const isGeneratePdfDisabled =
-    !startDate || !endDate || selectedUsers.length > 1;
+    (!startDate || !endDate || selectedUsers.length !== 1) &&
+    userRole === 'ADMIN';
 
   const shouldShowCarColumns = sortedTimesheets.some(
     (ts) => ts.car_id !== null && ts.car !== null,
   );
   return (
-    <Box flex="1" p={4} width="100%" maxWidth="1200px" mx="auto">
+    <Box flex="1" p={4} width="100%" maxWidth="1400px" mx="auto">
       <Box
         justifyItems={{ base: 'center', sm: 'flex-start' }}
         py={{ base: '4', sm: '0' }}
@@ -135,113 +97,16 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
           label={
             selectedUsers.length === 1
               ? `Generate PDF for ` + selectedUsers[0]?.label
-              : 'Generate my PDF'
+              : 'Generate PDF'
           }
           isDisabled={isGeneratePdfDisabled}
         />
       </Box>
-      <Box overflow="scroll">
-        <Table variant="simple" size="sm">
-          <Thead>
-            <Tr>
-              {hasDuplicates && <Th>Info</Th>}
-              <Th position="sticky" left="0" bg="white">
-                User
-              </Th>
-              <Th position="sticky" left="104" bg="white">
-                Date
-              </Th>
-              <Th textAlign="center">Shift type</Th>
-              <Th>Time (from - to)</Th>
-              <Th textAlign="center">Calculated OT</Th>
-              <Th textAlign="center">Claimed OT</Th>
-              {shouldShowCarColumns && (
-                <>
-                  <Th textAlign="center">KM</Th>
-                  <Th textAlign="center">Vehicle</Th>
-                </>
-              )}
-              <Th textAlign="center">Delete</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {sortedTimesheets.map((ts) => {
-              const date = ts.start_date.split('T')[0];
-              const userId = ts.projectUser.id;
-              const key = `${userId}-${date}`;
-              const isDuplicate = duplicates[key];
-              const hasCar = ts.car_id !== null && ts.car !== null;
-              return (
-                <Tr
-                  key={ts.id}
-                  onClick={() => handleRowClick(ts)}
-                  _hover={{
-                    cursor: 'pointer',
-                    backgroundColor: isDuplicate ? 'yellow.100' : 'gray.100',
-                  }}
-                  bg={isDuplicate ? 'yellow.200' : 'transparent'}
-                >
-                  {hasDuplicates && (
-                    <Td>
-                      {isDuplicate && (
-                        <Tooltip label="Duplicate date statement">
-                          <Box
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                            w="100%"
-                          >
-                            <WarningTwoIcon color="red.500" boxSize={5} />
-                          </Box>
-                        </Tooltip>
-                      )}
-                    </Td>
-                  )}
-                  <Td
-                    position="sticky"
-                    left="0"
-                    bg={isDuplicate ? 'yellow.200' : 'white'}
-                  >
-                    {ts.projectUser?.name ?? 'Unknown'}{' '}
-                    {ts.projectUser?.surname ?? 'User'}
-                  </Td>
-                  <Td
-                    position="sticky"
-                    left="104"
-                    bg={isDuplicate ? 'yellow.200' : 'white'}
-                  >
-                    {formatDate(ts.start_date)}
-                  </Td>
-                  <Td textAlign="center">{ts.shift_lenght}</Td>
-                  <Td>
-                    {formatTime(ts.from)} - {formatTime(ts.to)}
-                  </Td>
-                  <Td textAlign="center">{ts.calculated_overtime}</Td>
-                  <Td textAlign="center">{ts.claimed_overtime}</Td>
-                  {shouldShowCarColumns && (
-                    <>
-                      <Td textAlign="center">{hasCar ? ts.kilometers : ''}</Td>
-                      <Td textAlign="center">{hasCar ? ts.car?.name : ''}</Td>
-                    </>
-                  )}
-                  <Td>
-                    <IconButton
-                      aria-label="Delete timesheet"
-                      icon={<DeleteIcon />}
-                      colorScheme="red"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDeleteClick(ts.id);
-                      }}
-                    />
-                  </Td>
-                </Tr>
-              );
-            })}
-          </Tbody>
-        </Table>
-      </Box>
+      <TimesheetTable
+        sortedTimesheets={sortedTimesheets}
+        handleRowClick={handleRowClick}
+        onDeleteClick={onDeleteClick}
+      ></TimesheetTable>
     </Box>
   );
 };

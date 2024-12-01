@@ -93,24 +93,26 @@ export function TimesheetPage() {
   const [selectedCar, setSelectedCar] = useState<string | null>(null);
 
   const { userInfoData, userInfoLoading, userInfoError } =
-    useCrewUserInfoTimesheets(auth.user?.id, projectId);
+    useCrewUserInfoTimesheets(auth.user?.id ?? '', projectId ?? '');
   const { roleData, roleLoading, roleError } = useUserRoleInProject(
-    auth.user?.id,
-    projectId,
+    auth.user?.id ?? '',
+    projectId ?? '',
   );
   const { crewData, crewLoading, crewError } = useCrewStatements(
     userInfoData?.projectUserDetails?.id,
   );
-  const { adminData, adminLoading, adminError } = useAdminStatements(projectId);
+  const { adminData, adminLoading, adminError } = useAdminStatements(
+    projectId ?? '',
+  );
   const { allProjectUsersData, allProjectUsersLoading, allProjectUsersError } =
-    useAllProjectUsers(projectId);
+    useAllProjectUsers(projectId ?? '');
   const {
     allCarsOnProjectData,
     allCarsOnProjectLoading,
     allCarsOnProjectError,
-  } = useAllCarsOnProjectByProjectUserId(projectId);
+  } = useAllCarsOnProjectByProjectUserId(projectId ?? '');
   const { userCarsData, userCarsLoading, userCarsError } =
-    useCarsByProjectUserId(userInfo?.id);
+    useCarsByProjectUserId(userInfo?.id ?? '');
 
   useEffect(() => {
     if (userInfoData?.projectUserDetails) {

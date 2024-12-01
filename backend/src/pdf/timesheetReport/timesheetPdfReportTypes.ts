@@ -5,6 +5,10 @@ export interface StatementPdf {
   shift_lenght: number;
   calculated_overtime: number;
   claimed_overtime: number;
+  kilometers: number | null;
+  car_name: string | null;
+  kilometer_allow: number | null;
+  kilometer_rate: number | null;
 }
 
 export interface CrewInfoPdf {

@@ -50,8 +50,8 @@ export class StatementService {
     endDate: Date,
     projectUserId: string,
   ) {
-    startDate.setHours(0, 0, 0, 0);
-    endDate.setHours(23, 59, 59, 999);
+    startDate.setUTCHours(0, 0, 0, 0);
+    endDate.setUTCHours(23, 59, 59, 999);
     const statementsRecords =
       await this.statementRepository.getStatementsByDateRangeAndProjectUserId(
         startDate,
