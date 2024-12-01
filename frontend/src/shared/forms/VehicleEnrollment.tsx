@@ -16,6 +16,7 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
+import { FaCarSide } from 'react-icons/fa6';
 import { MdModeEdit } from 'react-icons/md';
 
 import { Car } from '@frontend/modules/timesheets/interfaces';
@@ -100,7 +101,13 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
   return (
     <Box display="block" p="4">
       <Form onSubmit={() => {}}>
-        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+        <SimpleGrid
+          columns={{ base: 1, md: 4 }}
+          spacing={4}
+          alignItems="flex-end"
+          justifyContent="space-between"
+          pb={4}
+        >
           <FormControl>
             <FormLabel>Vehicle Name</FormLabel>
             <Input
@@ -139,19 +146,23 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
               }
             />
           </FormControl>
+          <Box display="flex" justifyContent="flex-end" w="100%">
+            {isEditMode ? (
+              <Button colorScheme="blue" onClick={handleUpdateCar}>
+                Update Car
+              </Button>
+            ) : (
+              <Button
+                variant={'outline'}
+                colorScheme="orange"
+                onClick={handleAddCar}
+                rightIcon={<FaCarSide />}
+              >
+                Add Car
+              </Button>
+            )}
+          </Box>
         </SimpleGrid>
-
-        <Box display="flex" justifyContent="flex-end" mt={4}>
-          {isEditMode ? (
-            <Button colorScheme="blue" onClick={handleUpdateCar}>
-              Update Car
-            </Button>
-          ) : (
-            <Button colorScheme="orange" onClick={handleAddCar}>
-              Add Car
-            </Button>
-          )}
-        </Box>
 
         <Box mt={6}>
           <Table variant="simple" size="sm" colorScheme="gray">
