@@ -81,9 +81,7 @@ export const useAdminStatements = (projectId: string) => {
   return { adminData, adminLoading, adminError };
 };
 
-export const useAllCarsOnProjectByProjectUserId = (
-  projectId: string | undefined,
-) => {
+export const useAllCarsOnProjectByProjectUserId = (projectId: string) => {
   const {
     data: allCarsOnProjectData,
     loading: allCarsOnProjectLoading,

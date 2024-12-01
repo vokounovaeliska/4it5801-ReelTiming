@@ -25,7 +25,7 @@ import CrewAlertDialog from './CrewAlertDialog';
 import { useCrewListPageUtils } from './CrewListPageLogic';
 import CrewListTable from './CrewListTable';
 
-export function getAvailableCarsForProjectUserId(
+function getAvailableCarsForProjectUserId(
   givenUser: string,
   allCarsOnProjectData: AllCarsOnProjectData,
 ): Car[] {
@@ -70,7 +70,7 @@ export function CrewListPage() {
 
   const isDataAvailable = !!crewList && Object.keys(crewList).length > 0;
   const { allCarsOnProjectData, refetch: refetchAllCarsOnProjectData } =
-    useAllCarsOnProjectByProjectUserId(projectId);
+    useAllCarsOnProjectByProjectUserId(projectId ?? '');
 
   if (!isDataAvailable && crewListLoading) {
     return (
