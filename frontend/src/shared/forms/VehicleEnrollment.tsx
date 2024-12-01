@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { DeleteIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
   Flex,
   FormControl,
   FormLabel,
+  IconButton,
   Input,
   SimpleGrid,
   Table,
@@ -14,6 +16,7 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
+import { MdModeEdit } from 'react-icons/md';
 
 import { Car } from '@frontend/modules/timesheets/interfaces';
 import { Form } from '@frontend/shared/forms';
@@ -50,8 +53,7 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
         name: '',
         kilometer_allow: 0,
         kilometer_rate: 0,
-      }); // Reset fields
-      console.log('Car details:', carDetails); // Log state for debugging
+      });
       onCarCollectionChange(updatedCarCollection);
     } else {
       alert('Please fill out all fields before adding a car.');
@@ -169,20 +171,24 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
                   <Td>{car.kilometer_rate}</Td>
                   <Td>
                     <Flex justifyContent="center" gap={2}>
-                      <Button
+                      <IconButton
                         colorScheme="blue"
                         size="xs"
                         onClick={() => handleEditCar(index)}
+                        aria-label="Delete timesheet"
+                        icon={<MdModeEdit />}
                       >
                         Edit
-                      </Button>
-                      <Button
+                      </IconButton>
+                      <IconButton
                         colorScheme="red"
                         size="xs"
                         onClick={() => handleRemoveCar(index)}
+                        aria-label="Delete timesheet"
+                        icon={<DeleteIcon />}
                       >
                         Remove
-                      </Button>
+                      </IconButton>
                     </Flex>
                   </Td>
                 </Tr>
