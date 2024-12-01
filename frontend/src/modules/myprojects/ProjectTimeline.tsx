@@ -99,6 +99,7 @@ const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ projectId }) => {
 
   return (
     <Box>
+      <Text>Project timeline</Text>
       <Tooltip
         label={`Today's date: ${new Date().toLocaleDateString()}`}
         //hasArrow

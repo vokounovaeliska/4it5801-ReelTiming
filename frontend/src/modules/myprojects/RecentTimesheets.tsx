@@ -63,33 +63,33 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
     error: errorTimesheets,
     data: dataTimesheets,
   } = useQuery(GET_CREW_STATEMENTS, {
-    variables: { projectUserId: dataUserInfo.projectUserDetails.id },
+    skip: !dataUserInfo?.projectUserDetails?.id, // Skip this query until projectUserId is available
+    variables: { projectUserId: dataUserInfo?.projectUserDetails?.id },
     fetchPolicy: 'cache-and-network',
   });
 
-  const isDataAvailable =
-    dataTimesheets &&
-    Object.keys(dataTimesheets).length > 0 &&
-    dataUserInfo &&
-    Object.keys(dataUserInfo).length > 0;
-
-  if (!isDataAvailable && (loadingTimesheets || loadingUserInfo)) {
+  // Check if the required data is available before rendering
+  if (loadingUserInfo || loadingTimesheets) {
     return <Text>Loading...</Text>;
   }
 
-  if (errorTimesheets || errorUserInfo) {
+  if (errorUserInfo || errorTimesheets) {
     return <Text>Error loading data!</Text>;
+  }
+
+  // Handle if data is not available
+  const userProjectInfo: UserProjectInfo | undefined =
+    dataUserInfo?.projectUserDetails;
+
+  if (!userProjectInfo) {
+    return <Text>No user project info available!</Text>;
   }
 
   const timesheets: Timesheet[] =
     dataTimesheets?.statementsByProjectUserId || [];
 
-  const userProjectInfo: UserProjectInfo =
-    dataUserInfo?.projectUserDetails || {};
-
   const userTimesheets = timesheets.filter(
-    (timesheet) =>
-      timesheet.projectUser.id === dataUserInfo.projectUserDetails?.id,
+    (timesheet) => timesheet.projectUser.id === userProjectInfo?.id,
   );
 
   const recentTimesheets = userTimesheets
@@ -107,12 +107,11 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
     <>
       <Text fontSize="lg" mb={4}>
         Recently reported shifts for {userProjectInfo.name}{' '}
-        {userProjectInfo.surname}{' '}
-        {/* in project "{userProjectInfo.project.name}" */}
+        {userProjectInfo.surname}
       </Text>
 
       <Box overflowX="auto">
-        <Table variant="simple" size={{ base: 'sm', md: 'md' }}>
+        <Table variant="simple" size={{ base: 'sm', 'dash-break': 'md' }}>
           <Thead>
             <Tr>
               <Th>Date</Th>
@@ -128,7 +127,7 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
                   {new Date(timesheet.start_date).toLocaleDateString()}
                 </Td>
                 <Td>{timesheet.shift_lenght}</Td>
-                <Td whiteSpace="nowrap">
+                <Td whiteSpace={{ base: 'nowrap', md: 'normal' }}>
                   {formatTime(timesheet.from)} - {formatTime(timesheet.to)}
                 </Td>
                 <Td>{timesheet.claimed_overtime}</Td>
