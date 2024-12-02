@@ -9,6 +9,7 @@ import { CrewListTemplateProps } from '../interfaces/interfaces';
 export function CrewListTemplate({
   projectId,
   projectCurrency,
+  cars,
 }: CrewListTemplateProps) {
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
@@ -32,6 +33,7 @@ export function CrewListTemplate({
             mode={'edit'} // could cause a bug
             userRole={'CREW'}
             projectCurrency={projectCurrency}
+            cars={cars}
           />
         </Box>
       </Box>

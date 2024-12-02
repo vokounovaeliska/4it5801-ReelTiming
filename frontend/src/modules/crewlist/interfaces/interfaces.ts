@@ -70,4 +70,5 @@ export interface CrewAlertDialogProps {
 export type CrewListTemplateProps = {
   projectId: string;
   projectCurrency: string;
+  cars: Car[];
 };
