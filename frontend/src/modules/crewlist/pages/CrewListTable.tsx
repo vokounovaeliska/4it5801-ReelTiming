@@ -49,7 +49,7 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
 }) => {
   return (
     <Box
-      overflowX="scroll"
+      overflowX="auto"
       m={{ base: 2, md: 4 }}
       rounded={'md'}
       borderWidth={2}
@@ -214,6 +214,10 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                             rate_id: user.rate?.id || null,
                           })
                         }
+                        _hover={{
+                          cursor: 'pointer',
+                          backgroundColor: 'gray.200',
+                        }}
                       >
                         <Td
                           position="sticky"
@@ -319,9 +323,8 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                         </Td>
                         <Td textAlign="center">
                           <Button
-                            variant="link"
                             colorScheme="orange"
-                            size={'xs'}
+                            size={'sm'}
                             isDisabled={
                               user.invitation != null && user.is_active
                             }
