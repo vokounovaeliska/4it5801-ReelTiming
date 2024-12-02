@@ -21,11 +21,21 @@ export interface Timesheet {
     id: string;
     name: string;
     surname: string;
+    rate?: {
+      standard_rate: number;
+      overtime_hour1: number;
+      overtime_hour2: number;
+      overtime_hour3: number;
+      overtime_hour4: number;
+      compensation_rate: number;
+    };
   };
   create_date: string;
   car?: {
     name: string;
     id: string;
+    kilometer_allow?: number;
+    kilometer_rate?: number;
   };
   car_id?: string;
   kilometers?: number;
@@ -43,6 +53,14 @@ export interface TimesheetFormValues {
     id: string;
     name: string;
     surname: string;
+    rate?: {
+      compensation_rate: number;
+      standard_rate: number;
+      overtime_hour1: number;
+      overtime_hour2: number;
+      overtime_hour3: number;
+      overtime_hour4: number;
+    };
   };
   carId?: string;
   kilometers?: number;
@@ -50,6 +68,8 @@ export interface TimesheetFormValues {
   car?: {
     name: string;
     id: string;
+    kilometer_allow?: number;
+    kilometer_rate?: number;
   };
 }
 
@@ -81,6 +101,7 @@ export interface TimesheetsTemplateProps {
   projectId: string;
   userRole: string;
   projectName: string;
+  projectCurrency: string;
   projectUserId: string;
   authUser: UserAuth;
   selectedUsers: UserOption[];
@@ -101,6 +122,8 @@ export interface TimesheetsFormProps {
   // allCarsOnProject: Car[];
   carOptionsForLoggedInUser: Car[];
   allCarsOnProjectData: AllCarsOnProjectData;
+  userInfoRates: TimesheetProjectUsers;
+  projectCurrency: string;
 }
 
 export interface Car {
@@ -112,4 +135,43 @@ export interface Car {
 
 export interface AllCarsOnProjectData {
   projectUsers: ProjectUser[];
+}
+
+export interface TimesheetProjectUsers {
+  projectUsers: {
+    id: string;
+    name: string;
+    surname: string;
+    car: {
+      id: string;
+      name: string;
+      kilometer_allow: number;
+      kilometer_rate: number;
+    };
+    rate: {
+      compensation_rate: number;
+      standard_rate: number;
+      overtime_hour1: number;
+      overtime_hour2: number;
+      overtime_hour3: number;
+      overtime_hour4: number;
+    };
+  }[];
+  id: string;
+  name: string;
+  surname: string;
+  car: {
+    id: string;
+    name: string;
+    kilometer_allow: number;
+    kilometer_rate: number;
+  };
+  rate: {
+    compensation_rate: number;
+    standard_rate: number;
+    overtime_hour1: number;
+    overtime_hour2: number;
+    overtime_hour3: number;
+    overtime_hour4: number;
+  };
 }

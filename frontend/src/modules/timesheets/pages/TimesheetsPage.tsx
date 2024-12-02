@@ -71,7 +71,12 @@ export function getAvailableCarsForProjectUserId(
   );
 
   const carDetails = filteredCarsOnProject?.flatMap((projectUser) =>
-    projectUser.car?.map((car) => ({ id: car.id, name: car.name })),
+    projectUser.car?.map((car) => ({
+      id: car.id,
+      name: car.name,
+      kilometer_allow: car.kilometer_allow,
+      kilometer_rate: car.kilometer_rate,
+    })),
   );
 
   return carDetails?.filter((car): car is Car => car !== undefined) || [];
@@ -90,7 +95,7 @@ export function TimesheetPage() {
   const [timesheetIdToDelete, setTimesheetIdToDelete] = useState<string | null>(
     null,
   );
-  const [selectedCar, setSelectedCar] = useState<string | null>(null);
+  const [, setSelectedCar] = useState<string | null>(null);
 
   const { userInfoData, userInfoLoading, userInfoError } =
     useCrewUserInfoTimesheets(auth.user?.id ?? '', projectId ?? '');
@@ -251,8 +256,6 @@ export function TimesheetPage() {
   };
 
   const handleFormSubmitWrapper = (data: TimesheetFormValues) => {
-    console.log('WRAPPER', data.carId);
-    console.log('selectedcar', selectedCar);
     const timesheet: Timesheet = {
       ...data,
       id: selectedTimesheet?.id || '',
@@ -519,7 +522,6 @@ export function TimesheetPage() {
       return createDateB - createDateA;
     },
   );
-
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <ProjectNavbar projectId={projectId!} userRole={userRole} />
@@ -534,6 +536,7 @@ export function TimesheetPage() {
         onDeleteClick={handleDeleteClick}
         projectId={projectId!}
         projectName={userInfoData.projectUserDetails.project.name}
+        projectCurrency={userInfoData.projectUserDetails.project.currency}
         userOptions={userOptionsForUserFilter}
         userRole={userRole}
         projectUserId={userInfoData.projectUserDetails.id}
@@ -565,6 +568,8 @@ export function TimesheetPage() {
           setSelectedCar={setSelectedCar}
           allCarsOnProjectData={allCarsOnProjectData}
           carOptionsForLoggedInUser={carOptionsForLoggedInUser}
+          userInfoRates={allProjectUsersData}
+          projectCurrency={userInfoData.projectUserDetails.project.currency}
         />
       </CustomModal>
       <AlertDialog

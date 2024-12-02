@@ -16,6 +16,7 @@ import {
   Input,
   SimpleGrid,
   Table,
+  TableContainer,
   Tbody,
   Td,
   Th,
@@ -58,7 +59,7 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
 
   const handleAddCar = () => {
     if (carDetails.kilometer_allow <= 0) {
-      showErrorToast('Allowed mileage has to be greater than 0!');
+      showErrorToast('Allowed kilometers has to be greater than 0!');
     }
     if (carDetails.kilometer_rate <= 0) {
       showErrorToast('Extra km price has to be greater than 0!');
@@ -116,6 +117,16 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
     }
   };
 
+  const handleCancelEdit = () => {
+    setCarDetails({
+      id: '',
+      name: '',
+      kilometer_allow: 0,
+      kilometer_rate: 0,
+    });
+    setIsEditMode(false);
+  };
+
   return (
     <Box display="block" p="4">
       <SimpleGrid
@@ -136,7 +147,7 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
           />
         </FormControl>
         <FormControl>
-          <FormLabel>Included Mileage</FormLabel>
+          <FormLabel>Included kilometres</FormLabel>
           <Input
             value={carDetails.kilometer_allow}
             placeholder="ex. 50"
@@ -150,7 +161,7 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
           />
         </FormControl>
         <FormControl>
-          <FormLabel>Extra Mileage Price</FormLabel>
+          <FormLabel>Extra kilometre price</FormLabel>
           <Input
             value={carDetails.kilometer_rate}
             placeholder="ex. 10"
@@ -163,11 +174,20 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
             }
           />
         </FormControl>
-        <Box display="flex" justifyContent="flex-end" w="100%">
+        <Box
+          display="flex"
+          justifyContent={{ base: 'center', md: 'flex-end' }}
+          w="100%"
+        >
           {isEditMode ? (
-            <Button colorScheme="blue" onClick={handleUpdateCar}>
-              Update Car
-            </Button>
+            <>
+              <Button colorScheme="gray" onClick={handleUpdateCar} mr={2}>
+                Update Car
+              </Button>
+              <Button colorScheme="red" onClick={handleCancelEdit}>
+                Cancel
+              </Button>
+            </>
           ) : (
             <Button
               variant={'outline'}
@@ -181,48 +201,66 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
         </Box>
       </SimpleGrid>
 
-      <Box mt={6}>
-        <Table variant="simple" size="sm" colorScheme="gray">
-          <Thead>
-            <Tr>
-              <Th>Vehicle Name</Th>
-              <Th>Included Mileage</Th>
-              <Th>Extra Mileage Price</Th>
-              <Th>Actions</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {carCollection.map((car, index) => (
-              <Tr key={index}>
-                <Td>{car.name}</Td>
-                <Td>{car.kilometer_allow}</Td>
-                <Td>{car.kilometer_rate}</Td>
-                <Td>
-                  <Flex justifyContent="center" gap={2}>
-                    <IconButton
-                      colorScheme="blue"
-                      size="xs"
-                      onClick={() => handleEditCar(index)}
-                      aria-label="Edit car"
-                      icon={<MdModeEdit />}
-                    />
-                    <IconButton
-                      colorScheme="red"
-                      size="xs"
-                      onClick={() => {
-                        setCarToDeleteIndex(index);
-                        onDeleteAlertOpen();
-                      }}
-                      aria-label="Delete car"
-                      icon={<DeleteIcon />}
-                    />
-                  </Flex>
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </Box>
+      {carCollection.length > 0 && (
+        <Box mt={6}>
+          <TableContainer overflowX="auto">
+            <Table variant="simple" size="sm" colorScheme="gray">
+              <Thead>
+                <Tr>
+                  <Th
+                    position="sticky"
+                    left={0}
+                    zIndex={1}
+                    bg={{ base: 'ghostwhite', md: 'white' }}
+                  >
+                    Name
+                  </Th>
+                  <Th>Included kms</Th>
+                  <Th>Extra km price</Th>
+                  <Th>Actions</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {carCollection.map((car, index) => (
+                  <Tr key={index}>
+                    <Td
+                      position="sticky"
+                      left={0}
+                      bg={{ base: 'ghostwhite', md: 'white' }}
+                      zIndex={1}
+                    >
+                      {car.name}
+                    </Td>
+                    <Td>{car.kilometer_allow}</Td>
+                    <Td>{car.kilometer_rate}</Td>
+                    <Td>
+                      <Flex justifyContent="center" gap={2}>
+                        <IconButton
+                          colorScheme="gray"
+                          size="xs"
+                          onClick={() => handleEditCar(index)}
+                          aria-label="Edit car"
+                          icon={<MdModeEdit />}
+                        />
+                        <IconButton
+                          colorScheme="red"
+                          size="xs"
+                          onClick={() => {
+                            setCarToDeleteIndex(index);
+                            onDeleteAlertOpen();
+                          }}
+                          aria-label="Delete car"
+                          icon={<DeleteIcon />}
+                        />
+                      </Flex>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </Box>
+      )}
 
       <AlertDialog
         isOpen={isDeleteAlertOpen}

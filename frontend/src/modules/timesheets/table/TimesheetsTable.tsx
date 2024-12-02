@@ -12,6 +12,9 @@ import {
   Tr,
 } from '@chakra-ui/react';
 
+import { currencyUtil } from '@shared/currencyUtil';
+import { statementUtil } from '@shared/statementUtil';
+
 import { Timesheet } from '../interfaces';
 import { formatDateToDisplay, formatTime } from '../utils/timeUtils';
 
@@ -21,12 +24,14 @@ interface TimesheetsTableProps {
   sortedTimesheets: Timesheet[];
   handleRowClick: (timesheet: Timesheet) => void;
   onDeleteClick: (id: string) => void;
+  projectCurrency: string;
 }
 
 const TimesheetTable: React.FC<TimesheetsTableProps> = ({
   sortedTimesheets,
   handleRowClick,
   onDeleteClick,
+  projectCurrency,
 }) => {
   const duplicateStatements = sortedTimesheets.reduce(
     (acc, ts) => {
@@ -64,7 +69,7 @@ const TimesheetTable: React.FC<TimesheetsTableProps> = ({
         <Box
           overflowX="auto"
           overflowY="auto"
-          maxHeight={'70vh'}
+          maxHeight={'62vh'}
           sx={{
             '::-webkit-scrollbar': {
               height: '12px',
@@ -89,7 +94,7 @@ const TimesheetTable: React.FC<TimesheetsTableProps> = ({
             mb={2}
             pr={2}
             sx={{
-              td: { fontSize: '0.8rem' },
+              td: { padding: '2', paddingBlock: '2', fontSize: '0.8rem' },
               'tr:hover td': {
                 backgroundColor: 'gray.200',
               },
@@ -109,13 +114,18 @@ const TimesheetTable: React.FC<TimesheetsTableProps> = ({
                 </TimesheetTableHeader>
                 <TimesheetTableHeader>Shift type</TimesheetTableHeader>
                 <TimesheetTableHeader>Time (from - to)</TimesheetTableHeader>
-                <TimesheetTableHeader>Calculated OT</TimesheetTableHeader>
+                <TimesheetTableHeader>Calc OT</TimesheetTableHeader>
 
-                <TimesheetTableHeader>Claimed OT</TimesheetTableHeader>
+                <TimesheetTableHeader>Claim OT</TimesheetTableHeader>
+                <TimesheetTableHeader>OT Amount</TimesheetTableHeader>
                 {shouldShowCarColumns && (
                   <>
-                    <TimesheetTableHeader>KM</TimesheetTableHeader>
                     <TimesheetTableHeader>Vehicle</TimesheetTableHeader>
+                    <TimesheetTableHeader>KM Total</TimesheetTableHeader>
+                    <TimesheetTableHeader>KM Allow</TimesheetTableHeader>
+                    <TimesheetTableHeader>KM Over</TimesheetTableHeader>
+                    <TimesheetTableHeader>KM per</TimesheetTableHeader>
+                    <TimesheetTableHeader>Mileage Amount</TimesheetTableHeader>
                   </>
                 )}
                 <TimesheetTableHeader>Delete</TimesheetTableHeader>
@@ -165,7 +175,6 @@ const TimesheetTable: React.FC<TimesheetsTableProps> = ({
                       minW="145px"
                       bg={{
                         base: isDuplicate ? 'orange.100' : 'gray.50',
-                        lg: isDuplicate ? 'orange.100' : 'transparent',
                       }}
                       zIndex={7}
                     >
@@ -175,26 +184,60 @@ const TimesheetTable: React.FC<TimesheetsTableProps> = ({
                     <Td
                       position="sticky"
                       left="145px"
+                      textAlign="center"
                       bg={{
                         base: isDuplicate ? 'orange.100' : 'gray.50',
-                        lg: isDuplicate ? 'orange.100' : 'transparent',
                       }}
                       zIndex={6}
                     >
                       {formatDateToDisplay(ts.start_date)}
                     </Td>
                     <Td textAlign="center">{ts.shift_lenght}</Td>
-                    <Td>
+                    <Td textAlign="center">
                       {formatTime(ts.from)} - {formatTime(ts.to)}
                     </Td>
                     <Td textAlign="center">{ts.calculated_overtime}</Td>
                     <Td textAlign="center">{ts.claimed_overtime}</Td>
+                    <Td textAlign={shouldShowCarColumns ? 'right' : 'center'}>
+                      {currencyUtil.formatAmount(
+                        statementUtil.calculateOvertimeAmount(ts),
+                        projectCurrency,
+                        2,
+                      )}
+                    </Td>
+
                     {shouldShowCarColumns && (
                       <>
+                        <Td textAlign="center">{hasCar ? ts.car?.name : ''}</Td>
                         <Td textAlign="center">
                           {hasCar ? ts.kilometers : ''}
                         </Td>
-                        <Td textAlign="center">{hasCar ? ts.car?.name : ''}</Td>
+                        <Td textAlign="center">
+                          {hasCar ? ts.car?.kilometer_allow : ''}
+                        </Td>
+                        <Td textAlign="center">
+                          {hasCar
+                            ? statementUtil.calculateKilometersOver(ts)
+                            : ''}
+                        </Td>
+                        <Td textAlign="right">
+                          {hasCar
+                            ? currencyUtil.formatAmountPerKM(
+                                ts.car?.kilometer_rate,
+                                projectCurrency,
+                                2,
+                              )
+                            : ''}
+                        </Td>
+                        <Td textAlign="right">
+                          {hasCar
+                            ? currencyUtil.formatAmount(
+                                statementUtil.calculateKilometerSum(ts),
+                                projectCurrency,
+                                2,
+                              )
+                            : ''}
+                        </Td>
                       </>
                     )}
                     <Td textAlign="center">

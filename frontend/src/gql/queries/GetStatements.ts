@@ -8,6 +8,15 @@ export const GET_CREW_STATEMENTS = gql`
         id
         name
         surname
+        email
+        rate {
+          compensation_rate
+          standard_rate
+          overtime_hour1
+          overtime_hour2
+          overtime_hour3
+          overtime_hour4
+        }
       }
       start_date
       from
@@ -35,6 +44,15 @@ export const GET_ADMIN_STATEMENTS = gql`
         id
         name
         surname
+        email
+        rate {
+          compensation_rate
+          standard_rate
+          overtime_hour1
+          overtime_hour2
+          overtime_hour3
+          overtime_hour4
+        }
       }
       start_date
       from

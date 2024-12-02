@@ -280,7 +280,7 @@ export function CrewListForm({
                     colorScheme="orange"
                     size="sm"
                   >
-                    {isOpen ? 'Hide Car Mileage' : 'Show Car Mileage'}
+                    {isOpen ? 'Hide Car Section' : 'Show Car Section'}
                   </Button>
                 </AbsoluteCenter>
               </Box>

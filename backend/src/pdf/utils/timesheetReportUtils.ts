@@ -101,7 +101,12 @@ export const calculateKilometersOver = (
   const allow = statement.kilometer_allow ?? 0;
   const kilometers = statement.kilometers ?? 0;
 
-  if (!statement.kilometer_allow || !statement.kilometers) return null;
+  if (
+    statement.kilometer_allow === null ||
+    statement.kilometer_allow === undefined ||
+    !statement.kilometers
+  )
+    return null;
 
   if (allow >= kilometers) {
     return 0;

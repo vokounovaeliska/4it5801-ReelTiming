@@ -65,13 +65,13 @@ const PdfReportGeneratorButton = ({
 
   return (
     <>
-      <Box alignItems="center">
+      <Box textAlign="center">
         <Button
           size={'sm'}
           colorScheme="orange"
           type="submit"
+          m={1.5}
           variant="outline"
-          mt="4"
           isLoading={loading}
           isDisabled={loading || isDisabled}
           onClick={handleGeneratePdf}

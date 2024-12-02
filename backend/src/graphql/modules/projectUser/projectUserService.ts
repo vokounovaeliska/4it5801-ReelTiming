@@ -86,6 +86,7 @@ export class ProjectUserService {
       position: data.position ?? null,
       last_update_date: new Date(),
       user_id: data.user_id ?? undefined,
+      is_active: data.user_id ? true : false,
     });
     return this.getProjectUserById(id);
   }
