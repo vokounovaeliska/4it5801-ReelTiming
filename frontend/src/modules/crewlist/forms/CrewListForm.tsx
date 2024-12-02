@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import {
+  AbsoluteCenter,
   Box,
   Button,
+  Collapse,
   Divider,
   FormControl,
   FormErrorMessage,
@@ -13,18 +15,26 @@ import {
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { Controller } from 'react-hook-form';
 
+import { Car } from '@frontend/modules/timesheets/interfaces';
 import { ErrorBanner } from '@frontend/shared/design-system';
 import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
+import { CarFormWithTable } from '@frontend/shared/forms/VehicleEnrollment';
 
 export type CrewListFormProps = {
   projectId: string;
   errorMessage?: string;
-  onSubmit: (data: FormValues, sendInvite: boolean) => void;
+  onSubmit: (
+    data: FormValues,
+    sendInvite: boolean,
+    cars: Car[],
+    oldCars: Car[],
+  ) => void;
   isLoading: boolean;
   departments: { id: string; name: string }[];
   initialValues?: FormValues;
   mode: 'add' | 'edit';
   userRole: 'ADMIN' | 'CREW';
+  cars: Car[] | null;
   projectCurrency: string;
 };
 
@@ -72,9 +82,10 @@ const schema = zod.object({
     zod.number().nonnegative({ message: 'Must be a non-negative number' }),
   ),
   role: zod.string().default('CREW'),
+  // cars: zod.array(carSchema).default([]),
 });
 
-type FormValues = zod.infer<typeof schema>;
+export type FormValues = zod.infer<typeof schema>;
 
 const initialValues: FormValues = {
   name: '',
@@ -90,6 +101,7 @@ const initialValues: FormValues = {
   overtime_hour4: 0,
   compensation_rate: 0,
   role: 'CREW',
+  // cars: [],
 };
 
 export function CrewListForm({
@@ -102,12 +114,29 @@ export function CrewListForm({
   mode,
   userRole,
   projectCurrency,
+  cars,
 }: CrewListFormProps) {
   const [sendInvite, setSendInvite] = useState(false);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleCollapse = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const oldCars = cars;
+
+  const [carData, setCarData] = useState<Car[]>([]);
+
+  const handleCarCollectionChange = (cars: Car[]) => {
+    setCarData(cars);
+    console.log('Updated car collection in parent:', cars);
+  };
+
   return (
     <Form
       onSubmit={(data) => {
-        onSubmit(data, sendInvite);
+        onSubmit(data, sendInvite, carData, oldCars ? oldCars : []);
         setSendInvite(false);
       }}
       defaultValues={formInitialValues}
@@ -116,6 +145,7 @@ export function CrewListForm({
     >
       <Stack justify="center">
         {errorMessage && <ErrorBanner title={errorMessage} />}
+
         <Box display={{ base: 'block', lg: 'flex' }} gap={6} p="2">
           <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
             <InputField name="name" label="Name" isRequired />
@@ -215,41 +245,64 @@ export function CrewListForm({
             />
           </SimpleGrid>
         </Box>
-      </Stack>
-      <Stack m={4} spacing={6}>
-        {mode === 'add' ? (
-          <>
-            <Button
-              type="submit"
-              colorScheme="orange"
-              width="100%"
-              isLoading={isLoading}
-              onClick={() => setSendInvite(true)}
-            >
-              Add Member and Send Invitation
-            </Button>
-            <Button
-              type="submit"
-              colorScheme="gray"
-              width="100%"
-              isLoading={isLoading}
-              onClick={() => setSendInvite(false)}
-            >
-              Add Member without Invitation
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button
-              type="submit"
-              colorScheme="orange"
-              width="100%"
-              isLoading={isLoading}
-            >
-              Save Changes
-            </Button>
-          </>
-        )}
+
+        <Stack m={4} spacing={6}>
+          {mode === 'add' ? (
+            <>
+              <Button
+                type="submit"
+                colorScheme="orange"
+                width="100%"
+                isLoading={isLoading}
+                onClick={() => setSendInvite(true)}
+              >
+                Add Member and Send Invitation
+              </Button>
+              <Button
+                type="submit"
+                colorScheme="gray"
+                width="100%"
+                isLoading={isLoading}
+                onClick={() => setSendInvite(false)}
+              >
+                Add Member without Invitation
+              </Button>
+            </>
+          ) : (
+            <>
+              <Box position="relative" padding="2">
+                <Divider />
+                <AbsoluteCenter px="4">
+                  <Button
+                    onClick={toggleCollapse}
+                    variant="ghost"
+                    bg="white"
+                    colorScheme="orange"
+                    size="sm"
+                  >
+                    {isOpen ? 'Hide Car Mileage' : 'Show Car Mileage'}
+                  </Button>
+                </AbsoluteCenter>
+              </Box>
+              <Collapse in={isOpen} animateOpacity>
+                <Box p="4">
+                  <CarFormWithTable
+                    onCarCollectionChange={handleCarCollectionChange}
+                    cars={cars}
+                  />
+                </Box>
+              </Collapse>
+              <Button
+                type="submit"
+                colorScheme="orange"
+                width="100%"
+                isLoading={isLoading}
+              >
+                Save Changes
+              </Button>
+            </>
+          )}
+        </Stack>
       </Stack>
     </Form>
   );

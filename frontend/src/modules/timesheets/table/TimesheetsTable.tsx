@@ -59,7 +59,7 @@ const TimesheetTable: React.FC<TimesheetsTableProps> = ({
   );
 
   return (
-    <Box overflowX="scroll">
+    <Box overflowX="auto">
       <TableContainer className="custom-scrollbar">
         <Box
           overflowX="auto"

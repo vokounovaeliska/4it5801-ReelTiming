@@ -9,6 +9,7 @@ import {
   showErrorToast,
   showSuccessToast,
 } from '@frontend/shared/design-system/molecules/toastUtils';
+import { Car } from '@frontend/modules/timesheets/interfaces';
 
 export const useCrewListPageUtils = () => {
   const auth = useAuth();
@@ -115,7 +116,10 @@ export const useCrewListPageUtils = () => {
     setIsModalOpen(true);
   };
 
-  const handleUpdateCrewMember = async (data: CrewMemberData) => {
+  const handleUpdateCrewMember = async (
+    data: CrewMemberData,
+    oldCars: Car[] | null,
+  ) => {
     setIsSubmitting(true);
     try {
       let departmentId = data.department;
@@ -134,7 +138,7 @@ export const useCrewListPageUtils = () => {
         ...data,
         department: data.department,
       };
-      await editCrewMember(updatedData, projectId!);
+      await editCrewMember(updatedData, projectId!, oldCars);
       const cacheData = client.readQuery({
         query: GET_CREWLIST_INFO,
         variables: { projectId, userId: auth.user?.id },
