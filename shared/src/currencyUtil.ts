@@ -20,6 +20,16 @@ export const currencyUtil = {
     return formatter.format(value);
   },
 
+  formatAmountPerKM(
+    value: number | undefined | null,
+    currency: CurrencyCode = DEFAULT_CURRENCY,
+    minimumFractionDigits: number = 0,
+  ): string {
+    return (
+      currencyUtil.formatAmount(value, currency, minimumFractionDigits) + '/KM'
+    );
+  },
+
   getLabel(currency: CurrencyCode): string {
     const foundCurrency = currencyCodes.data.find(
       ({ code }) => code === currency,

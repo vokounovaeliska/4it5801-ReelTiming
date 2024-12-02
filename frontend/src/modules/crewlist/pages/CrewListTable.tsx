@@ -325,7 +325,7 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                         <Td textAlign="center">
                           <Button
                             colorScheme="orange"
-                            size={'sm'}
+                            size={'xs'}
                             isDisabled={
                               user.invitation != null && user.is_active
                             }

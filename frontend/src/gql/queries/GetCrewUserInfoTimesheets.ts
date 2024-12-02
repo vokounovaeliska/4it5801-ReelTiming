@@ -6,6 +6,7 @@ export const GET_CREWUSERINFO_TIMESHEETS = gql`
       project {
         id
         name
+        currency
       }
       id
       name
