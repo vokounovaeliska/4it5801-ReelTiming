@@ -42,7 +42,8 @@ export function MyProjectDetailPage() {
     error,
   } = useQuery(GET_PROJECT_DETAILS, {
     variables: { id },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   const {
@@ -52,7 +53,8 @@ export function MyProjectDetailPage() {
   } = useQuery(GET_USER_ROLE_IN_PROJECT, {
     skip: !auth.user,
     variables: { userId: auth.user?.id, projectId: id },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   const isDataAvailable =

@@ -55,7 +55,8 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
     data: dataUserInfo,
   } = useQuery(GET_CREWUSERINFO_TIMESHEETS, {
     variables: { userId, projectId },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   const {
@@ -65,7 +66,8 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
   } = useQuery(GET_CREW_STATEMENTS, {
     skip: !dataUserInfo?.projectUserDetails?.id, // Skip this query until projectUserId is available
     variables: { projectUserId: dataUserInfo?.projectUserDetails?.id },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   // Check if the required data is available before rendering

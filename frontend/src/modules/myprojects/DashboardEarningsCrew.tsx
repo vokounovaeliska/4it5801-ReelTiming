@@ -36,7 +36,8 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
     data: dataUserInfo,
   } = useQuery(GET_CREWUSERINFO_TIMESHEETS, {
     variables: { userId, projectId },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   const {
@@ -46,7 +47,8 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
   } = useQuery(GET_ADMIN_STATEMENTS, {
     skip: !dataUserInfo?.projectUserDetails?.id,
     variables: { projectId: projectId },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   if (loadingUserInfo || loadingKilometers) return <Text>Loading...</Text>;

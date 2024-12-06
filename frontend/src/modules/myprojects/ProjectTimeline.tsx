@@ -11,7 +11,8 @@ interface ProjectTimelineProps {
 const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ projectId }) => {
   const { data, loading, error } = useQuery(GET_PROJECT_DETAILS, {
     variables: { id: projectId },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   const isDataAvailable = !!data && Object.keys(data).length > 0;

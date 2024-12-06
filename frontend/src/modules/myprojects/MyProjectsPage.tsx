@@ -17,7 +17,8 @@ export function MyProjectsPage() {
 
   const { data, loading, error, refetch } = useQuery(GET_USER_PROJECTS, {
     variables: { userId: auth.user?.id },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {
