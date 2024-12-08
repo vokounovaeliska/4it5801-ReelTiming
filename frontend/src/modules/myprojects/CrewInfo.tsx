@@ -12,16 +12,21 @@ import RecentCrewMembers from './RecentCrewMembers';
 interface CrewInfoProps {
   projectId: string;
   userId: string;
+  projectUsers: { id: string }[];
 }
 
-const CrewInfo: React.FC<CrewInfoProps> = ({ projectId, userId }) => {
+const CrewInfo: React.FC<CrewInfoProps> = ({
+  projectId,
+  userId,
+  projectUsers,
+}) => {
   return (
     <>
       <Text fontSize="lg">Number of crew members</Text>
       <HStack spacing={2} align="center" mb={4}>
         <IoPerson size="64px" />
         <Box as="span" fontSize="6xl">
-          <CrewMemberCount projectId={projectId} userId={userId} />
+          <CrewMemberCount projectUsers={projectUsers} />
         </Box>
       </HStack>
       <RecentCrewMembers projectId={projectId} userId={userId} />

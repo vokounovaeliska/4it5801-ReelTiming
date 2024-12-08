@@ -110,7 +110,11 @@ export function MyProjectDetailPage() {
         >
           <BoxDashboard flex="1">
             {userRole === 'ADMIN' ? (
-              <CrewInfo projectId={project.id} userId={auth.user.id} />
+              <CrewInfo
+                projectId={project.id}
+                userId={auth.user.id}
+                projectUsers={data.projectUsers}
+              />
             ) : (
               <ShiftInfo projectId={project.id} userId={auth.user.id} />
             )}
