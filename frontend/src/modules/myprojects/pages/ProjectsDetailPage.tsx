@@ -8,8 +8,7 @@ import ProjectNavbar from '@frontend/shared/navigation/components/navbar/Project
 import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 import { currencyUtil } from '@shared/currencyUtil';
 
-import { GET_PROJECT_DETAILS } from '../../../gql/queries/GetProjectDetails';
-import { GET_USER_ROLE_IN_PROJECT } from '../../../gql/queries/GetUserRoleInProject';
+import { GET_EVERYTHING_FOR_DASHBOARD } from '../../../gql/queries/GetEverythingForDashboard';
 import BoxDashboard from '../BoxDashboard';
 import CrewInfo from '../CrewInfo';
 import DashboardCostsAdmin from '../DashboardCostsAdmin';
@@ -24,34 +23,20 @@ import TopDashButtons from '../TopDashButtons';
 export function MyProjectDetailPage() {
   const auth = useAuth();
   const { id } = useParams<{ id: string }>();
-  const {
-    data,
-    loading: dataLoading,
-    error,
-  } = useQuery(GET_PROJECT_DETAILS, {
-    variables: { id },
-    fetchPolicy: 'cache-first',
-    nextFetchPolicy: 'cache-and-network',
-  });
 
-  const {
-    data: roleData,
-    loading: roleLoading,
-    error: roleError,
-  } = useQuery(GET_USER_ROLE_IN_PROJECT, {
-    skip: !auth.user,
-    variables: { userId: auth.user?.id, projectId: id },
+  const { data, loading, error } = useQuery(GET_EVERYTHING_FOR_DASHBOARD, {
+    variables: {
+      id,
+      userId: auth.user?.id || '',
+      projectId: id,
+      projectUserId: auth.user?.id || '',
+    },
     fetchPolicy: 'cache-first',
     nextFetchPolicy: 'cache-and-network',
   });
 
   const isDataAvailable =
-    roleData?.userRoleInProject &&
-    data?.project &&
-    !roleLoading &&
-    !dataLoading &&
-    !roleError &&
-    !error;
+    data?.project && data?.userRoleInProject && !loading && !error;
 
   if (!isDataAvailable) {
     return (
@@ -62,12 +47,12 @@ export function MyProjectDetailPage() {
     );
   }
 
-  if (roleError || error || !auth.user || !data?.project) {
+  if (error || !auth.user || !data?.project) {
     return <NotFoundPage />;
   }
 
   const project = data.project;
-  const userRole = roleData.userRoleInProject;
+  const userRole = data.userRoleInProject;
 
   return (
     <Box
