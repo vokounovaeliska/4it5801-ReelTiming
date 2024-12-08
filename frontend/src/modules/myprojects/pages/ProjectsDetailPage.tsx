@@ -1,11 +1,9 @@
 import { useQuery } from '@apollo/client';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import {
-  AbsoluteCenter,
   Box,
   Button,
   Center,
-  Divider,
   Heading,
   SimpleGrid,
   Spinner,
@@ -29,6 +27,8 @@ import { GET_USER_ROLE_IN_PROJECT } from '../../../gql/queries/GetUserRoleInProj
 import CrewInfo from '../CrewInfo';
 import DashboardCostsAdmin from '../DashboardCostsAdmin';
 import DashboardEarningsCrew from '../DashboardEarningsCrew';
+import ProjectOrigin from '../ProjectOrigin';
+import ProjectStatus from '../ProjectStatus';
 import ProjectTimeline from '../ProjectTimeline';
 import ShiftInfo from '../ShiftInfo';
 import TopDashButton from '../TopDashButton';
@@ -279,109 +279,16 @@ export function MyProjectDetailPage() {
         </Box>
 
         <Box p={6} bg="white" borderRadius="md" boxShadow="xs" borderWidth={1}>
-          <Box position="relative" padding-bottom="10">
-            <Divider />
-            <AbsoluteCenter bg="white" px="4">
-              Origin
-            </AbsoluteCenter>
-          </Box>
+          <ProjectOrigin
+            name={project?.name}
+            company={project.production_company}
+            currency={currencyUtil.getLabel(project.currency)}
+            create_date={project.create_date}
+            start_date={project.start_date}
+            end_date={project.end_date}
+          />
 
-          <Box
-            display="flex"
-            flexDirection={{ base: 'column', md: 'row' }}
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Box flex="1" mr={4} p={4} display="flex" justifyContent="center">
-              <Box textAlign="left">
-                <Text fontSize="md" color="gray.600" mb={2}>
-                  <Box as="span" mr={2} color="green.500">
-                    🎬
-                  </Box>
-                  <strong>Project name:</strong> {project?.name || 'N/A'}
-                </Text>
-                <Text fontSize="md" color="gray.600" mb={2}>
-                  <Box as="span" mr={2} color="green.500">
-                    🏢
-                  </Box>
-                  <strong>Production Company:</strong>{' '}
-                  {project.production_company || 'N/A'}
-                </Text>
-                <Text fontSize="md" color="gray.600" mb={2}>
-                  <Box as="span" mr={2} color="green.500">
-                    💰
-                  </Box>
-                  <strong>Project currency:</strong>{' '}
-                  {currencyUtil.getLabel(project.currency)}
-                </Text>
-                <Text fontSize="md" color="gray.600" mb={2}>
-                  <Box as="span" mr={2} color="blue.500">
-                    🚀
-                  </Box>
-                  <strong>Start date:</strong>{' '}
-                  {new Date(project.start_date).toLocaleDateString()}
-                </Text>
-                <Text fontSize="md" color="gray.600" mb={2}>
-                  <Box as="span" mr={2} color="purple.500">
-                    🏁
-                  </Box>
-                  <strong>End date:</strong>{' '}
-                  {new Date(project.end_date).toLocaleDateString()}
-                </Text>
-              </Box>
-            </Box>
-            {userRole === 'ADMIN' && (
-              <Box flex="1" p={4} display="flex" justifyContent="center">
-                <Box textAlign="left">
-                  <Text fontSize="md" color="gray.600" mb={2}>
-                    <Box as="span" mr={2} color="green.500">
-                      🗓️
-                    </Box>
-                    <strong>Created On:</strong>{' '}
-                    {new Date(project.create_date).toLocaleDateString()}
-                  </Text>
-                  <Text fontSize="md" color="gray.600" mb={2}>
-                    <Box as="span" mr={2} color="blue.500">
-                      🧑
-                    </Box>
-                    <strong>Created By:</strong>{' '}
-                    {project.create_user_id || 'Unknown'}
-                  </Text>
-                  <Text fontSize="md" color="gray.600" mb={2}>
-                    <Box as="span" mr={2}>
-                      🔄
-                    </Box>
-                    <strong>Last Updated On:</strong>{' '}
-                    {new Date(project.last_update_date).toLocaleDateString()}
-                  </Text>
-                  <Text fontSize="md" color="gray.600" mb={2}>
-                    <Box as="span" mr={2} color="purple.500">
-                      🖋️
-                    </Box>
-                    <strong>Last Updated By:</strong>{' '}
-                    {project.last_update_user_id || 'Unknown'}
-                  </Text>
-                </Box>
-              </Box>
-            )}
-          </Box>
-
-          <Box position="relative" paddingBottom="7">
-            <Divider />
-            <AbsoluteCenter bg="white" px="4">
-              Status
-            </AbsoluteCenter>
-          </Box>
-          <Text
-            fontSize="md"
-            color={project.is_active ? 'green.500' : 'red.500'}
-            fontWeight="bold"
-          >
-            <Box as="span" mr={2}>
-              {project.is_active ? '✅' : '❌'}
-            </Box>
-            <strong>Is Active:</strong> {project.is_active ? 'Yes' : 'No'}
-          </Text>
+          <ProjectStatus isActive={project.is_active} />
         </Box>
       </Box>
       <Footer />
