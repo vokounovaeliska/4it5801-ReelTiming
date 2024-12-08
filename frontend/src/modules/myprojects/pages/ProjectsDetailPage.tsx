@@ -1,22 +1,8 @@
 import { useQuery } from '@apollo/client';
-import { ArrowBackIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  Button,
-  Center,
-  Heading,
-  SimpleGrid,
-  Spinner,
-  Text,
-} from '@chakra-ui/react';
-import { FaClock, FaUsers } from 'react-icons/fa';
-import { FaCirclePlus } from 'react-icons/fa6';
-import { MdBuild } from 'react-icons/md';
+import { Box, Center, Heading, Spinner, Text } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
-import { route } from '@frontend/route';
-import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
@@ -28,11 +14,12 @@ import BoxDashboard from '../BoxDashboard';
 import CrewInfo from '../CrewInfo';
 import DashboardCostsAdmin from '../DashboardCostsAdmin';
 import DashboardEarningsCrew from '../DashboardEarningsCrew';
+import PillButtonsTop from '../PillButtonsTop';
 import ProjectOrigin from '../ProjectOrigin';
 import ProjectStatus from '../ProjectStatus';
 import ProjectTimeline from '../ProjectTimeline';
 import ShiftInfo from '../ShiftInfo';
-import TopDashButton from '../TopDashButton';
+import TopDashButtons from '../TopDashButtons';
 
 export function MyProjectDetailPage() {
   const auth = useAuth();
@@ -109,61 +96,7 @@ export function MyProjectDetailPage() {
           alignItems="flex-start"
           mb={6}
         >
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            width="100%"
-          >
-            <Button
-              as={ReactRouterLink}
-              to={route.myprojects()}
-              aria-label="Go back"
-              leftIcon={<ArrowBackIcon />}
-              size="sm"
-              borderRadius="full"
-              variant="outline"
-              colorScheme="orange"
-              _hover={{ bg: 'orange.600', color: 'white' }}
-              mb={4}
-              flex="1"
-              maxW="fit-content"
-            >
-              <Box as="span" display={{ base: 'none', sm: 'inline' }}>
-                Back to my projects
-              </Box>
-              <Box as="span" display={{ base: 'inline', sm: 'none' }}>
-                Back
-              </Box>
-            </Button>
-
-            {userRole === 'ADMIN' && (
-              <>
-                <Button
-                  as={ReactRouterLink}
-                  to={route.editprojectpage(project.id)}
-                  aria-label="Edit project"
-                  leftIcon={<MdBuild />}
-                  size="sm"
-                  borderRadius="full"
-                  variant="outline"
-                  colorScheme="orange"
-                  _hover={{ bg: 'orange.600', color: 'white' }}
-                  mb={4}
-                  flex="1"
-                  maxW="fit-content"
-                >
-                  <Box as="span" display={{ base: 'none', sm: 'inline' }}>
-                    Edit Project
-                  </Box>
-                  <Box as="span" display={{ base: 'inline', sm: 'none' }}>
-                    Edit
-                  </Box>
-                </Button>
-              </>
-            )}
-          </Box>
-
+          <PillButtonsTop userRole={userRole} projectId={project.id} />
           <Heading
             as="h2"
             size={{ base: 'xl', md: '2xl' }}
@@ -181,42 +114,13 @@ export function MyProjectDetailPage() {
               {project?.description}
             </Text>
           </Box>
-          <Box mt={5} justifyContent="space-between" width="100%">
-            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
-              {userRole === 'CREW' && (
-                <>
-                  <TopDashButton
-                    text="Report shift"
-                    icon={<FaCirclePlus />}
-                    ariaLabel="Submit shift times"
-                    to={route.timesheets(project.id)}
-                  />
-                </>
-              )}
-              <TopDashButton
-                text={userRole === 'CREW' ? 'Personal Pay Rates' : 'Crew List'}
-                icon={<FaUsers />}
-                to={route.crewList(project.id)}
-                ariaLabel={
-                  userRole === 'CREW'
-                    ? 'View and edit Personal Pay Rates'
-                    : 'View Crew List'
-                }
-              />
-              <TopDashButton
-                text="Timesheets"
-                icon={<FaClock />}
-                ariaLabel="Timesheets"
-                to={route.timesheets(project.id)}
-              />
-            </SimpleGrid>
-          </Box>
+          <TopDashButtons userRole={userRole} projectId={project.id} />
         </BoxDashboard>
 
         <Box
           mb={6}
           display="flex"
-          flexDirection={{ base: 'column', 'dash-break1': 'row' }} // PŮVODNĚ TU BYLO md: 'row'. KDYBY TO BYLO OŠKLIVÉ, PŘEPSAT NA PŮV.
+          flexDirection={{ base: 'column', 'dash-break1': 'row' }} // PŮVODNĚ TU BYLO md: 'row'
           gap={4}
         >
           <BoxDashboard flex="1">
