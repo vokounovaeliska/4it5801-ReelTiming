@@ -171,7 +171,6 @@ export function MyProjectDetailPage() {
           <Heading
             as="h2"
             size={{ base: 'xl', md: '2xl' }}
-            //color="orange.500"
             mb={4}
             textAlign={{ base: 'center', md: 'left' }}
           >
@@ -182,11 +181,7 @@ export function MyProjectDetailPage() {
             flexDirection={{ base: 'column', md: 'row' }}
             textAlign={{ base: 'justify', md: 'left' }}
           >
-            <Text
-              fontSize={{ base: 'md', md: 'lg' }}
-              //width={{ base: '100%', md: '75%' }}
-              maxWidth="58rem"
-            >
+            <Text fontSize={{ base: 'md', md: 'lg' }} maxWidth="58rem">
               {project?.description}
             </Text>
           </Box>
@@ -275,7 +270,10 @@ export function MyProjectDetailPage() {
           borderWidth={1}
           mb={6}
         >
-          <ProjectTimeline projectId={project.id} />
+          <ProjectTimeline
+            startDate={project.start_date}
+            endDate={project.end_date}
+          />
         </Box>
 
         <Box p={6} bg="white" borderRadius="md" boxShadow="xs" borderWidth={1}>
