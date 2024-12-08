@@ -24,6 +24,7 @@ import { currencyUtil } from '@shared/currencyUtil';
 
 import { GET_PROJECT_DETAILS } from '../../../gql/queries/GetProjectDetails';
 import { GET_USER_ROLE_IN_PROJECT } from '../../../gql/queries/GetUserRoleInProject';
+import BoxDashboard from '../BoxDashboard';
 import CrewInfo from '../CrewInfo';
 import DashboardCostsAdmin from '../DashboardCostsAdmin';
 import DashboardEarningsCrew from '../DashboardEarningsCrew';
@@ -102,15 +103,10 @@ export function MyProjectDetailPage() {
         maxWidth="2000px"
         mx="auto"
       >
-        <Box
+        <BoxDashboard
           display="flex"
           flexDirection="column"
           alignItems="flex-start"
-          p={6}
-          bg="white"
-          boxShadow="base"
-          borderRadius="md"
-          borderWidth={1}
           mb={6}
         >
           <Box
@@ -215,7 +211,7 @@ export function MyProjectDetailPage() {
               />
             </SimpleGrid>
           </Box>
-        </Box>
+        </BoxDashboard>
 
         <Box
           mb={6}
@@ -223,34 +219,19 @@ export function MyProjectDetailPage() {
           flexDirection={{ base: 'column', 'dash-break1': 'row' }} // PŮVODNĚ TU BYLO md: 'row'. KDYBY TO BYLO OŠKLIVÉ, PŘEPSAT NA PŮV.
           gap={4}
         >
-          <Box
-            p={6}
-            bg="white"
-            borderRadius="md"
-            boxShadow="xs"
-            flex="1"
-            borderWidth={1}
-          >
+          <BoxDashboard flex="1">
             {userRole === 'ADMIN' ? (
               <CrewInfo projectId={project.id} userId={auth.user.id} />
             ) : (
               <ShiftInfo projectId={project.id} userId={auth.user.id} />
             )}
-          </Box>
+          </BoxDashboard>
 
-          <Box
-            p={6}
-            bg="white"
-            borderRadius="md"
-            boxShadow="xs"
-            flex="1"
-            borderWidth={1}
-          >
+          <BoxDashboard flex="1">
             {userRole === 'ADMIN' ? (
               <DashboardCostsAdmin
                 projectId={project.id}
                 currency={project.currency}
-                //userId={auth.user.id}
               />
             ) : (
               <DashboardEarningsCrew
@@ -259,24 +240,17 @@ export function MyProjectDetailPage() {
                 currency={project.currency}
               />
             )}
-          </Box>
+          </BoxDashboard>
         </Box>
 
-        <Box
-          p={6}
-          bg="white"
-          borderRadius="md"
-          boxShadow="xs"
-          borderWidth={1}
-          mb={6}
-        >
+        <BoxDashboard mb={6}>
           <ProjectTimeline
             startDate={project.start_date}
             endDate={project.end_date}
           />
-        </Box>
+        </BoxDashboard>
 
-        <Box p={6} bg="white" borderRadius="md" boxShadow="xs" borderWidth={1}>
+        <BoxDashboard>
           <ProjectOrigin
             name={project?.name}
             company={project.production_company}
@@ -287,7 +261,7 @@ export function MyProjectDetailPage() {
           />
 
           <ProjectStatus isActive={project.is_active} />
-        </Box>
+        </BoxDashboard>
       </Box>
       <Footer />
     </Box>
