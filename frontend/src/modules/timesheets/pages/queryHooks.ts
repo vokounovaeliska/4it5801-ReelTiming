@@ -16,7 +16,8 @@ export const useAllProjectUsers = (projectId: string) => {
     error: allProjectUsersError,
   } = useQuery(GET_ALL_PROJECT_USERS, {
     variables: { projectId },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   return { allProjectUsersData, allProjectUsersLoading, allProjectUsersError };
@@ -33,7 +34,8 @@ export const useCrewUserInfoTimesheets = (
   } = useQuery(GET_CREWUSERINFO_TIMESHEETS, {
     skip: !userId,
     variables: { userId, projectId },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   return { userInfoData, userInfoLoading, userInfoError };
@@ -47,7 +49,8 @@ export const useUserRoleInProject = (userId: string, projectId: string) => {
   } = useQuery(GET_USER_ROLE_IN_PROJECT, {
     skip: !userId,
     variables: { userId, projectId },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   return { roleData, roleLoading, roleError };
@@ -61,7 +64,8 @@ export const useCrewStatements = (projectUserId: string) => {
   } = useQuery(GET_CREW_STATEMENTS, {
     skip: !projectUserId,
     variables: { projectUserId },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   return { crewData, crewLoading, crewError };
@@ -75,7 +79,8 @@ export const useAdminStatements = (projectId: string) => {
   } = useQuery(GET_ADMIN_STATEMENTS, {
     skip: !projectId,
     variables: { projectId },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   return { adminData, adminLoading, adminError };
@@ -89,14 +94,15 @@ export const useAllCarsOnProjectByProjectUserId = (projectId: string) => {
     refetch,
   } = useQuery(GET_ALL_CARS_ON_PROJECT_BY_PROJECTUSER_ID, {
     variables: { projectId },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   return {
     allCarsOnProjectData,
     allCarsOnProjectLoading,
     allCarsOnProjectError,
-    refetch, // Return refetch so it can be used outside the hook
+    refetch,
   };
 };
 
@@ -108,7 +114,8 @@ export const useCarsByProjectUserId = (projectUserId: string) => {
   } = useQuery(GET_CARS_BY_PROJECT_USER_ID, {
     variables: { projectUserId },
     skip: !projectUserId,
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   return { userCarsData, userCarsLoading, userCarsError };
