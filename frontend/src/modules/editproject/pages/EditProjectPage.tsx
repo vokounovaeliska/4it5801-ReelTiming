@@ -4,8 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { EDIT_PROJECT } from '@frontend/gql/mutations/EditProject';
 import { useAuth } from '@frontend/modules/auth';
-import { FormValues } from '@frontend/modules/myprojects/organisms/CreateProjectForm';
 import { route } from '@frontend/route';
+import { projectFormValues } from '@frontend/zod/schemas';
 
 // import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 import { GET_PROJECT_DETAILS } from '../../../gql/queries/GetProjectDetails';
@@ -62,7 +62,7 @@ export function EditProjectPage() {
   const userRole = roleData.userRoleInProject;
   const userId = auth.user.id;
 
-  const handleEditProject = async (data: FormValues) => {
+  const handleEditProject = async (data: projectFormValues) => {
     console.log(`Updating project info for project id: #${projectId}`);
     var startDate = data.startDate;
     var endDate = data.endDate ?? null;

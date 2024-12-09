@@ -3,15 +3,15 @@ import { Box } from '@chakra-ui/react';
 
 import { AuthUser } from '@frontend/modules/auth/auth-core';
 import { Car } from '@frontend/modules/timesheets/interfaces';
+import { crewListFormValues } from '@frontend/zod/schemas';
 
 import {
   AcceptInvitationForm,
-  FormValues,
   ProjectUserData,
 } from '../forms/AcceptInvitationForm';
 
 export type AcceptInvitationTemplateProps = {
-  onSubmit: (data: FormValues, cars: Car[]) => void;
+  onSubmit: (data: crewListFormValues, cars: Car[]) => void;
   onCarCollectionChange: (cars: Car[]) => void;
   projectUserData: ProjectUserData;
   departments: { id: string; name: string }[];

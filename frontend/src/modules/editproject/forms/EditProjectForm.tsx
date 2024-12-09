@@ -2,23 +2,25 @@ import React from 'react';
 import { Box, Button, SimpleGrid, Text } from '@chakra-ui/react';
 
 import RequiredInfo from '@frontend/modules/auth/organisms/RequiredInfo';
-import { FormValues } from '@frontend/modules/myprojects/organisms/CreateProjectForm';
-import { createProjectSchema } from '@frontend/modules/myprojects/schema/CreateProjecSchema';
 import {
   DateInputField,
   Form,
   InputField,
   TextAreaField,
-  zodResolver,
 } from '@frontend/shared/forms';
 import { CurrencySelectField } from '@frontend/shared/forms/molecules/fields/CurrencySelectField';
+import {
+  projectFormSchema,
+  projectFormValues,
+  zodResolver,
+} from '@frontend/zod/schemas';
 
 import { ProjectData } from '../pages/EditProjectPage';
 
 type EditProjectFormProps = {
   projectId: string | undefined;
   project: ProjectData;
-  onSubmit: (data: FormValues) => void;
+  onSubmit: (data: projectFormValues) => void;
 };
 
 export function EditProjectForm({
@@ -30,7 +32,7 @@ export function EditProjectForm({
     event.preventDefault();
   };
 
-  const initialValues: FormValues = {
+  const initialValues: projectFormValues = {
     name: project.name,
     description: project.description,
     productionCompany: project.production_company,
@@ -58,7 +60,7 @@ export function EditProjectForm({
 
       <Form
         onSubmit={onSubmit}
-        resolver={zodResolver(createProjectSchema)}
+        resolver={zodResolver(projectFormSchema)}
         defaultValues={initialValues}
         noValidate
       >

@@ -8,20 +8,18 @@ import {
   Heading,
   Stack,
 } from '@frontend/shared/design-system';
-import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
+import { Form, InputField } from '@frontend/shared/forms';
 import { PasswordInputField } from '@frontend/shared/forms/molecules/fields/PasswordInputField';
 import { RouterLink } from '@frontend/shared/navigation/atoms';
+import {
+  loginFormSchema,
+  loginFormValues,
+  zodResolver,
+} from '@frontend/zod/schemas';
 
 import RequiredInfo from './RequiredInfo';
 
-const schema = zod.object({
-  email: zod.string().email().min(1),
-  password: zod.string().min(1, { message: 'Password is required' }),
-});
-
-type FormValues = zod.infer<typeof schema>;
-
-const initialValues: FormValues = {
+const initialValues: loginFormValues = {
   email: '',
   password: '',
 };
@@ -67,7 +65,7 @@ export function LogInForm({
         <Form
           onSubmit={onSubmit}
           defaultValues={initialValues}
-          resolver={zodResolver(schema)}
+          resolver={zodResolver(loginFormSchema)}
           noValidate
         >
           <Stack

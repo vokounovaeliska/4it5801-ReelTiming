@@ -9,39 +9,16 @@ import {
   Paragraph,
   Stack,
 } from '@frontend/shared/design-system';
-import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
+import { Form, InputField } from '@frontend/shared/forms';
+import {
+  newPasswordFormSchema,
+  newPasswordFormValues,
+  zodResolver,
+} from '@frontend/zod/schemas';
 
 import RequiredInfo from './RequiredInfo';
 
-const schema = zod
-  .object({
-    newPassword: zod.string().min(10, {
-      message: 'Password is too short. It must be at least 10 characters long',
-    }),
-    newPasswordConfirmation: zod
-      .string()
-      .min(1, { message: 'Password confirmation is required' }),
-  })
-  .superRefine((data, ctx) => {
-    if (data.newPassword !== data.newPasswordConfirmation) {
-      ctx.addIssue({
-        code: zod.ZodIssueCode.custom,
-        path: ['passwordConfirmation'],
-        message: 'Passwords must match',
-      });
-    }
-    if (data.newPassword && data.newPassword.length < 10) {
-      ctx.addIssue({
-        code: zod.ZodIssueCode.custom,
-        path: ['password'],
-        message: 'Password is too short',
-      });
-    }
-  });
-
-type FormValues = zod.infer<typeof schema>;
-
-const initialValues: FormValues = {
+const initialValues: newPasswordFormValues = {
   newPassword: '',
   newPasswordConfirmation: '',
 };
@@ -66,7 +43,7 @@ export function NewPasswordForm({
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token'); // Get the token from query parameters
 
-  const handleSubmit = (data: FormValues) => {
+  const handleSubmit = (data: newPasswordFormValues) => {
     if (token) {
       onSubmit({
         token,
@@ -106,7 +83,7 @@ export function NewPasswordForm({
         <Form
           onSubmit={handleSubmit}
           defaultValues={initialValues}
-          resolver={zodResolver(schema)}
+          resolver={zodResolver(newPasswordFormSchema)}
           noValidate
         >
           <Stack spacing={6} pt={2} pb={6} justify="center">

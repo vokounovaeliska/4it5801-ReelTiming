@@ -8,20 +8,16 @@ import {
   Paragraph,
   Stack,
 } from '@frontend/shared/design-system';
-import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
+import { Form, InputField } from '@frontend/shared/forms';
+import {
+  forgotPasswordFormaValues,
+  forgotPasswordFormSchema,
+  zodResolver,
+} from '@frontend/zod/schemas';
 
 import RequiredInfo from './RequiredInfo';
 
-const schema = zod.object({
-  email: zod.string().min(1, { message: 'Email is required!' }).email({
-    message:
-      'Invalid email format. It must be in the format example@domain.com',
-  }),
-});
-
-type FormValues = zod.infer<typeof schema>;
-
-const initialValues: FormValues = {
+const initialValues: forgotPasswordFormaValues = {
   email: '@',
 };
 
@@ -71,7 +67,7 @@ export function ForgotPasswordForm({
         <Form
           onSubmit={onSubmit}
           defaultValues={initialValues}
-          resolver={zodResolver(schema)}
+          resolver={zodResolver(forgotPasswordFormSchema)}
           noValidate
         >
           <Stack spacing={6} pt={2} pb={6} justify="center">

@@ -8,42 +8,18 @@ import {
   ErrorBanner,
   Stack,
 } from '@frontend/shared/design-system';
-import {
-  CheckboxField,
-  Form,
-  InputField,
-  zod,
-  zodResolver,
-} from '@frontend/shared/forms';
+import { CheckboxField, Form, InputField } from '@frontend/shared/forms';
 import { PasswordInputField } from '@frontend/shared/forms/molecules/fields/PasswordInputField';
 import { RouterLink } from '@frontend/shared/navigation/atoms';
+import {
+  registrationFormSchema,
+  registrationFormValues,
+  zodResolver,
+} from '@frontend/zod/schemas';
 
 import RequiredInfo from './RequiredInfo';
 
-const schema = zod
-  .object({
-    email: zod.string().email(),
-    password: zod
-      .string()
-      .min(10, 'Password must be at least 10 characters long'),
-    passwordConfirmation: zod
-      .string()
-      .min(10, 'Password confirmation must be at least 10 characters long'),
-    name: zod.string().min(1, 'Name is required'),
-    surname: zod.string().min(1, 'Surname is required'),
-    terms: zod
-      .boolean()
-      .refine(
-        (val) => val === true,
-        'You must accept the terms and conditions',
-      ),
-  })
-  .refine((data) => data.password === data.passwordConfirmation, {
-    message: 'Passwords must match',
-    path: ['passwordConfirmation'],
-  });
-
-const initialValues = {
+const initialValues: registrationFormValues = {
   email: '',
   password: '',
   passwordConfirmation: '',
@@ -94,7 +70,7 @@ export function RegisterForm({
         <Form
           onSubmit={onSubmit}
           defaultValues={initialValues}
-          resolver={zodResolver(schema)}
+          resolver={zodResolver(registrationFormSchema)}
         >
           <Stack spacing={4} mb="2">
             {errorMessage && <ErrorBanner title={errorMessage} />}
