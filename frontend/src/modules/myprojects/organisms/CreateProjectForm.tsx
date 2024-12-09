@@ -16,18 +16,18 @@ import {
   Form,
   InputField,
   TextAreaField,
-  zod,
-  zodResolver,
 } from '@frontend/shared/forms';
 import { CurrencySelectField } from '@frontend/shared/forms/molecules/fields/CurrencySelectField';
 import { RouterNavLink } from '@frontend/shared/navigation/atoms';
+import {
+  projectFormSchema,
+  projectFormValues,
+  zodResolver,
+} from '@frontend/zod/schemas';
 
-import { createProjectSchema } from '../schema/CreateProjecSchema';
-
-export type FormValues = zod.infer<typeof createProjectSchema>;
 const today = new Date();
 
-const initialValues: FormValues = {
+const initialValues: projectFormValues = {
   name: '',
   description: '',
   productionCompany: '',
@@ -40,7 +40,7 @@ export type CreateProjectFormProps = {
   children?: ReactNode;
   isLoading: boolean;
   errorMessage?: string;
-  onSubmit: (data: FormValues) => void;
+  onSubmit: (data: projectFormValues) => void;
 };
 
 export function CreateProjectForm({
@@ -73,7 +73,7 @@ export function CreateProjectForm({
         <Form
           onSubmit={onSubmit}
           defaultValues={initialValues}
-          resolver={zodResolver(createProjectSchema)}
+          resolver={zodResolver(projectFormSchema)}
           noValidate
         >
           <Stack py="0" justify="center">

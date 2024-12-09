@@ -14,14 +14,19 @@ import { Controller } from 'react-hook-form';
 import { AuthUser } from '@frontend/modules/auth/auth-core';
 import { Car } from '@frontend/modules/timesheets/interfaces';
 import { ErrorBanner } from '@frontend/shared/design-system';
-import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
+import { Form, InputField } from '@frontend/shared/forms';
 import { FormSection } from '@frontend/shared/forms/molecules/FormSection';
 import { CarFormWithTable } from '@frontend/shared/forms/VehicleEnrollment';
+import {
+  crewListFormSchema,
+  crewListFormValues,
+  zodResolver,
+} from '@frontend/zod/schemas';
 
 export type AcceptInvitationFormProps = {
   errorMessage?: string;
   onCarCollectionChange: (cars: Car[]) => void;
-  onSubmit: (data: FormValues, cars: Car[]) => void;
+  onSubmit: (data: crewListFormValues, cars: Car[]) => void;
   isLoading: boolean;
   projectUserData: ProjectUserData;
   departments: { id: string; name: string }[];
@@ -55,50 +60,6 @@ export type ProjectUserData = {
   surname: string;
 };
 
-const phoneRegex = /^(\+\d{1,3}[- ]?)?\d{9}$/;
-
-const schema = zod.object({
-  name: zod.string().min(1),
-  surname: zod.string().min(1),
-  department: zod.string().min(1),
-  position: zod.string().min(1),
-  phone_number: zod
-    .string()
-    .min(1, { message: 'Phone number is required' })
-    .regex(phoneRegex, {
-      message:
-        'Invalid phone number format. Example: +420607887591 or 420607887591',
-    }),
-  email: zod.string().email().min(1),
-  standard_rate: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  compensation_rate: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  overtime_hour1: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  overtime_hour2: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  overtime_hour3: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  overtime_hour4: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  role: zod.string().default('CREW'),
-});
-
-export type FormValues = zod.infer<typeof schema>;
-
 export function AcceptInvitationForm({
   errorMessage,
   onCarCollectionChange,
@@ -108,7 +69,7 @@ export function AcceptInvitationForm({
   projectUserData,
   cars,
 }: AcceptInvitationFormProps) {
-  const initialValues: FormValues = {
+  const initialValues: crewListFormValues = {
     name: projectUserData?.name || '',
     surname: projectUserData?.surname || '',
     department: projectUserData?.department?.id || '',
@@ -141,7 +102,7 @@ export function AcceptInvitationForm({
           onSubmit(data, cars);
         }}
         defaultValues={initialValues}
-        resolver={zodResolver(schema)}
+        resolver={zodResolver(crewListFormSchema)}
         noValidate
       >
         <Stack spacing={5}>

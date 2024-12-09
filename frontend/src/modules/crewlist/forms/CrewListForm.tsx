@@ -12,82 +12,37 @@ import {
   SimpleGrid,
   Stack,
 } from '@chakra-ui/react';
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { Controller } from 'react-hook-form';
 
 import { Car } from '@frontend/modules/timesheets/interfaces';
 import { ErrorBanner } from '@frontend/shared/design-system';
-import { Form, InputField, zod, zodResolver } from '@frontend/shared/forms';
+import { Form, InputField } from '@frontend/shared/forms';
 import { CarFormWithTable } from '@frontend/shared/forms/VehicleEnrollment';
+import {
+  crewListFormSchema,
+  crewListFormValues,
+  zodResolver,
+} from '@frontend/zod/schemas';
 
 export type CrewListFormProps = {
   projectId: string;
   errorMessage?: string;
   onSubmit: (
-    data: FormValues,
+    data: crewListFormValues,
     sendInvite: boolean,
     cars: Car[],
     oldCars: Car[],
   ) => void;
   isLoading: boolean;
   departments: { id: string; name: string }[];
-  initialValues?: FormValues;
+  initialValues?: crewListFormValues;
   mode: 'add' | 'edit';
   userRole: 'ADMIN' | 'CREW';
   cars: Car[] | null;
   projectCurrency: string;
 };
 
-const schema = zod.object({
-  name: zod.string().min(1),
-  surname: zod.string().min(1),
-  department: zod.string().min(1, { message: 'Department must be selected.' }),
-  position: zod.string().min(1),
-  phone_number: zod
-    .string()
-    .min(1, { message: 'Phone number is required' })
-    .refine(
-      (val) => {
-        const phoneNumber = parsePhoneNumberFromString(val, 'CZ');
-        return phoneNumber?.isValid() ?? false;
-      },
-      {
-        message:
-          'Invalid phone number format. Example: +420607887591 or 420607887591',
-      },
-    ),
-  email: zod.string().email().min(1),
-  standard_rate: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  compensation_rate: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  overtime_hour1: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  overtime_hour2: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  overtime_hour3: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  overtime_hour4: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  role: zod.string().default('CREW'),
-  // cars: zod.array(carSchema).default([]),
-});
-
-export type FormValues = zod.infer<typeof schema>;
-
-const initialValues: FormValues = {
+const initialValues: crewListFormValues = {
   name: '',
   surname: '',
   department: '',
@@ -140,7 +95,7 @@ export function CrewListForm({
         setSendInvite(false);
       }}
       defaultValues={formInitialValues}
-      resolver={zodResolver(schema)}
+      resolver={zodResolver(crewListFormSchema)}
       noValidate
     >
       <Stack justify="center">

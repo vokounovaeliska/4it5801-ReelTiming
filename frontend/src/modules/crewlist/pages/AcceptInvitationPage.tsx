@@ -11,9 +11,9 @@ import { Car } from '@frontend/modules/timesheets/interfaces';
 import { route } from '@frontend/route';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
+import { crewListFormValues } from '@frontend/zod/schemas';
 
 import { GET_PROJECT_USER_BY_TOKEN } from '../../../gql/queries/GetProjectUserByToken';
-import { FormValues } from '../forms/AcceptInvitationForm';
 import { AcceptInvitationTemplate } from '../templates/AcceptInvitationTemplate';
 
 export function AcceptInvitationPage() {
@@ -70,7 +70,7 @@ export function AcceptInvitationPage() {
     }
   };
 
-  const handleFormSubmit = (formData: FormValues, cars: Car[]) => {
+  const handleFormSubmit = (formData: crewListFormValues, cars: Car[]) => {
     UpdateAdActivateProjectUser({
       variables: {
         updateProjectUserId: projectUser.id!,

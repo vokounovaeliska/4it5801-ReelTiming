@@ -1,13 +1,14 @@
 import { Box } from '@frontend/shared/design-system';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
+import { projectFormValues } from '@frontend/zod/schemas';
 
-import { CreateProjectForm, FormValues } from '../organisms/CreateProjectForm';
+import { CreateProjectForm } from '../organisms/CreateProjectForm';
 
 export type CreateProjectTemplateProps = {
   isLoading: boolean;
   error?: Error;
-  onSubmit: (data: FormValues) => void;
+  onSubmit: (data: projectFormValues) => void;
 };
 export function CreateProjectTemplate({
   isLoading,

@@ -1,8 +1,8 @@
 import { Box, Center, Heading, Text } from '@chakra-ui/react';
 
-import { FormValues } from '@frontend/modules/myprojects/organisms/CreateProjectForm';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
+import { projectFormValues } from '@frontend/zod/schemas';
 
 import { EditProjectForm } from '../forms/EditProjectForm';
 import { ProjectData } from '../pages/EditProjectPage';
@@ -14,7 +14,7 @@ export function EditProjectTemplate({
 }: {
   project: ProjectData;
   projectId: string;
-  onSubmit: (data: FormValues) => void;
+  onSubmit: (data: projectFormValues) => void;
 }) {
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">

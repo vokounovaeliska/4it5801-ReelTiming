@@ -7,8 +7,8 @@ import { ADD_PROJECT } from '@frontend/gql/mutations/AddProject';
 import { ADD_PROJECT_USER } from '@frontend/gql/mutations/AddProjectUser';
 import { ADD_RATE } from '@frontend/gql/mutations/AddRate';
 import { useAuth } from '@frontend/modules/auth';
+import { projectFormValues } from '@frontend/zod/schemas';
 
-import { FormValues } from '../organisms/CreateProjectForm';
 import { CreateProjectTemplate } from '../templates/CreateProjectTemplate';
 
 export function CreateProjectPage() {
@@ -32,7 +32,7 @@ export function CreateProjectPage() {
   ] = useMutation(ACTIVATE_PROJECT_USER);
 
   const handleCreateProjectFormSubmit = useCallback(
-    async (variables: FormValues) => {
+    async (variables: projectFormValues) => {
       if (!variables.startDate || !variables.endDate) {
         console.error(
           'Invalid date(s). Please enter valid start and end dates.',
