@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useApolloClient, useMutation } from '@apollo/client';
+import React, { useState } from 'react';
 import {
   AlertDialog,
   AlertDialogBody,
@@ -14,441 +13,79 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ActionMeta, MultiValue } from 'react-select';
 
-import { ADD_STATEMENT } from '@frontend/gql/mutations/AddStatement';
-import { DELETE_STATEMENT } from '@frontend/gql/mutations/DeleteStatement';
-import { EDIT_STATEMENT } from '@frontend/gql/mutations/EditStatement';
-// import { GET_ALL_CARS_ON_PROJECT_BY_PROJECTUSER_ID } from '@frontend/gql/queries/GetAllCarsOnProjectByProjectUserId';
-// import { GET_ALL_PROJECT_USERS } from '@frontend/gql/queries/GetAllProjectUsers';
-// import { GET_CARS_BY_PROJECT_USER_ID } from '@frontend/gql/queries/GetCarsByProjectUserId';
-// import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/gql/queries/GetCrewUserInfoTimesheets';
-import {
-  GET_ADMIN_STATEMENTS,
-  GET_CREW_STATEMENTS,
-} from '@frontend/gql/queries/GetStatements';
-// import { GET_USER_ROLE_IN_PROJECT } from '@frontend/gql/queries/GetUserRoleInProject';
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
-import {
-  showErrorToast,
-  showSuccessToast,
-} from '@frontend/shared/design-system/molecules/toastUtils';
 import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
 import { TimesheetsForm } from '../forms/TimesheetsForm';
-import {
-  AllCarsOnProjectData,
-  Car,
-  Timesheet,
-  TimesheetFormValues,
-  UserInfo,
-  UserOption,
-} from '../interfaces';
+import { UserAuth, UserInfo } from '../interfaces';
 import TimesheetsTemplate from '../templates/TimesheetsTemplate';
-import { formatTimeForParsing, toLocalISOString } from '../utils/timeUtils';
 
+import { DataLoadingUtils } from './dataLoadingUtils';
 import {
-  useAdminStatements,
-  useAllCarsOnProjectByProjectUserId,
-  useAllProjectUsers,
-  useCarsByProjectUserId,
-  useCrewStatements,
-  useCrewUserInfoTimesheets,
-  useUserRoleInProject,
-} from './queryHooks';
-
-// TODO FIX PROBABLY MAKE UTILS
-// eslint-disable-next-line react-refresh/only-export-components
-export function getAvailableCarsForProjectUserId(
-  givenUser: string,
-  allCarsOnProjectData: AllCarsOnProjectData,
-): Car[] {
-  const filteredCarsOnProject = allCarsOnProjectData?.projectUsers.filter(
-    (projectUser) => projectUser.id === givenUser,
-  );
-
-  const carDetails = filteredCarsOnProject?.flatMap((projectUser) =>
-    projectUser.car?.map((car) => ({
-      id: car.id,
-      name: car.name,
-      kilometer_allow: car.kilometer_allow,
-      kilometer_rate: car.kilometer_rate,
-    })),
-  );
-
-  return carDetails?.filter((car): car is Car => car !== undefined) || [];
-}
+  getCarOptionsForLoggedInUser,
+  getUserOptionsForAdminAddTimesheet,
+  getUserOptionsForUserFilter,
+} from './optionsUtils';
+import { useTimesheetHandlers } from './timesheetHandlers';
+import { filterTimesheets, sortTimesheets } from './timesheetUtils';
+import { useDeleteTimesheet } from './useDeleteTimesheet';
 
 export function TimesheetPage() {
   const auth = useAuth();
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
-  const [addStatement] = useMutation(ADD_STATEMENT);
-  const [editStatement] = useMutation(EDIT_STATEMENT);
-  const [deleteStatement] = useMutation(DELETE_STATEMENT);
-  const client = useApolloClient();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const [timesheetIdToDelete, setTimesheetIdToDelete] = useState<string | null>(
-    null,
-  );
   const [, setSelectedCar] = useState<string | null>(null);
-
-  const { userInfoData, userInfoLoading, userInfoError } =
-    useCrewUserInfoTimesheets(auth.user?.id ?? '', projectId ?? '');
-  const { roleData, roleLoading, roleError } = useUserRoleInProject(
-    auth.user?.id ?? '',
-    projectId ?? '',
-  );
-  const { crewData, crewLoading, crewError } = useCrewStatements(
-    userInfoData?.projectUserDetails?.id,
-  );
-  const { adminData, adminLoading, adminError } = useAdminStatements(
-    projectId ?? '',
-  );
-  const { allProjectUsersData, allProjectUsersLoading, allProjectUsersError } =
-    useAllProjectUsers(projectId ?? '');
-  const {
-    allCarsOnProjectData,
-    allCarsOnProjectLoading,
-    allCarsOnProjectError,
-  } = useAllCarsOnProjectByProjectUserId(projectId ?? '');
-  const { userCarsData, userCarsLoading, userCarsError } =
-    useCarsByProjectUserId(userInfo?.id ?? '');
-
-  useEffect(() => {
-    if (userInfoData?.projectUserDetails) {
-      setUserInfo(userInfoData.projectUserDetails);
-    }
-  }, [userInfoData]);
-
-  const carOptionsForLoggedInUser =
-    userCarsData?.carsByProjectUserId?.map((car: Car) => ({
-      value: car.id,
-      label: car.name,
-    })) || [];
-
-  const userOptionsForUserFilter =
-    allProjectUsersData?.projectUsers
-      ?.filter(
-        (projectUser: { id: string; name: string; surname: string }) =>
-          projectUser.id !== null,
-      )
-      .map((projectUser: { id: string; name: string; surname: string }) => ({
-        value: projectUser.id,
-        label: `${projectUser.name} ${projectUser.surname}`,
-      })) || [];
-
-  const userOptionsForAdminAddTimesheet =
-    allProjectUsersData?.projectUsers
-      ?.filter(
-        (projectUser: { id: string; name: string; surname: string }) =>
-          projectUser.id !== null,
-      )
-      .map((projectUser: { id: string; name: string; surname: string }) => ({
-        value: projectUser.id,
-        label: `${projectUser.name} ${projectUser.surname}`,
-      })) || [];
-
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [selectedUsers, setSelectedUsers] = useState<UserOption[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedTimesheet, setSelectedTimesheet] = useState<Timesheet | null>(
-    null,
-  );
   const cancelRef = React.useRef<HTMLButtonElement>(null);
-  const [mode, setMode] = useState<'add' | 'edit'>('add');
 
-  useEffect(() => {
-    const today = new Date();
-    const threeDaysAgo = new Date();
-    threeDaysAgo.setDate(today.getDate() - 3);
-    setStartDate(toLocalISOString(threeDaysAgo).split('T')[0]);
-    setEndDate(toLocalISOString(today).split('T')[0]);
-  }, []);
+  const {
+    loading,
+    error,
+    roleData,
+    crewData,
+    adminData,
+    allProjectUsersData,
+    allProjectUsersDataForOptions,
+    allCarsOnProjectData,
+    userInfoData,
+    userCarsData,
+  } = DataLoadingUtils({
+    auth,
+    projectId: projectId ?? '',
+    setUserInfo,
+  });
 
-  const handleDateChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    type: 'start' | 'end',
-  ) => {
-    if (type === 'start') {
-      setStartDate(e.target.value);
-    } else {
-      setEndDate(e.target.value);
-    }
-  };
+  const {
+    isAlertOpen,
+    setIsAlertOpen,
+    handleDeleteClick,
+    handleConfirmDelete,
+  } = useDeleteTimesheet({
+    projectId: projectId ?? '',
+    userRole: roleData?.userRoleInProject ?? '',
+    userInfoData,
+  });
 
-  const handleUserChange = (
-    newValue: MultiValue<UserOption>,
-    _actionMeta: ActionMeta<UserOption>,
-  ) => {
-    const selectedOptions = newValue as UserOption[];
-    setSelectedUsers(selectedOptions);
-  };
+  const {
+    startDate,
+    endDate,
+    selectedUsers,
+    isModalOpen,
+    selectedTimesheet,
+    mode,
+    handleDateChange,
+    handleUserChange,
+    handleRowClick,
+    handleAddClick,
+    handleModalClose,
+    handleFormSubmitWrapper,
+  } = useTimesheetHandlers(projectId ?? '', roleData, userInfoData, userInfo);
 
-  const handleRowClick = (timesheet: Timesheet) => {
-    setSelectedTimesheet(timesheet);
-    setMode('edit');
-    setIsModalOpen(true);
-  };
-
-  const handleAddClick = () => {
-    setSelectedTimesheet(null);
-    setMode('add');
-    setIsModalOpen(true);
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setSelectedTimesheet(null);
-  };
-
-  const handleDeleteClick = (id: string) => {
-    setTimesheetIdToDelete(id);
-    setIsAlertOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (timesheetIdToDelete) {
-      try {
-        await deleteTimesheet(timesheetIdToDelete);
-        showSuccessToast('Timesheet deleted successfully.');
-      } catch (error) {
-        showErrorToast('Failed to delete timesheet. Please try again.');
-      } finally {
-        setTimesheetIdToDelete(null);
-        setIsAlertOpen(false);
-      }
-    }
-  };
-
-  const deleteTimesheet = async (id: string) => {
-    try {
-      await deleteStatement({
-        variables: { id },
-        refetchQueries: [
-          {
-            query:
-              userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
-            variables:
-              userRole === 'ADMIN'
-                ? { projectId }
-                : { projectUserId: userInfoData?.projectUserDetails?.id },
-          },
-        ],
-      });
-    } catch (error) {
-      console.error('Error deleting statement:', error);
-    }
-  };
-
-  const handleFormSubmit = (data: Timesheet) => {
-    if (mode === 'add') {
-      handleAddTimesheet(data);
-    } else {
-      handleEditTimesheet(data);
-    }
-    handleModalClose();
-  };
-
-  const handleFormSubmitWrapper = (data: TimesheetFormValues) => {
-    const timesheet: Timesheet = {
-      ...data,
-      id: selectedTimesheet?.id || '',
-      projectUser: selectedTimesheet?.projectUser || {
-        id: data.projectUser.id,
-        name: data.projectUser?.name || '',
-        surname: data.projectUser?.surname || '',
-      },
-      create_date:
-        selectedTimesheet?.create_date || toLocalISOString(new Date()),
-      shift_lenght: data.shift_lenght || 0,
-      car_id: data.carId || undefined,
-      kilometers: data.kilometers,
-    };
-    handleFormSubmit(timesheet);
-  };
-
-  const handleAddTimesheet = async (data: Timesheet) => {
-    try {
-      const formattedFromTime = formatTimeForParsing(data.from);
-      const formattedToTime = formatTimeForParsing(data.to);
-      const variables = {
-        project_user_id: data.projectUser.id,
-        start_date: toLocalISOString(new Date(data.start_date)),
-        from: toLocalISOString(
-          new Date(`${data.start_date.split('T')[0]}T${formattedFromTime}`),
-        ),
-        to: toLocalISOString(
-          new Date(`${data.start_date.split('T')[0]}T${formattedToTime}`),
-        ),
-        shift_lenght: Number(data.shift_lenght) || 0,
-        calculated_overtime: data.calculated_overtime || 0,
-        claimed_overtime: data.claimed_overtime || 0,
-        car_id: data.car_id || null,
-        kilometers: data.kilometers || null,
-      };
-      console.log('Adding statement:', variables);
-
-      const response = await addStatement({
-        variables,
-        refetchQueries: [
-          {
-            query:
-              userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
-            variables:
-              userRole === 'ADMIN'
-                ? { projectId }
-                : { projectUserId: userInfoData?.projectUserDetails?.id },
-          },
-        ],
-      });
-      const cacheData = client.readQuery({
-        query:
-          userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
-        variables:
-          userRole === 'ADMIN'
-            ? { projectId }
-            : { projectUserId: userInfoData?.projectUserDetails?.id },
-      });
-      const newTimesheet = {
-        ...variables,
-        id: response.data.addStatement.id,
-        projectUser: userInfo,
-      };
-      client.writeQuery({
-        query:
-          userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
-        variables:
-          userRole === 'ADMIN'
-            ? { projectId }
-            : { projectUserId: userInfoData?.projectUserDetails?.id },
-        data: {
-          ...cacheData,
-          statementsByProjectId:
-            userRole === 'ADMIN'
-              ? [...cacheData.statementsByProjectId, newTimesheet]
-              : cacheData.statementsByProjectUserId
-                ? [...cacheData.statementsByProjectUserId, newTimesheet]
-                : [],
-        },
-      });
-      showSuccessToast('Timesheet added successfully.');
-    } catch (error) {
-      console.error('Error adding statement:', error);
-      showErrorToast('Failed to add timesheet. Please try again.');
-    }
-  };
-
-  const handleEditTimesheet = async (data: Timesheet) => {
-    try {
-      console.log('Editing statement:', data);
-      const formattedFromTime = formatTimeForParsing(data.from);
-      const formattedToTime = formatTimeForParsing(data.to);
-      const startDate = new Date(data.start_date);
-      const fromTime = new Date(
-        `${data.start_date.split('T')[0]}T${formattedFromTime}`,
-      );
-      const toTime = new Date(
-        `${data.start_date.split('T')[0]}T${formattedToTime}`,
-      );
-      if (
-        isNaN(startDate.getTime()) ||
-        isNaN(fromTime.getTime()) ||
-        isNaN(toTime.getTime())
-      ) {
-        throw new Error('Invalid date or time value');
-      }
-      const variables = {
-        id: selectedTimesheet?.id || '',
-        data: {
-          project_user_id: userInfo?.id,
-          start_date: toLocalISOString(startDate),
-          from: toLocalISOString(fromTime),
-          to: toLocalISOString(toTime),
-          shift_lenght: Number(data.shift_lenght) || 0,
-          calculated_overtime: data.calculated_overtime || 0,
-          claimed_overtime: data.claimed_overtime || 0,
-          last_update_date: toLocalISOString(new Date()),
-          last_update_user_id: auth.user?.id,
-          car_id: data.car_id || null,
-          kilometers: data.kilometers || null,
-        },
-      };
-      await editStatement({
-        variables,
-        refetchQueries: [
-          {
-            query:
-              userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
-            variables:
-              userRole === 'ADMIN'
-                ? { projectId }
-                : { projectUserId: userInfoData?.projectUserDetails?.id },
-          },
-        ],
-      });
-      const cacheData = client.readQuery({
-        query:
-          userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
-        variables:
-          userRole === 'ADMIN'
-            ? { projectId }
-            : { projectUserId: userInfoData?.projectUserDetails?.id },
-      });
-      const updatedTimesheet = {
-        ...variables.data,
-        id: selectedTimesheet?.id || '',
-        projectUser: userInfo,
-      };
-      client.writeQuery({
-        query:
-          userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
-        variables:
-          userRole === 'ADMIN'
-            ? { projectId }
-            : { projectUserId: userInfoData?.projectUserDetails?.id },
-        data: {
-          ...cacheData,
-          statementsByProjectId:
-            userRole === 'ADMIN'
-              ? cacheData.statementsByProjectId.map((ts: Timesheet) =>
-                  ts.id === selectedTimesheet?.id ? updatedTimesheet : ts,
-                )
-              : cacheData.statementsByProjectUserId.map((ts: Timesheet) =>
-                  ts.id === selectedTimesheet?.id ? updatedTimesheet : ts,
-                ),
-        },
-      });
-      showSuccessToast('Timesheet updated successfully.');
-    } catch (error) {
-      console.error('Error editing statement:', error);
-      showErrorToast('Failed to update timesheet. Please try again.');
-    }
-  };
-
-  const isDataAvailable =
-    roleData?.userRoleInProject &&
-    (crewData?.statementsByProjectUserId || adminData?.statementsByProjectId) &&
-    userInfoData?.projectUserDetails &&
-    allProjectUsersData?.projectUsers &&
-    allCarsOnProjectData?.cars &&
-    userCarsData;
-
-  if (
-    !isDataAvailable &&
-    (roleLoading ||
-      crewLoading ||
-      adminLoading ||
-      userInfoLoading ||
-      allProjectUsersLoading ||
-      allCarsOnProjectLoading ||
-      userCarsLoading)
-  ) {
+  if (loading) {
     return (
       <Center minHeight="100vh">
         <Spinner size="xl" color="orange.500" />
@@ -457,34 +94,25 @@ export function TimesheetPage() {
     );
   }
 
-  if (
-    roleError ||
-    userInfoError ||
-    crewError ||
-    adminError ||
-    allProjectUsersError ||
-    allCarsOnProjectError ||
-    userCarsError ||
-    !auth.user
-  ) {
+  if (error) {
     return (
       <Center minHeight="100vh">
-        <Text color="red.500">
-          Error loading project details:{' '}
-          {
-            (roleError?.message,
-            userInfoError?.message,
-            crewError?.message,
-            adminError?.message)
-          }
-        </Text>
+        <Text color="red.500">Error loading project details: {error}</Text>
       </Center>
     );
   }
 
+  const carOptionsForLoggedInUser = getCarOptionsForLoggedInUser(userCarsData);
+  const userOptionsForUserFilter = getUserOptionsForUserFilter(
+    allProjectUsersDataForOptions,
+  );
+  const userOptionsForAdminAddTimesheet = getUserOptionsForAdminAddTimesheet(
+    allProjectUsersDataForOptions,
+  );
+
   const userRole = roleData.userRoleInProject;
 
-  if (userRole !== 'ADMIN' && userRole !== 'CREW') {
+  if (roleData.userRoleInProject !== 'ADMIN' && userRole !== 'CREW') {
     navigate(route.myprojects());
     return null;
   }
@@ -494,34 +122,21 @@ export function TimesheetPage() {
       ? adminData?.statementsByProjectId
       : crewData?.statementsByProjectUserId;
 
-  const filteredTimesheets = timesheets.filter((ts: Timesheet) => {
-    const tsDate = new Date(ts.start_date).getTime();
-    const isWithinDateRange =
-      (!startDate || tsDate >= new Date(startDate).getTime()) &&
-      (!endDate || tsDate <= new Date(endDate).getTime());
-
-    const isUserSelected =
-      selectedUsers.length === 0 ||
-      selectedUsers.some(
-        (user: UserOption) => user.value === ts.projectUser.id,
-      );
-
-    return isWithinDateRange && isUserSelected;
-  });
-
-  const sortedTimesheets = filteredTimesheets.sort(
-    (a: Timesheet, b: Timesheet) => {
-      const startDateA = new Date(a.start_date).getTime();
-      const startDateB = new Date(b.start_date).getTime();
-
-      if (startDateA !== startDateB) {
-        return startDateB - startDateA;
-      }
-      const createDateA = new Date(a.create_date).getTime();
-      const createDateB = new Date(b.create_date).getTime();
-      return createDateB - createDateA;
-    },
+  const filteredTimesheets = filterTimesheets(
+    timesheets ?? [],
+    startDate,
+    endDate,
+    selectedUsers,
   );
+
+  const sortedTimesheets = sortTimesheets(filteredTimesheets);
+
+  const authUser: UserAuth = {
+    id: auth.user?.id ?? '',
+    email: auth.user?.email ?? '',
+    role: roleData?.userRoleInProject ?? '',
+  };
+
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <ProjectNavbar projectId={projectId!} userRole={userRole} />
@@ -540,7 +155,7 @@ export function TimesheetPage() {
         userOptions={userOptionsForUserFilter}
         userRole={userRole}
         projectUserId={userInfoData.projectUserDetails.id}
-        authUser={auth.user}
+        authUser={authUser}
         selectedUsers={selectedUsers}
       />
       <Footer />
@@ -568,7 +183,7 @@ export function TimesheetPage() {
           setSelectedCar={setSelectedCar}
           allCarsOnProjectData={allCarsOnProjectData}
           carOptionsForLoggedInUser={carOptionsForLoggedInUser}
-          userInfoRates={allProjectUsersData}
+          userInfoRates={allProjectUsersData.projectUsers}
           projectCurrency={userInfoData.projectUserDetails.project.currency}
         />
       </CustomModal>
