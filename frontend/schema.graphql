@@ -3,25 +3,329 @@ type AuthInfo {
   user: User!
 }
 
+type Car {
+  create_date: DateTimeISO!
+  create_user_id: String!
+  id: ID!
+  kilometer_allow: Float!
+  kilometer_rate: Float!
+  last_update_date: DateTimeISO!
+  last_update_user_id: String!
+  name: String!
+  projectUser: ProjectUser!
+}
+
+input CarInput {
+  create_date: DateTimeISO
+  create_user_id: String
+  kilometer_allow: Float!
+  kilometer_rate: Float!
+  last_update_date: DateTimeISO
+  last_update_user_id: String
+  name: String!
+  project_user_id: String!
+}
+
+"""
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.This scalar is serialized to a string in ISO 8601 format and parsed from a string in ISO 8601 format.
+"""
+scalar DateTimeISO
+
+type Department {
+  id: ID!
+  name: String!
+}
+
 type Mutation {
+  activateProjectUser(token: String!, userId: String!): Boolean!
+  addCar(
+    kilometer_allow: Float!
+    kilometer_rate: Float!
+    name: String!
+    project_user_id: String!
+  ): Car!
+  addDepartment(name: String!): Department!
+  addProject(
+    create_user_id: String
+    currency: String
+    description: String
+    end_date: DateTimeISO
+    name: String!
+    production_company: String!
+    start_date: DateTimeISO
+  ): Project!
+  addProjectUser(
+    departmentId: String = null
+    email: String!
+    invitation: String = null
+    isTeamLeader: Boolean = false
+    name: String!
+    phone_number: String = null
+    position: String = null
+    projectId: String!
+    rateId: String = null
+    role: String = "CREW"
+    surname: String!
+    userId: String = null
+  ): ProjectUser!
+  addRate(
+    compensation_rate: Float!
+    overtime_hour1: Float!
+    overtime_hour2: Float!
+    overtime_hour3: Float!
+    overtime_hour4: Float!
+    standard_rate: Float!
+  ): Rate!
+  addReport(
+    create_user_id: String!
+    end_date: DateTimeISO!
+    name: String!
+    path: String!
+    project_id: String = null
+    project_user_id: String = null
+    start_date: DateTimeISO!
+  ): Report!
+  addStatement(
+    calculated_overtime: Float = null
+    car_id: String = null
+    claimed_overtime: Float = null
+    from: DateTimeISO!
+    kilometers: Float = null
+    project_user_id: String!
+    shift_lenght: Float!
+    start_date: DateTimeISO!
+    to: DateTimeISO!
+  ): Statement!
+  deleteCar(id: String!): Boolean!
+  deleteDepartment(departmentId: String!): Boolean!
+  deleteInvitation(projectUserId: String!): Boolean!
+  deleteProject(projectId: String!): Boolean!
+  deleteProjectUser(projectUserId: String!): Boolean!
+  deleteRate(rateId: String!): Boolean!
+  deleteReport(id: String!): Boolean!
+  deleteStatement(id: String!): Boolean!
+  deleteUser(userId: String!): Boolean!
+  forgotPassword(email: String!): Boolean!
+  inviteUser(email: String!, name: String!, projectUserId: String!): Boolean!
+  resetPassword(newPassword: String!, token: String!): AuthInfo!
   signIn(email: String!, password: String!): AuthInfo!
   signUp(
     email: String!
     name: String!
-    surname: String!
     password: String!
+    phone_number: String
+    surname: String!
   ): AuthInfo!
+  updateCar(data: CarInput!, id: String!): Car!
+  updateDepartment(departmentId: String!, name: String!): Department!
+  updateProject(data: ProjectInput!, projectId: String!): Project!
+  updateProjectUser(data: ProjectUserInput!, id: String!): ProjectUser!
+  updateRate(data: RateInput!, rateId: String!): Rate!
+  updateUser(data: UserInput!, userId: String!): User!
+  updatestatement(data: StatementInput!, id: String!): Statement!
+}
+
+type Project {
+  create_date: DateTimeISO!
+  create_user_id: String!
+  currency: String!
+  description: String!
+  end_date: DateTimeISO
+  id: ID!
+  is_active: Boolean!
+  last_update_date: DateTimeISO!
+  last_update_user_id: String!
+  name: String!
+  production_company: String!
+  start_date: DateTimeISO
+}
+
+input ProjectInput {
+  create_date: DateTimeISO
+  create_user_id: String
+  currency: String
+  description: String!
+  end_date: DateTimeISO!
+  is_active: Boolean
+  last_update_date: DateTimeISO
+  last_update_user_id: String
+  name: String!
+  production_company: String!
+  start_date: DateTimeISO!
+}
+
+type ProjectUser {
+  car: [Car!]
+  create_date: DateTimeISO!
+  create_user_id: String!
+  department: Department
+  email: String!
+  id: ID!
+  invitation: String
+  is_active: Boolean!
+  is_team_leader: Boolean!
+  last_update_date: DateTimeISO!
+  last_update_user_id: String!
+  name: String!
+  number_of_people: Float
+  phone_number: String
+  position: String
+  project: Project!
+  rate: Rate
+  role: String
+  statement: [Statement!]!
+  surname: String!
+  user: User
+}
+
+input ProjectUserInput {
+  department_id: String
+  email: String!
+  invitation: String
+  is_active: Boolean
+  is_team_leader: Boolean = false
+  name: String!
+  number_of_people: Float
+  phone_number: String
+  position: String
+  project_id: String!
+  rate_id: String
+  role: String
+  surname: String!
+  user_id: String
 }
 
 type Query {
   _empty: String!
+  car(id: String!): Car
+  cars: [Car!]!
+  carsByProjectUserId(projectUserId: String!): [Car!]!
+  department(id: String!): Department
+  departments: [Department!]!
+  getStatementsByDateRangeAndProjectUserId(
+    endDate: DateTimeISO!
+    projectUserId: String!
+    startDate: DateTimeISO!
+  ): [Statement!]!
+  project(id: String!): Project
+  projectUser(id: String!): ProjectUser
+  projectUserDetails(projectId: String!, userId: String!): ProjectUser
+  projectUsers(projectId: String!): [ProjectUser!]!
+  projectUsersByToken(token: String!): ProjectUser!
+  project_users: [ProjectUser!]!
+  projects: [Project!]!
+  rate(id: String!): Rate
+  rates: [Rate!]!
+  report(id: String!): Report
+  reports: [Report!]!
+  statement(id: String!): Statement
+  statements: [Statement!]!
+  statementsByProjectId(projectId: String!): [Statement!]!
+  statementsByProjectUserId(projectUserId: String!): [Statement!]!
+  statementsByUserId(userId: String!): [Statement!]!
   user(id: String!): User
+  userProjects(userId: String!): [Project!]!
+  userRoleInProject(projectId: String!, userId: String!): String
   users: [User!]!
 }
 
-type User {
-  email: String!
+type Rate {
+  compensation_rate: Float
+  create_date: DateTimeISO!
+  create_user_id: String!
+  id: ID!
+  last_update_date: DateTimeISO!
+  last_update_user_id: String!
+  overtime_hour1: Float
+  overtime_hour2: Float
+  overtime_hour3: Float
+  overtime_hour4: Float
+  standard_rate: Float
+}
+
+input RateInput {
+  compensation_rate: Float
+  create_date: DateTimeISO
+  create_user_id: String
+  last_update_date: DateTimeISO
+  last_update_user_id: String
+  overtime_hour1: Float
+  overtime_hour2: Float
+  overtime_hour3: Float
+  overtime_hour4: Float
+  standard_rate: Float
+}
+
+type Report {
+  createUser: User
+  create_date: DateTimeISO!
+  end_date: DateTimeISO!
   id: ID!
   name: String!
+  path: String!
+  project: Project
+  projectUser: ProjectUser
+  start_date: DateTimeISO!
+}
+
+type Statement {
+  calculated_overtime: Float
+  car: Car
+  claimed_overtime: Float
+  create_date: DateTimeISO!
+  create_user_id: String!
+  from: DateTimeISO!
+  id: ID!
+  kilometers: Float
+  last_update_date: DateTimeISO!
+  last_update_user_id: String!
+  projectUser: ProjectUser!
+  shift_lenght: Float!
+  start_date: DateTimeISO!
+  to: DateTimeISO!
+}
+
+input StatementInput {
+  calculated_overtime: Float
+  car_id: String
+  claimed_overtime: Float
+  create_date: DateTimeISO
+  create_user_id: String
+  from: DateTimeISO!
+  kilometers: Float
+  last_update_date: DateTimeISO
+  last_update_user_id: String
+  project_user_id: String!
+  shift_lenght: Float!
+  start_date: DateTimeISO!
+  to: DateTimeISO!
+}
+
+type User {
+  create_date: DateTimeISO!
+  create_user_id: String!
+  email: String!
+  id: ID!
+  is_active: Boolean!
+  last_update_date: DateTimeISO!
+  last_update_user_id: String!
+  name: String!
+  password_reset_expiration_time: DateTimeISO
+  password_reset_token: String
+  phone_number: String
   surname: String!
+}
+
+input UserInput {
+  create_date: DateTimeISO
+  create_user_id: String
+  email: String
+  is_active: Boolean
+  last_update_date: DateTimeISO
+  last_update_user_id: String
+  name: String
+  password_reset_expiration_time: DateTimeISO
+  password_reset_token: String
+  phone_number: String!
+  surname: String
 }

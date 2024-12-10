@@ -1,7 +1,7 @@
 import { useApolloClient, useQuery } from '@apollo/client';
 import { useAuth } from '@frontend/modules/auth';
-import { useCrewMemberMutations } from '@frontend/gql/mutations/addCrewMember';
-import { GET_CREWLIST_INFO } from '@frontend/gql/queries/GetCrewListInfo';
+import { useCrewMemberMutations } from '@frontend/graphql/mutations/addCrewMember';
+import { GET_CREWLIST_INFO } from '@frontend/graphql/queries/GetCrewListInfo';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CrewMemberData, ProjectUser } from '../interfaces/interfaces';

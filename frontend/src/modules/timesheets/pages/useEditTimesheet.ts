@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { EDIT_STATEMENT } from '@frontend/gql/mutations/EditStatement';
+import { EDIT_STATEMENT } from '@frontend/graphql/mutations/EditStatement';
 import {
   showErrorToast,
   showSuccessToast,
@@ -7,7 +7,7 @@ import {
 import {
   GET_ADMIN_STATEMENTS,
   GET_CREW_STATEMENTS,
-} from '@frontend/gql/queries/GetStatements';
+} from '@frontend/graphql/queries/GetStatements';
 import { useApolloClient } from '@apollo/client';
 import { Timesheet, UseEditTimesheetProps } from '../interfaces';
 import { formatTimeForParsing, toLocalISOString } from '../utils/timeUtils';

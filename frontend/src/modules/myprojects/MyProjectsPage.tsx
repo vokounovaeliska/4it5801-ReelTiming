@@ -3,11 +3,10 @@ import { useQuery } from '@apollo/client';
 import { Center, Spinner, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
+import { GET_USER_PROJECTS } from '@frontend/graphql/queries/GetUserProjects';
 import { useAuth } from '@frontend/modules/auth';
 import { MyProjectsTemplate } from '@frontend/modules/auth/templates/MyProjectsTemplate';
 import { route } from '@frontend/route';
-
-import { GET_USER_PROJECTS } from '../../gql/queries/GetUserProjects';
 
 import ErrorMyProjectPage from './ErrorMyProjectPage';
 

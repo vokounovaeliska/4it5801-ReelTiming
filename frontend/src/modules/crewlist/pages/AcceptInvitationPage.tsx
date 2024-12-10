@@ -3,9 +3,10 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useToast } from '@chakra-ui/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
-import { ADD_CAR } from '@frontend/gql/mutations/AddCar';
-import { UPDATE_AND_ACTIVATE_PROJECT_USER } from '@frontend/gql/mutations/UpdateAdActivateProjectUser';
-import { GET_DEPARTMENTS } from '@frontend/gql/queries/GetDepartments';
+import { ADD_CAR } from '@frontend/graphql/mutations/AddCar';
+import { UPDATE_AND_ACTIVATE_PROJECT_USER } from '@frontend/graphql/mutations/UpdateAdActivateProjectUser';
+import { GET_DEPARTMENTS } from '@frontend/graphql/queries/GetDepartments';
+import { GET_PROJECT_USER_BY_TOKEN } from '@frontend/graphql/queries/GetProjectUserByToken';
 import { useAuth } from '@frontend/modules/auth';
 import { Car } from '@frontend/modules/timesheets/interfaces';
 import { route } from '@frontend/route';
@@ -13,7 +14,6 @@ import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 import { crewListFormValues } from '@frontend/zod/schemas';
 
-import { GET_PROJECT_USER_BY_TOKEN } from '../../../gql/queries/GetProjectUserByToken';
 import { AcceptInvitationTemplate } from '../templates/AcceptInvitationTemplate';
 
 export function AcceptInvitationPage() {

@@ -2,14 +2,14 @@ import { useMutation, useQuery } from '@apollo/client';
 import { Center, Spinner, Text, useToast } from '@chakra-ui/react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { EDIT_PROJECT } from '@frontend/gql/mutations/EditProject';
+import { EDIT_PROJECT } from '@frontend/graphql/mutations/EditProject';
+// import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
+import { GET_PROJECT_DETAILS } from '@frontend/graphql/queries/GetProjectDetails';
+import { GET_USER_ROLE_IN_PROJECT } from '@frontend/graphql/queries/GetUserRoleInProject';
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
 import { projectFormValues } from '@frontend/zod/schemas';
 
-// import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
-import { GET_PROJECT_DETAILS } from '../../../gql/queries/GetProjectDetails';
-import { GET_USER_ROLE_IN_PROJECT } from '../../../gql/queries/GetUserRoleInProject';
 import { EditProjectTemplate } from '../templates/EditProjectTemplate';
 
 export function EditProjectPage() {

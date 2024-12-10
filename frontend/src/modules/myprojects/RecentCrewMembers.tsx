@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Box, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 
-import { GET_CREWLIST_INFO } from '../../gql/queries/GetCrewListInfo';
+import { GET_CREWLIST_INFO } from '@frontend/graphql/queries/GetCrewListInfo';
 
 interface ProjectUser {
   id: string;
