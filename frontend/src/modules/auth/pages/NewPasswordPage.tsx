@@ -1,13 +1,14 @@
 import { useCallback } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 
+import { gql } from '@frontend/gql';
 import { route } from '@frontend/route';
 
 import { useAuth } from '../auth-core';
 import { NewPasswordTemplate } from '../templates/NewPasswordTemplate';
 
-const NEW_PASSWORD_MUTATION = gql(/* GraphQL */ `
+const NEW_PASSWORD_MUTATION = gql(`
   mutation ResetPassword($newPassword: String!, $token: String!) {
     resetPassword(newPassword: $newPassword, token: $token) {
       user {

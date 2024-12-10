@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Box, HStack, Progress, Text, Tooltip } from '@chakra-ui/react';
 
-import { GET_PROJECT_DETAILS } from '../../gql/queries/GetProjectDetails';
+import { GET_PROJECT_DETAILS } from '@frontend/graphql/queries/GetProjectDetails';
 
 interface ProjectTimelineProps {
   projectId: string;

@@ -3,8 +3,8 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
-import { UPDATE_USER_PROFILE_SETTINGS } from '@frontend/gql/mutations/UpdateUserProfileSettings';
-import { GET_USER_PROFILE_SETTINGS_INFO } from '@frontend/gql/queries/GetUserProfileSettingsInfo';
+import { UPDATE_USER_PROFILE_SETTINGS } from '@frontend/graphql/mutations/UpdateUserProfileSettings';
+import { GET_USER_PROFILE_SETTINGS_INFO } from '@frontend/graphql/queries/GetUserProfileSettingsInfo';
 import { useAuth } from '@frontend/modules/auth';
 
 import ProfileSettingsTemplate from '../templates/ProfileSettingsTemplate';
