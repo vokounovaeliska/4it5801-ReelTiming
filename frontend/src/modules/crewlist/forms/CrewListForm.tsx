@@ -16,7 +16,7 @@ import { Car, CarStatement } from '@frontend/modules/timesheets/interfaces';
 import { ErrorBanner } from '@frontend/shared/design-system';
 import { Form, InputField } from '@frontend/shared/forms';
 import { FormSection } from '@frontend/shared/forms/molecules/FormSection';
-import { CarFormWithTable } from '@frontend/shared/forms/VehicleFulfillmentForm';
+import { CarFormWithTable } from '@frontend/shared/forms/VehicleEnrollment';
 import {
   crewListFormSchema,
   crewListFormValues,
@@ -70,7 +70,7 @@ export function CrewListForm({
   userRole,
   projectCurrency,
   cars,
-  carStatements,
+  // carStatements,
 }: CrewListFormProps) {
   const [sendInvite, setSendInvite] = useState(false);
 
@@ -251,22 +251,18 @@ export function CrewListForm({
                     <CarFormWithTable
                       onCarCollectionChange={handleCarCollectionChange}
                       cars={cars}
-                      carStatements={carStatements}
-                      projectCurrency={projectCurrency}
                     />
                   </Box>
                 </Box>
-              </FormSection>
-              <Box display="flex" justifyContent="flex-end" alignItems="center">
                 <Button
                   type="submit"
                   colorScheme="orange"
-                  width={{ base: '100%', md: '20%' }}
+                  width="100%"
                   isLoading={isLoading}
                 >
                   Save Changes
                 </Button>
-              </Box>
+              </FormSection>
             </>
           )}
         </Stack>
