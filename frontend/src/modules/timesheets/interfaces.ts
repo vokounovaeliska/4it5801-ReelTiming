@@ -175,12 +175,12 @@ export interface OvertimeSectionProps {
 export interface DateTimeSectionProps {
   // control: Control<FormValues>;
   control: Control<TimesheetFormValues>;
+  workedHours: number;
+  shift: number;
 }
 
 export interface SummarySectionProps {
   mode: 'add' | 'edit';
-  workedHours: number;
-  shift: number;
   claimedOvertime: number;
   userRates: Rate | null;
   initialValues: TimesheetFormValues;

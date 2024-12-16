@@ -1,23 +1,9 @@
 import React from 'react';
-import { DeleteIcon, WarningTwoIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  IconButton,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Thead,
-  Tooltip,
-  Tr,
-} from '@chakra-ui/react';
-
-import { currencyUtil } from '@shared/currencyUtil';
-import { statementUtil } from '@shared/statementUtil';
+import { Box, Table, TableContainer, Tbody, Thead, Tr } from '@chakra-ui/react';
 
 import { Timesheet } from '../interfaces';
-import { formatDateToDisplay, formatTime } from '../utils/timeUtils';
 
+import TimesheetRow from './TimesheetRow';
 import { TimesheetTableHeader } from './TimesheetsTableHeader';
 
 interface TimesheetsTableProps {
@@ -27,21 +13,35 @@ interface TimesheetsTableProps {
   projectCurrency: string;
 }
 
-const TimesheetTable: React.FC<TimesheetsTableProps> = ({
+const tableHeaders = [
+  'Shift type',
+  'Time (from - to)',
+  'Calc OT',
+  'Claim OT',
+  'OT Amount',
+];
+
+const carHeaders = [
+  'Vehicle',
+  'KM Total',
+  'KM Allow',
+  'KM Over',
+  'KM per',
+  'Mileage Tot',
+];
+
+const TimesheetTable = ({
   sortedTimesheets,
   handleRowClick,
   onDeleteClick,
   projectCurrency,
-}) => {
+}: TimesheetsTableProps) => {
   const duplicateStatements = sortedTimesheets.reduce(
     (acc, ts) => {
       const date = ts.start_date.split('T')[0];
       const userId = ts.projectUser.id;
       const key = `${userId}-${date}`;
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      acc[key].push(ts);
+      acc[key] = acc[key] ? [...acc[key], ts] : [ts];
       return acc;
     },
     {} as Record<string, Timesheet[]>,
@@ -100,34 +100,33 @@ const TimesheetTable: React.FC<TimesheetsTableProps> = ({
               },
             }}
           >
-            <Thead>
+            <Thead position="sticky" top={0} zIndex="docked">
               <Tr>
                 {hasDuplicates && (
                   <TimesheetTableHeader>Info</TimesheetTableHeader>
                 )}
-                <TimesheetTableHeader zIndex={10} left="0">
+                <TimesheetTableHeader zIndex={10} left="0" position="sticky">
                   User
                 </TimesheetTableHeader>
-
-                <TimesheetTableHeader zIndex={9} left="145px">
+                <TimesheetTableHeader
+                  zIndex={9}
+                  position="sticky"
+                  left={{ base: '100px', md: '110px', lg: '150px' }}
+                >
                   Date
                 </TimesheetTableHeader>
-                <TimesheetTableHeader>Shift type</TimesheetTableHeader>
-                <TimesheetTableHeader>Time (from - to)</TimesheetTableHeader>
-                <TimesheetTableHeader>Calc OT</TimesheetTableHeader>
-
-                <TimesheetTableHeader>Claim OT</TimesheetTableHeader>
-                <TimesheetTableHeader>OT Amount</TimesheetTableHeader>
-                {shouldShowCarColumns && (
-                  <>
-                    <TimesheetTableHeader>Vehicle</TimesheetTableHeader>
-                    <TimesheetTableHeader>KM Total</TimesheetTableHeader>
-                    <TimesheetTableHeader>KM Allow</TimesheetTableHeader>
-                    <TimesheetTableHeader>KM Over</TimesheetTableHeader>
-                    <TimesheetTableHeader>KM per</TimesheetTableHeader>
-                    <TimesheetTableHeader>Mileage Amount</TimesheetTableHeader>
-                  </>
-                )}
+                {tableHeaders.map((header, index) => (
+                  <TimesheetTableHeader key={index}>
+                    {header}
+                  </TimesheetTableHeader>
+                ))}
+                {shouldShowCarColumns &&
+                  carHeaders.map((header, index) => (
+                    <TimesheetTableHeader key={index}>
+                      {header}
+                    </TimesheetTableHeader>
+                  ))}
+                <TimesheetTableHeader>Total</TimesheetTableHeader>
                 <TimesheetTableHeader>Delete</TimesheetTableHeader>
               </Tr>
             </Thead>
@@ -138,121 +137,19 @@ const TimesheetTable: React.FC<TimesheetsTableProps> = ({
                 const key = `${userId}-${date}`;
                 const isDuplicate = duplicates[key];
                 const hasCar = ts.car_id !== null && ts.car !== null;
-                return (
-                  <Tr
-                    key={ts.id}
-                    onClick={() => handleRowClick(ts)}
-                    _hover={{
-                      cursor: 'pointer',
-                      backgroundColor: isDuplicate ? 'orange.300' : 'gray.100',
-                    }}
-                    bg={isDuplicate ? 'orange.100' : 'transparent'}
-                  >
-                    {hasDuplicates && (
-                      <Td
-                        bg={{
-                          base: isDuplicate ? 'orange.100' : 'gray.50',
-                          lg: isDuplicate ? 'orange.100' : 'transparent',
-                        }}
-                      >
-                        {isDuplicate && (
-                          <Tooltip label="Duplicate date statement">
-                            <Box
-                              display="flex"
-                              justifyContent="center"
-                              alignItems="center"
-                              w="100%"
-                            >
-                              <WarningTwoIcon color="red.500" boxSize={4} />
-                            </Box>
-                          </Tooltip>
-                        )}
-                      </Td>
-                    )}
-                    <Td
-                      position="sticky"
-                      left="0"
-                      minW="145px"
-                      bg={{
-                        base: isDuplicate ? 'orange.100' : 'gray.50',
-                      }}
-                      zIndex={7}
-                    >
-                      {ts.projectUser?.name ?? 'Unknown'}{' '}
-                      {ts.projectUser?.surname ?? 'User'}
-                    </Td>
-                    <Td
-                      position="sticky"
-                      left="145px"
-                      textAlign="center"
-                      bg={{
-                        base: isDuplicate ? 'orange.100' : 'gray.50',
-                      }}
-                      zIndex={6}
-                    >
-                      {formatDateToDisplay(ts.start_date)}
-                    </Td>
-                    <Td textAlign="center">{ts.shift_lenght}</Td>
-                    <Td textAlign="center">
-                      {formatTime(ts.from)} - {formatTime(ts.to)}
-                    </Td>
-                    <Td textAlign="center">{ts.calculated_overtime}</Td>
-                    <Td textAlign="center">{ts.claimed_overtime}</Td>
-                    <Td textAlign={shouldShowCarColumns ? 'right' : 'center'}>
-                      {currencyUtil.formatAmount(
-                        statementUtil.calculateOvertimeAmount(ts),
-                        projectCurrency,
-                        2,
-                      )}
-                    </Td>
 
-                    {shouldShowCarColumns && (
-                      <>
-                        <Td textAlign="center">{hasCar ? ts.car?.name : ''}</Td>
-                        <Td textAlign="center">
-                          {hasCar ? ts.kilometers : ''}
-                        </Td>
-                        <Td textAlign="center">
-                          {hasCar ? ts.car?.kilometer_allow : ''}
-                        </Td>
-                        <Td textAlign="center">
-                          {hasCar
-                            ? statementUtil.calculateKilometersOver(ts)
-                            : ''}
-                        </Td>
-                        <Td textAlign="right">
-                          {hasCar
-                            ? currencyUtil.formatAmountPerKM(
-                                ts.car?.kilometer_rate,
-                                projectCurrency,
-                                2,
-                              )
-                            : ''}
-                        </Td>
-                        <Td textAlign="right">
-                          {hasCar
-                            ? currencyUtil.formatAmount(
-                                statementUtil.calculateKilometerSum(ts),
-                                projectCurrency,
-                                2,
-                              )
-                            : ''}
-                        </Td>
-                      </>
-                    )}
-                    <Td textAlign="center">
-                      <IconButton
-                        aria-label="Delete timesheet"
-                        icon={<DeleteIcon />}
-                        colorScheme="red"
-                        size="xs"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onDeleteClick(ts.id);
-                        }}
-                      />
-                    </Td>
-                  </Tr>
+                return (
+                  <TimesheetRow
+                    key={ts.id}
+                    ts={ts}
+                    isDuplicate={isDuplicate}
+                    hasCar={hasCar}
+                    projectCurrency={projectCurrency}
+                    onDeleteClick={onDeleteClick}
+                    handleRowClick={handleRowClick}
+                    hasDuplicates={hasDuplicates}
+                    shouldShowCarColumns={shouldShowCarColumns}
+                  />
                 );
               })}
             </Tbody>

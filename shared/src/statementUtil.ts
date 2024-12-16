@@ -74,4 +74,14 @@ export const statementUtil = {
       return over * rate;
     }
   },
+
+  calculateTotalCost(statement: Timesheet): number | null {
+    const standardRate = statement.projectUser?.rate?.standard_rate ?? 0;
+    const kilometerAmount = statementUtil.calculateKilometerSum(statement) ?? 0;
+    return (
+      standardRate +
+      statementUtil.calculateOvertimeAmount(statement) +
+      kilometerAmount
+    );
+  },
 };

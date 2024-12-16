@@ -17,6 +17,7 @@ export const EDIT_STATEMENT = gql`
       last_update_date
       create_user_id
       last_update_user_id
+      kilometers
     }
   }
 `;
