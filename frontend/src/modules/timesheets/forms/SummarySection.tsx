@@ -7,14 +7,11 @@ import { SummarySectionProps } from '../interfaces';
 
 const SummarySection: React.FC<SummarySectionProps> = ({
   mode,
-  workedHours,
-  shift,
   claimedOvertime,
   userRates,
   initialValues,
   projectCurrency,
   selectedCar,
-  // isCarVisible,
   kilometers,
   carRates,
   selectedCarDetails,
@@ -47,17 +44,6 @@ const SummarySection: React.FC<SummarySectionProps> = ({
       : 0;
   };
 
-  const calculateStandardPay = () => {
-    return mode === 'add'
-      ? userRates?.standard_rate
-        ? userRates.standard_rate * Math.min(workedHours, shift)
-        : 0
-      : initialValues?.projectUser?.rate?.standard_rate
-        ? initialValues?.projectUser?.rate?.standard_rate *
-          Math.min(workedHours, shift)
-        : 0;
-  };
-
   const calculateExcessKilometersCost = () => {
     return (
       calculateExcessKilometers(kilometers || 0) *
@@ -67,7 +53,9 @@ const SummarySection: React.FC<SummarySectionProps> = ({
 
   const calculateTotal = () => {
     return (
-      calculateStandardPay() +
+      (userRates?.standard_rate ??
+        initialValues?.projectUser?.rate?.standard_rate ??
+        0) +
       calculateTotalOvertimePay() +
       calculateExcessKilometersCost()
     );
@@ -86,37 +74,21 @@ const SummarySection: React.FC<SummarySectionProps> = ({
       <Box pl={4} textAlign="left">
         <Text textAlign="center">
           Standard pay:{' '}
-          {mode === 'add' &&
-            currencyUtil.formatAmount(
-              userRates?.standard_rate
-                ? userRates.standard_rate * Math.min(workedHours, shift)
-                : 0,
-              projectCurrency,
-            )}
-          {mode === 'edit' &&
-            currencyUtil.formatAmount(
-              initialValues?.projectUser?.rate?.standard_rate
-                ? initialValues?.projectUser?.rate?.standard_rate *
-                    Math.min(workedHours, shift)
-                : 0,
-              projectCurrency,
-              2,
-            )}
+          {currencyUtil.formatAmount(
+            (mode === 'add'
+              ? userRates?.standard_rate
+              : initialValues?.projectUser?.rate?.standard_rate) ?? 0,
+            projectCurrency,
+          )}
         </Text>
         <Text textAlign="center">
           Overtime pay:{' '}
-          {mode === 'add' &&
-            currencyUtil.formatAmount(
-              calculateTotalOvertimePay(),
-              projectCurrency,
-            )}
-          {mode === 'edit' &&
-            currencyUtil.formatAmount(
-              calculateTotalOvertimePay(),
-              projectCurrency,
-              2,
-            )}
+          {currencyUtil.formatAmount(
+            calculateTotalOvertimePay(),
+            projectCurrency,
+          )}
         </Text>
+
         {selectedCar && (
           <>
             <Text fontWeight="bold" textAlign="center">

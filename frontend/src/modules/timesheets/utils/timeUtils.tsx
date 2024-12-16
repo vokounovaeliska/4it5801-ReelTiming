@@ -70,3 +70,12 @@ export const formatDateToDisplay = (date: Date | string): string => {
   const year = date.getFullYear().toString();
   return `${day}.${month}.${year}`;
 };
+
+export const formatDateToDisplayOnMobile = (date: Date | string): string => {
+  if (typeof date === 'string') {
+    date = parseISO(date);
+  }
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  return `${day}.${month}`;
+};

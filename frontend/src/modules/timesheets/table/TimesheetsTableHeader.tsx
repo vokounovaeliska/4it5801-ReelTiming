@@ -1,16 +1,15 @@
 import { type ReactNode } from 'react';
-import { Th } from '@chakra-ui/react';
+import { HTMLChakraProps, Th } from '@chakra-ui/react';
 
-export type TimesheetTableHeaderProps = {
+export type TimesheetTableHeaderProps = HTMLChakraProps<'th'> & {
   children?: ReactNode;
-  left?: string;
   zIndex?: number;
 };
 
 export function TimesheetTableHeader({
   children,
-  left,
   zIndex,
+  ...rest
 }: TimesheetTableHeaderProps) {
   return (
     <Th
@@ -18,9 +17,8 @@ export function TimesheetTableHeader({
       bg="white"
       textAlign="center"
       zIndex={zIndex ?? 2}
-      top={0}
-      left={left}
       minHeight="max-content"
+      {...rest}
     >
       <span>{children}</span>
     </Th>

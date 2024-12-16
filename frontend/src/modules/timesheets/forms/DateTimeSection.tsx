@@ -1,11 +1,18 @@
 import React from 'react';
-import { Box, FormControl, FormLabel, Input, Select } from '@chakra-ui/react';
+import {
+  Box,
+  FormControl,
+  FormLabel,
+  Input,
+  Select,
+  Text,
+} from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
 import { DateTimeSectionProps } from '../interfaces';
 import { formatDate, formatTime } from '../utils/timeUtils';
 
-const DateTimeSection = ({ control }: DateTimeSectionProps) => {
+const DateTimeSection = ({ control, workedHours }: DateTimeSectionProps) => {
   return (
     <Box>
       <FormControl>
@@ -75,6 +82,9 @@ const DateTimeSection = ({ control }: DateTimeSectionProps) => {
           />
         </FormControl>
       </Box>
+      <Text color="gray.500">
+        {workedHours ? `worked ${workedHours} hours` : ''}
+      </Text>
     </Box>
   );
 };

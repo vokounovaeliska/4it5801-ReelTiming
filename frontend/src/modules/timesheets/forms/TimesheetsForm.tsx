@@ -133,7 +133,11 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
             setSelectedUser={setSelectedUser}
             setIsCarVisible={setIsCarVisible}
           />
-          <DateTimeSection control={control} />
+          <DateTimeSection
+            control={control}
+            shift={shift}
+            workedHours={workedHours}
+          />
           <OvertimeSection control={control} />
           <CarSection
             userRole={userRole}
@@ -160,8 +164,6 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
         </Box>
         <SummarySection
           mode={mode}
-          workedHours={workedHours}
-          shift={shift}
           claimedOvertime={claimedOvertime}
           userRates={userRates}
           initialValues={mergedInitialValues}
