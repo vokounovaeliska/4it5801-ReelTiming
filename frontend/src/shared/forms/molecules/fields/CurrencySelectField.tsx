@@ -42,7 +42,7 @@ export function CurrencySelectField({
                   overflowY: 'auto',
                 }),
               }}
-              value={currencies.find((c) => c.value === field.value)} // Nastavení aktuální hodnoty
+              value={currencies.find((c) => c.value === field.value)}
               onChange={(selectedOption) =>
                 field.onChange(selectedOption?.value)
               }
