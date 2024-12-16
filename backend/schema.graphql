@@ -31,6 +31,11 @@ input CarInput {
   project_user_id: String!
 }
 
+type CarStatement {
+  car_id: String!
+  kilometers: Float
+}
+
 """
 A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.This scalar is serialized to a string in ISO 8601 format and parsed from a string in ISO 8601 format.
 """
@@ -146,6 +151,7 @@ input ProjectUserInput {
 type Query {
   _empty: String!
   car(id: String!): Car
+  carStatementsByProjectId(projectId: String!): [CarStatement!]!
   cars: [Car!]!
   carsByProjectUserId(projectUserId: String!): [Car!]!
   department(id: String!): Department
@@ -215,6 +221,7 @@ type Report {
 type Statement {
   calculated_overtime: Float
   car: Car
+  car_id: String!
   claimed_overtime: Float
   create_date: DateTimeISO!
   create_user_id: String!

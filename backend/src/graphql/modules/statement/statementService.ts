@@ -36,6 +36,13 @@ export class StatementService {
     }));
   }
 
+  async getCarStatementsByProjectId(projectId: string) {
+    const statementsRecords =
+      await this.statementRepository.getCarStatementsByProjectId(projectId);
+
+    return statementsRecords;
+  }
+
   async getStatementsByUserId(userId: string) {
     const statementsRecords =
       await this.statementRepository.getStatementsByUserId(userId);

@@ -10,6 +10,7 @@ export function CrewListTemplate({
   projectId,
   projectCurrency,
   cars,
+  carStatements,
 }: CrewListTemplateProps) {
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
@@ -34,6 +35,7 @@ export function CrewListTemplate({
             userRole={'CREW'}
             projectCurrency={projectCurrency}
             cars={cars}
+            carStatements={carStatements}
           />
         </Box>
       </Box>

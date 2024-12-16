@@ -7,7 +7,7 @@ import { ADD_CAR } from '@frontend/gql/mutations/AddCar';
 import { UPDATE_AND_ACTIVATE_PROJECT_USER } from '@frontend/gql/mutations/UpdateAdActivateProjectUser';
 import { GET_DEPARTMENTS } from '@frontend/gql/queries/GetDepartments';
 import { useAuth } from '@frontend/modules/auth';
-import { Car } from '@frontend/modules/timesheets/interfaces';
+import { Car, CarStatement } from '@frontend/modules/timesheets/interfaces';
 import { route } from '@frontend/route';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
@@ -115,6 +115,7 @@ export function AcceptInvitationPage() {
   };
 
   const [carData, setCarData] = useState<Car[]>([]);
+  const [carStatementsData] = useState<CarStatement[]>([]);
 
   const handleCarCollectionChange = (cars: Car[]) => {
     setCarData(cars);
@@ -137,6 +138,7 @@ export function AcceptInvitationPage() {
         isLoading={loading}
         authUser={user!}
         cars={carData}
+        carStatements={carStatementsData}
       />
       <Footer />
     </div>

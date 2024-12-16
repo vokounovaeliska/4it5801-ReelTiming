@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import {
-  AbsoluteCenter,
   Box,
   Button,
-  Collapse,
   Divider,
   FormControl,
   FormErrorMessage,
@@ -14,10 +12,11 @@ import {
 } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 
-import { Car } from '@frontend/modules/timesheets/interfaces';
+import { Car, CarStatement } from '@frontend/modules/timesheets/interfaces';
 import { ErrorBanner } from '@frontend/shared/design-system';
 import { Form, InputField } from '@frontend/shared/forms';
-import { CarFormWithTable } from '@frontend/shared/forms/VehicleEnrollment';
+import { FormSection } from '@frontend/shared/forms/molecules/FormSection';
+import { CarFormWithTable } from '@frontend/shared/forms/VehicleFulfillmentForm';
 import {
   crewListFormSchema,
   crewListFormValues,
@@ -40,6 +39,7 @@ export type CrewListFormProps = {
   userRole: 'ADMIN' | 'CREW';
   cars: Car[] | null;
   projectCurrency: string;
+  carStatements: CarStatement[];
 };
 
 const initialValues: crewListFormValues = {
@@ -70,14 +70,9 @@ export function CrewListForm({
   userRole,
   projectCurrency,
   cars,
+  carStatements,
 }: CrewListFormProps) {
   const [sendInvite, setSendInvite] = useState(false);
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleCollapse = () => {
-    setIsOpen(!isOpen);
-  };
 
   const oldCars = cars;
 
@@ -98,13 +93,28 @@ export function CrewListForm({
       resolver={zodResolver(crewListFormSchema)}
       noValidate
     >
-      <Stack justify="center">
+      <Stack justify="center" spacing="5">
         {errorMessage && <ErrorBanner title={errorMessage} />}
 
-        <Box display={{ base: 'block', lg: 'flex' }} gap={6} p="2">
+        <FormSection
+          title="Personal Information"
+          description="Fill in or verify the personal details."
+          fontSize="1.7rem"
+        >
           <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
             <InputField name="name" label="Name" isRequired />
             <InputField name="surname" label="Surname" isRequired />
+            <InputField name="email" label="Email" isRequired />
+            <InputField name="phone_number" label="Phone number" isRequired />
+          </SimpleGrid>
+        </FormSection>
+
+        <FormSection
+          title="Project Information"
+          description="Ensure that the project and department information is accurate."
+          fontSize="1.7rem"
+        >
+          <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={4}>
             <Controller
               name="department"
               render={({ field, fieldState }) => (
@@ -138,8 +148,7 @@ export function CrewListForm({
               isRequired
               isDisabled={userRole !== 'ADMIN'}
             />
-            <InputField name="email" label="Email" isRequired />
-            <InputField name="phone_number" label="Phone number" isRequired />
+
             <Controller
               name="role"
               render={({ field }) => (
@@ -153,6 +162,13 @@ export function CrewListForm({
               )}
             />
           </SimpleGrid>
+        </FormSection>
+
+        <FormSection
+          title="Rates & Compensation"
+          description="Provide or confirm the standard rates and overtime compensations."
+          fontSize="1.7rem"
+        >
           <Divider
             orientation="vertical"
             display={{ base: 'none', lg: 'block' }}
@@ -162,7 +178,7 @@ export function CrewListForm({
             display={{ base: 'block', lg: 'none' }}
           />
 
-          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+          <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={4}>
             <InputField
               name="standard_rate"
               label={`Standard rate (${projectCurrency})`}
@@ -199,7 +215,7 @@ export function CrewListForm({
               type="number"
             />
           </SimpleGrid>
-        </Box>
+        </FormSection>
 
         <Stack m={4} spacing={6}>
           {mode === 'add' ? (
@@ -225,36 +241,32 @@ export function CrewListForm({
             </>
           ) : (
             <>
-              <Box position="relative" padding="2">
-                <Divider />
-                <AbsoluteCenter px="4">
-                  <Button
-                    onClick={toggleCollapse}
-                    variant="ghost"
-                    bg="white"
-                    colorScheme="orange"
-                    size="sm"
-                  >
-                    {isOpen ? 'Hide Car Section' : 'Show Car Section'}
-                  </Button>
-                </AbsoluteCenter>
-              </Box>
-              <Collapse in={isOpen} animateOpacity>
-                <Box p="4">
-                  <CarFormWithTable
-                    onCarCollectionChange={handleCarCollectionChange}
-                    cars={cars}
-                  />
-                </Box>
-              </Collapse>
-              <Button
-                type="submit"
-                colorScheme="orange"
-                width="100%"
-                isLoading={isLoading}
+              <FormSection
+                title="Car Compensation"
+                description="Details about car usage and related compensation rates."
+                fontSize="1.7rem"
               >
-                Save Changes
-              </Button>
+                <Box position="relative" padding="2">
+                  <Box p="4">
+                    <CarFormWithTable
+                      onCarCollectionChange={handleCarCollectionChange}
+                      cars={cars}
+                      carStatements={carStatements}
+                      projectCurrency={projectCurrency}
+                    />
+                  </Box>
+                </Box>
+              </FormSection>
+              <Box display="flex" justifyContent="flex-end" alignItems="center">
+                <Button
+                  type="submit"
+                  colorScheme="orange"
+                  width={{ base: '100%', md: '20%' }}
+                  isLoading={isLoading}
+                >
+                  Save Changes
+                </Button>
+              </Box>
             </>
           )}
         </Stack>

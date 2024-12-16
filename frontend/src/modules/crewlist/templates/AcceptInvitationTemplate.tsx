@@ -2,7 +2,7 @@
 import { Box } from '@chakra-ui/react';
 
 import { AuthUser } from '@frontend/modules/auth/auth-core';
-import { Car } from '@frontend/modules/timesheets/interfaces';
+import { Car, CarStatement } from '@frontend/modules/timesheets/interfaces';
 import { crewListFormValues } from '@frontend/zod/schemas';
 
 import {
@@ -19,6 +19,7 @@ export type AcceptInvitationTemplateProps = {
   isLoading: boolean;
   authUser: AuthUser;
   cars: Car[];
+  carStatements: CarStatement[];
 };
 export const AcceptInvitationTemplate = ({
   onSubmit,
@@ -29,6 +30,7 @@ export const AcceptInvitationTemplate = ({
   isLoading,
   authUser,
   cars,
+  carStatements,
 }: AcceptInvitationTemplateProps) => {
   return (
     <>
@@ -60,6 +62,7 @@ export const AcceptInvitationTemplate = ({
               projectUserData={projectUserData}
               authUser={authUser}
               cars={cars}
+              carStatements={carStatements}
             />
           </Box>
         </Box>

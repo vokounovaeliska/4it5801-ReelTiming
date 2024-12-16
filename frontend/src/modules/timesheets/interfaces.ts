@@ -326,3 +326,8 @@ export interface DataLoadingUtilsResult {
   userInfoData: UserInfoData;
   userCarsData: UserCarsData;
 }
+
+export interface CarStatement {
+  car_id: string;
+  kilometers: string;
+}

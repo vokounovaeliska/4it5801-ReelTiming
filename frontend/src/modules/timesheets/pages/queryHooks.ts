@@ -5,6 +5,7 @@ import { GET_USER_ROLE_IN_PROJECT } from '@frontend/gql/queries/GetUserRoleInPro
 import {
   GET_CREW_STATEMENTS,
   GET_ADMIN_STATEMENTS,
+  GET_CARS_STATEMENTS,
 } from '@frontend/gql/queries/GetStatements';
 import { GET_ALL_CARS_ON_PROJECT_BY_PROJECTUSER_ID } from '@frontend/gql/queries/GetAllCarsOnProjectByProjectUserId';
 import { GET_CARS_BY_PROJECT_USER_ID } from '@frontend/gql/queries/GetCarsByProjectUserId';
@@ -119,4 +120,17 @@ export const useCarsByProjectUserId = (projectUserId: string) => {
   });
 
   return { userCarsData, userCarsLoading, userCarsError };
+};
+
+export const useCarStatementsByProjectId = (projectId: string) => {
+  const {
+    data: projectCarStatements,
+    loading: projectCarLoading,
+    error: projectCarError,
+    refetch,
+  } = useQuery(GET_CARS_STATEMENTS, {
+    variables: { projectId },
+    fetchPolicy: 'cache-and-network',
+  });
+  return { projectCarStatements, projectCarLoading, projectCarError, refetch };
 };

@@ -1,29 +1,24 @@
-import { AddIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  Center,
-  Heading,
-  IconButton,
-  Spinner,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Center, Heading, Spinner, Text } from '@chakra-ui/react';
 
 import {
   AllCarsOnProjectData,
   Car,
 } from '@frontend/modules/timesheets/interfaces';
-import { useAllCarsOnProjectByProjectUserId } from '@frontend/modules/timesheets/pages/queryHooks';
+import {
+  useAllCarsOnProjectByProjectUserId,
+  useCarStatementsByProjectId,
+} from '@frontend/modules/timesheets/pages/queryHooks';
 import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
+import { AddCrewMemberButton } from '../atoms/AddCrewMemberButton';
 import { CrewListForm } from '../forms/CrewListForm';
 import { ProjectUser } from '../interfaces/interfaces';
+import CrewListTable from '../table/CrewListTable';
 
 import CrewAlertDialog from './CrewAlertDialog';
 import { useCrewListPageUtils } from './CrewListPageLogic';
-import CrewListTable from './CrewListTable';
 
 function getAvailableCarsForProjectUserId(
   givenUser: string,
@@ -71,6 +66,8 @@ export function CrewListPage() {
   const isDataAvailable = !!crewList && Object.keys(crewList).length > 0;
   const { allCarsOnProjectData, refetch: refetchAllCarsOnProjectData } =
     useAllCarsOnProjectByProjectUserId(projectId ?? '');
+
+  const { projectCarStatements } = useCarStatementsByProjectId(projectId ?? '');
 
   if (!isDataAvailable && crewListLoading) {
     return (
@@ -121,27 +118,16 @@ export function CrewListPage() {
           Crew List for Project {crewList.project.name}
         </Heading>
         {crewList.userRoleInProject === 'ADMIN' && (
-          <Center pb="1">
-            <VStack spacing={3}>
-              <IconButton
-                aria-label="Add project"
-                colorScheme="orange"
-                bgColor={'orange.500'}
-                onClick={handleAddMemberClick}
-                size="lg"
-                icon={<AddIcon />}
-                borderRadius="full"
-                boxShadow="md"
-                _hover={{
-                  bg: 'orange.500',
-                  color: 'white',
-                  transform: 'scale(1.2)',
-                }}
-                transition="all 0.3s ease"
-              />
-              <Box fontSize="sm">Add New Member</Box>
-            </VStack>
-          </Center>
+          <Box
+            display={{ base: 'grid', md: 'flex' }}
+            justifyContent={{ base: 'center', md: 'space-between' }}
+            textAlign="center"
+            alignItems="flex-end"
+            mb={4}
+            px={10}
+          >
+            <AddCrewMemberButton handleAddMemberClick={handleAddMemberClick} />
+          </Box>
         )}
         <CrewListTable
           sortedDepartments={sortedDepartments}
@@ -159,6 +145,7 @@ export function CrewListPage() {
         isOpen={isModalOpen}
         onClose={handleModalClose}
         title={selectedCrewMember ? 'Edit Crew Member' : 'Add Crew Member'}
+        size="6xl"
       >
         <CrewListForm
           projectId={projectId!}
@@ -182,7 +169,7 @@ export function CrewListPage() {
                 data.email,
               );
             }
-            refetchAllCarsOnProjectData(); // Trigger data refresh
+            refetchAllCarsOnProjectData();
           }}
           isLoading={isSubmitting}
           departments={crewList.departments}
@@ -198,6 +185,7 @@ export function CrewListPage() {
                 )
               : []
           }
+          carStatements={projectCarStatements?.carStatementsByProjectId ?? []}
         />
       </CustomModal>
       <CrewAlertDialog
