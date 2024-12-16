@@ -37,6 +37,12 @@ export function CurrencySelectField({
               options={currencies}
               placeholder="Select currency"
               styles={{
+                control: (provided) => ({
+                  ...provided,
+                  borderColor: '#a0aec0',
+                  borderWidth: '1px',
+                  height: '40px',
+                }),
                 menu: (provided) => ({
                   ...provided,
                   overflowY: 'auto',
