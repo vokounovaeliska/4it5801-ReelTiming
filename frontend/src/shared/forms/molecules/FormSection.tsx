@@ -12,12 +12,14 @@ export type FormSectionProps = {
   title: ReactNode;
   description?: ReactNode;
   children?: ReactNode;
+  fontSize?: string;
 };
 
 export function FormSection({
   title,
   description,
   children,
+  fontSize,
 }: FormSectionProps) {
   return (
     <Flex
@@ -28,7 +30,7 @@ export function FormSection({
       columnGap="4"
     >
       <Box flex="1" textAlign={'left'} mt={2}>
-        <Heading>{title}</Heading>
+        <Heading fontSize={fontSize}>{title}</Heading>
         {description && <Paragraph>{description}</Paragraph>}
       </Box>
       <Stack

@@ -71,3 +71,12 @@ export const GET_ADMIN_STATEMENTS = gql`
     }
   }
 `;
+
+export const GET_CARS_STATEMENTS = gql`
+  query CarStatementsByProjectId($projectId: String!) {
+    carStatementsByProjectId(projectId: $projectId) {
+      car_id
+      kilometers
+    }
+  }
+`;

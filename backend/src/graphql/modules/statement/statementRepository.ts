@@ -1,4 +1,4 @@
-import { eq, and, lte, gte } from 'drizzle-orm';
+import { eq, and, lte, gte, isNotNull } from 'drizzle-orm';
 import { project_user, statement } from '@backend/db/schema';
 import { type Db } from '@backend/types/types';
 
@@ -27,6 +27,22 @@ export function getStatementRepository(db: Db) {
         .from(statement)
         .innerJoin(project_user, eq(statement.project_user_id, project_user.id))
         .where(eq(project_user.project_id, projectId));
+      return statementsByProjectUser;
+    },
+    async getCarStatementsByProjectId(projectId: string) {
+      const statementsByProjectUser = await db
+        .select({
+          car_id: statement.car_id,
+          kilometers: statement.kilometers,
+        })
+        .from(statement)
+        .innerJoin(project_user, eq(statement.project_user_id, project_user.id))
+        .where(
+          and(
+            eq(project_user.project_id, projectId),
+            isNotNull(statement.car_id),
+          ),
+        );
       return statementsByProjectUser;
     },
     async getStatementsByUserId(userId: string) {

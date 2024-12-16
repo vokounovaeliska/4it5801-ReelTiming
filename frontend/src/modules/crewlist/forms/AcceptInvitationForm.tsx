@@ -12,11 +12,11 @@ import {
 import { Controller } from 'react-hook-form';
 
 import { AuthUser } from '@frontend/modules/auth/auth-core';
-import { Car } from '@frontend/modules/timesheets/interfaces';
+import { Car, CarStatement } from '@frontend/modules/timesheets/interfaces';
 import { ErrorBanner } from '@frontend/shared/design-system';
 import { Form, InputField } from '@frontend/shared/forms';
 import { FormSection } from '@frontend/shared/forms/molecules/FormSection';
-import { CarFormWithTable } from '@frontend/shared/forms/VehicleEnrollment';
+import { CarFormWithTable } from '@frontend/shared/forms/VehicleFulfillmentForm';
 import {
   crewListFormSchema,
   crewListFormValues,
@@ -32,6 +32,7 @@ export type AcceptInvitationFormProps = {
   departments: { id: string; name: string }[];
   authUser: AuthUser;
   cars: Car[];
+  carStatements: CarStatement[];
 };
 
 export type ProjectUserData = {
@@ -68,6 +69,7 @@ export function AcceptInvitationForm({
   departments,
   projectUserData,
   cars,
+  carStatements,
 }: AcceptInvitationFormProps) {
   const initialValues: crewListFormValues = {
     name: projectUserData?.name || '',
@@ -200,6 +202,8 @@ export function AcceptInvitationForm({
             <CarFormWithTable
               onCarCollectionChange={onCarCollectionChange}
               cars={cars}
+              carStatements={carStatements}
+              projectCurrency={projectUserData.project.currency}
             />
           </FormSection>
           <Stack align="flex-end">

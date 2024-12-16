@@ -1,4 +1,4 @@
-import { Car } from '@frontend/modules/timesheets/interfaces';
+import { Car, CarStatement } from '@frontend/modules/timesheets/interfaces';
 
 export interface CrewMemberData {
   id: string;
@@ -71,4 +71,5 @@ export type CrewListTemplateProps = {
   projectId: string;
   projectCurrency: string;
   cars: Car[];
+  carStatements: CarStatement[];
 };

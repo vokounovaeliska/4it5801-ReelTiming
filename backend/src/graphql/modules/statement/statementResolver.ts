@@ -8,7 +8,7 @@ import {
   Root,
 } from 'type-graphql';
 import { CustomContext } from '../../../types/types';
-import { Statement, StatementInput } from './statementType';
+import { CarStatement, Statement, StatementInput } from './statementType';
 import { StatementService } from './statementService';
 import { ProjectUser } from '../projectUser/projectUserType';
 import { ProjectUserService } from '../projectUser/projectUserService';
@@ -92,6 +92,15 @@ export class StatementResolver {
   ): Promise<Statement[]> {
     const statementService = new StatementService(db);
     return statementService.getStatementsByProjectId(projectId);
+  }
+
+  @Query(() => [CarStatement])
+  async carStatementsByProjectId(
+    @Arg('projectId') projectId: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<CarStatement[]> {
+    const statementService = new StatementService(db);
+    return statementService.getCarStatementsByProjectId(projectId);
   }
 
   @Query(() => [Statement])

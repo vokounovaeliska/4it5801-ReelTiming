@@ -37,6 +37,7 @@ export class Statement {
   @Field(() => Date)
   last_update_date: Date | undefined;
 
+  @Field(() => String)
   car_id?: string | null;
 
   @Field(() => Number, { nullable: true })
@@ -79,6 +80,15 @@ export class StatementInput {
   last_update_date?: Date;
 
   @Field(() => String, { nullable: true })
+  car_id?: string | null;
+
+  @Field(() => Number, { nullable: true })
+  kilometers?: number | null;
+}
+
+@ObjectType()
+export class CarStatement {
+  @Field(() => String)
   car_id?: string | null;
 
   @Field(() => Number, { nullable: true })
