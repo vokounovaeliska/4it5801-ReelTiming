@@ -89,7 +89,7 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
             label={
               selectedUsers.length === 1
                 ? `Generate PDF for ${selectedUsers[0]?.label}`
-                : 'Generate PDF'
+                : `Generate shifts report (for ${new Date(startDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'numeric' }).replace(/\//g, '.')} - ${new Date(endDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'numeric' }).replace(/\//g, '.')})`
             }
             isDisabled={isGeneratePdfDisabled}
           />
