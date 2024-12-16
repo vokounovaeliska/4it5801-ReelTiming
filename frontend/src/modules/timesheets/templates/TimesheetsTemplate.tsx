@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Button, Heading } from '@chakra-ui/react';
-import { MdAddChart, MdFilterAlt } from 'react-icons/md';
+import { MdAddChart } from 'react-icons/md';
 
 import PdfReportGeneratorButton from '@frontend/modules/report/pdfReportGeneratorButton';
 
@@ -24,8 +24,6 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
   projectUserId,
   selectedUsers,
 }) => {
-  const [showFilters, setShowFilters] = useState(true);
-
   const isGeneratePdfDisabled =
     (!startDate || !endDate || selectedUsers.length !== 1) &&
     userRole === 'ADMIN';
@@ -39,25 +37,15 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
         <Heading mb={4} textAlign="center">
           Timesheets for Project {projectName}
         </Heading>
-        <Button
-          variant="ghost"
-          colorScheme="orange"
-          leftIcon={<MdFilterAlt />}
-          onClick={() => setShowFilters((prev) => !prev)}
-        >
-          {showFilters ? 'Hide filters' : 'Show filters'}
-        </Button>
       </Box>
-      {showFilters && (
-        <TimesheetFilter
-          startDate={startDate}
-          endDate={endDate}
-          userRole={userRole}
-          handleDateChange={handleDateChange}
-          userOptions={userOptions}
-          handleUserChange={handleUserChange}
-        />
-      )}
+      <TimesheetFilter
+        startDate={startDate}
+        endDate={endDate}
+        userRole={userRole}
+        handleDateChange={handleDateChange}
+        userOptions={userOptions}
+        handleUserChange={handleUserChange}
+      />
       <Box
         display={{ base: 'grid', sm: 'flex' }}
         justifyContent={{ base: 'center', sm: 'space-between' }}
@@ -88,7 +76,7 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
             }}
             transition="all 0.3s ease"
           >
-            Add Statement
+            Add Shift
           </Button>
           <PdfReportGeneratorButton
             projectUserId={
