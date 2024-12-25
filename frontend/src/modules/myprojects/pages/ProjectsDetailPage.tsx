@@ -9,16 +9,16 @@ import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 import { currencyUtil } from '@shared/currencyUtil';
 
 import { GET_EVERYTHING_FOR_DASHBOARD } from '../../../gql/queries/GetEverythingForDashboard';
-import BoxDashboard from '../BoxDashboard';
-import CrewInfo from '../CrewInfo';
-import DashboardCostsAdmin from '../DashboardCostsAdmin';
-import DashboardEarningsCrew from '../DashboardEarningsCrew';
-import PillButtonsTop from '../PillButtonsTop';
-import ProjectOrigin from '../ProjectOrigin';
-import ProjectStatus from '../ProjectStatus';
-import ProjectTimeline from '../ProjectTimeline';
-import ShiftInfo from '../ShiftInfo';
-import TopDashButtons from '../TopDashButtons';
+import BoxDashboard from '../atoms/BoxDashboard';
+import PillButtonsTop from '../molecules/PillButtonsTop';
+import ProjectOrigin from '../molecules/ProjectOrigin';
+import ProjectStatus from '../molecules/ProjectStatus';
+import ProjectTimeline from '../molecules/ProjectTimeline';
+import TopDashButtons from '../molecules/TopDashButtons';
+import CrewInfo from '../organisms/CrewInfo';
+import DashboardCostsAdmin from '../organisms/DashboardCostsAdmin';
+import DashboardEarningsCrew from '../organisms/DashboardEarningsCrew';
+import ShiftInfo from '../organisms/ShiftInfo';
 
 export function MyProjectDetailPage() {
   const auth = useAuth();
@@ -145,7 +145,7 @@ export function MyProjectDetailPage() {
 
         <BoxDashboard>
           <ProjectOrigin
-            name={project?.name}
+            name={project.name}
             company={project.production_company}
             currency={currencyUtil.getLabel(project.currency)}
             create_date={project.create_date}

@@ -5,9 +5,8 @@ import { IoPerson } from 'react-icons/io5';
 
 import { route } from '@frontend/route';
 
-import CrewMemberCount from './CrewMemberCount';
-import DashButton from './DashButton';
-import RecentCrewMembers from './RecentCrewMembers';
+import DashButton from '../atoms/DashButton';
+import RecentCrewMembers from '../molecules/RecentCrewMembers';
 
 interface CrewInfoProps {
   projectId: string;
@@ -20,13 +19,14 @@ const CrewInfo: React.FC<CrewInfoProps> = ({
   userId,
   projectUsers,
 }) => {
+  const crewMemberCount = projectUsers.length || 0;
   return (
     <>
       <Text fontSize="lg">Number of crew members</Text>
       <HStack spacing={2} align="center" mb={4}>
         <IoPerson size="64px" />
         <Box as="span" fontSize="6xl">
-          <CrewMemberCount projectUsers={projectUsers} />
+          {crewMemberCount}
         </Box>
       </HStack>
       <RecentCrewMembers projectId={projectId} userId={userId} />

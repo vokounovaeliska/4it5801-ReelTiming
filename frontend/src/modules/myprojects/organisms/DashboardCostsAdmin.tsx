@@ -3,69 +3,39 @@ import { useQuery } from '@apollo/client';
 import { Box, HStack, Text } from '@chakra-ui/react';
 import { FaClock, FaCoins } from 'react-icons/fa';
 
-import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/gql/queries/GetCrewUserInfoTimesheets';
+//import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/gql/queries/GetCrewUserInfoTimesheets';
 import { GET_ADMIN_STATEMENTS } from '@frontend/gql/queries/GetStatements';
 import { route } from '@frontend/route';
 import { currencyUtil } from '@shared/currencyUtil';
 
-import DashButton from './DashButton';
+import DashButton from '../atoms/DashButton';
 
-interface DashboardEarningsProps {
+interface Statement {
+  kilometers: number | null;
+  // zde přidat další vlastnosti ze statement
+}
+
+interface DashboardCostsProps {
   projectId: string;
-  userId: string;
   currency: string;
 }
 
-interface ProjectUser {
-  id: string;
-}
-
-interface Statement {
-  projectUser: ProjectUser;
-  kilometers: number | null;
-}
-
-const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
+const DashboardCostsAdmin: React.FC<DashboardCostsProps> = ({
   projectId,
-  userId,
   currency,
 }) => {
-  const {
-    loading: loadingUserInfo,
-    error: errorUserInfo,
-    data: dataUserInfo,
-  } = useQuery(GET_CREWUSERINFO_TIMESHEETS, {
-    variables: { userId, projectId },
+  const { data, loading, error } = useQuery(GET_ADMIN_STATEMENTS, {
+    variables: { projectId },
     fetchPolicy: 'cache-first',
     nextFetchPolicy: 'cache-and-network',
   });
 
-  const {
-    loading: loadingKilometers,
-    error: errorKilometers,
-    data: dataKilometers,
-  } = useQuery(GET_ADMIN_STATEMENTS, {
-    skip: !dataUserInfo?.projectUserDetails?.id,
-    variables: { projectId: projectId },
-    fetchPolicy: 'cache-first',
-    nextFetchPolicy: 'cache-and-network',
-  });
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error loading data!</Text>;
 
-  if (loadingUserInfo || loadingKilometers) return <Text>Loading...</Text>;
-  if (errorUserInfo || errorKilometers) return <Text>Error loading data!</Text>;
+  const statements: Statement[] = data?.statementsByProjectId || [];
 
-  const userProjectInfo = dataUserInfo?.projectUserDetails;
-
-  if (!userProjectInfo) {
-    return <Text>No user project info available!</Text>;
-  }
-
-  const statements: Statement[] = dataKilometers?.statementsByProjectId || [];
-  const userStatements = statements.filter(
-    (statement) => statement.projectUser.id === userProjectInfo?.id,
-  );
-
-  const totalMileage = userStatements.reduce(
+  const totalMileage = statements.reduce(
     (total: number, statement: Statement) => {
       return total + (statement.kilometers || 0);
     },
@@ -83,13 +53,13 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
 
   return (
     <>
-      <Text fontSize="lg">Total earnings</Text>
+      <Text fontSize="lg">Total costs</Text>
       <HStack spacing={2} align="center" mb={4}>
         <FaCoins size="64px" />
         <Text fontSize="6xl">N/A {currencySymbol}</Text>
       </HStack>
 
-      <Text mb={1}>Earnings by category</Text>
+      <Text mb={1}>Costs by category</Text>
       <HStack spacing={4} wrap="wrap" mb={3}>
         <Box
           flex="1"
@@ -99,7 +69,7 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
           borderRadius="md"
           textAlign="center"
         >
-          <Text>Total labor earnings</Text>
+          <Text>Total labor costs</Text>
           <HStack spacing={2} align="center" justify="center">
             <Text fontSize="2xl">N/A</Text>
           </HStack>
@@ -113,7 +83,7 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
           borderRadius="md"
           textAlign="center"
         >
-          <Text>Overtime earnings</Text>
+          <Text>Overtime costs</Text>
           <HStack spacing={2} align="center" justify="center">
             <Text fontSize="2xl">N/A</Text>
           </HStack>
@@ -129,7 +99,7 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
           borderRadius="md"
           textAlign="center"
         >
-          <Text>Transportation earnings</Text>
+          <Text>Transportation costs</Text>
           <HStack spacing={2} align="center" justify="center">
             <Text fontSize="2xl">N/A</Text>
           </HStack>
@@ -143,7 +113,7 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
           borderRadius="md"
           textAlign="center"
         >
-          <Text>Mileage</Text>
+          <Text>Total mileage</Text>
           <HStack spacing={2} align="center" justify="center">
             <Text fontSize="2xl">{totalMileageText}</Text>
           </HStack>
@@ -152,7 +122,7 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
 
       <Box
         display="flex"
-        justifyContent={{ base: 'center', 'dash-break1': 'flex-start' }}
+        justifyContent={{ base: 'center', 'dash-break1': 'flex-start' }} //PŮVODNĚ TU BYLO md
         mt={4}
       >
         <DashButton
@@ -166,4 +136,4 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
   );
 };
 
-export default DashboardEarningsCrew;
+export default DashboardCostsAdmin;

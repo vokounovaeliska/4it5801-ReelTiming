@@ -7,7 +7,7 @@ import { useAuth } from '@frontend/modules/auth';
 import { MyProjectsTemplate } from '@frontend/modules/auth/templates/MyProjectsTemplate';
 import { route } from '@frontend/route';
 
-import { GET_USER_PROJECTS } from '../../gql/queries/GetUserProjects';
+import { GET_USER_PROJECTS } from '../../../gql/queries/GetUserProjects';
 
 import ErrorMyProjectPage from './ErrorMyProjectPage';
 
