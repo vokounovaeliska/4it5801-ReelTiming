@@ -11,6 +11,7 @@ import {
 import { FaCarSide } from 'react-icons/fa6';
 
 import { Car } from '@frontend/modules/timesheets/interfaces';
+import { currencyUtil } from '@shared/currencyUtil';
 
 interface CarFormProps {
   carDetails: Car;
@@ -19,6 +20,7 @@ interface CarFormProps {
   handleUpdateCar: () => void;
   handleCancelEdit: () => void;
   isEditMode: boolean;
+  projectCurrency: string;
 }
 
 export const CarForm: React.FC<CarFormProps> = ({
@@ -28,6 +30,7 @@ export const CarForm: React.FC<CarFormProps> = ({
   handleUpdateCar,
   handleCancelEdit,
   isEditMode,
+  projectCurrency,
 }) => (
   <SimpleGrid
     columns={{ base: 1, md: 4 }}
@@ -87,7 +90,7 @@ export const CarForm: React.FC<CarFormProps> = ({
       hasArrow
     >
       <FormControl>
-        <FormLabel>Extra km price</FormLabel>
+        <FormLabel>Extra km price ({projectCurrency})</FormLabel>
         <Input
           value={carDetails.kilometer_rate}
           placeholder="ex. 10"

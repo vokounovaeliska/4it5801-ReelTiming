@@ -120,6 +120,7 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
         handleUpdateCar={handleUpdateCar}
         handleCancelEdit={handleCancelEdit}
         isEditMode={isEditMode}
+        projectCurrency={projectCurrency}
       />
       {carCollection.length > 0 && (
         <CarTable
