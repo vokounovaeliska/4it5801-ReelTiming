@@ -118,7 +118,6 @@ export function MyProjectSettingPage() {
       rate_id: projectUser.rate ? projectUser.rate.id : '',
       standard_rate: projectUser.rate?.standard_rate || 0,
       compensation_rate: projectUser.rate?.compensation_rate || 0,
-      // overtime_hour1: projectUser.rate ? projectUser.rate.overtime_hour1 : 0,
       overtime_hour1: projectUser.rate?.overtime_hour1 || 0,
       overtime_hour2: projectUser.rate?.overtime_hour2 || 0,
       overtime_hour3: projectUser.rate?.overtime_hour3 || 0,

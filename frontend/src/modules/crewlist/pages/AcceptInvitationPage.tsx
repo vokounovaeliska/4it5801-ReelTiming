@@ -104,13 +104,30 @@ export function AcceptInvitationPage() {
       })
       .catch((err) => {
         console.error('Error activating project user:', err);
-        toast({
-          title: 'Error',
-          description: 'Failed to join the project. ' + err,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        });
+        if (
+          err.graphQLErrors?.some((error: { message: string | string[] }) => {
+            return (
+              error.message.includes('Duplicate entry') ||
+              error.message.includes('already exists')
+            );
+          })
+        ) {
+          toast({
+            title: 'User already exists!',
+            description: 'You have already joined this project before!',
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: 'An unexpected error occurred!',
+            description: err.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
       });
   };
 
