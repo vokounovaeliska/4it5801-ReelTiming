@@ -34,7 +34,7 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
       boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.2)',
     },
     _active: {
-      bg: 'orange.500',
+      bg: 'orange.600',
       color: 'white',
       boxShadow: 'inset 0 0 15px rgba(0, 0, 0, 0.3)',
     },
