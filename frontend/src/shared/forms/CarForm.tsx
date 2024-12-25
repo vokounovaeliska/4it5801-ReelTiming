@@ -11,7 +11,6 @@ import {
 import { FaCarSide } from 'react-icons/fa6';
 
 import { Car } from '@frontend/modules/timesheets/interfaces';
-import { currencyUtil } from '@shared/currencyUtil';
 
 interface CarFormProps {
   carDetails: Car;
