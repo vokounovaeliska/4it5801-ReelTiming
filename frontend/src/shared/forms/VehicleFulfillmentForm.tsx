@@ -39,6 +39,9 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
   const [carToDeleteIndex, setCarToDeleteIndex] = useState<number | null>(null);
 
   const handleAddCar = () => {
+    if (Number.isNaN(carDetails.kilometer_allow)) {
+      carDetails.kilometer_allow = 0;
+    }
     if (carDetails.kilometer_allow < 0) {
       showErrorToast('Allowed kilometers can’t be less than 0!');
       return;
