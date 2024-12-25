@@ -3,6 +3,7 @@ import { Box, Center, Heading, Spinner, Text } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
+import { HomePage } from '@frontend/modules/home/pages/HomePage';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
@@ -38,6 +39,10 @@ export function MyProjectDetailPage() {
   const isDataAvailable =
     data?.project && data?.userRoleInProject && !loading && !error;
 
+  if (!auth.user) {
+    return <HomePage />;
+  }
+
   if (!isDataAvailable) {
     return (
       <Center minHeight="100vh">
@@ -47,7 +52,7 @@ export function MyProjectDetailPage() {
     );
   }
 
-  if (error || !auth.user || !data?.project) {
+  if (error || !data?.project) {
     return <NotFoundPage />;
   }
 
@@ -88,7 +93,7 @@ export function MyProjectDetailPage() {
             mb={4}
             textAlign={{ base: 'center', md: 'left' }}
           >
-            {project?.name}
+            {project.name}
           </Heading>
           <Box
             display="flex"
@@ -105,7 +110,7 @@ export function MyProjectDetailPage() {
         <Box
           mb={6}
           display="flex"
-          flexDirection={{ base: 'column', 'dash-break1': 'row' }} // PŮVODNĚ TU BYLO md: 'row'
+          flexDirection={{ base: 'column', 'dash-break1': 'row' }}
           gap={4}
         >
           <BoxDashboard flex="1">
