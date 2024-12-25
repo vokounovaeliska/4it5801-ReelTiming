@@ -1,6 +1,5 @@
 import { Box, Center, Heading, Spinner, Text } from '@chakra-ui/react';
 
-import { ProjectUser } from '@frontend/modules/myProjectSettings/interfaces/interfaces';
 import {
   AllCarsOnProjectData,
   Car,
@@ -13,7 +12,7 @@ import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
 import { MyProjectSettingsForm } from '../forms/MyProjectSettingsForm';
-import { CrewMemberData } from '../interfaces/interfaces';
+import { CrewMemberData, ProjectUser } from '../interfaces/interfaces';
 
 import { useCrewListPageUtils } from './CrewListPageLogic';
 
