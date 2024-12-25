@@ -3,7 +3,6 @@ import { useQuery } from '@apollo/client';
 import { Box, HStack, Text } from '@chakra-ui/react';
 import { FaClock, FaCoins } from 'react-icons/fa';
 
-//import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/gql/queries/GetCrewUserInfoTimesheets';
 import { GET_ADMIN_STATEMENTS } from '@frontend/gql/queries/GetStatements';
 import { route } from '@frontend/route';
 import { currencyUtil } from '@shared/currencyUtil';
@@ -12,7 +11,17 @@ import DashButton from '../atoms/DashButton';
 
 interface Statement {
   kilometers: number | null;
-  // zde přidat další vlastnosti ze statement
+  projectUser: {
+    rate: {
+      standard_rate: number;
+      overtime_hour1: number;
+      overtime_hour2: number;
+      overtime_hour3: number;
+      overtime_hour4: number;
+    };
+  };
+  shift_lenght: number;
+  claimed_overtime: number;
 }
 
 interface DashboardCostsProps {
@@ -35,6 +44,7 @@ const DashboardCostsAdmin: React.FC<DashboardCostsProps> = ({
 
   const statements: Statement[] = data?.statementsByProjectId || [];
 
+  // Calculate total mileage
   const totalMileage = statements.reduce(
     (total: number, statement: Statement) => {
       return total + (statement.kilometers || 0);
@@ -42,21 +52,64 @@ const DashboardCostsAdmin: React.FC<DashboardCostsProps> = ({
     0,
   );
 
-  // Získání symbolu měny
+  // Calculate total overtime costs
+  const totalOvertimeCosts = statements.reduce(
+    (total: number, statement: Statement) => {
+      const { claimed_overtime } = statement;
+      const { overtime_hour1, overtime_hour2, overtime_hour3, overtime_hour4 } =
+        statement.projectUser.rate;
+
+      let overtimeCost = 0;
+
+      // Apply overtime rates based on claimed overtime
+      if (claimed_overtime >= 1) {
+        overtimeCost += overtime_hour1; // 1st overtime hour
+      }
+      if (claimed_overtime >= 2) {
+        overtimeCost += overtime_hour2; // 2nd overtime hour
+      }
+      if (claimed_overtime >= 3) {
+        overtimeCost += overtime_hour3; // 3rd overtime hour
+      }
+      if (claimed_overtime > 3) {
+        overtimeCost += (claimed_overtime - 3) * overtime_hour4; // Additional overtime hours
+      }
+
+      return total + overtimeCost;
+    },
+    0,
+  );
+
+  // Calculate total labor costs (standard costs + overtime)
+  const totalLaborCosts = statements.reduce(
+    (total: number, statement: Statement) => {
+      const standardRate = statement.projectUser.rate.standard_rate;
+      const shiftLength = statement.shift_lenght || 0;
+
+      // Standard labor cost (shift_lenght * standard_rate)
+      const laborCost = shiftLength * standardRate;
+
+      return total + laborCost;
+    },
+    0,
+  );
+
+  const superTotalLaborCosts = totalLaborCosts + totalOvertimeCosts;
+
+  // Get currency symbol
   const currencySymbol = currencyUtil.getCurrencySymbol(currency);
 
   const totalMileageText = `${totalMileage} km`;
-
-  //   totalMileage > 0 ? `${totalKilometers} km`: 'N/A';
-
-  // TODO - cache grab
+  //const totalLaborCostsText = `${totalLaborCosts} ${currencySymbol}`;
+  const superTotalLaborCostsText = `${superTotalLaborCosts.toLocaleString()} ${currencySymbol}`;
+  const totalOvertimeCostsText = `${totalOvertimeCosts.toLocaleString()} ${currencySymbol}`;
 
   return (
     <>
       <Text fontSize="lg">Total costs</Text>
       <HStack spacing={2} align="center" mb={4}>
         <FaCoins size="64px" />
-        <Text fontSize="6xl">N/A {currencySymbol}</Text>
+        <Text fontSize="6xl">N/A</Text>
       </HStack>
 
       <Text mb={1}>Costs by category</Text>
@@ -71,7 +124,7 @@ const DashboardCostsAdmin: React.FC<DashboardCostsProps> = ({
         >
           <Text>Total labor costs</Text>
           <HStack spacing={2} align="center" justify="center">
-            <Text fontSize="2xl">N/A</Text>
+            <Text fontSize="2xl">{superTotalLaborCostsText}</Text>
           </HStack>
         </Box>
 
@@ -85,7 +138,7 @@ const DashboardCostsAdmin: React.FC<DashboardCostsProps> = ({
         >
           <Text>Overtime costs</Text>
           <HStack spacing={2} align="center" justify="center">
-            <Text fontSize="2xl">N/A</Text>
+            <Text fontSize="2xl">{totalOvertimeCostsText}</Text>
           </HStack>
         </Box>
       </HStack>
@@ -122,7 +175,7 @@ const DashboardCostsAdmin: React.FC<DashboardCostsProps> = ({
 
       <Box
         display="flex"
-        justifyContent={{ base: 'center', 'dash-break1': 'flex-start' }} //PŮVODNĚ TU BYLO md
+        justifyContent={{ base: 'center', 'dash-break1': 'flex-start' }}
         mt={4}
       >
         <DashButton
