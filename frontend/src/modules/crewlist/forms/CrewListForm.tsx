@@ -1,27 +1,19 @@
-import { useState } from 'react';
-import {
-  Box,
-  Button,
-  Divider,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Select,
-  SimpleGrid,
-  Stack,
-} from '@chakra-ui/react';
-import { Controller } from 'react-hook-form';
+import React, { useState } from 'react';
+import { Button, Stack } from '@chakra-ui/react';
 
 import { Car, CarStatement } from '@frontend/modules/timesheets/interfaces';
 import { ErrorBanner } from '@frontend/shared/design-system';
-import { Form, InputField } from '@frontend/shared/forms';
-import { FormSection } from '@frontend/shared/forms/molecules/FormSection';
-import { CarFormWithTable } from '@frontend/shared/forms/VehicleEnrollment';
+import { Form } from '@frontend/shared/forms';
 import {
   crewListFormSchema,
   crewListFormValues,
   zodResolver,
 } from '@frontend/zod/schemas';
+
+import { CarCompensationSection } from '../atoms/CarCompensationSection';
+import { PersonalInformationSection } from '../atoms/PersonalInformationSection';
+import { ProjectInformationSection } from '../atoms/ProjectInformationSection';
+import { RatesAndCompensationSection } from '../atoms/RatesAndCompensationSection';
 
 export type CrewListFormProps = {
   projectId: string;
@@ -56,7 +48,6 @@ const initialValues: crewListFormValues = {
   overtime_hour4: 0,
   compensation_rate: 0,
   role: 'CREW',
-  // cars: [],
 };
 
 export function CrewListForm({
@@ -70,12 +61,11 @@ export function CrewListForm({
   userRole,
   projectCurrency,
   cars,
-  // carStatements,
+  carStatements,
 }: CrewListFormProps) {
   const [sendInvite, setSendInvite] = useState(false);
 
   const oldCars = cars;
-
   const [carData, setCarData] = useState<Car[]>([]);
 
   const handleCarCollectionChange = (cars: Car[]) => {
@@ -96,126 +86,14 @@ export function CrewListForm({
       <Stack justify="center" spacing="5">
         {errorMessage && <ErrorBanner title={errorMessage} />}
 
-        <FormSection
-          title="Personal Information"
-          description="Fill in or verify the personal details."
-          fontSize="1.7rem"
-        >
-          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-            <InputField name="name" label="Name" isRequired />
-            <InputField name="surname" label="Surname" isRequired />
-            <InputField name="email" label="Email" isRequired />
-            <InputField name="phone_number" label="Phone number" isRequired />
-          </SimpleGrid>
-        </FormSection>
+        <PersonalInformationSection />
 
-        <FormSection
-          title="Project Information"
-          description="Ensure that the project and department information is accurate."
-          fontSize="1.7rem"
-        >
-          <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={4}>
-            <Controller
-              name="department"
-              render={({ field, fieldState }) => (
-                <FormControl
-                  isRequired={userRole === 'ADMIN'}
-                  isInvalid={!!fieldState.error}
-                >
-                  <FormLabel>Department</FormLabel>
-                  <Select
-                    {...field}
-                    placeholder="Select Department"
-                    borderColor="gray.400"
-                    borderWidth={1}
-                    isDisabled={userRole !== 'ADMIN'}
-                  >
-                    {departments.map((dept) => (
-                      <option key={dept.id} value={dept.id}>
-                        {dept.name}
-                      </option>
-                    ))}
-                  </Select>
-                  <FormErrorMessage>
-                    {fieldState.error?.message}
-                  </FormErrorMessage>
-                </FormControl>
-              )}
-            />
-            <InputField
-              name="position"
-              label="Position"
-              isRequired
-              isDisabled={userRole !== 'ADMIN'}
-            />
+        <ProjectInformationSection
+          userRole={userRole}
+          departments={departments}
+        />
 
-            <Controller
-              name="role"
-              render={({ field }) => (
-                <FormControl isRequired isDisabled={userRole !== 'ADMIN'}>
-                  <FormLabel>Role</FormLabel>
-                  <Select {...field} borderColor={'gray.400'} borderWidth={1}>
-                    <option value="CREW">CREW</option>
-                    <option value="ADMIN">ADMIN</option>
-                  </Select>
-                </FormControl>
-              )}
-            />
-          </SimpleGrid>
-        </FormSection>
-
-        <FormSection
-          title="Rates & Compensation"
-          description="Provide or confirm the standard rates and overtime compensations."
-          fontSize="1.7rem"
-        >
-          <Divider
-            orientation="vertical"
-            display={{ base: 'none', lg: 'block' }}
-          />
-          <Divider
-            orientation="horizontal"
-            display={{ base: 'block', lg: 'none' }}
-          />
-
-          <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={4}>
-            <InputField
-              name="standard_rate"
-              label={`Standard rate (${projectCurrency})`}
-              isRequired
-            />
-            <InputField
-              name="compensation_rate"
-              label={`Compensation rate (${projectCurrency})`}
-              isRequired
-              type="number"
-            />
-            <InputField
-              name="overtime_hour1"
-              label={`1. Overtime hour (${projectCurrency})`}
-              isRequired
-              type="number"
-            />
-            <InputField
-              name="overtime_hour2"
-              label={`2. Overtime hour (${projectCurrency})`}
-              isRequired
-              type="number"
-            />
-            <InputField
-              name="overtime_hour3"
-              label={`3. Overtime hour (${projectCurrency})`}
-              isRequired
-              type="number"
-            />
-            <InputField
-              name="overtime_hour4"
-              label={`4. Overtime hour (${projectCurrency})`}
-              isRequired
-              type="number"
-            />
-          </SimpleGrid>
-        </FormSection>
+        <RatesAndCompensationSection projectCurrency={projectCurrency} />
 
         <Stack m={4} spacing={6}>
           {mode === 'add' ? (
@@ -241,28 +119,20 @@ export function CrewListForm({
             </>
           ) : (
             <>
-              <FormSection
-                title="Car Compensation"
-                description="Details about car usage and related compensation rates."
-                fontSize="1.7rem"
+              <CarCompensationSection
+                cars={cars}
+                onCarCollectionChange={handleCarCollectionChange}
+                projectCurrency={projectCurrency}
+                carStatements={carStatements}
+              />
+              <Button
+                type="submit"
+                colorScheme="orange"
+                width="100%"
+                isLoading={isLoading}
               >
-                <Box position="relative" padding="2">
-                  <Box p="4">
-                    <CarFormWithTable
-                      onCarCollectionChange={handleCarCollectionChange}
-                      cars={cars}
-                    />
-                  </Box>
-                </Box>
-                <Button
-                  type="submit"
-                  colorScheme="orange"
-                  width="100%"
-                  isLoading={isLoading}
-                >
-                  Save Changes
-                </Button>
-              </FormSection>
+                Save Changes
+              </Button>
             </>
           )}
         </Stack>

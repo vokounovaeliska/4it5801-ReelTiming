@@ -13,6 +13,7 @@ import { NewPasswordPage } from './modules/auth/pages/NewPasswordPage';
 import AboutUsPage from './modules/contact/AboutUsPage';
 import { AcceptInvitationPage } from './modules/crewlist/pages/AcceptInvitationPage';
 import { CrewListPage } from './modules/crewlist/pages/CrewListPage';
+import { MyProjectSettingPage } from './modules/crewlist/pages/MyProjectSettingsPage';
 // import { CrewListPage2 } from './modules/crewlist/pages/CrewListPage2';
 import { EditProjectPage } from './modules/editproject/pages/EditProjectPage';
 import { CreateProjectPage } from './modules/myprojects/pages/CreateProjectPage';
@@ -36,6 +37,10 @@ function Routes() {
       <Route path={route.createProject()} element={<CreateProjectPage />} />
       <Route path={route.about()} element={<AboutUsPage />} />
       <Route path={route.crewList(':projectId')} element={<CrewListPage />} />
+      <Route
+        path={route.myProjectSettings(':projectId')}
+        element={<MyProjectSettingPage />}
+      />
       <Route
         path={route.timesheets(':projectId')}
         element={<TimesheetPage />}

@@ -6,6 +6,7 @@ import {
   useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
+import { BsPersonGear } from 'react-icons/bs';
 import { CiViewTimeline } from 'react-icons/ci';
 import { FaPeopleGroup } from 'react-icons/fa6';
 import { MdBuild, MdOutlineSummarize } from 'react-icons/md';
@@ -41,6 +42,7 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
   const dashboardPath = `/projects/${projectId}`;
   const timesheetsPath = `/projects/${projectId}/timesheets`;
   const crewlistPath = `/projects/${projectId}/crewlist`;
+  const myProjectSettings = `/projects/${projectId}/myProjectSettings`;
   const editPath = `/projects/${projectId}/edit`;
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -68,13 +70,25 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
         >
           Timesheets
         </Button>
+        {userRole === 'ADMIN' && (
+          <>
+            <Button
+              {...buttonStyle}
+              leftIcon={<FaPeopleGroup />}
+              bg={activePath === crewlistPath ? 'orange.600' : 'transparent'}
+              onClick={() => handleNavigation(crewlistPath)}
+            >
+              Crew List
+            </Button>
+          </>
+        )}
         <Button
           {...buttonStyle}
-          leftIcon={<FaPeopleGroup />}
-          bg={activePath === crewlistPath ? 'orange.600' : 'transparent'}
-          onClick={() => handleNavigation(crewlistPath)}
+          leftIcon={<BsPersonGear />}
+          bg={activePath === myProjectSettings ? 'orange.600' : 'transparent'}
+          onClick={() => handleNavigation(myProjectSettings)}
         >
-          Crew List
+          My project settings
         </Button>
         {userRole === 'ADMIN' && (
           <>

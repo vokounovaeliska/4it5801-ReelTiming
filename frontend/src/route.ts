@@ -13,6 +13,8 @@ export const route = {
   projectDetail: (id: string = ':id') => `/projects/${id}`,
   crewList: (projectId: string = ':projectId') =>
     `/projects/${projectId}/crewlist`,
+  myProjectSettings: (projectId: string = ':projectId') =>
+    `/projects/${projectId}/myProjectSettings`,
   timesheets: (projectId: string = ':projectId') =>
     `/projects/${projectId}/timesheets`,
   editprojectpage: (projectId: string = ':projectId') =>

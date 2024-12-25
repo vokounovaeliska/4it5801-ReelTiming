@@ -1,5 +1,5 @@
-import { Car } from '../interfaces';
 import { ProjectUser } from '@frontend/modules/crewlist/interfaces/interfaces';
+import { Car } from '@frontend/shared/interfaces';
 
 export const getCarOptionsForLoggedInUser = (userCarsData: {
   carsByProjectUserId: Car[];

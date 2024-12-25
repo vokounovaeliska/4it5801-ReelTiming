@@ -18,15 +18,6 @@ export interface CrewMemberData {
   user_id: string | null;
   rate_id: string | null;
   cars: Car[] | null;
-  // cars:
-  //   | [
-  //       {
-  //         vehicle_name: string;
-  //         included_mileage: number;
-  //         extra_mileage: number;
-  //       },
-  //     ]
-  //   | null;
 }
 
 export interface CarData {

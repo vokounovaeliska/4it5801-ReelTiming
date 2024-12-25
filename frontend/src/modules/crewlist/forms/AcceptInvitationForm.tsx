@@ -1,27 +1,19 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Heading,
-  Select,
-  SimpleGrid,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
-import { Controller } from 'react-hook-form';
+import { Box, Button, Heading, Stack, Text } from '@chakra-ui/react';
 
 import { AuthUser } from '@frontend/modules/auth/auth-core';
 import { Car, CarStatement } from '@frontend/modules/timesheets/interfaces';
 import { ErrorBanner } from '@frontend/shared/design-system';
-import { Form, InputField } from '@frontend/shared/forms';
-import { FormSection } from '@frontend/shared/forms/molecules/FormSection';
-import { CarFormWithTable } from '@frontend/shared/forms/VehicleFulfillmentForm';
+import { Form } from '@frontend/shared/forms';
 import {
   crewListFormSchema,
   crewListFormValues,
   zodResolver,
 } from '@frontend/zod/schemas';
+
+import { CarCompensationSection } from '../atoms/CarCompensationSection';
+import { PersonalInformationSection } from '../atoms/PersonalInformationSection';
+import { ProjectInformationSection } from '../atoms/ProjectInformationSection';
+import { RatesAndCompensationSection } from '../atoms/RatesAndCompensationSection';
 
 export type AcceptInvitationFormProps = {
   errorMessage?: string;
@@ -47,7 +39,7 @@ export type ProjectUserData = {
   position: string;
   phone_number: string;
   email: string;
-  role: string;
+  role: 'ADMIN' | 'CREW';
   rate?: {
     id: string;
     standard_rate: number;
@@ -108,104 +100,20 @@ export function AcceptInvitationForm({
         noValidate
       >
         <Stack spacing={5}>
-          <FormSection
-            title="Personal Information"
-            description="Please verify all your personal information."
-          >
-            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-              <InputField name="name" label="Name" isRequired />
-              <InputField name="surname" label="Surname" isRequired />
-              <InputField name="email" label="Email" isRequired />
-              <InputField name="phone_number" label="Phone Number" isRequired />
-            </SimpleGrid>
-          </FormSection>
-
-          <FormSection
-            title="Project Information"
-            description="Please verify that project information are correct."
-          >
-            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-              <Controller
-                name="department"
-                render={({ field }) => (
-                  <FormControl isRequired>
-                    <FormLabel>Department</FormLabel>
-                    <Select
-                      {...field}
-                      placeholder="Select Department"
-                      borderColor="gray.400"
-                      borderWidth={1}
-                      isDisabled
-                    >
-                      {departments.map((dept) => (
-                        <option key={dept.id} value={dept.id}>
-                          {dept.name}
-                        </option>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
-              />
-              <InputField
-                name="position"
-                label="Position"
-                isRequired
-                isDisabled
-              />
-            </SimpleGrid>
-          </FormSection>
-
-          <FormSection
-            title="Rates & Compensation"
-            description="Please confirm your standard and overtime rates."
-          >
-            <InputField
-              name="standard_rate"
-              label={`Standard rate (${projectUserData.project.currency})`}
-              isRequired
-            />
-            <InputField
-              name="compensation_rate"
-              label={`Compensation rate (${projectUserData.project.currency})`}
-              type="number"
-              isRequired
-            />
-            <InputField
-              name="overtime_hour1"
-              label={`1. Overtime Hour (${projectUserData.project.currency})`}
-              type="number"
-              isRequired
-            />
-            <InputField
-              name="overtime_hour2"
-              label={`2. Overtime Hour (${projectUserData.project.currency})`}
-              type="number"
-              isRequired
-            />
-            <InputField
-              name="overtime_hour3"
-              label={`3. Overtime Hour (${projectUserData.project.currency})`}
-              type="number"
-              isRequired
-            />
-            <InputField
-              name="overtime_hour4"
-              label={`4. Overtime Hour (${projectUserData.project.currency})`}
-              type="number"
-              isRequired
-            />
-          </FormSection>
-          <FormSection
-            title="Transport & Milage"
-            description="Please fill in your transport and milage compensation rates."
-          >
-            <CarFormWithTable
-              onCarCollectionChange={onCarCollectionChange}
-              cars={cars}
-              carStatements={carStatements}
-              projectCurrency={projectUserData.project.currency}
-            />
-          </FormSection>
+          <PersonalInformationSection />
+          <ProjectInformationSection
+            userRole={projectUserData?.role || 'CREW'}
+            departments={departments}
+          />
+          <RatesAndCompensationSection
+            projectCurrency={projectUserData.project.currency}
+          />
+          <CarCompensationSection
+            cars={[]}
+            carStatements={carStatements}
+            onCarCollectionChange={onCarCollectionChange}
+            projectCurrency={projectUserData.project.currency}
+          />
           <Stack align="flex-end">
             <Button
               type="submit"
@@ -213,7 +121,7 @@ export function AcceptInvitationForm({
               isLoading={isLoading}
               width={{ base: '100%', md: '50%' }}
               maxWidth="200px"
-              size={'lg'}
+              size="lg"
             >
               Join the Project
             </Button>

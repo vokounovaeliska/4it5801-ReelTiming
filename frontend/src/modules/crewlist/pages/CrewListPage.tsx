@@ -64,12 +64,15 @@ export function CrewListPage() {
   } = useCrewListPageUtils();
 
   const isDataAvailable = !!crewList && Object.keys(crewList).length > 0;
-  const { allCarsOnProjectData, refetch: refetchAllCarsOnProjectData } =
-    useAllCarsOnProjectByProjectUserId(projectId ?? '');
+  const {
+    allCarsOnProjectData,
+    refetch: refetchAllCarsOnProjectData,
+    allCarsOnProjectLoading,
+  } = useAllCarsOnProjectByProjectUserId(projectId ?? '');
 
   const { projectCarStatements } = useCarStatementsByProjectId(projectId ?? '');
 
-  if (!isDataAvailable && crewListLoading) {
+  if ((!isDataAvailable && crewListLoading) || allCarsOnProjectLoading) {
     return (
       <Center minHeight="100vh">
         <Spinner size="xl" color="orange.500" />
@@ -171,7 +174,7 @@ export function CrewListPage() {
             }
             refetchAllCarsOnProjectData();
           }}
-          isLoading={isSubmitting}
+          isLoading={isSubmitting || allCarsOnProjectLoading}
           departments={crewList.departments}
           initialValues={selectedCrewMember || undefined}
           mode={selectedCrewMember ? 'edit' : 'add'}
