@@ -159,7 +159,9 @@ export type forgotPasswordFormaValues = zod.infer<
 
 export const loginFormSchema = zod.object({
   email: zod.string().email().min(1),
-  password: zod.string().min(1, { message: 'Password is required' }),
+  password: zod
+    .string()
+    .min(10, 'Password must be at least 10 characters long'),
 });
 
 export type loginFormValues = zod.infer<typeof loginFormSchema>;

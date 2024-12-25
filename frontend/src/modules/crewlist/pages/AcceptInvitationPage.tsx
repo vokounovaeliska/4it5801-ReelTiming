@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { useToast } from '@chakra-ui/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { ADD_CAR } from '@frontend/gql/mutations/AddCar';
@@ -9,6 +8,7 @@ import { GET_DEPARTMENTS } from '@frontend/gql/queries/GetDepartments';
 import { useAuth } from '@frontend/modules/auth';
 import { Car, CarStatement } from '@frontend/modules/timesheets/interfaces';
 import { route } from '@frontend/route';
+import { showErrorToast } from '@frontend/shared/design-system/molecules/toastUtils';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 import { crewListFormValues } from '@frontend/zod/schemas';
@@ -18,7 +18,6 @@ import { AcceptInvitationTemplate } from '../templates/AcceptInvitationTemplate'
 
 export function AcceptInvitationPage() {
   const navigate = useNavigate();
-  const toast = useToast();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
 
@@ -112,21 +111,10 @@ export function AcceptInvitationPage() {
             );
           })
         ) {
-          toast({
-            title: 'User already exists!',
-            description: 'You have already joined this project before!',
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-          });
+          showErrorToast('You have already joined this project before!');
         } else {
-          toast({
-            title: 'An unexpected error occurred!',
-            description: err.message,
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-          });
+          showErrorToast('An unexpected error occurred!');
+          console.error(err.message);
         }
       });
   };
