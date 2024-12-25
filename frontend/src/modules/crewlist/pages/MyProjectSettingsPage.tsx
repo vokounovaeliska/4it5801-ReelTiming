@@ -38,10 +38,10 @@ function getAvailableCarsForProjectUserId(
 }
 
 function getCurrentUserDetails(
-  crewList: any,
+  projectUsers: ProjectUser[],
   currentUserId: string,
 ): ProjectUser | null {
-  const projectUser = crewList.projectUsers.find(
+  const projectUser = projectUsers.find(
     (user: ProjectUser) => user.user?.id === currentUserId,
   );
   return projectUser || null;
@@ -95,7 +95,10 @@ export function MyProjectSettingPage() {
     );
   }
 
-  const currentUser = getCurrentUserDetails(crewList, auth.user.id);
+  const currentUser = getCurrentUserDetails(
+    crewList.projectUsers,
+    auth.user.id,
+  );
   if (currentUser === null) {
     return (
       <Center minHeight="100vh">

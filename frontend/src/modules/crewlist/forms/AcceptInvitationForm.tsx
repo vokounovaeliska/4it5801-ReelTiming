@@ -1,6 +1,5 @@
 import { Box, Button, Heading, Stack, Text } from '@chakra-ui/react';
 
-import { AuthUser } from '@frontend/modules/auth/auth-core';
 import { Car, CarStatement } from '@frontend/modules/timesheets/interfaces';
 import { ErrorBanner } from '@frontend/shared/design-system';
 import { Form } from '@frontend/shared/forms';
@@ -22,7 +21,6 @@ export type AcceptInvitationFormProps = {
   isLoading: boolean;
   projectUserData: ProjectUserData;
   departments: { id: string; name: string }[];
-  authUser: AuthUser;
   cars: Car[];
   carStatements: CarStatement[];
 };

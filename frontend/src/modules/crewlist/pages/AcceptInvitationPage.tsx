@@ -11,6 +11,7 @@ import { route } from '@frontend/route';
 import { showErrorToast } from '@frontend/shared/design-system/molecules/toastUtils';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
+import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 import { crewListFormValues } from '@frontend/zod/schemas';
 
 import { GET_PROJECT_USER_BY_TOKEN } from '../../../gql/queries/GetProjectUserByToken';
@@ -131,6 +132,10 @@ export function AcceptInvitationPage() {
   if (error || departmentsError)
     return <p>Error: {error?.message ?? departmentsError?.message}</p>;
 
+  if (!user) {
+    return <NotFoundPage />;
+  }
+
   return (
     <div>
       <Navbar children={undefined} />
@@ -141,7 +146,6 @@ export function AcceptInvitationPage() {
         departments={departments}
         errorMessage={error}
         isLoading={loading}
-        authUser={user!}
         cars={carData}
         carStatements={carStatementsData}
       />
