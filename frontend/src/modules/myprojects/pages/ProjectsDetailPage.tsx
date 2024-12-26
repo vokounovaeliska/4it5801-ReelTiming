@@ -101,7 +101,7 @@ export function MyProjectDetailPage() {
             textAlign={{ base: 'justify', md: 'left' }}
           >
             <Text fontSize={{ base: 'md', md: 'lg' }} maxWidth="58rem">
-              {project?.description}
+              {project.description}
             </Text>
           </Box>
           <TopDashButtons userRole={userRole} projectId={project.id} />

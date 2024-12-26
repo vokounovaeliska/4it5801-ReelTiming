@@ -52,7 +52,12 @@ export default function HomePageNavbar() {
           display="flex"
           flexDirection="row"
         >
-          <Box display="flex" alignItems="center">
+          <Box
+            display={{ base: 'none', md: 'flex' }}
+            alignItems="center"
+            as={ReactRouterLink}
+            to={route.landingPage()}
+          >
             <Image
               src="/faviconlogo.png"
               alt="ReelTiming Logo"
@@ -60,7 +65,7 @@ export default function HomePageNavbar() {
               mr={2}
             />
             <Text
-              fontSize={{ base: 'lg', md: 'xl' }} // Zvýšení velikosti písma pro název
+              fontSize={{ base: 'lg', md: 'xl' }}
               fontWeight="800"
               color="gray.600"
             >
@@ -78,11 +83,10 @@ export default function HomePageNavbar() {
           direction={'row'}
           spacing={6}
         >
-          {/* Na mobilu se "Sign In" skryje a "Sign Up" zobrazuje */}
           <Button
             as={ReactRouterLink}
-            to={route.register()} // změněno na 'Sign Up'
-            display={{ base: 'inline-flex', md: 'none' }} // Zobrazí na mobilu
+            to={route.register()}
+            display={{ base: 'inline-flex', md: 'none' }}
             fontSize={'md'}
             fontWeight={600}
             color={'white'}
@@ -92,19 +96,18 @@ export default function HomePageNavbar() {
             Sign Up
           </Button>
 
-          {/* Na desktopu zůstává 'Sign In' s odpovídajícím vzhledem jako odkazy */}
           <Button
             as={ReactRouterLink}
             to={route.login()}
-            display={{ base: 'none', md: 'inline-flex' }} // Zobrazí se pouze na desktopu
+            display={{ base: 'none', md: 'inline-flex' }}
             fontSize={'md'}
-            fontWeight={500} // Vypadá stejně jako položky v DesktopNav
+            fontWeight={500}
             color={useColorModeValue('gray.600', 'gray.200')}
             _hover={{
               textDecoration: 'none',
               color: useColorModeValue('gray.800', 'white'),
             }}
-            variant="link" // Stejný vzhled jako pro navigační odkazy
+            variant="link"
           >
             Sign In
           </Button>
