@@ -41,7 +41,7 @@ export async function vehicleTimesheetTable({
         headerAlign: 'center',
       },
       {
-        label: 'Time (From - To)',
+        label: 'Call - wrap',
         property: 'time_range',
         width: 70,
         align: 'center',
@@ -211,16 +211,16 @@ export async function vehicleTimesheetTable({
   // Add summary row
   table.rows.push([
     `${statements.length} days`,
-    `---`,
-    '---',
-    '---',
+    '',
+    '',
+    '',
     `${totalOvertime.toString()}`,
     currencyUtil.formatAmount(totalOvertimeAmount, projectCurrency),
-    '---',
+    '',
     `${totalKilometers.toString()}`,
-    '---',
+    '',
     `${totalKilometersOver.toString()}`,
-    '---',
+    '',
     currencyUtil.formatAmount(totalKilometersAmount, projectCurrency, 2),
   ]);
 
@@ -232,14 +232,25 @@ export async function vehicleTimesheetTable({
   if (doc.y + table.rows.length * 15 > pageHeight) {
     doc.addPage();
   }
-
   await doc.table(table, {
-    prepareRow: (row) => {
+    prepareRow: (row, i) => {
+      const rowHeight = 15;
+      const pageWidth =
+        doc.page.width - doc.page.margins.left - doc.page.margins.right;
+
+      if (row[0]?.endsWith('days') && i === 0) {
+        doc
+          .rect(doc.page.margins.left, doc.y + 12, pageWidth + 3, rowHeight)
+          .fill('#F2F2F1');
+        doc.fill('#000');
+      }
+
       if (row[0]?.endsWith('days')) {
         doc.font('DejaVuSans-Bold').fontSize(8);
       } else {
         doc.font('DejaVuSans').fontSize(8);
       }
+
       return doc;
     },
   });

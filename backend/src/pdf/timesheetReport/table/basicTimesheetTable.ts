@@ -39,7 +39,7 @@ export async function basicTimesheetTable({
         headerAlign: 'center',
       },
       {
-        label: 'Time (From - To)',
+        label: 'Call - wrap',
         property: 'time_range',
         width: 100,
         align: 'center',
@@ -124,9 +124,9 @@ export async function basicTimesheetTable({
   // Add summary row
   table.rows.push([
     `${statements.length} days`,
-    `---`,
-    '---',
-    '---',
+    '',
+    '',
+    '',
     `${totalOvertime.toString()} h`,
     currencyUtil.formatAmount(totalOvertimeAmount, projectCurrency),
   ]);
@@ -140,14 +140,34 @@ export async function basicTimesheetTable({
   }
 
   await doc.table(table, {
-    prepareRow: (row) => {
-      // Apply bold style for the summary row
+    prepareRow: (row, i) => {
+      const rowHeight = 15;
+      const pageWidth =
+        doc.page.width - doc.page.margins.left - doc.page.margins.right;
+
+      if (row[0]?.endsWith('days') && i === 0) {
+        doc
+          .rect(doc.page.margins.left, doc.y + 12, pageWidth + 3, rowHeight)
+          .fill('#F2F2F1');
+        doc.fill('#000');
+      }
+
       if (row[0]?.endsWith('days')) {
-        doc.font('DejaVuSans-Bold').fontSize(9);
+        doc.font('DejaVuSans-Bold').fontSize(8);
       } else {
         doc.font('DejaVuSans').fontSize(8);
       }
+
       return doc;
     },
   });
+
+  doc
+    .moveDown(0.3)
+    .fontSize(10.5)
+    .font('DejaVuSans-Bold')
+    .text('GRAND TOTAL: ', { align: 'left', continued: true })
+    .font('DejaVuSans')
+    .fontSize(11)
+    .text(`${currencyUtil.formatAmount(totalOvertimeAmount, projectCurrency)}`);
 }
