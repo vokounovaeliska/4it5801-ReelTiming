@@ -54,46 +54,34 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
         mb={4}
         px={3}
       >
-        <Box
-          display={{ base: 'grid', sm: 'flex' }}
-          fontSize="sm"
-          gap="4"
-          mt={{ base: 2, md: 3 }}
+        <Button
+          aria-label="Add statement"
+          colorScheme="orange"
+          bgColor="orange.500"
+          onClick={handleAddClick}
+          size="md"
+          leftIcon={<MdAddChart />}
+          borderRadius="full"
+          boxShadow="md"
+          _hover={{
+            bg: 'orange.500',
+            color: 'white',
+            transform: 'scale(1.2)',
+          }}
+          transition="all 0.3s ease"
         >
-          <Button
-            aria-label="Add statement"
-            colorScheme="orange"
-            bgColor="orange.500"
-            onClick={handleAddClick}
-            size="md"
-            leftIcon={<MdAddChart />}
-            borderRadius="full"
-            boxShadow="md"
-            _hover={{
-              bg: 'orange.500',
-              color: 'white',
-              transform: 'scale(1.2)',
-            }}
-            transition="all 0.3s ease"
-          >
-            Add Shift
-          </Button>
-          <PdfReportGeneratorButton
-            projectUserId={
-              selectedUsers.length === 1
-                ? selectedUsers[0]?.value
-                : projectUserId
-            }
-            startDate={startDate}
-            endDate={endDate}
-            label={
-              selectedUsers.length === 1
-                ? `Generate PDF for ${selectedUsers[0]?.label}`
-                : `Generate shifts report (for ${new Date(startDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'numeric' }).replace(/\//g, '.')} - ${new Date(endDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'numeric' }).replace(/\//g, '.')})`
-            }
-            isDisabled={isGeneratePdfDisabled}
-          />
-        </Box>
+          Add Shift
+        </Button>
+
+        <PdfReportGeneratorButton
+          projectUserId={
+            selectedUsers.length === 1 ? selectedUsers[0]?.value : projectUserId
+          }
+          startDate={startDate}
+          endDate={endDate}
+          selectedUsers={selectedUsers}
+          isDisabled={isGeneratePdfDisabled}
+        />
       </Box>
       <TimesheetTable
         sortedTimesheets={sortedTimesheets}
