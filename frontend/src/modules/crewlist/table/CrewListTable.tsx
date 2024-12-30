@@ -48,12 +48,12 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
   projectCurrency,
 }) => {
   return (
-    <Box overflowX="auto" m={{ base: 2, md: 4 }}>
+    <Box overflowX="auto" m={1}>
       <TableContainer className="custom-scrollbar">
         <Box
           overflowX="auto"
           overflowY="auto"
-          maxHeight={'70vh'}
+          maxHeight={'76vh'}
           sx={{
             '::-webkit-scrollbar': {
               height: '12px',
@@ -76,7 +76,6 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
             variant="simple"
             size="sm"
             mb={2}
-            pr={2}
             sx={{
               'tr:hover td': {
                 backgroundColor: 'gray.200',

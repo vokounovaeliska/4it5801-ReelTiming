@@ -29,7 +29,7 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
     userRole === 'ADMIN';
 
   return (
-    <Box flex="1" p={4} width="98%" alignSelf="center">
+    <Box flex="1" width="100%" p={1} alignSelf="center">
       <Box
         justifyItems={{ base: 'center', sm: 'flex-start' }}
         py={{ base: '4', sm: '0' }}

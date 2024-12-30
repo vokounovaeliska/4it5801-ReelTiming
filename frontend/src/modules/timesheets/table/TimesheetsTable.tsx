@@ -69,7 +69,7 @@ const TimesheetTable = ({
         <Box
           overflowX="auto"
           overflowY="auto"
-          maxHeight={'62vh'}
+          maxHeight={'65vh'}
           sx={{
             '::-webkit-scrollbar': {
               height: '12px',
