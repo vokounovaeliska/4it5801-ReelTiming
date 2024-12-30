@@ -146,8 +146,15 @@ export async function basicTimesheetTable({
         doc.page.width - doc.page.margins.left - doc.page.margins.right;
 
       if (row[0]?.endsWith('days') && i === 0) {
+        const moveDocY = row[0]?.endsWith('0 days') ? 3 : 12;
+
         doc
-          .rect(doc.page.margins.left, doc.y + 12, pageWidth + 3, rowHeight)
+          .rect(
+            doc.page.margins.left,
+            doc.y + moveDocY,
+            pageWidth + 4,
+            rowHeight,
+          )
           .fill('#F2F2F1');
         doc.fill('#000');
       }
