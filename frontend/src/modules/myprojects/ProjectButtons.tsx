@@ -68,7 +68,7 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
           bg={activePath === timesheetsPath ? 'orange.600' : 'transparent'}
           onClick={() => handleNavigation(timesheetsPath)}
         >
-          Timesheets
+          Shifts
         </Button>
         {userRole === 'ADMIN' && (
           <>
