@@ -38,6 +38,7 @@ import { z } from 'zod';
 import { CarResolver } from '@backend/graphql/modules/car/carResolver';
 import { ShootingDayResolver } from './graphql/modules/shootingDay/shootingDayResolver';
 import { DailyReportResolver } from './graphql/modules/dailyReport/dailyReportResolver';
+import { ShiftOverviewResolver } from './graphql/modules/shiftOverview/shiftOverviewResolver';
 
 const init = async () => {
   const app = express();
@@ -57,6 +58,7 @@ const init = async () => {
       CarResolver,
       ShootingDayResolver,
       DailyReportResolver,
+      ShiftOverviewResolver,
     ],
     emitSchemaFile: true,
   });
