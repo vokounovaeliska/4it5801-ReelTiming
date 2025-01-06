@@ -819,6 +819,7 @@ export type AddProjectUserMutation = {
     is_team_leader: boolean;
     role?: string | null;
     project: { __typename?: 'Project'; id: string };
+    rate?: { __typename?: 'Rate'; id: string } | null;
   };
 };
 
@@ -1207,6 +1208,7 @@ export type GetProjectUserDetailsQuery = {
     id: string;
     name: string;
     surname: string;
+    email: string;
     project: {
       __typename?: 'Project';
       id: string;
@@ -1243,24 +1245,21 @@ export type GetProjectDetailQueryVariables = Exact<{
 
 export type GetProjectDetailQuery = {
   __typename?: 'Query';
-  project?:
-    | ({
-        __typename?: 'Project';
-        start_date?: any | null;
-        end_date?: any | null;
-        production_company: string;
-        is_active: boolean;
-        create_date: any;
-        create_user_id: string;
-        last_update_date: any;
-        last_update_user_id: string;
-        currency: string;
-      } & {
-        ' $fragmentRefs'?: {
-          ProjectBasicInfoFragment: ProjectBasicInfoFragment;
-        };
-      })
-    | null;
+  project?: {
+    __typename?: 'Project';
+    id: string;
+    name: string;
+    description: string;
+    start_date?: any | null;
+    end_date?: any | null;
+    production_company: string;
+    is_active: boolean;
+    create_date: any;
+    create_user_id: string;
+    last_update_date: any;
+    last_update_user_id: string;
+    currency: string;
+  } | null;
 };
 
 export type GetProjectUserByTokenQueryVariables = Exact<{
@@ -1368,11 +1367,12 @@ export type GetProjectsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetProjectsQuery = {
   __typename?: 'Query';
-  projects: Array<
-    { __typename?: 'Project' } & {
-      ' $fragmentRefs'?: { ProjectBasicInfoFragment: ProjectBasicInfoFragment };
-    }
-  >;
+  projects: Array<{
+    __typename?: 'Project';
+    id: string;
+    name: string;
+    description: string;
+  }>;
 };
 
 export type GetCrewStatementsQueryVariables = Exact<{
@@ -1498,11 +1498,12 @@ export type GetUserProjectsQueryVariables = Exact<{
 
 export type GetUserProjectsQuery = {
   __typename?: 'Query';
-  userProjects: Array<
-    { __typename?: 'Project' } & {
-      ' $fragmentRefs'?: { ProjectBasicInfoFragment: ProjectBasicInfoFragment };
-    }
-  >;
+  userProjects: Array<{
+    __typename?: 'Project';
+    id: string;
+    name: string;
+    description: string;
+  }>;
 };
 
 export type GetUserRoleInProjectQueryVariables = Exact<{
@@ -2358,6 +2359,16 @@ export const AddProjectUserDocument = {
                   name: { kind: 'Name', value: 'is_team_leader' },
                 },
                 { kind: 'Field', name: { kind: 'Name', value: 'role' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'rate' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
               ],
             },
           },
@@ -4313,6 +4324,7 @@ export const GetProjectUserDetailsDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'surname' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'email' } },
               ],
             },
           },
@@ -4478,10 +4490,9 @@ export const GetProjectDetailDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProjectBasicInfo' },
-                },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'start_date' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'end_date' } },
                 {
@@ -4506,22 +4517,6 @@ export const GetProjectDetailDocument = {
               ],
             },
           },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProjectBasicInfo' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Project' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'description' } },
         ],
       },
     },
@@ -4899,29 +4894,12 @@ export const GetProjectsDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProjectBasicInfo' },
-                },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
               ],
             },
           },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProjectBasicInfo' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Project' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'description' } },
         ],
       },
     },
@@ -5374,29 +5352,12 @@ export const GetUserProjectsDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProjectBasicInfo' },
-                },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
               ],
             },
           },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProjectBasicInfo' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Project' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'description' } },
         ],
       },
     },

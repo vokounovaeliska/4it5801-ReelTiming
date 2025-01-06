@@ -19,7 +19,7 @@ interface CarFormProps {
   handleUpdateCar: () => void;
   handleCancelEdit: () => void;
   isEditMode: boolean;
-  projectCurrency: string;
+  projectCurrency?: string;
 }
 
 export const CarForm: React.FC<CarFormProps> = ({

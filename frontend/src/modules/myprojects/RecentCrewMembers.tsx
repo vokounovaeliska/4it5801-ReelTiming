@@ -4,18 +4,7 @@ import { Box, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 
 import { GET_CREWLIST_INFO } from '@frontend/graphql/queries/GetCrewListInfo';
 
-interface ProjectUser {
-  id: string;
-  is_active: boolean;
-  name: string;
-  surname: string;
-  department: {
-    name: string;
-  } | null;
-  rate: {
-    create_date: string; // Formát: YYYY-MM-DD HH:MM:SS
-  };
-}
+import { ProjectUser } from '../crewlist/interfaces/interfaces';
 
 interface RecentCrewMembersProps {
   projectId: string;
@@ -43,20 +32,18 @@ const RecentCrewMembers: React.FC<RecentCrewMembersProps> = ({
 
   const crewMembers: ProjectUser[] = data?.projectUsers || [];
 
-  const membersWithDate = crewMembers
-    .filter((member) => member.rate?.create_date)
-    .map((member) => ({
-      ...member,
-      rate: {
-        ...member.rate,
-        create_date: member.rate.create_date.replace(' ', 'T') + 'Z',
-      },
-    }));
+  const membersWithDate = crewMembers.map((member) => ({
+    ...member,
+    rate: {
+      ...member.rate,
+      create_date: new Date(member?.rate?.create_date!),
+    },
+  }));
 
   const sortedMembers = membersWithDate
     .sort((a, b) => {
-      const dateA = new Date(a.rate.create_date).getTime();
-      const dateB = new Date(b.rate.create_date).getTime();
+      const dateA = a.rate.create_date!.getTime();
+      const dateB = b.rate.create_date!.getTime();
       return dateB - dateA;
     })
     .slice(0, 3);

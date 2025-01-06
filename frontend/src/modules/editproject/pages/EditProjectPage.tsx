@@ -17,7 +17,7 @@ export function EditProjectPage() {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const { data, refetch } = useQuery(GET_PROJECT_DETAILS, {
-    variables: { id: projectId },
+    variables: { id: projectId! },
     fetchPolicy: 'cache-and-network',
   });
 
@@ -34,8 +34,8 @@ export function EditProjectPage() {
     loading: roleLoading,
     error: roleError,
   } = useQuery(GET_USER_ROLE_IN_PROJECT, {
-    skip: !auth.user,
-    variables: { userId: auth.user?.id, projectId },
+    skip: !auth.user || !projectId,
+    variables: { userId: auth.user?.id!, projectId: projectId! },
     fetchPolicy: 'cache-and-network',
   });
 
@@ -60,7 +60,7 @@ export function EditProjectPage() {
     );
   }
 
-  const userRole = roleData.userRoleInProject;
+  const userRole = roleData!.userRoleInProject;
   const userId = auth.user.id;
 
   const handleEditProject = async (data: projectFormValues) => {
@@ -111,7 +111,7 @@ export function EditProjectPage() {
 
   return (
     <EditProjectTemplate
-      project={project}
+      project={project!}
       projectId={String(projectId).trim()}
       onSubmit={handleEditProject}
     />
@@ -122,7 +122,7 @@ export interface ProjectData {
   name: string;
   description: string;
   production_company: string;
-  start_date: Date;
-  end_date: Date;
+  start_date?: Date | null;
+  end_date?: Date | null;
   currency: string;
 }

@@ -8,11 +8,11 @@ import { GET_CREW_STATEMENTS } from '@frontend/graphql/queries/GetStatements';
 interface Timesheet {
   id: string;
   start_date: string;
-  shift_lenght: string;
+  shift_lenght: number;
   from: string;
   to: string;
-  claimed_overtime: string;
-  create_date: string;
+  claimed_overtime?: number | null;
+  create_date: Date;
   projectUser: {
     id: string;
     name: string;
@@ -28,11 +28,11 @@ interface UserProjectInfo {
   id: string;
   name: string;
   surname: string;
-  user: {
+  user?: {
     id: string;
     name: string;
     surname: string;
-  };
+  } | null;
 }
 
 interface RecentTimesheetsProps {
@@ -64,7 +64,7 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
     data: dataTimesheets,
   } = useQuery(GET_CREW_STATEMENTS, {
     skip: !dataUserInfo?.projectUserDetails?.id, // Skip this query until projectUserId is available
-    variables: { projectUserId: dataUserInfo?.projectUserDetails?.id },
+    variables: { projectUserId: dataUserInfo?.projectUserDetails?.id! },
     fetchPolicy: 'cache-and-network',
   });
 
@@ -78,8 +78,8 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
   }
 
   // Handle if data is not available
-  const userProjectInfo: UserProjectInfo | undefined =
-    dataUserInfo?.projectUserDetails;
+  const userProjectInfo: UserProjectInfo | null =
+    dataUserInfo?.projectUserDetails!;
 
   if (!userProjectInfo) {
     return <Text>No user project info available!</Text>;

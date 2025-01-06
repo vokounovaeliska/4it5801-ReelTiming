@@ -11,6 +11,7 @@ export const GET_CREWUSERINFO_TIMESHEETS = gql(`
       id
       name
       surname
+      email
     }
   }
 `);

@@ -5,7 +5,7 @@ import { InputField } from '@frontend/shared/forms';
 import { FormSection } from '@frontend/shared/forms/molecules/FormSection';
 
 interface RatesAndCompensationSectionProps {
-  projectCurrency: string;
+  projectCurrency?: string;
 }
 
 export const RatesAndCompensationSection: React.FC<

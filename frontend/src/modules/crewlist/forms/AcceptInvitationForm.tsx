@@ -19,7 +19,7 @@ export type AcceptInvitationFormProps = {
   onCarCollectionChange: (cars: Car[]) => void;
   onSubmit: (data: crewListFormValues, cars: Car[]) => void;
   isLoading: boolean;
-  projectUserData: ProjectUserData;
+  projectUserData?: ProjectUserData;
   departments: { id: string; name: string }[];
   cars: Car[];
   carStatements: CarStatement[];
@@ -33,20 +33,20 @@ export type ProjectUserData = {
     description: string;
     currency: string;
   };
-  department: { id: string; name: string };
-  position: string;
-  phone_number: string;
+  department?: { id?: string; name?: string } | null;
+  position?: string | null;
+  phone_number?: string | null;
   email: string;
-  role: 'ADMIN' | 'CREW';
+  role?: string | null;
   rate?: {
     id: string;
-    standard_rate: number;
-    compensation_rate: number;
-    overtime_hour1: number;
-    overtime_hour2: number;
-    overtime_hour3: number;
-    overtime_hour4: number;
-  };
+    standard_rate?: number | null;
+    compensation_rate?: number | null;
+    overtime_hour1?: number | null;
+    overtime_hour2?: number | null;
+    overtime_hour3?: number | null;
+    overtime_hour4?: number | null;
+  } | null;
   name: string;
   surname: string;
 };
@@ -83,10 +83,10 @@ export function AcceptInvitationForm({
         <Heading as="h2" size="xl" mb={4}>
           Invitation to project{' '}
           <Text as="span" fontStyle="italic" color="orange.500">
-            {projectUserData.project?.name}
+            {projectUserData?.project?.name}
           </Text>
         </Heading>
-        <Text mb={6}>{projectUserData.project?.description}</Text>
+        <Text mb={6}>{projectUserData?.project?.description}</Text>
         {errorMessage && <ErrorBanner title={errorMessage} />}
       </Box>
       <Form
@@ -100,17 +100,17 @@ export function AcceptInvitationForm({
         <Stack spacing={5}>
           <PersonalInformationSection />
           <ProjectInformationSection
-            userRole={projectUserData?.role || 'CREW'}
+            userRole={projectUserData?.role ?? 'CREW'}
             departments={departments}
           />
           <RatesAndCompensationSection
-            projectCurrency={projectUserData.project.currency}
+            projectCurrency={projectUserData?.project.currency}
           />
           <CarCompensationSection
             cars={[]}
             carStatements={carStatements}
             onCarCollectionChange={onCarCollectionChange}
-            projectCurrency={projectUserData.project.currency}
+            projectCurrency={projectUserData?.project.currency}
           />
           <Stack align="flex-end">
             <Button

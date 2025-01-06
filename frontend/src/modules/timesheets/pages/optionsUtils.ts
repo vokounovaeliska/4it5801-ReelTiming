@@ -1,4 +1,3 @@
-import { ProjectUser } from '@frontend/modules/crewlist/interfaces/interfaces';
 import { Car } from '../interfaces';
 
 export const getCarOptionsForLoggedInUser = (userCarsData: {
@@ -12,26 +11,34 @@ export const getCarOptionsForLoggedInUser = (userCarsData: {
   );
 };
 
-export const getUserOptionsForUserFilter = (allProjectUsersData: {
-  projectUsers: ProjectUser[];
-}) => {
+export const getUserOptionsForUserFilter = (
+  allProjectUsersData: {
+    id: string;
+    name: string;
+    surname: string;
+  }[],
+) => {
   return (
-    allProjectUsersData?.projectUsers
-      ?.filter((projectUser: ProjectUser) => projectUser.id !== null)
-      .map((projectUser: ProjectUser) => ({
+    allProjectUsersData
+      ?.filter((projectUser) => projectUser.id !== null)
+      .map((projectUser) => ({
         value: projectUser.id,
         label: `${projectUser.name} ${projectUser.surname}`,
       })) || []
   );
 };
 
-export const getUserOptionsForAdminAddTimesheet = (allProjectUsersData: {
-  projectUsers: ProjectUser[];
-}) => {
+export const getUserOptionsForAdminAddTimesheet = (
+  allProjectUsersData: {
+    id: string;
+    name: string;
+    surname: string;
+  }[],
+) => {
   return (
-    allProjectUsersData?.projectUsers
-      ?.filter((projectUser: ProjectUser) => projectUser.id !== null)
-      .map((projectUser: ProjectUser) => ({
+    allProjectUsersData
+      ?.filter((projectUser) => projectUser.id !== null)
+      .map((projectUser) => ({
         value: projectUser.id,
         label: `${projectUser.name} ${projectUser.surname}`,
       })) || []

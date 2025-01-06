@@ -36,8 +36,8 @@ export function EditProjectForm({
     name: project.name,
     description: project.description,
     productionCompany: project.production_company,
-    startDate: new Date(project?.start_date),
-    endDate: new Date(project?.end_date),
+    startDate: project?.start_date ? new Date(project.start_date) : new Date(),
+    endDate: project?.end_date ? new Date(project.end_date) : null,
     currency: project.currency,
   };
 

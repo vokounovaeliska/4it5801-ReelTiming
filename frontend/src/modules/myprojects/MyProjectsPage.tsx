@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client';
 import { Center, Spinner, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
+import { ProjectBasicInfoFragment } from '@frontend/gql/graphql';
 import { GET_USER_PROJECTS } from '@frontend/graphql/queries/GetUserProjects';
 import { useAuth } from '@frontend/modules/auth';
 import { MyProjectsTemplate } from '@frontend/modules/auth/templates/MyProjectsTemplate';
@@ -15,7 +16,8 @@ export function MyProjectsPage() {
   const navigate = useNavigate();
 
   const { data, loading, error, refetch } = useQuery(GET_USER_PROJECTS, {
-    variables: { userId: auth.user?.id },
+    variables: { userId: auth.user?.id! },
+    skip: !auth.user?.id,
     fetchPolicy: 'cache-and-network',
   });
 
@@ -46,13 +48,10 @@ export function MyProjectsPage() {
   }
 
   const projects =
-    data?.userProjects?.map(
-      (project: { id: string; name: string; description: string }) => ({
-        id: project.id,
-        name: project.name,
-        description: project.description,
-      }),
-    ) || [];
+    data?.userProjects?.map((project) => {
+      const { id, name, description } = project as ProjectBasicInfoFragment;
+      return { id, name, description };
+    }) || [];
 
   const handleAddProject = () => {
     navigate(route.createProject());

@@ -41,7 +41,8 @@ export function MyProjectDetailPage() {
     loading: dataLoading,
     error,
   } = useQuery(GET_PROJECT_DETAILS, {
-    variables: { id },
+    variables: { id: id! },
+    skip: !id,
     fetchPolicy: 'cache-and-network',
   });
 
@@ -50,8 +51,8 @@ export function MyProjectDetailPage() {
     loading: roleLoading,
     error: roleError,
   } = useQuery(GET_USER_ROLE_IN_PROJECT, {
-    skip: !auth.user,
-    variables: { userId: auth.user?.id, projectId: id },
+    skip: !auth.user || !id,
+    variables: { userId: auth.user?.id!, projectId: id! },
     fetchPolicy: 'cache-and-network',
   });
 

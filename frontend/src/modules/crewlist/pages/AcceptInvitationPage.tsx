@@ -26,7 +26,7 @@ export function AcceptInvitationPage() {
   const isAuthenticated = user !== null;
 
   const { data, loading, error } = useQuery(GET_PROJECT_USER_BY_TOKEN, {
-    variables: { token },
+    variables: { token: token! },
     skip: !token,
   });
 
@@ -64,7 +64,7 @@ export function AcceptInvitationPage() {
           kilometerRate: car.kilometer_rate,
           kilometerAllow: car.kilometer_allow,
           name: car.name,
-          projectUserId: projectUser.id,
+          projectUserId: projectUser!.id!,
         },
       });
     }
@@ -73,10 +73,10 @@ export function AcceptInvitationPage() {
   const handleFormSubmit = (formData: crewListFormValues, cars: Car[]) => {
     UpdateAdActivateProjectUser({
       variables: {
-        updateProjectUserId: projectUser.id!,
+        updateProjectUserId: projectUser?.id!,
         data: {
           user_id: user?.id!,
-          project_id: projectUser.project?.id!,
+          project_id: projectUser!.project?.id!,
           name: formData.name,
           surname: formData.surname,
           email: formData.email,
@@ -84,8 +84,8 @@ export function AcceptInvitationPage() {
           position: formData.position,
           department_id: formData.department,
           is_active: true,
-          role: projectUser.role,
-          rate_id: projectUser.rate?.id,
+          role: projectUser!.role,
+          rate_id: projectUser!.rate?.id,
         },
         updateRateData: {
           standard_rate: formData.standard_rate,
@@ -95,12 +95,12 @@ export function AcceptInvitationPage() {
           overtime_hour3: formData.overtime_hour3,
           overtime_hour4: formData.overtime_hour4,
         },
-        rateId: projectUser.rate?.id,
+        rateId: projectUser!.rate?.id!,
       },
     })
       .then(() => addCarsForUser(cars))
       .then(() => {
-        navigate(`/projects/${projectUser.project?.id}`);
+        navigate(`/projects/${projectUser!.project?.id}`);
       })
       .catch((err) => {
         console.error('Error activating project user:', err);
@@ -142,7 +142,7 @@ export function AcceptInvitationPage() {
       <AcceptInvitationTemplate
         onSubmit={handleFormSubmit}
         onCarCollectionChange={handleCarCollectionChange}
-        projectUserData={projectUser}
+        projectUserData={projectUser!}
         departments={departments}
         errorMessage={error}
         isLoading={loading}

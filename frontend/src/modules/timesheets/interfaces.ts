@@ -9,6 +9,7 @@ export interface UserInfo {
   id: string;
   name: string;
   surname: string;
+  email?: string;
 }
 
 export interface Rate {
@@ -41,6 +42,7 @@ export interface Timesheet {
     name: string;
     surname: string;
     rate?: Rate;
+    email?: string;
   };
   create_date: string;
   car?: Car;
@@ -118,7 +120,7 @@ export interface TimesheetsFormProps {
   carOptionsForLoggedInUser: { value: string; label: string }[];
   // carOptionsForLoggedInUser: Car[];
   allCarsOnProjectData: AllCarsOnProjectData;
-  userInfoRates: TimesheetProjectUsers;
+  userInfoRates: TimesheetProjectUsers[];
   projectCurrency: string;
 }
 
@@ -128,7 +130,7 @@ export interface AllCarsOnProjectData {
 }
 
 export interface TimesheetProjectUsers {
-  projectUserss?: ProjectUser[];
+  // projectUserss?: ProjectUser[];
   projectUsers: {
     id: string;
     name: string;
@@ -236,6 +238,8 @@ export type FormValues = {
 export interface UserInfoData {
   projectUserDetails: {
     id: string;
+    name: string;
+    surname: string;
     project: {
       name: string;
       currency: string;
@@ -246,8 +250,8 @@ export interface UserInfoData {
 export interface UseAddTimesheetProps {
   projectId: string;
   userRole: string;
-  userInfoData: UserInfoData;
-  userInfo: UserInfo | null;
+  userInfoData?: UserInfoData | null;
+  userInfo?: UserInfo | null;
 }
 
 export interface UseDeleteTimesheetProps {
@@ -259,9 +263,9 @@ export interface UseDeleteTimesheetProps {
 export interface UseEditTimesheetProps {
   projectId: string;
   userRole: string;
-  userInfoData: UserInfoData;
+  userInfoData?: UserInfoData | null;
   selectedTimesheet: Timesheet | null;
-  userInfo: UserInfo | null;
+  userInfo?: UserInfo | null;
 }
 
 export interface DataLoadingUtilsProps {
@@ -301,7 +305,7 @@ export interface AdminData {
 }
 
 export interface AllProjectUsersData {
-  projectUsers: TimesheetProjectUsers;
+  projectUsers: TimesheetProjectUsers[];
 }
 
 export interface AllProjectUsersDataForOptions {
@@ -316,18 +320,18 @@ export interface DataLoadingUtilsResult {
   isDataAvailable: boolean;
   loading: boolean;
   error: boolean | string;
-  roleData: RoleData;
-  crewData: CrewData | null;
-  adminData: AdminData | null;
-  allProjectUsersData: AllProjectUsersData;
-  allProjectUsersDataForOptions: AllProjectUsersDataForOptions;
+  roleData?: RoleData;
+  crewData?: CrewData;
+  adminData?: AdminData;
+  allProjectUsersData?: AllProjectUsersData;
+  allProjectUsersDataForOptions?: AllProjectUsersData;
   // allProjectUsersData: TimesheetProjectUsers;
-  allCarsOnProjectData: AllCarsOnProjectData;
-  userInfoData: UserInfoData;
-  userCarsData: UserCarsData;
+  allCarsOnProjectData?: AllCarsOnProjectData;
+  userInfoData?: UserInfoData;
+  userCarsData?: UserCarsData;
 }
 
 export interface CarStatement {
   car_id: string;
-  kilometers: string;
+  kilometers?: number | null;
 }

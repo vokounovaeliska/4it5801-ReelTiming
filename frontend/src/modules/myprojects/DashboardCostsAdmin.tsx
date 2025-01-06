@@ -11,7 +11,7 @@ import { currencyUtil } from '@shared/currencyUtil';
 import DashButton from './DashButton';
 
 interface Statement {
-  kilometers: number | null;
+  kilometers?: number | null;
   // zde přidat další vlastnosti ze statement
 }
 

@@ -9,7 +9,7 @@ import Navbar from './Navbar';
 
 interface ProjectNavbarProps {
   projectId?: string;
-  userRole?: string;
+  userRole?: string | null;
 }
 
 const CustomNavbar: React.FC<ProjectNavbarProps> = ({

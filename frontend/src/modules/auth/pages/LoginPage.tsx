@@ -29,12 +29,10 @@ export function LogInPage() {
   const [searchParams] = useSearchParams();
   const invitationToken = searchParams.get('token');
   const { data } = useQuery(GET_PROJECT_BY_PROJECT_USER_TOKEN, {
-    variables: { token: invitationToken },
+    variables: { token: invitationToken! },
     skip: !invitationToken,
   });
 
-  console.log(invitationToken);
-  console.log(data);
   const [loginRequest, loginRequestState] = useMutation(SIGNIN_MUTATION, {
     onCompleted: ({ signIn: { user, token } }) => {
       auth.signIn({ token, user });

@@ -30,6 +30,7 @@ export const useCrewListPageUtils = () => {
     overtime_hour2: data.overtime_hour2 || 0,
     overtime_hour3: data.overtime_hour3 || 0,
     overtime_hour4: data.overtime_hour4 || 0,
+    position: data.position ?? '',
   });
 
   const {
@@ -37,11 +38,12 @@ export const useCrewListPageUtils = () => {
     loading: crewListLoading,
     error: crewListError,
   } = useQuery(GET_CREWLIST_INFO, {
-    variables: { projectId, userId: auth.user?.id },
+    variables: { projectId: projectId!, userId: auth.user?.id! },
+    skip: !projectId || !auth.user?.id,
     fetchPolicy: 'cache-and-network',
   });
 
-  const crewList = crewListData || [];
+  const crewList = crewListData;
 
   const {
     addCrewMember,
@@ -70,35 +72,45 @@ export const useCrewListPageUtils = () => {
     setIsSubmitting(true);
     try {
       const { responseId } = await addCrewMember(data, projectId!);
+
       const cacheData = client.readQuery({
         query: GET_CREWLIST_INFO,
-        variables: { projectId, userId: auth.user?.id },
+        variables: { projectId: projectId!, userId: auth.user?.id! },
       });
-      const newUser = {
-        ...data,
-        id: responseId.data.addProjectUser.id,
-        invitation: sendInvite ? true : null,
-        rate_id: responseId.data.addProjectUser.rate,
-        user: null,
-        is_active: false,
-      };
-      client.writeQuery({
-        query: GET_CREWLIST_INFO,
-        variables: { projectId, userId: auth.user?.id },
-        data: {
-          ...cacheData,
-          projectUsers: [...cacheData.projectUsers, newUser],
-        },
-      });
-      if (sendInvite) {
-        await sendEmailInvitation(
-          responseId.data.addProjectUser.id,
-          name,
-          email,
-        );
+
+      if (cacheData && cacheData.projectUsers) {
+        const newUser = {
+          ...data,
+          id: responseId?.data?.addProjectUser.id,
+          invitation: sendInvite ? true : null,
+          rate_id: responseId?.data?.addProjectUser.project,
+          user: null,
+          is_active: false,
+        };
+
+        client.writeQuery({
+          query: GET_CREWLIST_INFO,
+          variables: { projectId: projectId!, userId: auth.user?.id! },
+          data: {
+            ...cacheData,
+            projectUsers: [...cacheData.projectUsers, newUser],
+          },
+        });
+
+        if (sendInvite) {
+          await sendEmailInvitation(
+            responseId?.data?.addProjectUser?.id ?? '',
+            name,
+            email,
+          );
+        }
+
+        showSuccessToast('Crew member added successfully');
+        handleModalClose();
+      } else {
+        console.error('Error: cacheData or projectUsers is null');
+        showErrorToast('Failed to add crew member. Please try again.');
       }
-      showSuccessToast('Crew member added successfully');
-      handleModalClose();
     } catch (error) {
       console.error('Error adding new crew member:', error);
       showErrorToast('Failed to add crew member. Please try again.');
@@ -124,12 +136,13 @@ export const useCrewListPageUtils = () => {
     try {
       let departmentId = data.department;
       if (
-        !crewList.departments.some(
+        !crewList?.departments.some(
           (dept: { id: string }) => dept.id === departmentId,
         )
       ) {
         departmentId =
-          departmentNameToId(data.department, crewList.departments) || '';
+          departmentNameToId(data.department, crewList?.departments ?? []) ||
+          '';
       }
       if (!departmentId) {
         throw new Error('Invalid department ID');
@@ -141,20 +154,24 @@ export const useCrewListPageUtils = () => {
       await editCrewMember(updatedData, projectId!, oldCars);
       const cacheData = client.readQuery({
         query: GET_CREWLIST_INFO,
-        variables: { projectId, userId: auth.user?.id },
+        variables: { projectId: projectId!, userId: auth.user?.id! },
       });
-      const updatedUsers = cacheData.projectUsers.map((user: ProjectUser) => {
-        if (user.id === data.id) {
-          return {
-            ...user,
-            ...updatedData,
-          };
-        }
-        return user;
-      });
+
+      const updatedUsers = (cacheData?.projectUsers || []).map(
+        (user: ProjectUser) => {
+          if (user.id === data.id) {
+            return {
+              ...user,
+              ...updatedData,
+            };
+          }
+          return user;
+        },
+      );
+
       client.writeQuery({
         query: GET_CREWLIST_INFO,
-        variables: { projectId, userId: auth.user?.id },
+        variables: { projectId: projectId!, userId: auth.user?.id! },
         data: {
           ...cacheData,
           projectUsers: updatedUsers,
@@ -180,14 +197,14 @@ export const useCrewListPageUtils = () => {
       await deleteCrewMember(projectUserId);
       const data = client.readQuery({
         query: GET_CREWLIST_INFO,
-        variables: { projectId, userId: auth.user?.id },
+        variables: { projectId: projectId!, userId: auth.user?.id! },
       });
-      const updatedUsers = data.projectUsers.filter(
+      const updatedUsers = data?.projectUsers.filter(
         (user: ProjectUser) => user.id !== projectUserId,
       );
       client.writeQuery({
         query: GET_CREWLIST_INFO,
-        variables: { projectId, userId: auth.user?.id },
+        variables: { projectId: projectId!, userId: auth.user?.id! },
         data: {
           ...data,
           projectUsers: updatedUsers,
@@ -209,6 +226,9 @@ export const useCrewListPageUtils = () => {
     resending: boolean,
   ) => {
     try {
+      if (!projectUserId || !auth.user?.id) {
+        throw new Error('projectUserId or user ID is missing.');
+      }
       if (resending) {
         await deleteCrewMemberInvitation(projectUserId!);
       }
@@ -216,10 +236,10 @@ export const useCrewListPageUtils = () => {
 
       const data = client.readQuery({
         query: GET_CREWLIST_INFO,
-        variables: { projectId, userId: auth.user?.id },
+        variables: { projectId: projectId!, userId: auth.user?.id! },
       });
 
-      const updatedUsers = data.projectUsers.map((user: ProjectUser) => {
+      const updatedUsers = data?.projectUsers.map((user: ProjectUser) => {
         if (user.id === projectUserId) {
           return {
             ...user,
@@ -231,7 +251,7 @@ export const useCrewListPageUtils = () => {
 
       client.writeQuery({
         query: GET_CREWLIST_INFO,
-        variables: { projectId, userId: auth.user?.id },
+        variables: { projectId: projectId!, userId: auth.user?.id! },
         data: {
           ...data,
           projectUsers: updatedUsers,

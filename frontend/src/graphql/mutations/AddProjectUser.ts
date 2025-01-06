@@ -33,6 +33,9 @@ export const ADD_PROJECT_USER = gql(`
       }
       is_team_leader
       role
+      rate{
+        id
+      }
     }
   }
 `);

@@ -22,7 +22,7 @@ interface ProjectUser {
 
 interface Statement {
   projectUser: ProjectUser;
-  kilometers: number | null;
+  kilometers?: number | null;
 }
 
 const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({

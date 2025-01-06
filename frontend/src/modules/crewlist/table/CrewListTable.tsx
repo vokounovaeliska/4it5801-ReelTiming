@@ -20,7 +20,7 @@ interface CrewListTableProps {
   ) => void;
   userRoleInProject: string;
   authUserId: string | undefined;
-  projectCurrency: string;
+  projectCurrency?: string;
 }
 
 const tableHeaders = [
@@ -128,7 +128,7 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                     <CrewMemberRow
                       key={user.id}
                       user={user}
-                      projectCurrency={projectCurrency}
+                      projectCurrency={projectCurrency!}
                       handleEditMemberClick={handleEditMemberClick}
                       sendInvitation={sendInvitation}
                       handleRemoveButtonClick={handleRemoveButtonClick}
