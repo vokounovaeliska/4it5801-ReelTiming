@@ -1,14 +1,14 @@
 import { useQuery } from '@apollo/client';
-import { GET_ALL_PROJECT_USERS } from '@frontend/gql/queries/GetAllProjectUsers';
-import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/gql/queries/GetCrewUserInfoTimesheets';
-import { GET_USER_ROLE_IN_PROJECT } from '@frontend/gql/queries/GetUserRoleInProject';
+import { GET_ALL_PROJECT_USERS } from '@frontend/graphql/queries/GetAllProjectUsers';
+import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/graphql/queries/GetCrewUserInfoTimesheets';
+import { GET_USER_ROLE_IN_PROJECT } from '@frontend/graphql/queries/GetUserRoleInProject';
 import {
   GET_CREW_STATEMENTS,
   GET_ADMIN_STATEMENTS,
   GET_CARS_STATEMENTS,
-} from '@frontend/gql/queries/GetStatements';
-import { GET_ALL_CARS_ON_PROJECT_BY_PROJECTUSER_ID } from '@frontend/gql/queries/GetAllCarsOnProjectByProjectUserId';
-import { GET_CARS_BY_PROJECT_USER_ID } from '@frontend/gql/queries/GetCarsByProjectUserId';
+} from '@frontend/graphql/queries/GetStatements';
+import { GET_ALL_CARS_ON_PROJECT_BY_PROJECTUSER_ID } from '@frontend/graphql/queries/GetAllCarsOnProjectByProjectUserId';
+import { GET_CARS_BY_PROJECT_USER_ID } from '@frontend/graphql/queries/GetCarsByProjectUserId';
 
 export const useAllProjectUsers = (projectId: string) => {
   const {
