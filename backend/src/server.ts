@@ -37,6 +37,7 @@ import { timesheetPdfGeneratorService } from '@backend/pdf/timesheetReport/times
 import { z } from 'zod';
 import { CarResolver } from '@backend/graphql/modules/car/carResolver';
 import { ShootingDayResolver } from './graphql/modules/shootingDay/shootingDayResolver';
+import { DailyReportResolver } from './graphql/modules/dailyReport/dailyReportResolver';
 
 const init = async () => {
   const app = express();
@@ -55,6 +56,7 @@ const init = async () => {
       StatementResolver,
       CarResolver,
       ShootingDayResolver,
+      DailyReportResolver,
     ],
     emitSchemaFile: true,
   });

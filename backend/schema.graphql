@@ -36,6 +36,25 @@ type CarStatement {
   kilometers: Float
 }
 
+type DailyReport {
+  create_date: DateTimeISO
+  footer: [ReportItem!]!
+  id: ID!
+  intro: [ReportItem!]!
+  last_update_date: DateTimeISO
+  project: Project
+  shootingDay: ShootingDay
+  shooting_progress: [ReportItem!]!
+}
+
+input DailyReportInput {
+  footer: [ReportItemInput!]!
+  intro: [ReportItemInput!]!
+  project_id: String!
+  shooting_day_id: String!
+  shooting_progress: [ReportItemInput!]!
+}
+
 """
 A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.This scalar is serialized to a string in ISO 8601 format and parsed from a string in ISO 8601 format.
 """
@@ -59,6 +78,7 @@ input DepartmentInput {
 type Mutation {
   activateProjectUser(token: String!, userId: String!): Boolean!
   addCar(kilometer_allow: Float!, kilometer_rate: Float!, name: String!, project_user_id: String!): Car!
+  addDailyReport(footer: [ReportItemInput!]!, intro: [ReportItemInput!]!, projectId: String!, shooting_day_id: String!, shooting_progress: [ReportItemInput!]!): DailyReport!
   addDepartment(isVisible: Boolean, name: String!, orderIndex: Float, projectId: String): Department!
   addProject(create_user_id: String, currency: String, description: String, end_date: DateTimeISO, logo: String, name: String!, production_company: String!, start_date: DateTimeISO): Project!
   addProjectUser(departmentId: String = null, email: String!, invitation: String = null, isTeamLeader: Boolean = false, name: String!, phone_number: String = null, position: String = null, projectId: String!, rateId: String = null, role: String = "CREW", surname: String!, userId: String = null): ProjectUser!
@@ -66,6 +86,7 @@ type Mutation {
   addShootingDay(date: DateTimeISO!, eventType: String, projectId: String!, shootingDayNumber: Float!): ShootingDay!
   addStatement(calculated_overtime: Float = null, car_id: String = null, claimed_overtime: Float = null, from: DateTimeISO!, kilometers: Float = null, project_user_id: String!, shift_lenght: Float!, start_date: DateTimeISO!, to: DateTimeISO!): Statement!
   deleteCar(id: String!): Boolean!
+  deleteDailyReport(dailyReportId: String!): Boolean!
   deleteDepartment(departmentId: String!): Boolean!
   deleteInvitation(projectUserId: String!): Boolean!
   deleteProject(projectId: String!): Boolean!
@@ -80,6 +101,7 @@ type Mutation {
   signIn(email: String!, password: String!): AuthInfo!
   signUp(email: String!, name: String!, password: String!, phone_number: String, surname: String!): AuthInfo!
   updateCar(data: CarInput!, id: String!): Car!
+  updateDailyReport(dailyReportId: String!, data: DailyReportInput!): DailyReport!
   updateDepartment(data: DepartmentInput!, departmentId: String!): Department!
   updateProject(data: ProjectInput!, projectId: String!): Project!
   updateProjectUser(data: ProjectUserInput!, id: String!): ProjectUser!
@@ -168,9 +190,12 @@ type Query {
   carStatementsByProjectId(projectId: String!): [CarStatement!]!
   cars: [Car!]!
   carsByProjectUserId(projectUserId: String!): [Car!]!
+  dailyReport(id: String!): DailyReport
+  dailyReportsByProjectId(projectId: String!): [DailyReport!]!
   department(id: String!): Department
   departments(projectId: String!): [Department!]!
   getStatementsByDateRangeAndProjectUserId(endDate: DateTimeISO!, projectUserId: String!, startDate: DateTimeISO!): [Statement!]!
+  lastDailyReportByProjectId(projectId: String!): [DailyReport!]!
   project(id: String!): Project
   projectUser(id: String!): ProjectUser
   projectUserDetails(projectId: String!, userId: String!): ProjectUser
@@ -218,6 +243,16 @@ input RateInput {
   overtime_hour3: Float
   overtime_hour4: Float
   standard_rate: Float
+}
+
+type ReportItem {
+  title: String!
+  value: String!
+}
+
+input ReportItemInput {
+  title: String!
+  value: String!
 }
 
 type ShootingDay {

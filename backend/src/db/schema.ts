@@ -52,7 +52,7 @@ export const project = mysqlTable('project', {
   is_active: boolean('is_active').default(true),
   description: varchar('description', { length: 500 }),
   currency: varchar('currency', { length: 3 }).default('CZK').notNull(),
-  logo: varchar('logo', { length: 16777215 }), // Equivalent to MEDIUMBLOB in size
+  logo: varchar('logo', { length: 19845 }), // Equivalent to MEDIUMBLOB in size
 });
 
 export const project_user = mysqlTable(
@@ -238,6 +238,11 @@ export const daily_report = mysqlTable('daily_report', {
   intro: json('intro'),
   shooting_progress: json('shooting_progress'),
   footer: json('footer'),
+  create_date: timestamp('create_date').notNull().defaultNow(),
+  last_update_date: timestamp('last_update_date')
+    .notNull()
+    .defaultNow()
+    .onUpdateNow(),
 });
 
 export const shift_overview = mysqlTable('shift_overview', {

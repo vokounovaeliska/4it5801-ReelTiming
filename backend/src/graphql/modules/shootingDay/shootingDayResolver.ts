@@ -62,7 +62,7 @@ export class ShootingDayResolver {
     });
     const shootindDayService = new ShootingDayService(db);
     return await shootindDayService.createShootingDay(validatedData);
-}
+  }
 
   @Mutation(() => Boolean)
   async deleteShootingDay(
