@@ -1,10 +1,10 @@
 import currencyCodes from 'currency-codes';
-
-import { Select, type SelectProps } from '@frontend/shared/design-system';
+import { Controller, useFormContext } from 'react-hook-form';
+import Select from 'react-select';
 
 import { FormField, type FormFieldBaseProps } from '../FormField';
 
-export type CurrencySelectFieldProps = FormFieldBaseProps<SelectProps>;
+export type CurrencySelectFieldProps = FormFieldBaseProps<{}>;
 
 export function CurrencySelectField({
   id,
@@ -14,11 +14,12 @@ export function CurrencySelectField({
 }: CurrencySelectFieldProps) {
   const currencies = currencyCodes.data
     .map((currency) => ({
-      code: currency.code,
+      value: currency.code,
       label: `${currency.code} - ${currency.currency}`,
     }))
     .sort((a, b) => a.label.localeCompare(b.label));
 
+  const { control } = useFormContext();
   return (
     <FormField
       id={id}
@@ -26,27 +27,28 @@ export function CurrencySelectField({
       label={label}
       isRequired={selectProps.isRequired}
     >
-      {(field) => (
-        <Select
-          borderColor="gray.400"
-          borderWidth={1}
-          placeholder="Select currency"
-          {...selectProps}
-          {...field}
-          filterOption={(
-            inputValue: string,
-            option: { label: string; value: string },
-          ) =>
-            option?.label.toLowerCase().includes(inputValue.toLowerCase()) ||
-            option?.value.toLowerCase().includes(inputValue.toLowerCase())
-          }
-        >
-          {currencies.map((currency) => (
-            <option key={currency.code} value={currency.code}>
-              {currency.label}
-            </option>
-          ))}
-        </Select>
+      {() => (
+        <Controller
+          name={name}
+          control={control}
+          render={({ field }) => (
+            <Select
+              {...field}
+              options={currencies}
+              placeholder="Select currency"
+              styles={{
+                menu: (provided) => ({
+                  ...provided,
+                  overflowY: 'auto',
+                }),
+              }}
+              value={currencies.find((c) => c.value === field.value)} // Nastavení aktuální hodnoty
+              onChange={(selectedOption) =>
+                field.onChange(selectedOption?.value)
+              }
+            />
+          )}
+        />
       )}
     </FormField>
   );

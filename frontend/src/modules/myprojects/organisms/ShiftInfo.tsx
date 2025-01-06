@@ -4,8 +4,8 @@ import { FaCirclePlus } from 'react-icons/fa6';
 
 import { route } from '@frontend/route';
 
-import DashButton from './DashButton';
-import RecentTimesheets from './RecentTimesheets';
+import DashButton from '../atoms/DashButton';
+import RecentTimesheets from '../molecules/RecentTimesheets';
 
 interface ShiftInfoProps {
   projectId: string;

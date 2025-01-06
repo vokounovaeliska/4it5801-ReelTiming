@@ -7,7 +7,7 @@ import { useAuth } from '@frontend/modules/auth';
 import { MyProjectsTemplate } from '@frontend/modules/auth/templates/MyProjectsTemplate';
 import { route } from '@frontend/route';
 
-import { GET_USER_PROJECTS } from '../../gql/queries/GetUserProjects';
+import { GET_USER_PROJECTS } from '../../../gql/queries/GetUserProjects';
 
 import ErrorMyProjectPage from './ErrorMyProjectPage';
 
@@ -17,7 +17,8 @@ export function MyProjectsPage() {
 
   const { data, loading, error, refetch } = useQuery(GET_USER_PROJECTS, {
     variables: { userId: auth.user?.id },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {

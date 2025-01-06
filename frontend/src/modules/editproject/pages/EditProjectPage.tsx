@@ -16,13 +16,14 @@ export function EditProjectPage() {
   const auth = useAuth();
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
-  const { data } = useQuery(GET_PROJECT_DETAILS, {
+  const { data, refetch } = useQuery(GET_PROJECT_DETAILS, {
     variables: { id: projectId },
     fetchPolicy: 'cache-and-network',
   });
 
   const [editproject] = useMutation(EDIT_PROJECT, {
-    onCompleted: () => {
+    onCompleted: async () => {
+      await refetch();
       navigate(`/projects/${projectId}`);
     },
   });

@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Box, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 
-import { GET_CREWLIST_INFO } from '../../gql/queries/GetCrewListInfo';
+import { GET_CREWLIST_INFO } from '../../../gql/queries/GetCrewListInfo';
 
 interface ProjectUser {
   id: string;
@@ -28,7 +28,8 @@ const RecentCrewMembers: React.FC<RecentCrewMembersProps> = ({
 }) => {
   const { loading, error, data } = useQuery(GET_CREWLIST_INFO, {
     variables: { projectId, userId },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   const isDataAvailable = !!data && Object.keys(data).length > 0;

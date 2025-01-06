@@ -8,7 +8,7 @@ import { GET_ADMIN_STATEMENTS } from '@frontend/gql/queries/GetStatements';
 import { route } from '@frontend/route';
 import { currencyUtil } from '@shared/currencyUtil';
 
-import DashButton from './DashButton';
+import DashButton from '../atoms/DashButton';
 
 interface DashboardEarningsProps {
   projectId: string;
@@ -16,12 +16,19 @@ interface DashboardEarningsProps {
   currency: string;
 }
 
-interface ProjectUser {
-  id: string;
-}
-
 interface Statement {
-  projectUser: ProjectUser;
+  projectUser: {
+    id: string;
+    rate: {
+      standard_rate: number;
+      overtime_hour1: number;
+      overtime_hour2: number;
+      overtime_hour3: number;
+      overtime_hour4: number;
+    };
+  };
+  shift_lenght: number;
+  claimed_overtime: number;
   kilometers: number | null;
 }
 
@@ -36,7 +43,8 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
     data: dataUserInfo,
   } = useQuery(GET_CREWUSERINFO_TIMESHEETS, {
     variables: { userId, projectId },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   const {
@@ -46,7 +54,8 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
   } = useQuery(GET_ADMIN_STATEMENTS, {
     skip: !dataUserInfo?.projectUserDetails?.id,
     variables: { projectId: projectId },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
   });
 
   if (loadingUserInfo || loadingKilometers) return <Text>Loading...</Text>;
@@ -63,6 +72,7 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
     (statement) => statement.projectUser.id === userProjectInfo?.id,
   );
 
+  // Calculate total mileage for the specific user
   const totalMileage = userStatements.reduce(
     (total: number, statement: Statement) => {
       return total + (statement.kilometers || 0);
@@ -70,14 +80,56 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
     0,
   );
 
-  // Získání symbolu měny
+  // Calculate total overtime earnings for the specific user
+  const totalOvertimeEarnings = userStatements.reduce(
+    (total: number, statement: Statement) => {
+      const { claimed_overtime } = statement;
+      const { overtime_hour1, overtime_hour2, overtime_hour3, overtime_hour4 } =
+        statement.projectUser.rate;
+
+      let overtimeEarnings = 0;
+
+      // Apply overtime rates based on claimed overtime
+      if (claimed_overtime >= 1) {
+        overtimeEarnings += overtime_hour1; // 1st overtime hour
+      }
+      if (claimed_overtime >= 2) {
+        overtimeEarnings += overtime_hour2; // 2nd overtime hour
+      }
+      if (claimed_overtime >= 3) {
+        overtimeEarnings += overtime_hour3; // 3rd overtime hour
+      }
+      if (claimed_overtime > 3) {
+        overtimeEarnings += (claimed_overtime - 3) * overtime_hour4; // Additional overtime hours
+      }
+
+      return total + overtimeEarnings;
+    },
+    0,
+  );
+
+  // Calculate total labor earnings (standard earnings + overtime)
+  const totalLaborEarnings = userStatements.reduce(
+    (total: number, statement: Statement) => {
+      const standardRate = statement.projectUser.rate.standard_rate;
+      const shiftLength = statement.shift_lenght || 0;
+
+      // Standard labor earnings (shift_lenght * standard_rate)
+      const laborEarnings = shiftLength * standardRate;
+
+      return total + laborEarnings;
+    },
+    0,
+  );
+
+  const superTotalLaborEarnings = totalLaborEarnings + totalOvertimeEarnings;
+
+  // Get currency symbol
   const currencySymbol = currencyUtil.getCurrencySymbol(currency);
 
   const totalMileageText = `${totalMileage} km`;
-
-  //   totalMileage > 0 ? `${totalKilometers} km`: 'N/A';
-
-  // TODO - cache grab
+  const superTotalLaborEarningsText = `${superTotalLaborEarnings.toLocaleString()} ${currencySymbol}`;
+  const totalOvertimeEarningsText = `${totalOvertimeEarnings.toLocaleString()} ${currencySymbol}`;
 
   return (
     <>
@@ -99,7 +151,7 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
         >
           <Text>Total labor earnings</Text>
           <HStack spacing={2} align="center" justify="center">
-            <Text fontSize="2xl">N/A</Text>
+            <Text fontSize="2xl">{superTotalLaborEarningsText}</Text>
           </HStack>
         </Box>
 
@@ -113,7 +165,7 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
         >
           <Text>Overtime earnings</Text>
           <HStack spacing={2} align="center" justify="center">
-            <Text fontSize="2xl">N/A</Text>
+            <Text fontSize="2xl">{totalOvertimeEarningsText}</Text>
           </HStack>
         </Box>
       </HStack>
