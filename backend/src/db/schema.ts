@@ -4,6 +4,7 @@ import {
   datetime,
   double,
   int,
+  json,
   mysqlTable,
   timestamp,
   uniqueIndex,
@@ -30,6 +31,7 @@ export const user = mysqlTable('user', {
   is_active: boolean('is_active').default(true).notNull(),
   password_reset_token: varchar('password_reset_token', { length: 255 }),
   password_reset_expiration_time: timestamp('password_reset_expiration_time'),
+  can_create_project: boolean('can_create_project').default(false),
 });
 
 export const project = mysqlTable('project', {
@@ -50,6 +52,7 @@ export const project = mysqlTable('project', {
   is_active: boolean('is_active').default(true),
   description: varchar('description', { length: 500 }),
   currency: varchar('currency', { length: 3 }).default('CZK').notNull(),
+  logo: varchar('logo', { length: 16777215 }), // Equivalent to MEDIUMBLOB in size
 });
 
 export const project_user = mysqlTable(
@@ -108,6 +111,13 @@ export const department = mysqlTable('department', {
     .$defaultFn(() => uuidv4())
     .primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
+  project_id: varchar('project_id', { length: 36 })
+    //.notNull()
+    .references(() => project.id, {
+      onDelete: 'cascade',
+    }),
+  order_index: int('order_index'),
+  is_visible: boolean('is_visible').default(true),
 });
 
 export const rate = mysqlTable('rate', {
@@ -157,30 +167,6 @@ export const statement = mysqlTable('statement', {
   kilometers: int('kilometers'),
 });
 
-export const report = mysqlTable('report', {
-  id: varchar('id', { length: 36 })
-    .$defaultFn(() => uuidv4())
-    .primaryKey(),
-  name: varchar('name', { length: 255 }).notNull(),
-  path: varchar('path', { length: 500 }).notNull(),
-  start_date: date('start_date').notNull(),
-  end_date: date('end_date').notNull(),
-  project_user_id: varchar('project_user_id', { length: 36 }).references(
-    () => project_user.id,
-    {
-      onDelete: 'cascade',
-    },
-  ),
-  project_id: varchar('project_id', { length: 36 }).references(
-    () => project.id,
-    {
-      onDelete: 'cascade',
-    },
-  ),
-  create_date: timestamp('create_date').notNull().defaultNow(),
-  create_user_id: varchar('create_user_id', { length: 36 }).notNull(),
-});
-
 export const car = mysqlTable('car', {
   id: varchar('id', { length: 36 })
     .$defaultFn(() => uuidv4())
@@ -204,4 +190,66 @@ export const car = mysqlTable('car', {
     .notNull()
     .defaultNow()
     .onUpdateNow(),
+});
+
+export const shooting_day = mysqlTable(
+  'shooting_day',
+  {
+    id: varchar('id', { length: 36 })
+      .$defaultFn(() => uuidv4())
+      .primaryKey(),
+    shooting_day_number: int('shooting_day_number').notNull(),
+    date: date('date').notNull(),
+    project_id: varchar('project_id', { length: 36 }).references(
+      () => project.id,
+      {
+        onDelete: 'cascade',
+      },
+    ),
+    event_type: varchar('event_type', { length: 50 }),
+  },
+  (table) => ({
+    shootingDayNumberProjectUnique: uniqueIndex(
+      'shooting_day_number_project_unique',
+    ).on(table.shooting_day_number, table.project_id),
+    shootingDateProjectUnique: uniqueIndex('shooting_date_project_unique').on(
+      table.date,
+      table.project_id,
+    ),
+  }),
+);
+
+export const daily_report = mysqlTable('daily_report', {
+  id: varchar('id', { length: 36 })
+    .$defaultFn(() => uuidv4())
+    .primaryKey(),
+  project_id: varchar('project_id', { length: 36 }).references(
+    () => project.id,
+    {
+      onDelete: 'cascade',
+    },
+  ),
+  shooting_day_id: varchar('shooting_day_id', { length: 36 }).references(
+    () => shooting_day.id,
+    {
+      onDelete: 'restrict',
+    },
+  ),
+  intro: json('intro'),
+  shooting_progress: json('shooting_progress'),
+  footer: json('footer'),
+});
+
+export const shift_overview = mysqlTable('shift_overview', {
+  id: varchar('id', { length: 36 })
+    .$defaultFn(() => uuidv4())
+    .primaryKey(),
+  project_id: varchar('project_id', { length: 36 }).references(
+    () => project.id,
+    {
+      onDelete: 'cascade',
+    },
+  ),
+  date: date('date'),
+  crew_working: json('crew_working'),
 });

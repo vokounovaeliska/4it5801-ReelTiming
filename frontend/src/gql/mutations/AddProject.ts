@@ -31,6 +31,10 @@ export const ADD_PROJECT = gql`
       last_update_date
       is_active
       currency
+      departments {
+        id
+        name
+      }
     }
   }
 `;
