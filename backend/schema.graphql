@@ -331,6 +331,7 @@ input StatementInput {
 }
 
 type User {
+  can_create_project: Boolean
   create_date: DateTimeISO!
   create_user_id: String!
   email: String!

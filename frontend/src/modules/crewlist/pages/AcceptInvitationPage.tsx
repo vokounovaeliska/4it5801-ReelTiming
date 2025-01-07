@@ -52,7 +52,10 @@ export function AcceptInvitationPage() {
     data: departmentsData,
     loading: departmentsLoading,
     error: departmentsError,
-  } = useQuery(GET_DEPARTMENTS);
+  } = useQuery(GET_DEPARTMENTS, {
+    variables: { projectId: data?.projectUsersByToken.project.id! },
+    skip: !data?.projectUsersByToken.project.id,
+  });
 
   const departments = departmentsData?.departments || [];
   const projectUser = data?.projectUsersByToken;

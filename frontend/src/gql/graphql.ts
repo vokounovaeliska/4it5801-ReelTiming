@@ -687,6 +687,7 @@ export type StatementInput = {
 
 export type User = {
   __typename?: 'User';
+  can_create_project?: Maybe<Scalars['Boolean']['output']>;
   create_date: Scalars['DateTimeISO']['output'];
   create_user_id: Scalars['String']['output'];
   email: Scalars['String']['output'];

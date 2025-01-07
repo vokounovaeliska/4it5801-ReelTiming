@@ -1,4 +1,4 @@
-import { desc, eq, and } from 'drizzle-orm';
+import { desc, eq, and, asc } from 'drizzle-orm';
 
 import { department } from '@backend/db/schema';
 import { type Db } from '@backend/types/types';
@@ -10,7 +10,7 @@ export function getDepartmentRepository(db: Db) {
         .select()
         .from(department)
         .where(eq(department.project_id, project_id))
-        .orderBy(desc(department.order_index), desc(department.name));
+        .orderBy(asc(department.order_index), desc(department.name));
     },
     async getDepartmentById(id: string) {
       return db.select().from(department).where(eq(department.id, id));

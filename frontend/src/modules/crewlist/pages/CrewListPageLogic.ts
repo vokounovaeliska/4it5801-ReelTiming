@@ -157,17 +157,15 @@ export const useCrewListPageUtils = () => {
         variables: { projectId: projectId!, userId: auth.user?.id! },
       });
 
-      const updatedUsers = (cacheData?.projectUsers || []).map(
-        (user: ProjectUser) => {
-          if (user.id === data.id) {
-            return {
-              ...user,
-              ...updatedData,
-            };
-          }
-          return user;
-        },
-      );
+      const updatedUsers = (cacheData?.projectUsers || []).map((user: any) => {
+        if (user.id === data.id) {
+          return {
+            ...user,
+            ...updatedData,
+          };
+        }
+        return user;
+      });
 
       client.writeQuery({
         query: GET_CREWLIST_INFO,
@@ -239,7 +237,7 @@ export const useCrewListPageUtils = () => {
         variables: { projectId: projectId!, userId: auth.user?.id! },
       });
 
-      const updatedUsers = data?.projectUsers.map((user: ProjectUser) => {
+      const updatedUsers = data?.projectUsers.map((user: any) => {
         if (user.id === projectUserId) {
           return {
             ...user,

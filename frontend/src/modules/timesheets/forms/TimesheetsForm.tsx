@@ -113,6 +113,14 @@ export const TimesheetsForm: React.FC<TimesheetsFormProps> = ({
     userInfoRates,
   );
 
+  console.log(selectedUser);
+  console.log(userInfo);
+  console.log('initialValues');
+
+  console.log(initialValues);
+
+  console.log(userInfoRates);
+
   const workedHours = useTimesheetsFormLogic(
     from,
     to,

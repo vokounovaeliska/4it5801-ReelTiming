@@ -14,7 +14,7 @@ export const RatesAndCompensationSection: React.FC<
   <FormSection
     title="Rates & Compensation"
     description="Provide or confirm the standard rates and overtime compensations."
-    fontSize="1.7rem"
+    fontSize="1.6rem"
   >
     <Divider orientation="vertical" display={{ base: 'none', lg: 'block' }} />
     <Divider orientation="horizontal" display={{ base: 'block', lg: 'none' }} />
