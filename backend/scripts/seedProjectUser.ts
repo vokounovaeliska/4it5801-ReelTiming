@@ -11,7 +11,7 @@ async function seedProjectUser(
         id: '2613db5e-057c-4032-976f-735bc1cd5622',
         project_id: '4dd6ec6b-8c05-410c-ae17-06942641716d',
         user_id: '4b95fa2a-b110-431e-a141-929c94870c1f',
-        department_id: 'f9931b15-6d2a-4d91-b328-79509d0da246',
+        department_id: 'f9931b15-6d2a-4d91-b328-79509d0da246', //TODO seedy takhle nebudou fungovat
         position: 'Chief',
         rate_id: '85cf4dfa-7768-49ec-b56e-38ab3ae7b252',
         number_of_people: null,

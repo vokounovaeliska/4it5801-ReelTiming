@@ -65,13 +65,26 @@ export function CreateProjectPage() {
 
           const rateId = rateData?.addRate?.id;
 
+          const departments = projectData?.addProject?.departments;
+          let departmentId = '';
+
+          if (departments) {
+            const productionDepartment = departments.find(
+              (department: { id: string; name: string }) =>
+                department.name === 'Production',
+            );
+            if (productionDepartment) {
+              departmentId = productionDepartment.id;
+            }
+          }
+
           await addProjectUser({
             variables: {
               projectId,
               userId: auth.user.id,
               isTeamLeader: true,
               rateId,
-              departmentId: '8dbf52d6-75e3-4e91-a1f4-24a79cf74cdd', // Replace with your actual department ID
+              departmentId: departmentId,
               role: 'ADMIN',
               invitation: projectId,
               phone_number: null,
