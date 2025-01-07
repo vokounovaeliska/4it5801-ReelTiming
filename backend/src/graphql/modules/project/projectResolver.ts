@@ -18,6 +18,12 @@ import { DepartmentService } from '../department/departmentService';
 import { Department } from '../department/departmentType';
 import { ProjectUser } from '../projectUser/projectUserType';
 import { ProjectUserService } from '../projectUser/projectUserService';
+import { ShiftOverview } from '../shiftOverview/shiftOverviewType';
+import { DailyReportService } from '../dailyReport/dailyReportService';
+import { DailyReport } from '../dailyReport/dailyReportType';
+import { ShiftOverviewService } from '../shiftOverview/shiftOverviewService';
+import { ShootingDayService } from '../shootingDay/shootingDayService';
+import { ShootingDay } from '../shootingDay/shootingDayType';
 
 const projectInputSchema = z.object({
   name: z.string().min(1),
@@ -160,6 +166,40 @@ export class ProjectResolver {
     if (project.id) {
       const projectUserService = new ProjectUserService(db);
       return projectUserService.getProjectUsersByProjectId(project.id);
+    }
+    return null;
+  }
+  @FieldResolver(() => [ShiftOverview], { nullable: true })
+  async shiftsOverview(
+    @Root() project: Project,
+    @Ctx() { db }: CustomContext,
+  ): Promise<ShiftOverview[] | null> {
+    if (project.id) {
+      const shiftOverviewService = new ShiftOverviewService(db);
+      return shiftOverviewService.getAllShiftOverviewByProjectId(project.id);
+    }
+    return null;
+  }
+  @FieldResolver(() => [ShootingDay], { nullable: true })
+  async shootingDays(
+    @Root() project: Project,
+    @Ctx() { db }: CustomContext,
+  ): Promise<ShootingDay[] | null> {
+    if (project.id) {
+      const shootingDayService = new ShootingDayService(db);
+      return shootingDayService.getAllShootingDays(project.id);
+    }
+    return null;
+  }
+
+  @FieldResolver(() => [DailyReport], { nullable: true })
+  async dailyReports(
+    @Root() project: Project,
+    @Ctx() { db }: CustomContext,
+  ): Promise<DailyReport[] | null> {
+    if (project.id) {
+      const dailyReportsService = new DailyReportService(db);
+      return dailyReportsService.getAllDailyReportsByProjectId(project.id);
     }
     return null;
   }

@@ -200,6 +200,7 @@ type Project {
   create_date: DateTimeISO!
   create_user_id: String!
   currency: String!
+  dailyReports: [DailyReport!]
   departments: [Department!]
   description: String!
   end_date: DateTimeISO
@@ -211,6 +212,8 @@ type Project {
   name: String!
   production_company: String!
   projectUsers: [ProjectUser!]
+  shiftsOverview: [ShiftOverview!]
+  shootingDays: [ShootingDay!]
   start_date: DateTimeISO
 }
 
