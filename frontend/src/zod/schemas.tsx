@@ -131,7 +131,7 @@ export const newPasswordFormSchema = zod
     if (data.newPassword !== data.newPasswordConfirmation) {
       ctx.addIssue({
         code: zod.ZodIssueCode.custom,
-        path: ['passwordConfirmation'],
+        path: ['newPasswordConfirmation'],
         message: 'Passwords must match',
       });
     }
