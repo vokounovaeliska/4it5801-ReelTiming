@@ -16,6 +16,8 @@ import { FaCirclePlus } from 'react-icons/fa6';
 import { MdBuild } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
 
+import { GET_PROJECT_DETAILS } from '@frontend/graphql/queries/GetProjectDetails';
+import { GET_USER_ROLE_IN_PROJECT } from '@frontend/graphql/queries/GetUserRoleInProject';
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
 import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
@@ -24,8 +26,6 @@ import ProjectNavbar from '@frontend/shared/navigation/components/navbar/Project
 import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 import { currencyUtil } from '@shared/currencyUtil';
 
-import { GET_PROJECT_DETAILS } from '../../../gql/queries/GetProjectDetails';
-import { GET_USER_ROLE_IN_PROJECT } from '../../../gql/queries/GetUserRoleInProject';
 import CrewInfo from '../CrewInfo';
 import DashboardCostsAdmin from '../DashboardCostsAdmin';
 import DashboardEarningsCrew from '../DashboardEarningsCrew';

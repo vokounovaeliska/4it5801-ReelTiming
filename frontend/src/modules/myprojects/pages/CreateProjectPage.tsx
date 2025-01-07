@@ -2,10 +2,10 @@ import { useCallback, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 
-import { ACTIVATE_PROJECT_USER } from '@frontend/gql/mutations/ActivateProjectUser';
-import { ADD_PROJECT } from '@frontend/gql/mutations/AddProject';
-import { ADD_PROJECT_USER } from '@frontend/gql/mutations/AddProjectUser';
-import { ADD_RATE } from '@frontend/gql/mutations/AddRate';
+import { ACTIVATE_PROJECT_USER } from '@frontend/graphql/mutations/ActivateProjectUser';
+import { ADD_PROJECT } from '@frontend/graphql/mutations/AddProject';
+import { ADD_PROJECT_USER } from '@frontend/graphql/mutations/AddProjectUser';
+import { ADD_RATE } from '@frontend/graphql/mutations/AddRate';
 import { useAuth } from '@frontend/modules/auth';
 import { projectFormValues } from '@frontend/zod/schemas';
 

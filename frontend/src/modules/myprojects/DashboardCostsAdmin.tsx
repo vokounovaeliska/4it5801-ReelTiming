@@ -3,8 +3,8 @@ import { useQuery } from '@apollo/client';
 import { Box, HStack, Text } from '@chakra-ui/react';
 import { FaClock, FaCoins } from 'react-icons/fa';
 
-//import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/gql/queries/GetCrewUserInfoTimesheets';
-import { GET_ADMIN_STATEMENTS } from '@frontend/gql/queries/GetStatements';
+//import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/graphql/queries/GetCrewUserInfoTimesheets';
+import { GET_ADMIN_STATEMENTS } from '@frontend/graphql/queries/GetStatements';
 import { route } from '@frontend/route';
 import { currencyUtil } from '@shared/currencyUtil';
 

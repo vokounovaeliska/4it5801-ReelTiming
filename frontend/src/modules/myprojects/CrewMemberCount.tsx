@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Alert, AlertIcon, Spinner } from '@chakra-ui/react';
 
-import { GET_CREWLIST_INFO } from '../../gql/queries/GetCrewListInfo';
+import { GET_CREWLIST_INFO } from '@frontend/graphql/queries/GetCrewListInfo';
 
 interface CrewMemberCountProps {
   projectId: string;

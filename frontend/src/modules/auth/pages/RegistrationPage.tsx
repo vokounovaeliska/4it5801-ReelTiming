@@ -1,13 +1,14 @@
 import { useCallback } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
+import { gql } from '@frontend/gql';
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
 
 import { RegisterTemplate } from '../templates/RegisterTemplate';
 
-const SIGNUP_MUTATION = gql(/* GraphQL */ `
+const SIGNUP_MUTATION = gql(`
   mutation SignUp(
     $email: String!
     $name: String!

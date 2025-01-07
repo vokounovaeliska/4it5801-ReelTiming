@@ -2,8 +2,8 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Box, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 
-import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/gql/queries/GetCrewUserInfoTimesheets';
-import { GET_CREW_STATEMENTS } from '@frontend/gql/queries/GetStatements';
+import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/graphql/queries/GetCrewUserInfoTimesheets';
+import { GET_CREW_STATEMENTS } from '@frontend/graphql/queries/GetStatements';
 
 interface Timesheet {
   id: string;
