@@ -23,7 +23,7 @@ type ProjectDetailsConfigFormProps = {
 export const ProjectDetailsConfigForm: React.FC<
   ProjectDetailsConfigFormProps
 > = ({ initialValues, onSubmit }) => (
-  <Box flex="1" p={4}>
+  <Box flex="1" p={6}>
     <Text fontSize="lg" fontWeight="bold" mb={4} textAlign="center">
       Project Details
     </Text>
@@ -34,7 +34,7 @@ export const ProjectDetailsConfigForm: React.FC<
       defaultValues={initialValues}
       noValidate
     >
-      <Box mb={4}>
+      <Box mb={6}>
         <InputField
           name="name"
           label="Project Name"
@@ -47,7 +47,7 @@ export const ProjectDetailsConfigForm: React.FC<
         />
       </Box>
 
-      <Box mb={4}>
+      <Box mb={6}>
         <TextAreaField
           name="description"
           label="Project Description"
@@ -60,7 +60,7 @@ export const ProjectDetailsConfigForm: React.FC<
         />
       </Box>
 
-      <Flex gap={4}>
+      <Flex gap={6} mb={8}>
         <InputField
           name="productionCompany"
           label="Production Company"

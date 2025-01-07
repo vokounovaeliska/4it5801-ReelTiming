@@ -30,13 +30,37 @@ export const ShootingDaysTable: React.FC<ShootingDaysTableProps> = ({
   handleDeleteShootingDay,
 }) => {
   return (
-    <TableContainer mt={6}>
+    <TableContainer mt={6} maxH="350px" overflowY="auto">
       <Table variant="simple" size="sm" colorScheme="gray">
         <Thead>
           <Tr>
-            <Th>Day Number</Th>
-            <Th>Date</Th>
-            <Th textAlign="center">Actions</Th>
+            <Th
+              position="sticky"
+              top={0}
+              bg="white"
+              zIndex="docked"
+              textAlign="left"
+            >
+              Day Number
+            </Th>
+            <Th
+              position="sticky"
+              top={0}
+              bg="white"
+              zIndex="docked"
+              textAlign="left"
+            >
+              Date
+            </Th>
+            <Th
+              position="sticky"
+              top={0}
+              bg="white"
+              zIndex="docked"
+              textAlign="center"
+            >
+              Actions
+            </Th>
           </Tr>
         </Thead>
         <Tbody>

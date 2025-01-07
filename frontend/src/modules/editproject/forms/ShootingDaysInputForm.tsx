@@ -38,7 +38,6 @@ export const ShootingDaysInputForm: React.FC<ShootingDaysInputFormProps> = ({
         spacing={4}
         alignItems="flex-end"
         justifyContent="space-between"
-        pb={4}
         gridTemplateColumns={{ base: '1.5fr', sm: '0.5fr 1fr 0.5fr auto' }}
       >
         <FormControl>
