@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import {
   Button,
   Grid,
-  Heading,
   HStack,
   Image,
   SimpleGrid,
@@ -13,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
-import { Box } from '@frontend/shared/design-system';
+import { Box, Heading } from '@frontend/shared/design-system';
 import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 

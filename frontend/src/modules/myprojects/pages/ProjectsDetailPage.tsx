@@ -6,7 +6,6 @@ import {
   Button,
   Center,
   Divider,
-  Heading,
   SimpleGrid,
   Spinner,
   Text,
@@ -18,6 +17,7 @@ import { useParams } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
+import { Heading } from '@frontend/shared/design-system';
 import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';

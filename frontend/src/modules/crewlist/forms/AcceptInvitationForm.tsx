@@ -1,7 +1,7 @@
-import { Box, Button, Heading, Stack, Text } from '@chakra-ui/react';
+import { Box, Button, Stack, Text } from '@chakra-ui/react';
 
 import { Car, CarStatement } from '@frontend/modules/timesheets/interfaces';
-import { ErrorBanner } from '@frontend/shared/design-system';
+import { ErrorBanner, Heading } from '@frontend/shared/design-system';
 import { Form } from '@frontend/shared/forms';
 import {
   crewListFormSchema,

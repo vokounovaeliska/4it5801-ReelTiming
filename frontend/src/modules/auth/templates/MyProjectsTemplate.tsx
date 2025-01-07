@@ -1,19 +1,16 @@
-import React from 'react';
 import { AddIcon } from '@chakra-ui/icons';
 import {
   Box,
   Center,
-  Flex,
-  Heading,
   IconButton,
   SimpleGrid,
   Text,
   useColorModeValue,
   VStack,
 } from '@chakra-ui/react';
-import { PiProjectorScreenChart } from 'react-icons/pi';
 import { Link } from 'react-router-dom';
 
+import { Heading } from '@frontend/shared/design-system';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
@@ -45,20 +42,9 @@ export function MyProjectsTemplate({
 
       <Box flex="1" p={{ base: 4, md: 6 }}>
         <Box display="flex" justifyContent="center" alignItems="center" p="6">
-          <Flex align="center" gap={4}>
-            <Box color={textColor}>
-              <PiProjectorScreenChart size="40px" />
-            </Box>
-            <Heading
-              as="h1"
-              size="xl"
-              textAlign="left"
-              color={textColor}
-              fontWeight="bold"
-            >
-              My Projects
-            </Heading>
-          </Flex>
+          <Heading as="h1" textAlign={'center'}>
+            My Projects
+          </Heading>
         </Box>
 
         <Center pb="6">

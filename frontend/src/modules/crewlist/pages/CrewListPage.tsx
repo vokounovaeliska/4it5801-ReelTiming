@@ -1,4 +1,4 @@
-import { Box, Center, Heading, Spinner, Text } from '@chakra-ui/react';
+import { Box, Center, Spinner, Text } from '@chakra-ui/react';
 
 import {
   AllCarsOnProjectData,
@@ -8,6 +8,7 @@ import {
   useAllCarsOnProjectByProjectUserId,
   useCarStatementsByProjectId,
 } from '@frontend/modules/timesheets/pages/queryHooks';
+import { Heading } from '@frontend/shared/design-system';
 import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';

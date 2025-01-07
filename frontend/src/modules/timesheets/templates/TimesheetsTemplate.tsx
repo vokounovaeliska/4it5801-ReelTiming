@@ -1,8 +1,9 @@
 import React from 'react';
-import { Box, Button, Heading } from '@chakra-ui/react';
+import { Box, Button } from '@chakra-ui/react';
 import { MdAddChart } from 'react-icons/md';
 
 import PdfReportGeneratorButton from '@frontend/modules/report/pdfReportGeneratorButton';
+import { Heading } from '@frontend/shared/design-system';
 
 import { TimesheetsTemplateProps } from '../interfaces';
 import TimesheetTable from '../table/TimesheetsTable';
