@@ -3,7 +3,7 @@ import { Box } from '@chakra-ui/react';
 
 import { Heading } from '@frontend/shared/design-system';
 
-import { ShootingDaysList } from '../atoms/ShootingDaysList';
+import ShootingDaysList from '../atoms/ShootingDaysList';
 import { Project } from '../interfaces/interface';
 
 interface DailyReportTemplateProps {
@@ -15,8 +15,6 @@ const DailyReportTemplate: React.FC<DailyReportTemplateProps> = ({
   projectId,
   projectData,
 }) => {
-  console.log('projectData', projectData);
-
   return (
     <Box flex="1" width="100%" p={1} alignSelf="center">
       <Box

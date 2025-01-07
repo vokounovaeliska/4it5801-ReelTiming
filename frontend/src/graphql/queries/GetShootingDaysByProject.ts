@@ -7,11 +7,9 @@ export const GET_SHOOTING_DAYS_BY_PROJECT = gql(`
       shooting_day_number
       date
       event_type
-      project {
-        id
-        name
-        production_company
-      }
+      dailyReport {
+      id
+    }
     }
   }
 `);

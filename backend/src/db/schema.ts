@@ -219,31 +219,40 @@ export const shooting_day = mysqlTable(
   }),
 );
 
-export const daily_report = mysqlTable('daily_report', {
-  id: varchar('id', { length: 36 })
-    .$defaultFn(() => uuidv4())
-    .primaryKey(),
-  project_id: varchar('project_id', { length: 36 }).references(
-    () => project.id,
-    {
-      onDelete: 'cascade',
-    },
-  ),
-  shooting_day_id: varchar('shooting_day_id', { length: 36 }).references(
-    () => shooting_day.id,
-    {
-      onDelete: 'restrict',
-    },
-  ),
-  intro: json('intro'),
-  shooting_progress: json('shooting_progress'),
-  footer: json('footer'),
-  create_date: timestamp('create_date').notNull().defaultNow(),
-  last_update_date: timestamp('last_update_date')
-    .notNull()
-    .defaultNow()
-    .onUpdateNow(),
-});
+export const daily_report = mysqlTable(
+  'daily_report',
+  {
+    id: varchar('id', { length: 36 })
+      .$defaultFn(() => uuidv4())
+      .primaryKey(),
+    project_id: varchar('project_id', { length: 36 }).references(
+      () => project.id,
+      {
+        onDelete: 'cascade',
+      },
+    ),
+    shooting_day_id: varchar('shooting_day_id', { length: 36 }).references(
+      () => shooting_day.id,
+      {
+        onDelete: 'restrict',
+      },
+    ),
+    intro: json('intro'),
+    shooting_progress: json('shooting_progress'),
+    footer: json('footer'),
+    create_date: timestamp('create_date').notNull().defaultNow(),
+    last_update_date: timestamp('last_update_date')
+      .notNull()
+      .defaultNow()
+      .onUpdateNow(),
+  },
+  (table) => ({
+    shootingDayProjectUnique: uniqueIndex('shooting_day_project_unique').on(
+      table.shooting_day_id,
+      table.project_id,
+    ),
+  }),
+);
 
 export const shift_overview = mysqlTable('shift_overview', {
   id: varchar('id', { length: 36 })

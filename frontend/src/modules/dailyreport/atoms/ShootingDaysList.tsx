@@ -1,9 +1,9 @@
+import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { Search2Icon } from '@chakra-ui/icons';
+import { CheckIcon, CloseIcon, Search2Icon } from '@chakra-ui/icons';
 import {
   Box,
   Center,
-  Flex,
   IconButton,
   Spinner,
   Table,
@@ -20,14 +20,20 @@ import { GET_SHOOTING_DAYS_BY_PROJECT } from '@frontend/graphql/queries/GetShoot
 import { formatDateToDisplay } from '@frontend/modules/timesheets/utils/timeUtils';
 import { Heading } from '@frontend/shared/design-system';
 
+import { ShootingDay } from '../interfaces/interface';
+
+import DailyReportPreview from './DailyReportPreview';
+
 type Props = {
   projectId: string;
 };
 
-export const ShootingDaysList = ({ projectId }: Props) => {
+const ShootingDaysList = ({ projectId }: Props) => {
   const { data, loading, error } = useQuery(GET_SHOOTING_DAYS_BY_PROJECT, {
     variables: { projectId },
   });
+
+  const [selectedDay, setSelectedDay] = useState<ShootingDay | null>(null);
 
   if (loading)
     return (
@@ -41,43 +47,69 @@ export const ShootingDaysList = ({ projectId }: Props) => {
 
   const shootingDays = data?.shootingDaysByProject || [];
 
+  const handlePreviewClick = (day: ShootingDay) => {
+    setSelectedDay(day);
+  };
+
   return (
-    <Box>
-      <Heading as="h3" pb={4} pl={4}>
-        Shooting Days
-      </Heading>
-      <TableContainer overflowX="auto">
-        <Table variant="simple" size="sm" colorScheme="gray">
-          <Thead>
-            <Tr>
-              <Th>Day Number</Th>
-              <Th>Date</Th>
-              <Th>Preview</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {shootingDays.map((day) => (
-              <Tr key={day.id}>
-                <Td>{day.shooting_day_number}</Td>
-                <Td>{formatDateToDisplay(day.date)}</Td>
-                <Td>
-                  <Flex justifyContent="center" gap={2}>
+    <Box display="flex" width={selectedDay ? '100%' : 'auto'}>
+      <Box flex="1">
+        <Heading as="h3" pb={4} pl={4}>
+          Shooting Days
+        </Heading>
+        <TableContainer overflowX="auto">
+          <Table variant="simple" size="sm" colorScheme="gray">
+            <Thead>
+              <Tr>
+                <Th>Day N.</Th>
+                <Th>Date</Th>
+                <Th>Status</Th>
+                <Th>Preview</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {shootingDays.map((day) => (
+                <Tr key={day.id}>
+                  <Td>{day.shooting_day_number}</Td>
+                  <Td>{formatDateToDisplay(day.date)}</Td>
+                  <Td textAlign="center">
+                    {day.dailyReport ? (
+                      <IconButton
+                        size="xs"
+                        icon={<CheckIcon />}
+                        aria-label="Daily report created"
+                      />
+                    ) : (
+                      <IconButton
+                        size="xs"
+                        aria-label="No daily report"
+                        icon={<CloseIcon />}
+                      />
+                    )}
+                  </Td>
+                  <Td textAlign="center">
                     <IconButton
                       colorScheme="orange"
                       size="xs"
-                      onClick={() =>
-                        console.log(`Preview shooting day ${day.id}`)
-                      }
-                      aria-label="Edit shooting day"
+                      onClick={() => handlePreviewClick(day)}
+                      aria-label="Preview shooting day"
                       icon={<Search2Icon />}
                     />
-                  </Flex>
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      </Box>
+
+      <Box flex="3" p={4} display={selectedDay ? 'block' : 'none'}>
+        {selectedDay && (
+          <DailyReportPreview shootingDay={selectedDay} projectId={projectId} />
+        )}
+      </Box>
     </Box>
   );
 };
+
+export default ShootingDaysList;

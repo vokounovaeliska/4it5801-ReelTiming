@@ -368,6 +368,7 @@ input ShiftOverviewInput {
 }
 
 type ShootingDay {
+  dailyReport: [DailyReport!]
   date: DateTimeISO!
   event_type: String
   id: ID!
