@@ -81,12 +81,8 @@
           "name": "car_project_user_id_project_user_id_fk",
           "tableFrom": "car",
           "tableTo": "project_user",
-          "columnsFrom": [
-            "project_user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["project_user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -94,9 +90,7 @@
       "compositePrimaryKeys": {
         "car_id": {
           "name": "car_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -170,12 +164,8 @@
           "name": "daily_report_project_id_project_id_fk",
           "tableFrom": "daily_report",
           "tableTo": "project",
-          "columnsFrom": [
-            "project_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["project_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -183,12 +173,8 @@
           "name": "daily_report_shooting_day_id_shooting_day_id_fk",
           "tableFrom": "daily_report",
           "tableTo": "shooting_day",
-          "columnsFrom": [
-            "shooting_day_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["shooting_day_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -196,9 +182,7 @@
       "compositePrimaryKeys": {
         "daily_report_id": {
           "name": "daily_report_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -249,12 +233,8 @@
           "name": "department_project_id_project_id_fk",
           "tableFrom": "department",
           "tableTo": "project",
-          "columnsFrom": [
-            "project_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["project_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -262,9 +242,7 @@
       "compositePrimaryKeys": {
         "department_id": {
           "name": "department_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -374,9 +352,7 @@
       "compositePrimaryKeys": {
         "project_id": {
           "name": "project_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -527,10 +503,7 @@
       "indexes": {
         "project_user_unique": {
           "name": "project_user_unique",
-          "columns": [
-            "project_id",
-            "user_id"
-          ],
+          "columns": ["project_id", "user_id"],
           "isUnique": true
         }
       },
@@ -539,12 +512,8 @@
           "name": "project_user_project_id_project_id_fk",
           "tableFrom": "project_user",
           "tableTo": "project",
-          "columnsFrom": [
-            "project_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["project_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -552,12 +521,8 @@
           "name": "project_user_user_id_user_id_fk",
           "tableFrom": "project_user",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -565,12 +530,8 @@
           "name": "project_user_department_id_department_id_fk",
           "tableFrom": "project_user",
           "tableTo": "department",
-          "columnsFrom": [
-            "department_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["department_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -578,12 +539,8 @@
           "name": "project_user_rate_id_rate_id_fk",
           "tableFrom": "project_user",
           "tableTo": "rate",
-          "columnsFrom": [
-            "rate_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["rate_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -591,9 +548,7 @@
       "compositePrimaryKeys": {
         "project_user_id": {
           "name": "project_user_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -693,9 +648,7 @@
       "compositePrimaryKeys": {
         "rate_id": {
           "name": "rate_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -738,12 +691,8 @@
           "name": "shift_overview_project_id_project_id_fk",
           "tableFrom": "shift_overview",
           "tableTo": "project",
-          "columnsFrom": [
-            "project_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["project_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -751,9 +700,7 @@
       "compositePrimaryKeys": {
         "shift_overview_id": {
           "name": "shift_overview_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -800,18 +747,12 @@
       "indexes": {
         "shooting_day_number_project_unique": {
           "name": "shooting_day_number_project_unique",
-          "columns": [
-            "shooting_day_number",
-            "project_id"
-          ],
+          "columns": ["shooting_day_number", "project_id"],
           "isUnique": true
         },
         "shooting_date_project_unique": {
           "name": "shooting_date_project_unique",
-          "columns": [
-            "date",
-            "project_id"
-          ],
+          "columns": ["date", "project_id"],
           "isUnique": true
         }
       },
@@ -820,12 +761,8 @@
           "name": "shooting_day_project_id_project_id_fk",
           "tableFrom": "shooting_day",
           "tableTo": "project",
-          "columnsFrom": [
-            "project_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["project_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -833,9 +770,7 @@
       "compositePrimaryKeys": {
         "shooting_day_id": {
           "name": "shooting_day_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -951,12 +886,8 @@
           "name": "statement_project_user_id_project_user_id_fk",
           "tableFrom": "statement",
           "tableTo": "project_user",
-          "columnsFrom": [
-            "project_user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["project_user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -964,12 +895,8 @@
           "name": "statement_car_id_car_id_fk",
           "tableFrom": "statement",
           "tableTo": "car",
-          "columnsFrom": [
-            "car_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["car_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -977,9 +904,7 @@
       "compositePrimaryKeys": {
         "statement_id": {
           "name": "statement_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -1096,9 +1021,7 @@
       "compositePrimaryKeys": {
         "user_id": {
           "name": "user_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
