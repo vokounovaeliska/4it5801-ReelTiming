@@ -15,7 +15,7 @@ export const GET_CREWLIST_INFO = gql`
       last_update_user_id
       currency
     }
-    departments {
+    departments(projectId: $projectId) {
       id
       name
     }
