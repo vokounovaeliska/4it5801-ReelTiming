@@ -14,6 +14,12 @@ export interface Project {
   shootingDays?: ShootingDay[] | null;
 }
 
+export type ShootingDayByProject = {
+  id: string;
+  shooting_day_number: number;
+  date: string;
+  dailyReport?: { id: string }[] | null;
+};
 export type ShootingDay = {
   id: string;
   shooting_day_number: number;

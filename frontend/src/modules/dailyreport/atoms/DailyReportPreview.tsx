@@ -6,13 +6,14 @@ import { GET_DAILY_REPORT_PREVIEW_INFO } from '@frontend/graphql/queries/GetDail
 import { Divider } from '../../../shared/design-system/atoms/Divider';
 import {
   DailyReportPreviewInfoQuery,
-  ShootingDay,
+  ShootingDayByProject,
 } from '../interfaces/interface';
 
+import { ReportCrewStatementsTable } from './preview/ReportCrewStatementsTable';
 import ReportHeader from './preview/ReportHeader';
 
 type DailyReportPreviewProps = {
-  shootingDay: ShootingDay;
+  shootingDay: ShootingDayByProject;
   projectId: string;
 };
 
@@ -45,6 +46,19 @@ const DailyReportPreview = ({
     <Box>
       <ReportHeader data={data} />
       <Divider />
+      <Box textAlign="center" h={10}>
+        TODO metadata intro
+      </Box>
+      <Divider />
+      <Box textAlign="center" h={10}>
+        TODO
+      </Box>
+      <Divider />
+      <ReportCrewStatementsTable data={data} />
+      <Divider />
+      <Box textAlign="center" h={10}>
+        TODO metadata footer
+      </Box>
     </Box>
   );
 };

@@ -1,5 +1,6 @@
 import { Center, Flex } from '@chakra-ui/react';
 
+import { formatDateToDisplay } from '@frontend/modules/timesheets/utils/timeUtils';
 import { Heading } from '@frontend/shared/design-system';
 import LabelValue from '@frontend/shared/design-system/atoms/LabelValue';
 
@@ -29,6 +30,10 @@ const ReportHeader = ({ data }: ReportHeaderProps) => (
         }
       />
     </Flex>
+    <LabelValue
+      label="Date"
+      value={formatDateToDisplay(data?.shootingDay?.date!)}
+    />
   </>
 );
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { CheckIcon, CloseIcon, Search2Icon } from '@chakra-ui/icons';
 import {
@@ -20,7 +20,7 @@ import { GET_SHOOTING_DAYS_BY_PROJECT } from '@frontend/graphql/queries/GetShoot
 import { formatDateToDisplay } from '@frontend/modules/timesheets/utils/timeUtils';
 import { Heading } from '@frontend/shared/design-system';
 
-import { ShootingDay } from '../interfaces/interface';
+import { ShootingDayByProject } from '../interfaces/interface';
 
 import DailyReportPreview from './DailyReportPreview';
 
@@ -33,7 +33,9 @@ const ShootingDaysList = ({ projectId }: Props) => {
     variables: { projectId },
   });
 
-  const [selectedDay, setSelectedDay] = useState<ShootingDay | null>(null);
+  const [selectedDay, setSelectedDay] = useState<ShootingDayByProject | null>(
+    null,
+  );
 
   if (loading)
     return (
@@ -47,12 +49,16 @@ const ShootingDaysList = ({ projectId }: Props) => {
 
   const shootingDays = data?.shootingDaysByProject || [];
 
-  const handlePreviewClick = (day: ShootingDay) => {
+  const handlePreviewClick = (day: ShootingDayByProject) => {
     setSelectedDay(day);
   };
 
   return (
-    <Box display="flex" width={selectedDay ? '100%' : 'auto'}>
+    <Box
+      display="flex"
+      flexDirection={{ base: 'column', md: 'row' }}
+      width={selectedDay ? '100%' : 'auto'}
+    >
       <Box flex="1">
         <Heading as="h3" pb={4} pl={4}>
           Shooting Days
