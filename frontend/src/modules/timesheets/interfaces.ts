@@ -284,9 +284,9 @@ export interface Statement {
   shift_lenght: number;
   calculated_overtime?: number | null;
   claimed_overtime?: number | null;
-  create_date: string;
-  last_update_date: string;
-  create_user_id: string;
+  create_date?: string;
+  last_update_date?: string;
+  create_user_id?: string;
   last_update_user_id: string;
   car_id?: string | null;
   kilometers?: number | null;

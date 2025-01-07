@@ -1,13 +1,7 @@
 import { useEffect } from 'react';
-import {
-  Button,
-  Grid,
-  HStack,
-  Image,
-  SimpleGrid,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Button, Grid, HStack, Input, Text } from '@chakra-ui/react';
+import { FaUsers } from 'react-icons/fa';
+import { IoIosPhonePortrait } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
@@ -15,6 +9,14 @@ import { route } from '@frontend/route';
 import { Box, Heading } from '@frontend/shared/design-system';
 import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
+
+import HomePageNavbar from './HomePageNavbar';
+
+// const EMPTY_QUERY = gql(/* GraphQL */ `
+//   query Quacks {
+//     _empty
+//   }
+// `);
 
 export function HomePage() {
   const { user } = useAuth();
@@ -26,185 +28,258 @@ export function HomePage() {
   }, [user, navigate]);
   if (user) return null;
   return (
-    <Box bgGradient="linear(to-b, #2D3748, orange.800)" color="white">
-      {' '}
-      {/* Hero Section */}{' '}
+    <Box
+      //bg="gray.50"
+      bgGradient="linear(to-l, #fadbc3 0%, transparent 47%)"
+    >
+      <HomePageNavbar />
       <Box
+        //bgGradient="linear(to-l, rgba(251,146,60,1) 0%, transparent 40%)"
+        minHeight="60vh"
         display="flex"
-        flexDirection="column"
+        flexDirection={{ base: 'column', md: 'row' }}
         justifyContent="center"
         alignItems="center"
         textAlign="center"
         flex="1"
         px={8}
-        minHeight="100vh"
-        bgGradient="linear(to-b, gray.800, #2D3748)"
       >
-        {' '}
-        <Box boxSize={{ base: '150px', md: '150px' }} mb="50">
-          {' '}
-          <Image src="/faviconlogo.png" alt="ReelTiming Logo" />{' '}
-        </Box>{' '}
-        <Heading
-          as="h1"
-          fontSize={{ base: '3xl', md: '5xl' }}
-          mb={4}
-          fontWeight="extrabold"
-          bgGradient="linear(to-r, orange.400, orange.500)"
-          bgClip="text"
+        <Box
+          flex="0 0 60%"
+          justifyContent="center"
+          alignItems="center"
+          textAlign="center"
+          display="flex"
+          flexDirection="column"
         >
-          {' '}
-          Simplify Your Production Workflow{' '}
-        </Heading>{' '}
-        <Text
-          fontSize={{ base: 'md', md: 'xl' }}
-          maxW="600px"
-          mb={6}
-          color="gray.300"
-        >
-          {' '}
-          Welcome to Reeltiming — the ultimate tool for film professionals to
-          track work hours, manage crews, and streamline the production process.
-          Focus on the art while we handle the logistics.{' '}
-        </Text>{' '}
-        <Grid>
-          {' '}
-          <HStack spacing={4}>
-            {' '}
+          <Heading
+            as="h1"
+            fontSize={{ base: '5xl', md: '6xl' }}
+            mb={4}
+            fontWeight="extrabold"
+          >
+            Simplify Your{' '}
+            <Text
+              as="span"
+              bgGradient="linear(to-l, orange.600, orange.400)"
+              bgClip="text"
+              fontWeight="extrabold"
+            >
+              Production Workflow
+            </Text>
+          </Heading>
+          <Text
+            fontSize={{ base: 'md', md: 'xl' }}
+            maxW="600px"
+            mb={6}
+            color="gray.700"
+          >
+            <Text as={'span'} fontWeight="bold">
+              ReelTiming
+            </Text>{' '}
+            — the ultimate tool for film professionals to track work hours,
+            manage crews, and streamline the production process. Focus on the
+            art while we handle the logistics.
+          </Text>
+
+          <Grid>
+            <HStack spacing={4}>
+              <Button
+                as={ReactRouterLink}
+                to={route.register()}
+                colorScheme="orange"
+                bg="orange.500"
+                size="lg"
+                _hover={{ bg: 'orange.600', transform: 'scale(1.1)' }}
+              >
+                Sign Up for Free
+              </Button>
+            </HStack>
             <Button
               as={ReactRouterLink}
-              to={route.register()}
-              bgGradient="linear(to-r, orange.400, orange.500)"
-              color="white"
-              size="lg"
-              _hover={{
-                bgGradient: 'linear(to-r, orange.500, orange.600)',
-                transform: 'scale(1.1)',
-              }}
+              to={route.login()}
+              variant="link"
+              color="orange.400"
+              p="4"
             >
-              {' '}
-              Sign Up for Free{' '}
-            </Button>{' '}
-          </HStack>{' '}
-          <Button
-            as={ReactRouterLink}
-            to={route.login()}
-            variant="link"
-            color="orange.400"
-            p="4"
+              Sign In
+            </Button>
+          </Grid>
+        </Box>
+        <Box flex="0 0 40%" p={10}>
+          <video
+            width="100%"
+            height="auto"
+            autoPlay
+            muted
+            loop
+            style={{
+              maxWidth: '600px',
+              boxShadow: '29px 28px 9px -1px rgba(255,255,255,1)',
+            }}
           >
-            {' '}
-            Login{' '}
-          </Button>{' '}
-        </Grid>{' '}
-      </Box>{' '}
-      {/* Features Section */}{' '}
-      <Box bgGradient="linear(to-b, #2D3748, orange.500)" py={16} px={8}>
-        {' '}
-        <Heading
-          as="h2"
-          fontSize={{ base: '2xl', md: '4xl' }}
-          textAlign="center"
-          mb={8}
-          fontWeight="bold"
-          bgGradient="linear(to-r, orange.400, orange.600)"
-          bgClip="text"
-        >
-          {' '}
-          Features That Make Life Easier{' '}
-        </Heading>{' '}
-        <SimpleGrid
-          columns={{ base: 1, md: 3 }}
-          spacing={8}
-          textAlign="center"
-          color="gray.300"
-        >
-          {' '}
-          <VStack>
-            {' '}
-            <Image
-              src="/icons/feature1.png"
-              alt="Track Hours"
-              boxSize="80px"
-              mb={4}
-            />{' '}
-            <Text fontSize="lg" fontWeight="bold">
-              {' '}
-              Track Hours{' '}
-            </Text>{' '}
-            <Text>
-              {' '}
-              Effortlessly monitor crew work hours to stay on top of schedules.{' '}
-            </Text>{' '}
-          </VStack>{' '}
-          <VStack>
-            {' '}
-            <Image
-              src="/icons/feature2.png"
-              alt="Manage Crews"
-              boxSize="80px"
-              mb={4}
-            />{' '}
-            <Text fontSize="lg" fontWeight="bold">
-              {' '}
-              Manage Crews{' '}
-            </Text>{' '}
-            <Text>
-              {' '}
-              Seamlessly organize and manage your production teams.{' '}
-            </Text>{' '}
-          </VStack>{' '}
-          <VStack>
-            {' '}
-            <Image
-              src="/icons/feature3.png"
-              alt="Generate Reports"
-              boxSize="80px"
-              mb={4}
-            />{' '}
-            <Text fontSize="lg" fontWeight="bold">
-              {' '}
-              Generate Reports{' '}
-            </Text>{' '}
-            <Text>
-              {' '}
-              Produce insightful reports to evaluate production efficiency.{' '}
-            </Text>{' '}
-          </VStack>{' '}
-        </SimpleGrid>{' '}
-      </Box>{' '}
-      {/* Call to Action Section */}{' '}
+            <source src="/homepagevideo.mp4" type="video/mp4" />
+          </video>
+        </Box>
+      </Box>
       <Box
-        bgGradient="linear(to-b, orange.500, white)"
-        py={16}
+        minHeight="30vh"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
         textAlign="center"
-        color="gray.800"
+        flex="1"
+        px={8}
       >
-        {' '}
-        <Heading
-          as="h2"
-          fontSize={{ base: '2xl', md: '4xl' }}
-          mb={6}
-          fontWeight="bold"
-          bgGradient="linear(to-r, orange.500, orange.600)"
-          bgClip="text"
+        <Heading as={'h2'} id="features" pb={3}>
+          Features
+        </Heading>
+        <Box
+          display="flex"
+          flexDirection="row"
+          justifyContent="center"
+          flexWrap="wrap"
+          alignItems="center"
         >
-          {' '}
-          Ready to Simplify Your Workflow?{' '}
-        </Heading>{' '}
-        <Button
-          as={ReactRouterLink}
-          to={route.register()}
-          bg="orange.600"
-          color="white"
-          size="lg"
-          _hover={{ transform: 'scale(1.1)', bg: 'orange.700' }}
+          <Box
+            display="flex"
+            flexDirection="column"
+            flex="0 0 25%"
+            mx={5}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <FaUsers />
+            <Text fontSize="2xl">First claim</Text>
+            <Text fontSize={{ base: 'md', md: 'xl' }} color="gray.700">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Adipisci
+              sed praesentium molestias, fugiat laudantium incidunt quos
+              explicabo similique ducimus animi?
+            </Text>
+          </Box>
+          <Box
+            display="flex"
+            flexDirection="column"
+            flex="0 0 25%"
+            mx={5}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <IoIosPhonePortrait />
+            <Text fontSize="2xl">Second claim</Text>
+            <Text fontSize={{ base: 'md', md: 'xl' }} color="gray.700">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Adipisci
+              sed praesentium molestias, fugiat laudantium incidunt quos
+              explicabo similique ducimus animi?
+            </Text>
+          </Box>
+          <Box
+            display="flex"
+            flexDirection="column"
+            flex="0 0 25%"
+            mx={5}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <FaUsers />
+            <Text fontSize="2xl">Third claim</Text>
+            <Text fontSize={{ base: 'md', md: 'xl' }} color="gray.700">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Adipisci
+              sed praesentium molestias, fugiat laudantium incidunt quos
+              explicabo similique ducimus animi?
+            </Text>
+          </Box>
+          <Box
+            display="flex"
+            flexDirection="column"
+            flex="0 0 25%"
+            mx={5}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <FaUsers />
+            <Text fontSize="2xl">Fourth claim</Text>
+            <Text fontSize={{ base: 'md', md: 'xl' }} color="gray.700">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Adipisci
+              sed praesentium molestias, fugiat laudantium incidunt quos
+              explicabo similique ducimus animi?
+            </Text>
+          </Box>
+        </Box>
+      </Box>
+      <Box
+        minHeight="30vh"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        textAlign="center"
+        flex="1"
+        px={8}
+      >
+        <Heading as={'h2'} id="description" pb={3}>
+          Description
+        </Heading>
+        <Text
+          fontSize={{ base: 'md', md: 'xl' }}
+          pb={6}
+          color="gray.700"
+          maxWidth="70rem"
         >
-          {' '}
-          Get Started Now{' '}
-        </Button>{' '}
-      </Box>{' '}
-      <Footer />{' '}
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum
+          veritatis doloremque tenetur molestiae. Corporis molestiae neque
+          dolore voluptates commodi tenetur doloribus officiis, deserunt
+          veritatis ex ad iste impedit, maiores nemo assumenda repellendus quod
+          numquam dolorem debitis, minus nulla architecto porro aspernatur.
+          Voluptas impedit repudiandae excepturi quia porro obcaecati vero
+          minima!
+        </Text>
+      </Box>
+      <Box
+        minHeight="30vh"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        textAlign="center"
+        flex="1"
+        px={8}
+      >
+        <Heading as={'h2'} id="get-in-touch" pb={3}>
+          Get in Touch
+        </Heading>
+        <Text
+          fontSize={{ base: 'md', md: 'xl' }}
+          pb={6}
+          color="gray.700"
+          maxWidth="70rem"
+        >
+          Whether you're working on a student project or a large-scale
+          production, we tailor our solutions to fit your unique needs. Share
+          your email with us, and we'll get in touch with a personalized pricing
+          proposal that works for you.{' '}
+          <Text as={'span'} display={'block'}>
+            Enter your email below, and let's start optimizing your workflow!
+          </Text>
+        </Text>
+        <Box display="flex" flex-direcion="row">
+          <Input
+            name="email"
+            type="email"
+            placeholder="Enter your email"
+            autoFocus
+            autoComplete="on"
+            autoCorrect="off"
+            autoCapitalize="off"
+            mb={2}
+            mx={3}
+            size="lg"
+          />
+          <Button colorScheme="orange" size="lg" px={10}>
+            Get Started
+          </Button>
+        </Box>
+      </Box>
+
+      <Footer />
     </Box>
   );
 }

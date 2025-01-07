@@ -5,30 +5,7 @@ import { Box, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/graphql/queries/GetCrewUserInfoTimesheets';
 import { GET_CREW_STATEMENTS } from '@frontend/graphql/queries/GetStatements';
 
-interface Timesheet {
-  id: string;
-  start_date: string;
-  shift_lenght: number;
-  from: string;
-  to: string;
-  claimed_overtime?: number | null;
-  create_date: string;
-  projectUser: {
-    id: string;
-    name: string;
-    surname: string;
-  };
-}
-
-interface UserProjectInfo {
-  project: {
-    id: string;
-    name: string;
-  };
-  id: string;
-  name: string;
-  surname: string;
-}
+import { Timesheet, UserProjectInfo } from '../interface';
 
 interface RecentTimesheetsProps {
   projectId: string;

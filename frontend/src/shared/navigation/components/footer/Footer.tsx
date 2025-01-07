@@ -14,33 +14,32 @@ const Footer = () => {
       color="white"
       position="relative"
     >
-      <Stack
-        direction={{ base: 'column', sm: 'row' }}
-        justify="center"
-        align="center"
-        spacing={{ base: 0, sm: 3 }}
-      >
+      <Stack direction="column" justify="center" align="center">
         <Text fontSize={{ base: 'xs', md: 'sm' }}>
           &copy; {new Date().getFullYear()} ReelTiming. All rights reserved.
         </Text>
-        <Link
-          href={route.terms()}
-          color="white"
-          textDecoration="none"
-          _hover={{ textDecoration: 'underline' }}
-          fontSize={{ base: 'xs', md: 'sm' }}
-        >
-          Terms and Conditions
-        </Link>
-        <Link
-          href={route.about()}
-          color="white"
-          textDecoration="none"
-          _hover={{ textDecoration: 'underline' }}
-          fontSize={{ base: 'xs', md: 'sm' }}
-        >
-          About us
-        </Link>
+
+        <Box display="flex" alignItems="center" justifyContent="center">
+          <Link
+            href={route.terms()}
+            color="white"
+            textDecoration="none"
+            _hover={{ textDecoration: 'underline' }}
+            fontSize={{ base: 'xs', md: 'sm' }}
+          >
+            Terms and Conditions
+          </Link>
+          <Text mx={2}>|</Text>
+          <Link
+            href={route.about()}
+            color="white"
+            textDecoration="none"
+            _hover={{ textDecoration: 'underline' }}
+            fontSize={{ base: 'xs', md: 'sm' }}
+          >
+            About us
+          </Link>
+        </Box>
       </Stack>
     </Box>
   );

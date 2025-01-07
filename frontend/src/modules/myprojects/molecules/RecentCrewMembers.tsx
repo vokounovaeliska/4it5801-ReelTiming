@@ -4,19 +4,7 @@ import { Box, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 
 import { GET_CREWLIST_INFO } from '@frontend/graphql/queries/GetCrewListInfo';
 
-interface ProjectUser {
-  id: string;
-  is_active: boolean;
-  name: string;
-  surname: string;
-  department?: {
-    name: string;
-    id: string;
-  } | null;
-  rate?: {
-    create_date?: string; // Formát: YYYY-MM-DD HH:MM:SS
-  } | null;
-}
+import { ProjectUser } from '../interface';
 
 interface RecentCrewMembersProps {
   projectId: string;

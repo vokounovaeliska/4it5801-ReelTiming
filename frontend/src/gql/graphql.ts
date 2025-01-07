@@ -376,6 +376,7 @@ export type Project = {
   logo?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   production_company: Scalars['String']['output'];
+  projectUsers?: Maybe<Array<ProjectUser>>;
   start_date?: Maybe<Scalars['DateTimeISO']['output']>;
 };
 
@@ -1228,6 +1229,144 @@ export type DepartmentsQuery = {
   departments: Array<{ __typename?: 'Department'; id: string; name: string }>;
 };
 
+export type GetEverythingForDashboardQueryVariables = Exact<{
+  id: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+  projectId: Scalars['String']['input'];
+  projectUserId: Scalars['String']['input'];
+}>;
+
+export type GetEverythingForDashboardQuery = {
+  __typename?: 'Query';
+  userRoleInProject?: string | null;
+  project?: {
+    __typename?: 'Project';
+    id: string;
+    name: string;
+    description: string;
+    start_date?: string | null;
+    end_date?: string | null;
+    production_company: string;
+    is_active: boolean;
+    create_date: string;
+    create_user_id: string;
+    last_update_date: string;
+    last_update_user_id: string;
+    currency: string;
+  } | null;
+  departments: Array<{ __typename?: 'Department'; id: string; name: string }>;
+  projectUsers: Array<{
+    __typename?: 'ProjectUser';
+    id: string;
+    is_active: boolean;
+    position?: string | null;
+    invitation?: string | null;
+    role?: string | null;
+    phone_number?: string | null;
+    email: string;
+    name: string;
+    surname: string;
+    user?: { __typename?: 'User'; id: string } | null;
+    rate?: {
+      __typename?: 'Rate';
+      id: string;
+      compensation_rate?: number | null;
+      create_date: string;
+      create_user_id: string;
+      last_update_date: string;
+      last_update_user_id: string;
+      overtime_hour1?: number | null;
+      overtime_hour2?: number | null;
+      overtime_hour3?: number | null;
+      overtime_hour4?: number | null;
+      standard_rate?: number | null;
+    } | null;
+    department?: { __typename?: 'Department'; name: string; id: string } | null;
+  }>;
+  projectUserDetails?: {
+    __typename?: 'ProjectUser';
+    id: string;
+    name: string;
+    surname: string;
+    project: {
+      __typename?: 'Project';
+      id: string;
+      name: string;
+      currency: string;
+    };
+  } | null;
+  statementsByProjectUserId: Array<{
+    __typename?: 'Statement';
+    id: string;
+    start_date: string;
+    from: string;
+    to: string;
+    shift_lenght: number;
+    calculated_overtime?: number | null;
+    claimed_overtime?: number | null;
+    create_date: string;
+    kilometers?: number | null;
+    projectUser: {
+      __typename?: 'ProjectUser';
+      id: string;
+      name: string;
+      surname: string;
+      email: string;
+      rate?: {
+        __typename?: 'Rate';
+        compensation_rate?: number | null;
+        standard_rate?: number | null;
+        overtime_hour1?: number | null;
+        overtime_hour2?: number | null;
+        overtime_hour3?: number | null;
+        overtime_hour4?: number | null;
+      } | null;
+    };
+    car?: {
+      __typename?: 'Car';
+      id: string;
+      kilometer_allow: number;
+      kilometer_rate: number;
+      name: string;
+    } | null;
+  }>;
+  statementsByProjectId: Array<{
+    __typename?: 'Statement';
+    id: string;
+    start_date: string;
+    from: string;
+    to: string;
+    shift_lenght: number;
+    calculated_overtime?: number | null;
+    claimed_overtime?: number | null;
+    create_date: string;
+    kilometers?: number | null;
+    projectUser: {
+      __typename?: 'ProjectUser';
+      id: string;
+      name: string;
+      surname: string;
+      email: string;
+      rate?: {
+        __typename?: 'Rate';
+        compensation_rate?: number | null;
+        standard_rate?: number | null;
+        overtime_hour1?: number | null;
+        overtime_hour2?: number | null;
+        overtime_hour3?: number | null;
+        overtime_hour4?: number | null;
+      } | null;
+    };
+    car?: {
+      __typename?: 'Car';
+      id: string;
+      kilometer_allow: number;
+      kilometer_rate: number;
+      name: string;
+    } | null;
+  }>;
+};
+
 export type GetProjectByProjectUserTokenQueryVariables = Exact<{
   token: Scalars['String']['input'];
 }>;
@@ -1260,6 +1399,7 @@ export type GetProjectDetailQuery = {
     last_update_date: string;
     last_update_user_id: string;
     currency: string;
+    projectUsers?: Array<{ __typename?: 'ProjectUser'; id: string }> | null;
   } | null;
 };
 
@@ -4389,6 +4529,529 @@ export const DepartmentsDocument = {
     },
   ],
 } as unknown as DocumentNode<DepartmentsQuery, DepartmentsQueryVariables>;
+export const GetEverythingForDashboardDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetEverythingForDashboard' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'userId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectUserId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'id' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'start_date' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'end_date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'production_company' },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_active' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'create_date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'create_user_id' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'last_update_date' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'last_update_user_id' },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'currency' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'userRoleInProject' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'userId' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'departments' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectUsers' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_active' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'position' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'rate' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'compensation_rate' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'create_date' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'create_user_id' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'last_update_date' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'last_update_user_id' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'overtime_hour1' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'overtime_hour2' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'overtime_hour3' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'overtime_hour4' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'standard_rate' },
+                      },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'invitation' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'role' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'phone_number' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'department' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'surname' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectUserDetails' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'userId' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'currency' },
+                      },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'surname' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'statementsByProjectUserId' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectUserId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectUserId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'projectUser' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'surname' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'rate' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'compensation_rate',
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'standard_rate' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'overtime_hour1' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'overtime_hour2' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'overtime_hour3' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'overtime_hour4' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'start_date' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shift_lenght' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'calculated_overtime' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'claimed_overtime' },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'create_date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'car' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'kilometer_allow' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'kilometer_rate' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'kilometers' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'statementsByProjectId' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'projectUser' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'surname' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'rate' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'compensation_rate',
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'standard_rate' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'overtime_hour1' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'overtime_hour2' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'overtime_hour3' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'overtime_hour4' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'start_date' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shift_lenght' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'calculated_overtime' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'claimed_overtime' },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'create_date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'car' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'kilometer_allow' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'kilometer_rate' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'kilometers' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetEverythingForDashboardQuery,
+  GetEverythingForDashboardQueryVariables
+>;
 export const GetProjectByProjectUserTokenDocument = {
   kind: 'Document',
   definitions: [
@@ -4515,6 +5178,16 @@ export const GetProjectDetailDocument = {
                   name: { kind: 'Name', value: 'last_update_user_id' },
                 },
                 { kind: 'Field', name: { kind: 'Name', value: 'currency' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'projectUsers' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
               ],
             },
           },

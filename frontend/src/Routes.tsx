@@ -4,7 +4,7 @@ import { LogInPage } from '@frontend/modules/auth/pages/LoginPage';
 import { RegistrationPage } from '@frontend/modules/auth/pages/RegistrationPage';
 import { HelloPage } from '@frontend/modules/hello/pages/HelloPage';
 import { HomePage } from '@frontend/modules/home/pages/HomePage';
-import { MyProjectsPage } from '@frontend/modules/myprojects/MyProjectsPage';
+import { MyProjectsPage } from '@frontend/modules/myprojects/pages/MyProjectsPage';
 import { MyProjectDetailPage } from '@frontend/modules/myprojects/pages/ProjectsDetailPage';
 import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 

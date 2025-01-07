@@ -30,6 +30,12 @@ interface Statement {
   shift_lenght: number;
   claimed_overtime?: number | null;
   kilometers?: number | null;
+  car?: {
+    id: string;
+    kilometer_allow: number;
+    kilometer_rate: number;
+    name: string;
+  } | null;
 }
 
 const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
@@ -72,10 +78,17 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
     (statement) => statement.projectUser.id === userProjectInfo?.id,
   );
 
-  // Calculate total mileage for the specific user
+  // Calculate total excess mileage for the specific user
   const totalMileage = userStatements.reduce(
     (total: number, statement: Statement) => {
-      return total + (statement.kilometers || 0);
+      const kilometers = statement.kilometers || 0;
+      const car = statement.car;
+      if (car && kilometers > car.kilometer_allow) {
+        const excessKilometers = kilometers - car.kilometer_allow;
+        return total + excessKilometers;
+      }
+
+      return total;
     },
     0,
   );
@@ -113,35 +126,48 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
     0,
   );
 
-  // Calculate total labor earnings (standard earnings + overtime)
-  const totalLaborEarnings = userStatements.reduce(
+  const totalOvertimeHours = userStatements.reduce(
     (total: number, statement: Statement) => {
-      const standardRate = statement.projectUser.rate?.standard_rate ?? 0;
-      const shiftLength = statement.shift_lenght || 0;
-
-      // Standard labor earnings (shift_lenght * standard_rate)
-      const laborEarnings = shiftLength * standardRate;
-
-      return total + laborEarnings;
+      const claimedOvertime = statement.claimed_overtime || 0;
+      return total + claimedOvertime;
     },
     0,
   );
 
-  const superTotalLaborEarnings = totalLaborEarnings + totalOvertimeEarnings;
+  const totalTransportationCosts = userStatements.reduce(
+    (totalCost: number, statement: Statement) => {
+      const kilometers = statement.kilometers || 0;
+      const car = statement.car;
+
+      if (car && kilometers > car.kilometer_allow) {
+        const excessKilometers = kilometers - car.kilometer_allow;
+        const transportationCost = excessKilometers * car.kilometer_rate;
+        totalCost += transportationCost;
+      }
+
+      return totalCost;
+    },
+    0,
+  );
+
+  const superTotalEarnings = totalOvertimeEarnings + totalTransportationCosts;
 
   // Get currency symbol
   const currencySymbol = currencyUtil.getCurrencySymbol(currency);
-
   const totalMileageText = `${totalMileage} km`;
-  const superTotalLaborEarningsText = `${superTotalLaborEarnings.toLocaleString()} ${currencySymbol}`;
-  const totalOvertimeEarningsText = `${totalOvertimeEarnings.toLocaleString()} ${currencySymbol}`;
+  const totalLaborEarningsText = `${totalOvertimeEarnings.toLocaleString()} ${currencySymbol}`;
+  const totalOvertimeHoursText = `${totalOvertimeHours.toLocaleString()} hours`;
+  const totalTransportationCostsText = `${totalTransportationCosts.toLocaleString()} ${currencySymbol}`;
+  const superTotalEarningsText = `${superTotalEarnings.toLocaleString()} ${currencySymbol}`;
 
   return (
     <>
       <Text fontSize="lg">Total earnings</Text>
       <HStack spacing={2} align="center" mb={4}>
         <FaCoins size="64px" />
-        <Text fontSize="6xl">N/A {currencySymbol}</Text>
+        <Text fontSize={{ base: '6xl', md: '4xl', lg: '6xl' }}>
+          {superTotalEarningsText}
+        </Text>
       </HStack>
 
       <Text mb={1}>Earnings by category</Text>
@@ -154,9 +180,9 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
           borderRadius="md"
           textAlign="center"
         >
-          <Text>Total labor earnings</Text>
+          <Text>Total overtime labor earnings</Text>
           <HStack spacing={2} align="center" justify="center">
-            <Text fontSize="2xl">{superTotalLaborEarningsText}</Text>
+            <Text fontSize="2xl">{totalLaborEarningsText}</Text>
           </HStack>
         </Box>
 
@@ -168,9 +194,9 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
           borderRadius="md"
           textAlign="center"
         >
-          <Text>Overtime earnings</Text>
+          <Text>Total overtime hours</Text>
           <HStack spacing={2} align="center" justify="center">
-            <Text fontSize="2xl">{totalOvertimeEarningsText}</Text>
+            <Text fontSize="2xl">{totalOvertimeHoursText}</Text>
           </HStack>
         </Box>
       </HStack>
@@ -186,7 +212,7 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
         >
           <Text>Transportation earnings</Text>
           <HStack spacing={2} align="center" justify="center">
-            <Text fontSize="2xl">N/A</Text>
+            <Text fontSize="2xl">{totalTransportationCostsText}</Text>
           </HStack>
         </Box>
 
@@ -198,7 +224,7 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
           borderRadius="md"
           textAlign="center"
         >
-          <Text>Mileage</Text>
+          <Text>Total excess mileage</Text>
           <HStack spacing={2} align="center" justify="center">
             <Text fontSize="2xl">{totalMileageText}</Text>
           </HStack>

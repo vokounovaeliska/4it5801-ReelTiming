@@ -16,6 +16,8 @@ import { convertToLocalTime } from '@backend/utils/helpers';
 import { z } from 'zod';
 import { DepartmentService } from '../department/departmentService';
 import { Department } from '../department/departmentType';
+import { ProjectUser } from '../projectUser/projectUserType';
+import { ProjectUserService } from '../projectUser/projectUserService';
 
 const projectInputSchema = z.object({
   name: z.string().min(1),
@@ -146,6 +148,18 @@ export class ProjectResolver {
     if (project.id) {
       const departmentService = new DepartmentService(db);
       return departmentService.getAllDepartmentsByProject(project.id);
+    }
+    return null;
+  }
+
+  @FieldResolver(() => [ProjectUser], { nullable: true })
+  async projectUsers(
+    @Root() project: Project,
+    @Ctx() { db }: CustomContext,
+  ): Promise<ProjectUser[] | null> {
+    if (project.id) {
+      const projectUserService = new ProjectUserService(db);
+      return projectUserService.getProjectUsersByProjectId(project.id);
     }
     return null;
   }

@@ -36,21 +36,12 @@ const ProjectOrigin: React.FC<ProjectOriginProps> = ({
         <Box flex="1" mr={4} p={4} display="flex" justifyContent="center">
           <Box textAlign="left">
             <Text fontSize="md" color="gray.600" mb={2}>
-              <Box as="span" mr={2} color="green.500">
-                🎬
-              </Box>
               <strong>Project name:</strong> {name || 'N/A'}
             </Text>
             <Text fontSize="md" color="gray.600" mb={2}>
-              <Box as="span" mr={2} color="green.500">
-                🏢
-              </Box>
               <strong>Production Company:</strong> {company || 'N/A'}
             </Text>
             <Text fontSize="md" color="gray.600" mb={2}>
-              <Box as="span" mr={2} color="green.500">
-                💰
-              </Box>
               <strong>Project currency:</strong> {currency || 'N/A'}
             </Text>
           </Box>
@@ -59,23 +50,14 @@ const ProjectOrigin: React.FC<ProjectOriginProps> = ({
         <Box flex="1" p={4} display="flex" justifyContent="center">
           <Box textAlign="left">
             <Text fontSize="md" color="gray.600" mb={2}>
-              <Box as="span" mr={2} color="green.500">
-                🗓️
-              </Box>
               <strong>Created On:</strong>{' '}
               {new Date(create_date).toLocaleDateString()}
             </Text>
             <Text fontSize="md" color="gray.600" mb={2}>
-              <Box as="span" mr={2} color="blue.500">
-                🚀
-              </Box>
               <strong>Start date:</strong>{' '}
               {new Date(start_date).toLocaleDateString()}
             </Text>
             <Text fontSize="md" color="gray.600" mb={2}>
-              <Box as="span" mr={2} color="purple.500">
-                🏁
-              </Box>
               <strong>End date:</strong>{' '}
               {new Date(end_date).toLocaleDateString()}
             </Text>

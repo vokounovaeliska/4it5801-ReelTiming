@@ -11,7 +11,7 @@ import RecentCrewMembers from '../molecules/RecentCrewMembers';
 interface CrewInfoProps {
   projectId: string;
   userId: string;
-  projectUsers: { id: string }[];
+  projectUsers?: { id: string }[] | null;
 }
 
 const CrewInfo: React.FC<CrewInfoProps> = ({
@@ -19,7 +19,7 @@ const CrewInfo: React.FC<CrewInfoProps> = ({
   userId,
   projectUsers,
 }) => {
-  const crewMemberCount = projectUsers.length || 0;
+  const crewMemberCount = projectUsers?.length || 0;
   return (
     <>
       <Text fontSize="lg">Number of crew members</Text>

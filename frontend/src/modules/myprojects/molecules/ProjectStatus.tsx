@@ -8,16 +8,18 @@ interface ProjectStatusProps {
 const ProjectStatus: React.FC<ProjectStatusProps> = ({ isActive }) => {
   return (
     <>
-      <Box position="relative" paddingBottom="7">
+      <Box position="relative" padding-bottom="10">
         <Divider />
         <AbsoluteCenter bg="white" px="4">
           Status
         </AbsoluteCenter>
       </Box>
       <Text
+        justifyContent="center"
+        display="flex"
+        mt={4}
         fontSize="md"
         color={isActive ? 'green.500' : 'red.500'}
-        fontWeight="bold"
       >
         <Box as="span" mr={2}>
           {isActive ? '✅' : '❌'}
