@@ -76,6 +76,8 @@ const documents = {
     types.ProjectUserDocument,
   '\n  query GetProjects {\n    projects {\n      id\n      name\n      description\n    }\n  }\n':
     types.GetProjectsDocument,
+  '\n  query GetShootingDaysByProject($projectId: String!) {\n    shootingDaysByProject(projectId: $projectId) {\n      id\n      shooting_day_number\n      date\n      event_type\n      project {\n        id\n        name\n        production_company\n      }\n    }\n  }\n':
+    types.GetShootingDaysByProjectDocument,
   '\n  query GetCrewStatements($projectUserId: String!) {\n    statementsByProjectUserId(projectUserId: $projectUserId) {\n      id\n      projectUser {\n        id\n        name\n        surname\n        email\n        rate {\n          compensation_rate\n          standard_rate\n          overtime_hour1\n          overtime_hour2\n          overtime_hour3\n          overtime_hour4\n        }\n      }\n      start_date\n      from\n      to\n      shift_lenght\n      calculated_overtime\n      claimed_overtime\n      create_date\n      car {\n        id\n        kilometer_allow\n        kilometer_rate\n        name\n      }\n      kilometers\n    }\n  }\n':
     types.GetCrewStatementsDocument,
   '\n  query GetAdminStatements($projectId: String!) {\n    statementsByProjectId(projectId: $projectId) {\n      id\n      projectUser {\n        id\n        name\n        surname\n        email\n        rate {\n          compensation_rate\n          standard_rate\n          overtime_hour1\n          overtime_hour2\n          overtime_hour3\n          overtime_hour4\n        }\n      }\n      start_date\n      from\n      to\n      shift_lenght\n      calculated_overtime\n      claimed_overtime\n      create_date\n      car {\n        id\n        kilometer_allow\n        kilometer_rate\n        name\n      }\n      kilometers\n    }\n  }\n  ':
@@ -306,6 +308,12 @@ export function gql(
 export function gql(
   source: '\n  query GetProjects {\n    projects {\n      id\n      name\n      description\n    }\n  }\n',
 ): (typeof documents)['\n  query GetProjects {\n    projects {\n      id\n      name\n      description\n    }\n  }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\n  query GetShootingDaysByProject($projectId: String!) {\n    shootingDaysByProject(projectId: $projectId) {\n      id\n      shooting_day_number\n      date\n      event_type\n      project {\n        id\n        name\n        production_company\n      }\n    }\n  }\n',
+): (typeof documents)['\n  query GetShootingDaysByProject($projectId: String!) {\n    shootingDaysByProject(projectId: $projectId) {\n      id\n      shooting_day_number\n      date\n      event_type\n      project {\n        id\n        name\n        production_company\n      }\n    }\n  }\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

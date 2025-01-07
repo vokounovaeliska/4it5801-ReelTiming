@@ -469,6 +469,7 @@ export type Query = {
   statement?: Maybe<Statement>;
   statements: Array<Statement>;
   statementsByProjectId: Array<Statement>;
+  statementsByProjectIdAndDate: Array<Statement>;
   statementsByProjectUserId: Array<Statement>;
   statementsByUserId: Array<Statement>;
   user?: Maybe<User>;
@@ -561,6 +562,11 @@ export type QueryStatementArgs = {
 };
 
 export type QueryStatementsByProjectIdArgs = {
+  projectId: Scalars['String']['input'];
+};
+
+export type QueryStatementsByProjectIdAndDateArgs = {
+  date: Scalars['DateTimeISO']['input'];
   projectId: Scalars['String']['input'];
 };
 
@@ -1378,6 +1384,27 @@ export type GetProjectsQuery = {
     id: string;
     name: string;
     description: string;
+  }>;
+};
+
+export type GetShootingDaysByProjectQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+}>;
+
+export type GetShootingDaysByProjectQuery = {
+  __typename?: 'Query';
+  shootingDaysByProject: Array<{
+    __typename?: 'ShootingDay';
+    id: string;
+    shooting_day_number: number;
+    date: string;
+    event_type?: string | null;
+    project?: {
+      __typename?: 'Project';
+      id: string;
+      name: string;
+      production_company: string;
+    } | null;
   }>;
 };
 
@@ -4921,6 +4948,81 @@ export const GetProjectsDocument = {
     },
   ],
 } as unknown as DocumentNode<GetProjectsQuery, GetProjectsQueryVariables>;
+export const GetShootingDaysByProjectDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetShootingDaysByProject' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'shootingDaysByProject' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shooting_day_number' },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'event_type' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'production_company' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetShootingDaysByProjectQuery,
+  GetShootingDaysByProjectQueryVariables
+>;
 export const GetCrewStatementsDocument = {
   kind: 'Document',
   definitions: [

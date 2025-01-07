@@ -227,6 +227,7 @@ type Query {
   statement(id: String!): Statement
   statements: [Statement!]!
   statementsByProjectId(projectId: String!): [Statement!]!
+  statementsByProjectIdAndDate(date: DateTimeISO!, projectId: String!): [Statement!]!
   statementsByProjectUserId(projectUserId: String!): [Statement!]!
   statementsByUserId(userId: String!): [Statement!]!
   user(id: String!): User
