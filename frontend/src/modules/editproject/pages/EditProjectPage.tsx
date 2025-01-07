@@ -122,7 +122,7 @@ export interface ProjectData {
   name: string;
   description: string;
   production_company: string;
-  start_date?: Date | null;
-  end_date?: Date | null;
+  start_date?: string | null;
+  end_date?: string | null;
   currency: string;
 }

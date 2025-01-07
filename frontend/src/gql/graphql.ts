@@ -28,7 +28,7 @@ export type Scalars = {
   Int: { input: number; output: number };
   Float: { input: number; output: number };
   /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.This scalar is serialized to a string in ISO 8601 format and parsed from a string in ISO 8601 format. */
-  DateTimeISO: { input: any; output: any };
+  DateTimeISO: { input: string; output: string };
 };
 
 export type AuthInfo = {
@@ -782,12 +782,12 @@ export type AddProjectMutation = {
     name: string;
     production_company: string;
     description: string;
-    start_date?: any | null;
-    end_date?: any | null;
-    create_date: any;
+    start_date?: string | null;
+    end_date?: string | null;
+    create_date: string;
     create_user_id: string;
     last_update_user_id: string;
-    last_update_date: any;
+    last_update_date: string;
     is_active: boolean;
     currency: string;
     departments?: Array<{
@@ -855,13 +855,13 @@ export type AddStatementMutation = {
   addStatement: {
     __typename?: 'Statement';
     id: string;
-    start_date: any;
-    from: any;
-    to: any;
+    start_date: string;
+    from: string;
+    to: string;
     shift_lenght: number;
     calculated_overtime?: number | null;
     claimed_overtime?: number | null;
-    create_date: any;
+    create_date: string;
     projectUser: {
       __typename?: 'ProjectUser';
       id: string;
@@ -905,7 +905,7 @@ export type EditProjectMutation = {
     description: string;
     name: string;
     production_company: string;
-    end_date?: any | null;
+    end_date?: string | null;
     is_active: boolean;
     last_update_user_id: string;
     currency: string;
@@ -951,14 +951,14 @@ export type UpdateStatementMutation = {
   updatestatement: {
     __typename?: 'Statement';
     id: string;
-    start_date: any;
-    from: any;
-    to: any;
+    start_date: string;
+    from: string;
+    to: string;
     shift_lenght: number;
     calculated_overtime?: number | null;
     claimed_overtime?: number | null;
-    create_date: any;
-    last_update_date: any;
+    create_date: string;
+    last_update_date: string;
     create_user_id: string;
     last_update_user_id: string;
     kilometers?: number | null;
@@ -1021,10 +1021,10 @@ export type UpdateAndActivateProjectUserMutation = {
     name: string;
     surname: string;
     email: string;
-    create_date: any;
+    create_date: string;
     create_user_id: string;
     last_update_user_id: string;
-    last_update_date: any;
+    last_update_date: string;
     is_active: boolean;
     role?: string | null;
     invitation?: string | null;
@@ -1045,7 +1045,7 @@ export type UpdateUserMutation = {
     surname: string;
     phone_number?: string | null;
     email: string;
-    last_update_date: any;
+    last_update_date: string;
   };
 };
 
@@ -1139,8 +1139,8 @@ export type GetCarsByProjectUserIdQuery = {
     kilometer_rate: number;
     create_user_id: string;
     last_update_user_id: string;
-    last_update_date: any;
-    create_date: any;
+    last_update_date: string;
+    create_date: string;
   }>;
 };
 
@@ -1156,13 +1156,13 @@ export type GetCrewListInfoQuery = {
     __typename?: 'Project';
     id: string;
     name: string;
-    start_date?: any | null;
-    end_date?: any | null;
+    start_date?: string | null;
+    end_date?: string | null;
     production_company: string;
     is_active: boolean;
-    create_date: any;
+    create_date: string;
     create_user_id: string;
-    last_update_date: any;
+    last_update_date: string;
     last_update_user_id: string;
     currency: string;
   } | null;
@@ -1183,9 +1183,9 @@ export type GetCrewListInfoQuery = {
       __typename?: 'Rate';
       id: string;
       compensation_rate?: number | null;
-      create_date: any;
+      create_date: string;
       create_user_id: string;
-      last_update_date: any;
+      last_update_date: string;
       last_update_user_id: string;
       overtime_hour1?: number | null;
       overtime_hour2?: number | null;
@@ -1251,13 +1251,13 @@ export type GetProjectDetailQuery = {
     id: string;
     name: string;
     description: string;
-    start_date?: any | null;
-    end_date?: any | null;
+    start_date?: string | null;
+    end_date?: string | null;
     production_company: string;
     is_active: boolean;
-    create_date: any;
+    create_date: string;
     create_user_id: string;
-    last_update_date: any;
+    last_update_date: string;
     last_update_user_id: string;
     currency: string;
   } | null;
@@ -1385,13 +1385,13 @@ export type GetCrewStatementsQuery = {
   statementsByProjectUserId: Array<{
     __typename?: 'Statement';
     id: string;
-    start_date: any;
-    from: any;
-    to: any;
+    start_date: string;
+    from: string;
+    to: string;
     shift_lenght: number;
     calculated_overtime?: number | null;
     claimed_overtime?: number | null;
-    create_date: any;
+    create_date: string;
     kilometers?: number | null;
     projectUser: {
       __typename?: 'ProjectUser';
@@ -1428,13 +1428,13 @@ export type GetAdminStatementsQuery = {
   statementsByProjectId: Array<{
     __typename?: 'Statement';
     id: string;
-    start_date: any;
-    from: any;
-    to: any;
+    start_date: string;
+    from: string;
+    to: string;
     shift_lenght: number;
     calculated_overtime?: number | null;
     claimed_overtime?: number | null;
-    create_date: any;
+    create_date: string;
     kilometers?: number | null;
     projectUser: {
       __typename?: 'ProjectUser';
@@ -1488,8 +1488,8 @@ export type GetUserProfileSettingsInfoQuery = {
     surname: string;
     email: string;
     phone_number?: string | null;
-    last_update_date: any;
-    create_date: any;
+    last_update_date: string;
+    create_date: string;
   } | null;
 };
 

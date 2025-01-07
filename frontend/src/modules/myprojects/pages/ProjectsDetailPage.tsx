@@ -318,14 +318,14 @@ export function MyProjectDetailPage() {
                     🚀
                   </Box>
                   <strong>Start date:</strong>{' '}
-                  {new Date(project.start_date).toLocaleDateString()}
+                  {new Date(project.start_date!).toLocaleDateString()}
                 </Text>
                 <Text fontSize="md" color="gray.600" mb={2}>
                   <Box as="span" mr={2} color="purple.500">
                     🏁
                   </Box>
                   <strong>End date:</strong>{' '}
-                  {new Date(project.end_date).toLocaleDateString()}
+                  {new Date(project.end_date!).toLocaleDateString()}
                 </Text>
               </Box>
             </Box>

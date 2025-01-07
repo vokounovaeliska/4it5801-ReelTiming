@@ -14,7 +14,8 @@ const config: CodegenConfig = {
   ignoreNoDocuments: true,
   hooks: { afterAllFileWrite: ['prettier --write'] },
   config: {
-    scalarTypeMapping: {
+    scalars: {
+      Date: 'string',
       DateTimeISO: 'string',
     },
   },

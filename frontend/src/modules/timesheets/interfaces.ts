@@ -335,3 +335,30 @@ export interface CarStatement {
   car_id: string;
   kilometers?: number | null;
 }
+
+export interface TimesheetCache {
+  id: string;
+  start_date: string;
+  from: string;
+  to: string;
+  shift_lenght: number;
+  calculated_overtime?: number | null;
+  claimed_overtime?: number | null;
+  create_date: string;
+  kilometers?: number | null;
+  projectUser: {
+    id: string;
+    name: string;
+    surname: string;
+    email: string;
+    rate?: {
+      compensation_rate?: number | null;
+      standard_rate?: number | null;
+      overtime_hour1?: number | null;
+      overtime_hour2?: number | null;
+      overtime_hour3?: number | null;
+      overtime_hour4?: number | null;
+    } | null;
+  };
+  car?: Car | null;
+}

@@ -47,7 +47,10 @@ const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ projectId }) => {
     return progressValue;
   };
 
-  const progressValue = calculateProgress(project.start_date, project.end_date);
+  const progressValue = calculateProgress(
+    project.start_date!,
+    project.end_date!,
+  );
 
   const resolveProgressString = (
     startDate: string,
@@ -68,8 +71,8 @@ const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ projectId }) => {
 
   // Determine the message to display
   const today = new Date();
-  const startDate = new Date(project.start_date);
-  const endDate = new Date(project.end_date);
+  const startDate = new Date(project.start_date!);
+  const endDate = new Date(project.end_date!);
 
   let message = '';
   let daysLeft = 0;
@@ -121,15 +124,17 @@ const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ projectId }) => {
             color="black"
             fontWeight="bold"
           >
-            {resolveProgressString(project.start_date, project.end_date)}
+            {resolveProgressString(project.start_date!, project.end_date!)}
           </Text>
         </Box>
       </Tooltip>
       <HStack justify="space-between">
         <Text>
-          Start date: {new Date(project.start_date).toLocaleDateString()}
+          Start date: {new Date(project.start_date!).toLocaleDateString()}
         </Text>
-        <Text>End date: {new Date(project.end_date).toLocaleDateString()}</Text>
+        <Text>
+          End date: {new Date(project.end_date!).toLocaleDateString()}
+        </Text>
       </HStack>
       <Text>{message}</Text>
     </Box>

@@ -5,20 +5,7 @@ import { Box, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/graphql/queries/GetCrewUserInfoTimesheets';
 import { GET_CREW_STATEMENTS } from '@frontend/graphql/queries/GetStatements';
 
-interface Timesheet {
-  id: string;
-  start_date: string;
-  shift_lenght: number;
-  from: string;
-  to: string;
-  claimed_overtime?: number | null;
-  create_date: Date;
-  projectUser: {
-    id: string;
-    name: string;
-    surname: string;
-  };
-}
+import { TimesheetCache } from '../timesheets/interfaces';
 
 interface UserProjectInfo {
   project: {
@@ -85,7 +72,7 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
     return <Text>No user project info available!</Text>;
   }
 
-  const timesheets: Timesheet[] =
+  const timesheets: TimesheetCache[] =
     dataTimesheets?.statementsByProjectUserId || [];
 
   const userTimesheets = timesheets.filter(

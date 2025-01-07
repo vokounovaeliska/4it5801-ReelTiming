@@ -65,3 +65,35 @@ export type CrewListTemplateProps = {
   cars: Car[];
   carStatements: CarStatement[];
 };
+
+export interface Rate {
+  id: string;
+  compensation_rate?: number | null;
+  create_user_id: string;
+  last_update_user_id: string;
+  overtime_hour1?: number | null;
+  overtime_hour2?: number | null;
+  overtime_hour3?: number | null;
+  overtime_hour4?: number | null;
+  standard_rate?: number | null;
+}
+
+export interface Department {
+  id: string;
+  name: string;
+}
+
+export interface ProjectUserLightVersion {
+  id: string;
+  is_active: boolean;
+  position?: string | null;
+  invitation?: string | null;
+  role?: string | null;
+  phone_number?: string | null;
+  email: string;
+  name: string;
+  surname: string;
+  user?: { id: string } | null;
+  rate?: Rate | null;
+  department?: Department | null;
+}

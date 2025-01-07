@@ -43,6 +43,8 @@ export function CreateProjectPage() {
       try {
         const updatedVariables = {
           ...variables,
+          startDate: variables.startDate.toISOString(),
+          endDate: variables.endDate.toISOString(),
           create_user_id: auth.user?.id || '',
         };
 

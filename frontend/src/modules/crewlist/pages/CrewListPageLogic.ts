@@ -4,7 +4,11 @@ import { useCrewMemberMutations } from '@frontend/graphql/mutations/addCrewMembe
 import { GET_CREWLIST_INFO } from '@frontend/graphql/queries/GetCrewListInfo';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { CrewMemberData, ProjectUser } from '../interfaces/interfaces';
+import {
+  CrewMemberData,
+  ProjectUserLightVersion,
+  ProjectUser,
+} from '../interfaces/interfaces';
 import {
   showErrorToast,
   showSuccessToast,
@@ -157,15 +161,17 @@ export const useCrewListPageUtils = () => {
         variables: { projectId: projectId!, userId: auth.user?.id! },
       });
 
-      const updatedUsers = (cacheData?.projectUsers || []).map((user: any) => {
-        if (user.id === data.id) {
-          return {
-            ...user,
-            ...updatedData,
-          };
-        }
-        return user;
-      });
+      const updatedUsers = (cacheData?.projectUsers || []).map(
+        (user: ProjectUserLightVersion) => {
+          if (user.id === data.id) {
+            return {
+              ...user,
+              ...updatedData,
+            };
+          }
+          return user;
+        },
+      );
 
       client.writeQuery({
         query: GET_CREWLIST_INFO,
@@ -237,15 +243,17 @@ export const useCrewListPageUtils = () => {
         variables: { projectId: projectId!, userId: auth.user?.id! },
       });
 
-      const updatedUsers = data?.projectUsers.map((user: any) => {
-        if (user.id === projectUserId) {
-          return {
-            ...user,
-            invitation: true,
-          };
-        }
-        return user;
-      });
+      const updatedUsers = data?.projectUsers.map(
+        (user: ProjectUserLightVersion) => {
+          if (user.id === projectUserId) {
+            return {
+              ...user,
+              invitation: true,
+            };
+          }
+          return user;
+        },
+      );
 
       client.writeQuery({
         query: GET_CREWLIST_INFO,

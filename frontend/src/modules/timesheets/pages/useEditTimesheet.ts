@@ -9,7 +9,11 @@ import {
   GET_CREW_STATEMENTS,
 } from '@frontend/graphql/queries/GetStatements';
 import { useApolloClient } from '@apollo/client';
-import { Timesheet, UseEditTimesheetProps } from '../interfaces';
+import {
+  Timesheet,
+  TimesheetCache,
+  UseEditTimesheetProps,
+} from '../interfaces';
 import { formatTimeForParsing, toLocalISOString } from '../utils/timeUtils';
 
 export const useEditTimesheet = ({
@@ -98,11 +102,13 @@ export const useEditTimesheet = ({
           ...cacheData,
           statementsByProjectUserId:
             userRole === 'ADMIN'
-              ? cacheData?.statementsByProjectUserId?.map((ts: any) =>
-                  ts.id === selectedTimesheet?.id ? updatedTimesheet : ts,
+              ? cacheData?.statementsByProjectUserId?.map(
+                  (ts: TimesheetCache) =>
+                    ts.id === selectedTimesheet?.id ? updatedTimesheet : ts,
                 ) || []
-              : cacheData?.statementsByProjectUserId?.map((ts: any) =>
-                  ts.id === selectedTimesheet?.id ? updatedTimesheet : ts,
+              : cacheData?.statementsByProjectUserId?.map(
+                  (ts: TimesheetCache) =>
+                    ts.id === selectedTimesheet?.id ? updatedTimesheet : ts,
                 ) || [],
         },
       });
