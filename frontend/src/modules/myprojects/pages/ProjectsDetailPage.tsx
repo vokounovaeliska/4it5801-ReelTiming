@@ -6,7 +6,6 @@ import {
   Button,
   Center,
   Divider,
-  Heading,
   SimpleGrid,
   Spinner,
   Text,
@@ -20,6 +19,7 @@ import { GET_PROJECT_DETAILS } from '@frontend/graphql/queries/GetProjectDetails
 import { GET_USER_ROLE_IN_PROJECT } from '@frontend/graphql/queries/GetUserRoleInProject';
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
+import { Heading } from '@frontend/shared/design-system';
 import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';

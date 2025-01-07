@@ -1,19 +1,14 @@
-import React from 'react';
-import { AddIcon } from '@chakra-ui/icons';
 import {
   Box,
   Center,
-  Flex,
-  Heading,
-  IconButton,
   SimpleGrid,
   Text,
   useColorModeValue,
-  VStack,
 } from '@chakra-ui/react';
-import { PiProjectorScreenChart } from 'react-icons/pi';
 import { Link } from 'react-router-dom';
 
+import { AddProjectButton } from '@frontend/modules/myprojects/organisms/AddProjectButton';
+import { Heading } from '@frontend/shared/design-system';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
@@ -44,48 +39,14 @@ export function MyProjectsTemplate({
       <ProjectNavbar projectId={''} userRole={''} />
 
       <Box flex="1" p={{ base: 4, md: 6 }}>
-        <Box display="flex" justifyContent="center" alignItems="center" p="6">
-          <Flex align="center" gap={4}>
-            <Box color={textColor}>
-              <PiProjectorScreenChart size="40px" />
-            </Box>
-            <Heading
-              as="h1"
-              size="xl"
-              textAlign="left"
-              color={textColor}
-              fontWeight="bold"
-            >
-              My Projects
-            </Heading>
-          </Flex>
+        <Box display="flex" justifyContent="center" alignItems="center" p="4">
+          <Heading size="xxx-large" as="h1" textAlign={'center'}>
+            My Projects
+          </Heading>
         </Box>
 
-        <Center pb="6">
-          <VStack spacing={3}>
-            <IconButton
-              aria-label="Add project"
-              colorScheme="orange"
-              bgColor={'orange.500'}
-              onClick={onAddProject}
-              size="lg"
-              icon={<AddIcon />}
-              borderRadius="full"
-              boxShadow="md"
-              _hover={{
-                bg: 'orange.500',
-                color: 'white',
-                transform: 'scale(1.2)',
-              }}
-              transition="all 0.3s ease"
-            />
-            <Box
-              fontSize="sm"
-              color={useColorModeValue('gray.500', 'gray.400')}
-            >
-              Add Project
-            </Box>
-          </VStack>
+        <Center pb="8">
+          <AddProjectButton handleAddMemberClick={onAddProject} />
         </Center>
 
         <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} mb={10}>
