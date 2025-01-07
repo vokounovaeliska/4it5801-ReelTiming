@@ -1,13 +1,12 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Box, HStack, Text } from '@chakra-ui/react';
-import { FaClock, FaCoins } from 'react-icons/fa';
+import { FaCoins } from 'react-icons/fa';
 
 import { GET_ADMIN_STATEMENTS } from '@frontend/graphql/queries/GetStatements';
-import { route } from '@frontend/route';
 import { currencyUtil } from '@shared/currencyUtil';
 
-import DashButton from '../atoms/DashButton';
+import ShiftsButton from '../atoms/ShiftsButton';
 import { Statement } from '../interface';
 
 interface DashboardCostsProps {
@@ -186,12 +185,7 @@ const DashboardCostsAdmin: React.FC<DashboardCostsProps> = ({
         justifyContent={{ base: 'center', 'dash-break1': 'flex-start' }}
         mt={4}
       >
-        <DashButton
-          text="Timesheets"
-          icon={<FaClock />}
-          ariaLabel="Timesheets"
-          to={route.timesheets(projectId)}
-        />
+        <ShiftsButton projectId={projectId} />
       </Box>
     </>
   );

@@ -1,10 +1,11 @@
 import React from 'react';
 import { Box, SimpleGrid } from '@chakra-ui/react';
-import { FaClock, FaUsers } from 'react-icons/fa';
+import { FaUsers } from 'react-icons/fa';
 import { FaCirclePlus } from 'react-icons/fa6';
 
 import { route } from '@frontend/route';
 
+import ShiftsButton from '../atoms/ShiftsButton';
 import TopDashButton from '../atoms/TopDashButton';
 
 interface TopDashButtonsProps {
@@ -37,12 +38,7 @@ const TopDashButtons: React.FC<TopDashButtonsProps> = ({
               : 'View Crew List'
           }
         />
-        <TopDashButton
-          text="Timesheets"
-          icon={<FaClock />}
-          ariaLabel="Timesheets"
-          to={route.timesheets(projectId)}
-        />
+        <ShiftsButton projectId={projectId} />
       </SimpleGrid>
     </Box>
   );
