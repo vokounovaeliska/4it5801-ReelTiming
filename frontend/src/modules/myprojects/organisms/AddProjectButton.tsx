@@ -2,12 +2,16 @@ import React from 'react';
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import { Button, useBreakpointValue } from '@chakra-ui/react';
 
+import { AuthUser } from '@frontend/modules/auth/auth-core';
+
 type AddProjectButtonProps = {
   handleAddMemberClick: () => void;
+  user?: AuthUser | null;
 };
 
 export const AddProjectButton: React.FC<AddProjectButtonProps> = ({
   handleAddMemberClick: handleAddProjectClick,
+  user,
 }) => {
   const label = useBreakpointValue({
     base: 'Add Project',
@@ -16,6 +20,8 @@ export const AddProjectButton: React.FC<AddProjectButtonProps> = ({
 
   return (
     <Button
+      //TODO remove "!" to make it work right
+      display={!user?.canCreateProject! ? 'block' : 'none'}
       aria-label="Add New Project"
       colorScheme="orange"
       bgColor="orange.500"

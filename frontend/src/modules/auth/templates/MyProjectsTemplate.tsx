@@ -12,6 +12,8 @@ import { Heading } from '@frontend/shared/design-system';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
+import { AuthUser } from '../auth-core';
+
 export type MyProjectsTemplateProps = {
   projects: {
     id: string;
@@ -19,11 +21,13 @@ export type MyProjectsTemplateProps = {
     description: string;
   }[];
   onAddProject: () => void;
+  user?: AuthUser | null;
 };
 
 export function MyProjectsTemplate({
   projects,
   onAddProject,
+  user,
 }: MyProjectsTemplateProps) {
   const boxBg = useColorModeValue('white', 'gray.700');
   const border = useColorModeValue('gray.300', 'gray.600');
@@ -46,7 +50,7 @@ export function MyProjectsTemplate({
         </Box>
 
         <Center pb="8">
-          <AddProjectButton handleAddMemberClick={onAddProject} />
+          <AddProjectButton handleAddMemberClick={onAddProject} user={user} />
         </Center>
 
         <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} mb={10}>
