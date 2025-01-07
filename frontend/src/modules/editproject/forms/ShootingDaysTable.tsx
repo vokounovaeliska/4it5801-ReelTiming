@@ -73,14 +73,14 @@ export const ShootingDaysTable: React.FC<ShootingDaysTableProps> = ({
                   <IconButton
                     icon={<EditIcon />}
                     colorScheme="blue"
-                    size="sm"
+                    size="xs"
                     aria-label="Edit Shooting Day"
                     onClick={() => handleEditShootingDay(index)}
                   />
                   <IconButton
                     icon={<DeleteIcon />}
                     colorScheme="red"
-                    size="sm"
+                    size="xs"
                     aria-label="Delete Shooting Day"
                     onClick={() => handleDeleteShootingDay(index)}
                   />
