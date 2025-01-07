@@ -43,7 +43,6 @@ export const useCrewMemberMutations = () => {
 
   const addCrewMember = async (data: CrewMemberData, projectId: string) => {
     try {
-      // Add Rate
       const responseRate = await addRate({
         variables: {
           standardRate: data.standard_rate ?? 0,
