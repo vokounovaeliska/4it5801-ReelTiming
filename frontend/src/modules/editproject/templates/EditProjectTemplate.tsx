@@ -5,6 +5,7 @@ import ProjectNavbar from '@frontend/shared/navigation/components/navbar/Project
 import { projectFormValues } from '@frontend/zod/schemas';
 
 import { EditProjectForm } from '../forms/EditProjectForm';
+import { ShootingDay } from '../forms/ShootingDaysInputForm';
 import { ProjectData } from '../pages/EditProjectPage';
 
 export function EditProjectTemplate({
@@ -14,7 +15,7 @@ export function EditProjectTemplate({
 }: {
   project: ProjectData;
   projectId: string;
-  onSubmit: (data: projectFormValues) => void;
+  onSubmit: (data: projectFormValues, shootingDays: ShootingDay[]) => void;
 }) {
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
@@ -23,7 +24,7 @@ export function EditProjectTemplate({
         flex="1"
         p={{ base: 4, md: 6 }}
         width="100%"
-        maxWidth="1200px"
+        maxWidth="1400px"
         mx="auto"
         bg="white"
       >

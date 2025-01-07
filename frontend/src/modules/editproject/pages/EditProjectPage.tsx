@@ -10,6 +10,7 @@ import { projectFormValues } from '@frontend/zod/schemas';
 // import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 import { GET_PROJECT_DETAILS } from '../../../gql/queries/GetProjectDetails';
 import { GET_USER_ROLE_IN_PROJECT } from '../../../gql/queries/GetUserRoleInProject';
+import { ShootingDay } from '../forms/ShootingDaysInputForm';
 import { EditProjectTemplate } from '../templates/EditProjectTemplate';
 
 export function EditProjectPage() {
@@ -63,7 +64,10 @@ export function EditProjectPage() {
   const userRole = roleData.userRoleInProject;
   const userId = auth.user.id;
 
-  const handleEditProject = async (data: projectFormValues) => {
+  const handleEditProject = async (
+    data: projectFormValues,
+    shootingDays: ShootingDay[],
+  ) => {
     console.log(`Updating project info for project id: #${projectId}`);
     var startDate = data.startDate;
     var endDate = data.endDate ?? null;
