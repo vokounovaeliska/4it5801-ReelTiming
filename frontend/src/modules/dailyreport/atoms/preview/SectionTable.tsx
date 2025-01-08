@@ -1,5 +1,10 @@
+import React, { useState } from 'react';
+import { CheckIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import {
+  Box,
   Heading,
+  IconButton,
+  Input,
   Table,
   Tbody,
   Td,
@@ -14,6 +19,7 @@ import AddingToSection from '../form/AddingToSection';
 interface SectionTableProps {
   title: string;
   data: { title: string; value: string }[];
+  setData: (data: { title: string; value: string }[]) => void;
   newItem: { title: string; value: string };
   setNewItem: (newItem: { title: string; value: string }) => void;
   handleAddItem: () => void;
@@ -22,15 +28,48 @@ interface SectionTableProps {
 const SectionTable = ({
   title,
   data,
+  setData,
   newItem,
   setNewItem,
   handleAddItem,
 }: SectionTableProps) => {
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editItem, setEditItem] = useState<{ title: string; value: string }>({
+    title: '',
+    value: '',
+  });
+
+  const handleDelete = (index: number) => {
+    const updatedData = [...data];
+    updatedData.splice(index, 1);
+    setData(updatedData);
+  };
+
+  const handleEdit = (index: number) => {
+    setEditingIndex(index);
+    setEditItem(data[index]);
+  };
+
+  const handleSaveEdit = () => {
+    if (editingIndex !== null) {
+      const updatedData = [...data];
+      updatedData[editingIndex] = editItem;
+      setData(updatedData);
+      setEditingIndex(null);
+      setEditItem({ title: '', value: '' });
+    }
+  };
+
   return (
-    <VStack align="stretch" spacing={4}>
+    <VStack
+      align="stretch"
+      spacing={4}
+      borderWidth={1}
+      borderRadius={'md'}
+      p={4}
+    >
       <Heading size="md">{title}</Heading>
 
-      {/* Adding input fields and add button above the table */}
       <AddingToSection
         title={newItem.title}
         value={newItem.value}
@@ -39,22 +78,80 @@ const SectionTable = ({
         handleAddItem={handleAddItem}
       />
 
-      <Table variant="simple" size="sm">
-        <Thead>
-          <Tr>
-            <Th>Title</Th>
-            <Th>Value</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {data.map((item, index) => (
-            <Tr key={index}>
-              <Td>{item.title}</Td>
-              <Td>{item.value}</Td>
+      <Box overflowX="auto">
+        <Table variant="simple" size="sm" minW="100%">
+          <Thead>
+            <Tr>
+              <Th>Title</Th>
+              <Th>Value</Th>
+              <Th minW="10rem">Actions</Th>
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
+          </Thead>
+          <Tbody>
+            {data.map((item, index) => (
+              <Tr key={index}>
+                <Td>
+                  {editingIndex === index ? (
+                    <Input
+                      size="xs"
+                      rounded="md"
+                      value={editItem.title}
+                      onChange={(e) =>
+                        setEditItem({ ...editItem, title: e.target.value })
+                      }
+                    />
+                  ) : (
+                    item.title
+                  )}
+                </Td>
+                <Td>
+                  {editingIndex === index ? (
+                    <Input
+                      mx={2}
+                      size="xs"
+                      rounded="md"
+                      value={editItem.value}
+                      onChange={(e) =>
+                        setEditItem({ ...editItem, value: e.target.value })
+                      }
+                    />
+                  ) : (
+                    item.value
+                  )}
+                </Td>
+                <Td>
+                  {editingIndex === index ? (
+                    <IconButton
+                      mx={2}
+                      aria-label="Save"
+                      icon={<CheckIcon />}
+                      colorScheme="orange"
+                      size="xs"
+                      onClick={handleSaveEdit}
+                    />
+                  ) : (
+                    <IconButton
+                      mx={2}
+                      aria-label="Edit"
+                      icon={<EditIcon />}
+                      colorScheme="gray"
+                      size="xs"
+                      onClick={() => handleEdit(index)}
+                    />
+                  )}
+                  <IconButton
+                    aria-label="Delete"
+                    icon={<DeleteIcon />}
+                    colorScheme="red"
+                    size="xs"
+                    onClick={() => handleDelete(index)}
+                  />
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </Box>
     </VStack>
   );
 };

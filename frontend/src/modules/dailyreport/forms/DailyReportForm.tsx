@@ -3,12 +3,14 @@ import { useMutation, useQuery } from '@apollo/client';
 import {
   Box,
   Button,
+  Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  SimpleGrid,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
@@ -19,7 +21,6 @@ import {
   showErrorToast,
   showSuccessToast,
 } from '@frontend/shared/design-system/molecules/toastUtils';
-import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 
 import { AddDailyReportButton } from '../atoms/AddDailyReportButton';
 import ShootingDaySelector from '../atoms/form/ShootingDaySelector';
@@ -35,14 +36,13 @@ interface DailyReportFormProps {
   shootingDays: ShootingDayByProject[];
   refetchShootingDays: () => void;
 }
-
 const DailyReportForm = ({
   projectId,
   shootingDays,
   refetchShootingDays,
 }: DailyReportFormProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { data } = useQuery<LastDailyReportByProjectIdQuery>(
+  const { data, refetch } = useQuery<LastDailyReportByProjectIdQuery>(
     GET_LAST_DAILY_REPORT_BY_PROJECT,
     {
       variables: { projectId },
@@ -81,6 +81,7 @@ const DailyReportForm = ({
       return item;
     });
   };
+
   useEffect(() => {
     if (
       data?.lastDailyReportByProjectId &&
@@ -92,6 +93,12 @@ const DailyReportForm = ({
       setFooter(cleanReportItems(lastReport.footer) || []);
     }
   }, [data]);
+
+  const handleModalOpen = () => {
+    console.log(data?.lastDailyReportByProjectId);
+    refetch();
+    onOpen();
+  };
 
   const handleAddItem = (section: 'intro' | 'shootingProgress' | 'footer') => {
     let newItem: ReportItem;
@@ -139,35 +146,32 @@ const DailyReportForm = ({
   };
 
   const handleModalClose = () => {
-    setIntro([]);
-    setShootingProgress([]);
-    setFooter([]);
-    setIntroNewItem({ title: '', value: '' });
-    setShootingProgressNewItem({ title: '', value: '' });
-    setFooterNewItem({ title: '', value: '' });
-    setSelectedShootingDay(null);
+    if (
+      data?.lastDailyReportByProjectId &&
+      data.lastDailyReportByProjectId.length > 0
+    ) {
+      const lastReport = data.lastDailyReportByProjectId[0];
+      setIntro(cleanReportItems(lastReport.intro) || []);
+      setShootingProgress(cleanReportItems(lastReport.shooting_progress) || []);
+      setFooter(cleanReportItems(lastReport.footer) || []);
+    }
     onClose();
   };
 
   const availableShootingDays = shootingDays.filter((day) => !day.dailyReport);
 
   return (
-    <Box p={2}>
+    <Box p={2} overflowX="auto">
       <AddDailyReportButton
-        onClick={onOpen}
+        onClick={handleModalOpen}
         ml={8}
         mb={4}
         isDisabled={availableShootingDays.length === 0}
       />
 
-      <CustomModal
-        isOpen={isOpen}
-        onClose={handleModalClose}
-        title="Add daily report"
-        size="2xl"
-      >
+      <Modal isOpen={isOpen} onClose={handleModalClose} size="7xl">
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent m={8}>
           <ModalHeader>Create Daily Report</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -177,32 +181,36 @@ const DailyReportForm = ({
                 setSelectedShootingDay={setSelectedShootingDay}
                 shootingDays={availableShootingDays}
               />
-              <SectionTable
-                title="Intro"
-                data={intro}
-                newItem={introNewItem}
-                setNewItem={setIntroNewItem}
-                handleAddItem={() => handleAddItem('intro')}
-              />
-              <SectionTable
-                title="Shooting Progress"
-                data={shootingProgress}
-                newItem={shootingProgressNewItem}
-                setNewItem={setShootingProgressNewItem}
-                handleAddItem={() => handleAddItem('shootingProgress')}
-              />
-              <SectionTable
-                title="Footer"
-                data={footer}
-                newItem={footerNewItem}
-                setNewItem={setFooterNewItem}
-                handleAddItem={() => handleAddItem('footer')}
-              />
+              <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={6}>
+                <SectionTable
+                  title="Intro"
+                  data={intro}
+                  setData={setIntro}
+                  newItem={introNewItem}
+                  setNewItem={setIntroNewItem}
+                  handleAddItem={() => handleAddItem('intro')}
+                />
+                <SectionTable
+                  title="Shooting Progress"
+                  data={shootingProgress}
+                  setData={setShootingProgress}
+                  newItem={shootingProgressNewItem}
+                  setNewItem={setShootingProgressNewItem}
+                  handleAddItem={() => handleAddItem('shootingProgress')}
+                />
+                <SectionTable
+                  title="Footer"
+                  data={footer}
+                  setData={setFooter}
+                  newItem={footerNewItem}
+                  setNewItem={setFooterNewItem}
+                  handleAddItem={() => handleAddItem('footer')}
+                />
+              </SimpleGrid>
             </VStack>
           </ModalBody>
 
           <ModalFooter
-            mt={8}
             display="flex"
             justifyContent="space-between"
             width="100%"
@@ -215,7 +223,7 @@ const DailyReportForm = ({
             </Button>
           </ModalFooter>
         </ModalContent>
-      </CustomModal>
+      </Modal>
     </Box>
   );
 };
