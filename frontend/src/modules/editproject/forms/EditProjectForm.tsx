@@ -1,24 +1,30 @@
 import React, { useState } from 'react';
 import { Box, Button, SimpleGrid } from '@chakra-ui/react';
 
+import { ShootingDay } from '@frontend/gql/graphql';
 import { projectFormValues } from '@frontend/zod/schemas';
 
 import { ProjectData } from '../pages/EditProjectPage';
 
 import { ProjectDetailsForm } from './ProjectDetailsForm';
 import { ShootingDaysConfigForm } from './ShootingDaysConfigForm';
-import { ShootingDay } from './ShootingDaysInputForm';
 
 type EditProjectFormProps = {
   projectId: string | undefined;
   project: ProjectData;
-  onSubmit: (data: projectFormValues, shootingDays: ShootingDay[]) => void;
+  onSubmit: (
+    data: projectFormValues,
+    alreadyStoredShootingDays: ShootingDay[],
+    shootingDays: ShootingDay[],
+  ) => void;
+  shootingDays: ShootingDay[];
 };
 
 export function EditProjectForm({
   projectId: _projectId,
   project,
   onSubmit,
+  shootingDays,
 }: EditProjectFormProps) {
   const initialValues: projectFormValues = {
     name: project.name,
@@ -26,18 +32,25 @@ export function EditProjectForm({
     productionCompany: project.production_company,
     startDate: new Date(project?.start_date),
     endDate: new Date(project?.end_date),
-    currency: project.currency,
+    currency: project.currency!,
   };
 
   const [formData, setFormData] = useState(initialValues);
-  const [shootingDays] = useState<ShootingDay[]>([]);
-
   const handleInputChange = (name: keyof projectFormValues, value: unknown) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSaveChanges = () => {
-    onSubmit(formData, shootingDays);
+    onSubmit(formData, shootingDays, shootingDaysCollection);
+  };
+
+  const [shootingDaysCollection, setShootingDaysCollection] = useState<
+    ShootingDay[]
+  >(shootingDays || []);
+
+  const handleShootingDaysChange = (days: ShootingDay[]) => {
+    setShootingDaysCollection(days);
+    console.log('Updated shooting days collection in parent:', days);
   };
 
   return (
@@ -53,7 +66,7 @@ export function EditProjectForm({
       boxShadow="sm"
     >
       <SimpleGrid
-        columns={{ base: 1, sm: 2 }}
+        columns={{ base: 1, md: 2 }}
         spacing={4}
         justifyContent="space-between"
         pb={4}
@@ -62,7 +75,10 @@ export function EditProjectForm({
           formData={formData}
           onInputChange={handleInputChange}
         />
-        <ShootingDaysConfigForm shootingDays={shootingDays} />
+        <ShootingDaysConfigForm
+          shootingDays={shootingDaysCollection}
+          handleShootingDaysChange={handleShootingDaysChange}
+        />
       </SimpleGrid>
       <Button
         colorScheme="orange"

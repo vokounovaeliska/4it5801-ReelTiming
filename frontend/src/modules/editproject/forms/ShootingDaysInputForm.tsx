@@ -8,11 +8,7 @@ import {
   SimpleGrid,
 } from '@chakra-ui/react';
 
-export type ShootingDay = {
-  id: string;
-  dayNumber: number;
-  shootingDayDate: string;
-};
+import { ShootingDay } from '@frontend/gql/graphql';
 
 interface ShootingDaysInputFormProps {
   shootingDay: ShootingDay;
@@ -34,22 +30,22 @@ export const ShootingDaysInputForm: React.FC<ShootingDaysInputFormProps> = ({
   return (
     <>
       <SimpleGrid
-        columns={{ base: 1, sm: 4 }}
+        columns={{ base: 1, md: 4 }}
         spacing={4}
         alignItems="flex-end"
         justifyContent="space-between"
-        gridTemplateColumns={{ base: '1.5fr', sm: '0.5fr 1fr 0.5fr auto' }}
+        gridTemplateColumns={{ base: '1.5fr', md: '0.5fr 1fr 0.5fr auto' }}
       >
         <FormControl>
           <FormLabel>Shooting Day Number</FormLabel>
           <Input
             name="dayNumber"
             type="number"
-            value={shootingDay.dayNumber}
+            value={shootingDay.shooting_day_number}
             onChange={(e) =>
               setShootingDay((prev) => ({
                 ...prev,
-                dayNumber: parseInt(e.target.value, 10) || 0,
+                shooting_day_number: parseInt(e.target.value, 10) || 0,
               }))
             }
             isRequired
@@ -61,11 +57,11 @@ export const ShootingDaysInputForm: React.FC<ShootingDaysInputFormProps> = ({
           <Input
             name="shootingDayDate"
             type="date"
-            value={shootingDay.shootingDayDate}
+            value={shootingDay.date}
             onChange={(e) =>
               setShootingDay((prev) => ({
                 ...prev,
-                shootingDayDate: e.target.value,
+                date: e.target.value,
               }))
             }
             isRequired
@@ -84,8 +80,8 @@ export const ShootingDaysInputForm: React.FC<ShootingDaysInputFormProps> = ({
                 onClick={() => {
                   setShootingDay({
                     id: '',
-                    dayNumber: shootingDaysLenght + 1,
-                    shootingDayDate: '',
+                    shooting_day_number: shootingDaysLenght + 1,
+                    date: '',
                   });
                   setIsEditing(false);
                 }}
@@ -97,7 +93,7 @@ export const ShootingDaysInputForm: React.FC<ShootingDaysInputFormProps> = ({
                 onClick={handleAddOrUpdateShootingDay}
                 mr={2}
               >
-                Update
+                x Update
               </Button>
             </>
           ) : (

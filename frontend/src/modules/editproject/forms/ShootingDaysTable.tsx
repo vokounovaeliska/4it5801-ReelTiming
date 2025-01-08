@@ -11,12 +11,9 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
+import { format, parseISO } from 'date-fns';
 
-type ShootingDay = {
-  id: string;
-  dayNumber: number;
-  shootingDayDate: string;
-};
+import { ShootingDay } from '@frontend/gql/graphql';
 
 interface ShootingDaysTableProps {
   shootingDaysCollection: ShootingDay[];
@@ -66,8 +63,8 @@ export const ShootingDaysTable: React.FC<ShootingDaysTableProps> = ({
         <Tbody>
           {shootingDaysCollection.map((day, index) => (
             <Tr key={day.id}>
-              <Td>{day.dayNumber}</Td>
-              <Td>{day.shootingDayDate}</Td>
+              <Td>{day.shooting_day_number}</Td>
+              <Td>{format(parseISO(day.date), 'yyyy-MM-dd')}</Td>
               <Td textAlign="center">
                 <Flex justify="center" gap={2}>
                   <IconButton
