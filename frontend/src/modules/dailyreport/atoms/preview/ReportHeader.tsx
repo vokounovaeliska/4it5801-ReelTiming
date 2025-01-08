@@ -15,7 +15,7 @@ const ReportHeader = ({ data }: ReportHeaderProps) => (
     <Heading textAlign="center" as="h4" textTransform="uppercase">
       {data?.project?.name}
     </Heading>
-    <Flex justifyContent="space-between" width="100%">
+    <Flex justifyContent="space-between" width="100%" px={2}>
       <LabelValue
         label="Production"
         value={data?.project?.production_company}

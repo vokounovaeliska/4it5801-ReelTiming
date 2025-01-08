@@ -9,7 +9,8 @@ const LabelValue = ({ label, value }: LabelValueProps) => {
   return (
     <Box mb={2}>
       <Text as="span" fontWeight="bold">
-        {label}:{' '}
+        {label}
+        {label === '' ? '' : ':'}{' '}
       </Text>
       <Text as="span">{value}</Text>
     </Box>
