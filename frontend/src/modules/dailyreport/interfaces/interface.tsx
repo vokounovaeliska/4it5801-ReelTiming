@@ -77,26 +77,5 @@ export type DailyReportPreviewInfoQuery = {
 };
 
 export interface LastDailyReportByProjectIdQuery {
-  lastDailyReportByProjectId: {
-    id: string;
-    create_date?: string | null;
-    last_update_date?: string | null;
-    intro: {
-      title: string;
-      value: string;
-    }[];
-    shooting_progress: {
-      title: string;
-      value: string;
-    }[];
-    footer: {
-      title: string;
-      value: string;
-    }[];
-    shootingDay?: {
-      id: string;
-      shooting_day_number: number;
-      date: string;
-    } | null;
-  }[];
+  lastDailyReportByProjectId: DailyReport[];
 }

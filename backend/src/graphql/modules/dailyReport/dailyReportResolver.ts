@@ -55,7 +55,7 @@ export class DailyReportResolver {
   async lastDailyReportByProjectId(
     @Arg('projectId') projectId: string,
     @Ctx() { db }: CustomContext,
-  ): Promise<DailyReport | null> {
+  ): Promise<DailyReport[]> {
     const dailyReportService = new DailyReportService(db);
     return dailyReportService.getLastDailyReportByProjectId(projectId);
   }

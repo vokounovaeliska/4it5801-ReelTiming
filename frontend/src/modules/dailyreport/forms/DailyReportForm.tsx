@@ -24,12 +24,16 @@ import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 import { AddDailyReportButton } from '../atoms/AddDailyReportButton';
 import ShootingDaySelector from '../atoms/form/ShootingDaySelector';
 import SectionTable from '../atoms/preview/SectionTable';
-import { ReportItem, ShootingDayByProject } from '../interfaces/interface';
+import {
+  LastDailyReportByProjectIdQuery,
+  ReportItem,
+  ShootingDayByProject,
+} from '../interfaces/interface';
 
 interface DailyReportFormProps {
   projectId: string;
   shootingDays: ShootingDayByProject[];
-  refetchShootingDays: () => void; // Added refetch function as a prop
+  refetchShootingDays: () => void;
 }
 
 const DailyReportForm = ({
@@ -38,11 +42,14 @@ const DailyReportForm = ({
   refetchShootingDays,
 }: DailyReportFormProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { data, loading } = useQuery(GET_LAST_DAILY_REPORT_BY_PROJECT, {
-    variables: { projectId },
-    skip: !projectId,
-    fetchPolicy: 'cache-and-network',
-  });
+  const { data } = useQuery<LastDailyReportByProjectIdQuery>(
+    GET_LAST_DAILY_REPORT_BY_PROJECT,
+    {
+      variables: { projectId },
+      skip: !projectId,
+      fetchPolicy: 'cache-and-network',
+    },
+  );
   const [addDailyReport] = useMutation(ADD_DAILY_REPORT);
 
   const [intro, setIntro] = useState<ReportItem[]>([]);
@@ -64,13 +71,25 @@ const DailyReportForm = ({
     null,
   );
 
+  const cleanReportItems = (items: ReportItem[]) => {
+    return items.map((item) => {
+      if ('__typename' in item) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { __typename, ...rest } = item;
+        return rest;
+      }
+      return item;
+    });
+  };
   useEffect(() => {
-    if (data?.lastDailyReportByProjectId) {
-      setIntro(data.lastDailyReportByProjectId[0].intro || []);
-      setShootingProgress(
-        data.lastDailyReportByProjectId[0].shooting_progress || [],
-      );
-      setFooter(data.lastDailyReportByProjectId[0].footer || []);
+    if (
+      data?.lastDailyReportByProjectId &&
+      data.lastDailyReportByProjectId.length > 0
+    ) {
+      const lastReport = data.lastDailyReportByProjectId[0];
+      setIntro(cleanReportItems(lastReport.intro) || []);
+      setShootingProgress(cleanReportItems(lastReport.shooting_progress) || []);
+      setFooter(cleanReportItems(lastReport.footer) || []);
     }
   }, [data]);
 
@@ -100,7 +119,6 @@ const DailyReportForm = ({
       showErrorToast('Please select a shooting day!');
       return;
     }
-
     try {
       await addDailyReport({
         variables: {
@@ -113,8 +131,9 @@ const DailyReportForm = ({
       });
       showSuccessToast('Daily report added successfully.');
       onClose();
-      refetchShootingDays(); // Trigger refetch after mutation
+      refetchShootingDays();
     } catch (error) {
+      console.log(error);
       showErrorToast('Failed to add daily report. Please try again.');
     }
   };
@@ -130,8 +149,6 @@ const DailyReportForm = ({
     onClose();
   };
 
-  if (loading) return <p>Loading...</p>;
-
   const availableShootingDays = shootingDays.filter((day) => !day.dailyReport);
 
   return (
@@ -140,7 +157,7 @@ const DailyReportForm = ({
         onClick={onOpen}
         ml={8}
         mb={4}
-        display={availableShootingDays.length ? 'block' : 'none'}
+        isDisabled={availableShootingDays.length === 0}
       />
 
       <CustomModal
@@ -160,8 +177,6 @@ const DailyReportForm = ({
                 setSelectedShootingDay={setSelectedShootingDay}
                 shootingDays={availableShootingDays}
               />
-
-              {/* Intro Section Table */}
               <SectionTable
                 title="Intro"
                 data={intro}
@@ -169,8 +184,6 @@ const DailyReportForm = ({
                 setNewItem={setIntroNewItem}
                 handleAddItem={() => handleAddItem('intro')}
               />
-
-              {/* Shooting Progress Section Table */}
               <SectionTable
                 title="Shooting Progress"
                 data={shootingProgress}
@@ -178,8 +191,6 @@ const DailyReportForm = ({
                 setNewItem={setShootingProgressNewItem}
                 handleAddItem={() => handleAddItem('shootingProgress')}
               />
-
-              {/* Footer Section Table */}
               <SectionTable
                 title="Footer"
                 data={footer}

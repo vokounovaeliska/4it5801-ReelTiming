@@ -26,17 +26,18 @@ export class DailyReportService {
 
   async getLastDailyReportByProjectId(
     projectId: string,
-  ): Promise<DailyReport | null> {
+  ): Promise<DailyReport[]> {
     const record =
       await this.dailyReportRepository.getLastDailyReportByProjectId(projectId);
-
-    if (!record) return null;
-    return {
-      ...record,
-      intro: record.intro as ReportItem[],
-      shooting_progress: record.shooting_progress as ReportItem[],
-      footer: record.footer as ReportItem[],
-    };
+    if (!record) return [];
+    return [
+      {
+        ...record,
+        intro: record?.intro as ReportItem[],
+        shooting_progress: record?.shooting_progress as ReportItem[],
+        footer: record?.footer as ReportItem[],
+      },
+    ];
   }
 
   async getDailyReportById(id: string | null): Promise<DailyReport | null> {

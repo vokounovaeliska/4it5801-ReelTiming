@@ -1,13 +1,22 @@
 import React from 'react';
-import { Button, ButtonProps, useBreakpointValue } from '@chakra-ui/react';
+import { InfoOutlineIcon } from '@chakra-ui/icons';
+import {
+  Box,
+  Button,
+  ButtonProps,
+  Tooltip,
+  useBreakpointValue,
+} from '@chakra-ui/react';
 import { BsPersonAdd } from 'react-icons/bs';
 
 interface AddDailyReportButtonProps extends ButtonProps {
   onClick: () => void;
+  isDisabled: boolean; // Ensure this prop is passed to the button
 }
 
 export const AddDailyReportButton: React.FC<AddDailyReportButtonProps> = ({
   onClick,
+  isDisabled,
   ...buttonProps
 }) => {
   const label = useBreakpointValue({
@@ -16,24 +25,36 @@ export const AddDailyReportButton: React.FC<AddDailyReportButtonProps> = ({
   });
 
   return (
-    <Button
-      {...buttonProps}
-      aria-label="Add New Member"
-      colorScheme="orange"
-      bgColor="orange.500"
-      onClick={onClick}
-      size="md"
-      leftIcon={<BsPersonAdd />}
-      borderRadius="full"
-      boxShadow="md"
-      _hover={{
-        bg: 'orange.500',
-        color: 'white',
-        transform: 'scale(1.2)',
-      }}
-      transition="all 0.3s ease"
-    >
-      {label}
-    </Button>
+    <Box>
+      <Button
+        {...buttonProps}
+        aria-label="Add New Member"
+        colorScheme="orange"
+        bgColor="orange.500"
+        onClick={onClick}
+        size="md"
+        leftIcon={<BsPersonAdd />}
+        borderRadius="full"
+        boxShadow="md"
+        _hover={{
+          bg: 'orange.500',
+          color: 'white',
+          transform: 'scale(1.2)',
+        }}
+        transition="all 0.3s ease"
+        isDisabled={isDisabled}
+      >
+        {label}
+      </Button>
+      {isDisabled && (
+        <Tooltip
+          rounded="md"
+          label="Button is disabled when all shooting days already have meta information for the daily report. If you want to edit the information, please use the edit button next to shooting day."
+          fontSize="md"
+        >
+          <InfoOutlineIcon m={2} color="gray.400" />
+        </Tooltip>
+      )}
+    </Box>
   );
 };
