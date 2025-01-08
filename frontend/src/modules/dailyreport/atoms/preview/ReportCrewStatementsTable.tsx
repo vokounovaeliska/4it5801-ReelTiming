@@ -37,7 +37,9 @@ export const ReportCrewStatementsTable = ({ data }: DailyReportTableProps) => {
           <Tbody>
             {sortedStatements.map((statement, index) => (
               <Tr key={index}>
-                <Td>{statement.projectUser.position || 'N/A'}</Td>
+                <Td textAlign="right">
+                  {statement.projectUser.position || 'N/A'}
+                </Td>
                 <Td>
                   {statement.projectUser.name} {statement.projectUser.surname}
                 </Td>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import {
   Box,
@@ -11,21 +11,22 @@ import {
   ModalHeader,
   ModalOverlay,
   SimpleGrid,
-  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 
 import { ADD_DAILY_REPORT } from '@frontend/graphql/mutations/AddDailyReport';
+import { EDIT_DAILY_REPORT } from '@frontend/graphql/mutations/EditDailyReport';
 import { GET_LAST_DAILY_REPORT_BY_PROJECT } from '@frontend/graphql/queries/GetLastDailyReportByProjectId';
+import { formatDateToDisplay } from '@frontend/modules/timesheets/utils/timeUtils';
 import {
   showErrorToast,
   showSuccessToast,
 } from '@frontend/shared/design-system/molecules/toastUtils';
 
-import { AddDailyReportButton } from '../atoms/AddDailyReportButton';
+import SectionTable from '../atoms/form/SectionTable';
 import ShootingDaySelector from '../atoms/form/ShootingDaySelector';
-import SectionTable from '../atoms/preview/SectionTable';
 import {
+  DailyReport,
   LastDailyReportByProjectIdQuery,
   ReportItem,
   ShootingDayByProject,
@@ -35,13 +36,24 @@ interface DailyReportFormProps {
   projectId: string;
   shootingDays: ShootingDayByProject[];
   refetchShootingDays: () => void;
+  mode: 'add' | 'edit';
+  dailyReport?: DailyReport;
+  onCloseEdit: () => void;
+  isOpen: boolean;
+  onClose: () => void;
+  shootingDay?: ShootingDayByProject | null;
 }
 const DailyReportForm = ({
   projectId,
   shootingDays,
   refetchShootingDays,
+  mode,
+  dailyReport,
+  onCloseEdit,
+  isOpen,
+  onClose,
+  shootingDay,
 }: DailyReportFormProps) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const { data, refetch } = useQuery<LastDailyReportByProjectIdQuery>(
     GET_LAST_DAILY_REPORT_BY_PROJECT,
     {
@@ -51,6 +63,7 @@ const DailyReportForm = ({
     },
   );
   const [addDailyReport] = useMutation(ADD_DAILY_REPORT);
+  const [editDailyReport] = useMutation(EDIT_DAILY_REPORT);
 
   const [intro, setIntro] = useState<ReportItem[]>([]);
   const [shootingProgress, setShootingProgress] = useState<ReportItem[]>([]);
@@ -71,7 +84,8 @@ const DailyReportForm = ({
     null,
   );
 
-  const cleanReportItems = (items: ReportItem[]) => {
+  const cleanReportItems = (items: ReportItem[] | undefined | null) => {
+    if (!items) return [];
     return items.map((item) => {
       if ('__typename' in item) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -82,8 +96,11 @@ const DailyReportForm = ({
     });
   };
 
+  console.log('data', data);
+
   useEffect(() => {
     if (
+      mode === 'add' &&
       data?.lastDailyReportByProjectId &&
       data.lastDailyReportByProjectId.length > 0
     ) {
@@ -92,13 +109,16 @@ const DailyReportForm = ({
       setShootingProgress(cleanReportItems(lastReport.shooting_progress) || []);
       setFooter(cleanReportItems(lastReport.footer) || []);
     }
-  }, [data]);
+  }, [data, mode]);
 
-  const handleModalOpen = () => {
-    console.log(data?.lastDailyReportByProjectId);
-    refetch();
-    onOpen();
-  };
+  useEffect(() => {
+    if (mode === 'edit' && dailyReport) {
+      setIntro(cleanReportItems(dailyReport.intro));
+      setShootingProgress(cleanReportItems(dailyReport.shooting_progress));
+      setFooter(cleanReportItems(dailyReport.footer));
+      setSelectedShootingDay(dailyReport.shootingDay?.id || null);
+    }
+  }, [mode, dailyReport]);
 
   const handleAddItem = (section: 'intro' | 'shootingProgress' | 'footer') => {
     let newItem: ReportItem;
@@ -122,31 +142,62 @@ const DailyReportForm = ({
   };
 
   const handleSubmit = async () => {
-    if (!selectedShootingDay) {
-      showErrorToast('Please select a shooting day!');
+    if (!intro || !shootingProgress || !footer) {
+      showErrorToast('All fields are required!');
       return;
     }
+
     try {
-      await addDailyReport({
-        variables: {
-          projectId,
-          intro,
-          shootingProgress,
-          footer,
-          shootingDayId: selectedShootingDay,
-        },
-      });
-      showSuccessToast('Daily report added successfully.');
+      if (mode === 'add') {
+        if (!selectedShootingDay) {
+          showErrorToast('Please select a shooting day!');
+          return;
+        }
+        await addDailyReport({
+          variables: {
+            projectId,
+            intro,
+            shootingProgress,
+            footer,
+            shootingDayId: selectedShootingDay,
+          },
+        });
+        showSuccessToast('Daily report added successfully.');
+      } else if (
+        mode === 'edit' &&
+        dailyReport?.id &&
+        projectId &&
+        shootingDay?.id
+      ) {
+        await editDailyReport({
+          variables: {
+            dailyReportId: dailyReport.id,
+            data: {
+              intro: intro,
+              shooting_progress: shootingProgress,
+              footer: footer,
+              project_id: projectId,
+              shooting_day_id: shootingDay.id,
+            },
+          },
+        });
+        showSuccessToast('Daily report updated successfully.');
+      }
       onClose();
+      onCloseEdit();
+
       refetchShootingDays();
     } catch (error) {
-      console.log(error);
-      showErrorToast('Failed to add daily report. Please try again.');
+      console.error(error);
+      showErrorToast(
+        `Failed to ${mode === 'add' ? 'add' : 'update'} daily report.`,
+      );
     }
   };
 
   const handleModalClose = () => {
     if (
+      mode === 'add' &&
       data?.lastDailyReportByProjectId &&
       data.lastDailyReportByProjectId.length > 0
     ) {
@@ -154,7 +205,11 @@ const DailyReportForm = ({
       setIntro(cleanReportItems(lastReport.intro) || []);
       setShootingProgress(cleanReportItems(lastReport.shooting_progress) || []);
       setFooter(cleanReportItems(lastReport.footer) || []);
+    } else if (mode === 'edit') {
+      onCloseEdit();
     }
+    refetch();
+
     onClose();
   };
 
@@ -162,26 +217,30 @@ const DailyReportForm = ({
 
   return (
     <Box p={2} overflowX="auto">
-      <AddDailyReportButton
-        onClick={handleModalOpen}
-        ml={8}
-        mb={4}
-        isDisabled={availableShootingDays.length === 0}
-      />
-
       <Modal isOpen={isOpen} onClose={handleModalClose} size="7xl">
         <ModalOverlay />
         <ModalContent m={8}>
-          <ModalHeader>Create Daily Report</ModalHeader>
+          <ModalHeader>
+            {mode === 'add'
+              ? 'Create Daily Report'
+              : 'Edit Daily Report for: ' +
+                formatDateToDisplay(shootingDay?.date ?? '') +
+                ' (Shooting day n. ' +
+                shootingDay?.shooting_day_number +
+                ' )'}
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <VStack spacing={4} align="stretch">
-              <ShootingDaySelector
-                selectedShootingDay={selectedShootingDay}
-                setSelectedShootingDay={setSelectedShootingDay}
-                shootingDays={availableShootingDays}
-              />
-              <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={6}>
+              {mode === 'add' && (
+                <ShootingDaySelector
+                  selectedShootingDay={selectedShootingDay}
+                  setSelectedShootingDay={setSelectedShootingDay}
+                  shootingDays={availableShootingDays}
+                />
+              )}
+
+              <SimpleGrid columns={{ base: 1, xl: 3 }} spacing={6}>
                 <SectionTable
                   title="Intro"
                   data={intro}

@@ -22,7 +22,7 @@ export type ShootingDayByProject = {
   id: string;
   shooting_day_number: number;
   date: string;
-  dailyReport?: { id: string }[] | null;
+  dailyReport?: DailyReport[] | null;
 };
 
 export type ShootingDay = {

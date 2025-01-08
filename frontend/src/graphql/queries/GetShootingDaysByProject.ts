@@ -9,6 +9,18 @@ export const GET_SHOOTING_DAYS_BY_PROJECT = gql(`
       event_type
       dailyReport {
       id
+      intro {
+        title
+        value
+      }
+      shooting_progress {
+        title
+        value       
+      }
+      footer {
+        title
+        value
+      }
     }
     }
   }

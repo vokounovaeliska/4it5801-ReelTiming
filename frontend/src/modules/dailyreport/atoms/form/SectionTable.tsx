@@ -4,10 +4,10 @@ import {
   Box,
   Heading,
   IconButton,
-  Input,
   Table,
   Tbody,
   Td,
+  Textarea,
   Th,
   Thead,
   Tr,
@@ -61,13 +61,7 @@ const SectionTable = ({
   };
 
   return (
-    <VStack
-      align="stretch"
-      spacing={4}
-      borderWidth={1}
-      borderRadius={'md'}
-      p={4}
-    >
+    <VStack align="stretch" spacing={4} borderWidth={1} borderRadius="md" p={4}>
       <Heading size="md">{title}</Heading>
 
       <AddingToSection
@@ -92,13 +86,17 @@ const SectionTable = ({
               <Tr key={index}>
                 <Td>
                   {editingIndex === index ? (
-                    <Input
+                    <Textarea
                       size="xs"
                       rounded="md"
                       value={editItem.title}
                       onChange={(e) =>
                         setEditItem({ ...editItem, title: e.target.value })
                       }
+                      resize="vertical"
+                      minHeight={8}
+                      h={'auto'}
+                      w={'auto'}
                     />
                   ) : (
                     item.title
@@ -106,7 +104,7 @@ const SectionTable = ({
                 </Td>
                 <Td>
                   {editingIndex === index ? (
-                    <Input
+                    <Textarea
                       mx={2}
                       size="xs"
                       rounded="md"
@@ -114,6 +112,11 @@ const SectionTable = ({
                       onChange={(e) =>
                         setEditItem({ ...editItem, value: e.target.value })
                       }
+                      resize="vertical"
+                      minHeight={4}
+                      minW={4}
+                      h={'auto'}
+                      w={'auto'}
                     />
                   ) : (
                     item.value

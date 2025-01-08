@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { CheckIcon, CloseIcon, Search2Icon } from '@chakra-ui/icons';
+import { CheckIcon, CloseIcon, EditIcon, Search2Icon } from '@chakra-ui/icons';
 import {
   Box,
   Center,
@@ -14,6 +14,7 @@ import {
   Th,
   Thead,
   Tr,
+  useDisclosure,
 } from '@chakra-ui/react';
 
 import { GET_SHOOTING_DAYS_BY_PROJECT } from '@frontend/graphql/queries/GetShootingDaysByProject';
@@ -22,10 +23,12 @@ import { Heading } from '@frontend/shared/design-system';
 
 import DailyReportForm from '../forms/DailyReportForm';
 import {
+  DailyReport,
   ShootingDayByProject,
   ShootingDaysByProject,
 } from '../interfaces/interface';
 
+import { AddDailyReportButton } from './AddDailyReportButton';
 import DailyReportPreview from './DailyReportPreview';
 
 type Props = {
@@ -46,6 +49,28 @@ const ShootingDaysList = ({ projectId }: Props) => {
   const [selectedDay, setSelectedDay] = useState<ShootingDayByProject | null>(
     null,
   );
+  const [editMode, setEditMode] = useState<'add' | 'edit'>('add');
+  const [selectedReport, setSelectedReport] = useState<DailyReport | null>(
+    null,
+  );
+  const [shootingDay, setShootingDay] = useState<ShootingDayByProject | null>(
+    null,
+  );
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handleEditClick = (day: ShootingDayByProject) => {
+    setSelectedReport(day.dailyReport?.[0] || null);
+    setShootingDay(day || null);
+    setEditMode('edit');
+    onOpen();
+  };
+
+  const handleAddClick = () => {
+    setEditMode('add');
+    setSelectedReport(null);
+    onOpen();
+    refetch();
+  };
 
   if (loading)
     return (
@@ -63,6 +88,8 @@ const ShootingDaysList = ({ projectId }: Props) => {
     setSelectedDay(day);
   };
 
+  const availableShootingDays = shootingDays.filter((day) => !day.dailyReport);
+
   return (
     <Box
       display="flex"
@@ -73,11 +100,28 @@ const ShootingDaysList = ({ projectId }: Props) => {
         <Heading as="h3" pb={4} pl={4}>
           Shooting Days
         </Heading>
+
+        <AddDailyReportButton
+          onClick={handleAddClick}
+          ml={8}
+          mb={4}
+          isDisabled={availableShootingDays.length === 0}
+        />
+
         <DailyReportForm
           projectId={projectId}
           shootingDays={shootingDays}
-          refetchShootingDays={refetch} // Pass the refetch function
-        ></DailyReportForm>
+          refetchShootingDays={refetch}
+          mode={editMode}
+          dailyReport={selectedReport ?? undefined}
+          onCloseEdit={() => {
+            setEditMode('add');
+            setSelectedReport(null);
+          }}
+          isOpen={isOpen}
+          onClose={onClose}
+          shootingDay={shootingDay}
+        />
 
         <TableContainer overflowX="auto">
           <Table variant="simple" size="sm" colorScheme="gray">
@@ -86,6 +130,7 @@ const ShootingDaysList = ({ projectId }: Props) => {
                 <Th>Day N.</Th>
                 <Th>Date</Th>
                 <Th>Status</Th>
+                <Th>Edit</Th>
                 <Th>Preview</Th>
               </Tr>
             </Thead>
@@ -97,6 +142,7 @@ const ShootingDaysList = ({ projectId }: Props) => {
                   <Td textAlign="center">
                     {day.dailyReport ? (
                       <IconButton
+                        colorScheme="green"
                         size="xs"
                         icon={<CheckIcon />}
                         aria-label="Daily report created"
@@ -108,6 +154,16 @@ const ShootingDaysList = ({ projectId }: Props) => {
                         icon={<CloseIcon />}
                       />
                     )}
+                  </Td>
+                  <Td textAlign="center">
+                    <IconButton
+                      colorScheme="gray"
+                      size="xs"
+                      aria-label="Edit"
+                      icon={<EditIcon />}
+                      onClick={() => handleEditClick(day)}
+                      isDisabled={!day.dailyReport}
+                    />
                   </Td>
                   <Td textAlign="center">
                     <IconButton
