@@ -51,6 +51,11 @@ export function DailyReportPage() {
     return null;
   }
 
+  if (userRole !== 'ADMIN') {
+    navigate(route.myprojects());
+    return null;
+  }
+
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <ProjectNavbar projectId={projectId!} userRole={userRole} />
