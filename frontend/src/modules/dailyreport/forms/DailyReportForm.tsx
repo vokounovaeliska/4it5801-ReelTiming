@@ -26,6 +26,10 @@ import {
 import { ADD_DAILY_REPORT } from '@frontend/graphql/mutations/AddDailyReport';
 import { GET_LAST_DAILY_REPORT_BY_PROJECT } from '@frontend/graphql/queries/GetLastDailyReportByProjectId';
 import { formatDateToDisplay } from '@frontend/modules/timesheets/utils/timeUtils';
+import {
+  showErrorToast,
+  showSuccessToast,
+} from '@frontend/shared/design-system/molecules/toastUtils';
 
 import { AddDailyReportButton } from '../atoms/AddDailyReportButton';
 import { ShootingDayByProject } from '../interfaces/interface';
@@ -87,7 +91,7 @@ function DailyReportForm({ projectId, shootingDays }: DailyReportFormProps) {
 
   const handleSubmit = async () => {
     if (!selectedShootingDay) {
-      alert('Please select a shooting day!');
+      showErrorToast('Please select a shooting day!'); //TODO zod validations
       return;
     }
 
@@ -101,10 +105,10 @@ function DailyReportForm({ projectId, shootingDays }: DailyReportFormProps) {
           shootingDayId: selectedShootingDay,
         },
       });
-      alert('Daily Report added successfully!');
+      showSuccessToast('Daily report added successfully.');
       onClose();
     } catch (error) {
-      console.error('Error adding Daily Report:', error);
+      showErrorToast('Failed to add daily report. Please try again.');
     }
   };
 
@@ -152,25 +156,29 @@ function DailyReportForm({ projectId, shootingDays }: DailyReportFormProps) {
                     setNewItem({ ...newItem, value: e.target.value })
                   }
                 />
-                <Button onClick={handleAddItem}>Add</Button>
+                <Button onClick={handleAddItem} colorScheme="orange">
+                  Add
+                </Button>
               </HStack>
 
               <HStack>
                 <Button
                   onClick={() => setSection('intro')}
-                  colorScheme={section === 'intro' ? 'blue' : 'gray'}
+                  colorScheme={section === 'intro' ? 'orange' : 'gray'}
                 >
                   Intro
                 </Button>
                 <Button
                   onClick={() => setSection('shootingProgress')}
-                  colorScheme={section === 'shootingProgress' ? 'blue' : 'gray'}
+                  colorScheme={
+                    section === 'shootingProgress' ? 'orange' : 'gray'
+                  }
                 >
                   Shooting Progress
                 </Button>
                 <Button
                   onClick={() => setSection('footer')}
-                  colorScheme={section === 'footer' ? 'blue' : 'gray'}
+                  colorScheme={section === 'footer' ? 'orange' : 'gray'}
                 >
                   Footer
                 </Button>
@@ -210,12 +218,17 @@ function DailyReportForm({ projectId, shootingDays }: DailyReportFormProps) {
             </VStack>
           </ModalBody>
 
-          <ModalFooter>
-            <Button colorScheme="green" onClick={handleSubmit} mr={3}>
-              Submit
-            </Button>
-            <Button variant="ghost" onClick={onClose}>
+          <ModalFooter
+            mt={8}
+            display="flex"
+            justifyContent="space-between"
+            width="100%"
+          >
+            <Button colorScheme="gray" onClick={onClose}>
               Close
+            </Button>
+            <Button colorScheme="orange" onClick={handleSubmit}>
+              Submit
             </Button>
           </ModalFooter>
         </ModalContent>
