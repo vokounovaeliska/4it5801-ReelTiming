@@ -18,6 +18,7 @@ import {
   UserCarsData,
   UserInfoData,
 } from '../interfaces';
+import { GET_PROJECT_DETAILS } from '@frontend/graphql/queries/GetProjectDetails';
 
 export const useAllProjectUsers = (projectId: string) => {
   const {
@@ -57,7 +58,7 @@ export const useUserRoleInProject = (userId: string, projectId: string) => {
     loading: roleLoading,
     error: roleError,
   } = useQuery<RoleData>(GET_USER_ROLE_IN_PROJECT, {
-    skip: !userId,
+    skip: !userId || !projectId,
     variables: { userId, projectId },
     fetchPolicy: 'cache-first',
     nextFetchPolicy: 'cache-and-network',
@@ -145,4 +146,19 @@ export const useCarStatementsByProjectId = (projectId: string) => {
     fetchPolicy: 'cache-and-network',
   });
   return { projectCarStatements, projectCarLoading, projectCarError, refetch };
+};
+
+export const useProjectDetails = (projectId: string) => {
+  const {
+    data: projectData,
+    loading: projectLoading,
+    error: prjectError,
+  } = useQuery(GET_PROJECT_DETAILS, {
+    skip: !projectId,
+    variables: { id: projectId },
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
+  });
+
+  return { projectData, projectLoading, prjectError };
 };

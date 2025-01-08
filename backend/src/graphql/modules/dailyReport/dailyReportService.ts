@@ -54,6 +54,23 @@ export class DailyReportService {
       : null;
   }
 
+  async getDailyReportByShootingDayId(
+    shootingId: string,
+  ): Promise<DailyReport | null> {
+    const record =
+      await this.dailyReportRepository.getDailyReportByShootingDayId(
+        shootingId,
+      );
+
+    if (!record) return null;
+    return {
+      ...record,
+      intro: record.intro as ReportItem[],
+      shooting_progress: record.shooting_progress as ReportItem[],
+      footer: record.footer as ReportItem[],
+    };
+  }
+
   async createDailyReport(data: DailyReportInput): Promise<DailyReport> {
     const dailyReportId = await this.dailyReportRepository.createDailyReport({
       ...data,
