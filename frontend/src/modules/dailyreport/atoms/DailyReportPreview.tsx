@@ -29,6 +29,8 @@ const DailyReportPreview = ({
         date: shootingDay.date,
         shootingDayId: shootingDay.id,
       },
+      skip: !projectId || !shootingDay.date || !shootingDay.id,
+      fetchPolicy: 'cache-and-network',
     },
   );
 

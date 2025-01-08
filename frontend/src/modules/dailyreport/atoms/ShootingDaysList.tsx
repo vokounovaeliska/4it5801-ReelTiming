@@ -33,10 +33,13 @@ type Props = {
 };
 
 const ShootingDaysList = ({ projectId }: Props) => {
-  const { data, loading, error } = useQuery<ShootingDaysByProject>(
+  const { data, loading, error, refetch } = useQuery<ShootingDaysByProject>(
     GET_SHOOTING_DAYS_BY_PROJECT,
     {
       variables: { projectId },
+      skip: !projectId,
+      fetchPolicy: 'cache-and-network',
+      nextFetchPolicy: 'cache-first',
     },
   );
 
@@ -73,6 +76,7 @@ const ShootingDaysList = ({ projectId }: Props) => {
         <DailyReportForm
           projectId={projectId}
           shootingDays={shootingDays}
+          refetchShootingDays={refetch} // Pass the refetch function
         ></DailyReportForm>
 
         <TableContainer overflowX="auto">

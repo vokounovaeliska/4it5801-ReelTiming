@@ -1,23 +1,14 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import {
   Box,
   Button,
-  Heading,
-  HStack,
-  Input,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
@@ -31,30 +22,44 @@ import {
 import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 
 import { AddDailyReportButton } from '../atoms/AddDailyReportButton';
-import ShootingDaySelector from '../atoms/ShootingDaySelector';
-import { ShootingDayByProject } from '../interfaces/interface';
-
-interface ReportItem {
-  title: string;
-  value: string;
-}
+import ShootingDaySelector from '../atoms/form/ShootingDaySelector';
+import SectionTable from '../atoms/preview/SectionTable';
+import { ReportItem, ShootingDayByProject } from '../interfaces/interface';
 
 interface DailyReportFormProps {
   projectId: string;
   shootingDays: ShootingDayByProject[];
+  refetchShootingDays: () => void; // Added refetch function as a prop
 }
 
-function DailyReportForm({ projectId, shootingDays }: DailyReportFormProps) {
+const DailyReportForm = ({
+  projectId,
+  shootingDays,
+  refetchShootingDays,
+}: DailyReportFormProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data, loading } = useQuery(GET_LAST_DAILY_REPORT_BY_PROJECT, {
     variables: { projectId },
+    skip: !projectId,
+    fetchPolicy: 'cache-and-network',
   });
   const [addDailyReport] = useMutation(ADD_DAILY_REPORT);
 
   const [intro, setIntro] = useState<ReportItem[]>([]);
   const [shootingProgress, setShootingProgress] = useState<ReportItem[]>([]);
   const [footer, setFooter] = useState<ReportItem[]>([]);
-  const [newItem, setNewItem] = useState<ReportItem>({ title: '', value: '' });
+
+  const [introNewItem, setIntroNewItem] = useState<ReportItem>({
+    title: '',
+    value: '',
+  });
+  const [shootingProgressNewItem, setShootingProgressNewItem] =
+    useState<ReportItem>({ title: '', value: '' });
+  const [footerNewItem, setFooterNewItem] = useState<ReportItem>({
+    title: '',
+    value: '',
+  });
+
   const [selectedShootingDay, setSelectedShootingDay] = useState<string | null>(
     null,
   );
@@ -70,20 +75,24 @@ function DailyReportForm({ projectId, shootingDays }: DailyReportFormProps) {
   }, [data]);
 
   const handleAddItem = (section: 'intro' | 'shootingProgress' | 'footer') => {
-    if (!newItem.title || !newItem.value) return;
-
+    let newItem: ReportItem;
     switch (section) {
       case 'intro':
+        newItem = introNewItem;
         setIntro([...intro, newItem]);
+        setIntroNewItem({ title: '', value: '' });
         break;
       case 'shootingProgress':
+        newItem = shootingProgressNewItem;
         setShootingProgress([...shootingProgress, newItem]);
+        setShootingProgressNewItem({ title: '', value: '' });
         break;
       case 'footer':
+        newItem = footerNewItem;
         setFooter([...footer, newItem]);
+        setFooterNewItem({ title: '', value: '' });
         break;
     }
-    setNewItem({ title: '', value: '' });
   };
 
   const handleSubmit = async () => {
@@ -104,18 +113,42 @@ function DailyReportForm({ projectId, shootingDays }: DailyReportFormProps) {
       });
       showSuccessToast('Daily report added successfully.');
       onClose();
+      refetchShootingDays(); // Trigger refetch after mutation
     } catch (error) {
       showErrorToast('Failed to add daily report. Please try again.');
     }
   };
 
+  const handleModalClose = () => {
+    setIntro([]);
+    setShootingProgress([]);
+    setFooter([]);
+    setIntroNewItem({ title: '', value: '' });
+    setShootingProgressNewItem({ title: '', value: '' });
+    setFooterNewItem({ title: '', value: '' });
+    setSelectedShootingDay(null);
+    onClose();
+  };
+
   if (loading) return <p>Loading...</p>;
 
-  return (
-    <Box>
-      <AddDailyReportButton onClick={onOpen} ml={8} mb={4} />
+  const availableShootingDays = shootingDays.filter((day) => !day.dailyReport);
 
-      <CustomModal isOpen={isOpen} onClose={onClose} title="Add daily report">
+  return (
+    <Box p={2}>
+      <AddDailyReportButton
+        onClick={onOpen}
+        ml={8}
+        mb={4}
+        display={availableShootingDays.length ? 'block' : 'none'}
+      />
+
+      <CustomModal
+        isOpen={isOpen}
+        onClose={handleModalClose}
+        title="Add daily report"
+        size="2xl"
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Create Daily Report</ModalHeader>
@@ -125,111 +158,35 @@ function DailyReportForm({ projectId, shootingDays }: DailyReportFormProps) {
               <ShootingDaySelector
                 selectedShootingDay={selectedShootingDay}
                 setSelectedShootingDay={setSelectedShootingDay}
-                shootingDays={shootingDays}
+                shootingDays={availableShootingDays}
               />
 
-              <HStack>
-                <Input
-                  w={'xxs'}
-                  placeholder="Title"
-                  value={newItem.title}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, title: e.target.value })
-                  }
-                />
-                <Input
-                  w={'xxs'}
-                  placeholder="Value"
-                  value={newItem.value}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, value: e.target.value })
-                  }
-                />
-                <Button
-                  size={'sm'}
-                  onClick={() => handleAddItem('intro')}
-                  colorScheme="orange"
-                >
-                  Add to Intro
-                </Button>
-                <Button
-                  size={'sm'}
-                  onClick={() => handleAddItem('shootingProgress')}
-                  colorScheme="orange"
-                >
-                  Add to Shooting Progress
-                </Button>
-                <Button
-                  size={'sm'}
-                  onClick={() => handleAddItem('footer')}
-                  colorScheme="orange"
-                >
-                  Add to Footer
-                </Button>
-              </HStack>
+              {/* Intro Section Table */}
+              <SectionTable
+                title="Intro"
+                data={intro}
+                newItem={introNewItem}
+                setNewItem={setIntroNewItem}
+                handleAddItem={() => handleAddItem('intro')}
+              />
 
-              {/* Intro Table */}
-              <VStack align="stretch" spacing={4}>
-                <Heading size="md">Intro</Heading>
-                <Table variant="simple" size="sm">
-                  <Thead>
-                    <Tr>
-                      <Th>Title</Th>
-                      <Th>Value</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {intro.map((item, index) => (
-                      <Tr key={index}>
-                        <Td>{item.title}</Td>
-                        <Td>{item.value}</Td>
-                      </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-              </VStack>
+              {/* Shooting Progress Section Table */}
+              <SectionTable
+                title="Shooting Progress"
+                data={shootingProgress}
+                newItem={shootingProgressNewItem}
+                setNewItem={setShootingProgressNewItem}
+                handleAddItem={() => handleAddItem('shootingProgress')}
+              />
 
-              {/* Shooting Progress Table */}
-              <VStack align="stretch" spacing={4}>
-                <Heading size="md">Shooting Progress</Heading>
-                <Table variant="simple" size="sm">
-                  <Thead>
-                    <Tr>
-                      <Th>Title</Th>
-                      <Th>Value</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {shootingProgress.map((item, index) => (
-                      <Tr key={index}>
-                        <Td>{item.title}</Td>
-                        <Td>{item.value}</Td>
-                      </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-              </VStack>
-
-              {/* Footer Table */}
-              <VStack align="stretch" spacing={4}>
-                <Heading size="md">Footer</Heading>
-                <Table variant="simple" size="sm">
-                  <Thead>
-                    <Tr>
-                      <Th>Title</Th>
-                      <Th>Value</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {footer.map((item, index) => (
-                      <Tr key={index}>
-                        <Td>{item.title}</Td>
-                        <Td>{item.value}</Td>
-                      </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-              </VStack>
+              {/* Footer Section Table */}
+              <SectionTable
+                title="Footer"
+                data={footer}
+                newItem={footerNewItem}
+                setNewItem={setFooterNewItem}
+                handleAddItem={() => handleAddItem('footer')}
+              />
             </VStack>
           </ModalBody>
 
@@ -239,7 +196,7 @@ function DailyReportForm({ projectId, shootingDays }: DailyReportFormProps) {
             justifyContent="space-between"
             width="100%"
           >
-            <Button colorScheme="gray" onClick={onClose}>
+            <Button colorScheme="gray" onClick={handleModalClose}>
               Close
             </Button>
             <Button colorScheme="orange" onClick={handleSubmit}>
@@ -250,6 +207,6 @@ function DailyReportForm({ projectId, shootingDays }: DailyReportFormProps) {
       </CustomModal>
     </Box>
   );
-}
+};
 
 export default DailyReportForm;
