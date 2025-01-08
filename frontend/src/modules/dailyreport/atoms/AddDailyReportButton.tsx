@@ -43,6 +43,12 @@ export const AddDailyReportButton: React.FC<AddDailyReportButtonProps> = ({
         }}
         transition="all 0.3s ease"
         isDisabled={isDisabled}
+        _disabled={{
+          transition: 'none',
+          opacity: 0.4,
+          cursor: 'not-allowed',
+          transform: 'none',
+        }}
       >
         {label}
       </Button>

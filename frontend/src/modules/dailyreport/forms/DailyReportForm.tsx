@@ -32,6 +32,12 @@ import {
   ShootingDayByProject,
 } from '../interfaces/interface';
 
+import {
+  initFooterData,
+  initIntroData,
+  initShootingProgressData,
+} from './initDailyReportData';
+
 interface DailyReportFormProps {
   projectId: string;
   shootingDays: ShootingDayByProject[];
@@ -99,15 +105,27 @@ const DailyReportForm = ({
   console.log('data', data);
 
   useEffect(() => {
-    if (
-      mode === 'add' &&
-      data?.lastDailyReportByProjectId &&
-      data.lastDailyReportByProjectId.length > 0
-    ) {
-      const lastReport = data.lastDailyReportByProjectId[0];
-      setIntro(cleanReportItems(lastReport.intro) || []);
-      setShootingProgress(cleanReportItems(lastReport.shooting_progress) || []);
-      setFooter(cleanReportItems(lastReport.footer) || []);
+    if (mode === 'add') {
+      const lastReport = data?.lastDailyReportByProjectId[0];
+
+      console.log('lastReport', cleanReportItems(lastReport?.intro));
+      setIntro(
+        cleanReportItems(lastReport?.intro)?.length > 0
+          ? cleanReportItems(lastReport?.intro)
+          : initIntroData,
+      );
+
+      setShootingProgress(
+        cleanReportItems(lastReport?.shooting_progress)?.length > 0
+          ? cleanReportItems(lastReport?.shooting_progress)
+          : initShootingProgressData,
+      );
+
+      setFooter(
+        cleanReportItems(lastReport?.footer)?.length > 0
+          ? cleanReportItems(lastReport?.footer)
+          : initFooterData,
+      );
     }
   }, [data, mode]);
 
