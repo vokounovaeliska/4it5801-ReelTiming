@@ -14,6 +14,8 @@ import { ShootingDay, ShootingDayInput } from './shootingDayType';
 import { ShootingDayService } from './shootingDayService';
 import { Project } from '../project/projectType';
 import { ProjectService } from '../project/projectService';
+import { DailyReport } from '../dailyReport/dailyReportType';
+import { DailyReportService } from '../dailyReport/dailyReportService';
 
 const shootingDayInputSchema = z.object({
   shooting_day_number: z.number().nonnegative(),
@@ -93,6 +95,18 @@ export class ShootingDayResolver {
     if (shootingDay.project_id) {
       const projectService = new ProjectService(db);
       return projectService.getProjectById(shootingDay.project_id);
+    }
+    return null;
+  }
+
+  @FieldResolver(() => [DailyReport], { nullable: true })
+  async dailyReport(
+    @Root() shootingDay: ShootingDay,
+    @Ctx() { db }: CustomContext,
+  ): Promise<DailyReport | null> {
+    if (shootingDay.id) {
+      const dailyReportsService = new DailyReportService(db);
+      return dailyReportsService.getDailyReportByShootingDayId(shootingDay.id);
     }
     return null;
   }
