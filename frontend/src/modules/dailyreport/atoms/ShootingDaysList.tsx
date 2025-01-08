@@ -20,7 +20,11 @@ import { GET_SHOOTING_DAYS_BY_PROJECT } from '@frontend/graphql/queries/GetShoot
 import { formatDateToDisplay } from '@frontend/modules/timesheets/utils/timeUtils';
 import { Heading } from '@frontend/shared/design-system';
 
-import { ShootingDayByProject } from '../interfaces/interface';
+import DailyReportForm from '../forms/DailyReportForm';
+import {
+  ShootingDayByProject,
+  ShootingDaysByProject,
+} from '../interfaces/interface';
 
 import DailyReportPreview from './DailyReportPreview';
 
@@ -29,9 +33,12 @@ type Props = {
 };
 
 const ShootingDaysList = ({ projectId }: Props) => {
-  const { data, loading, error } = useQuery(GET_SHOOTING_DAYS_BY_PROJECT, {
-    variables: { projectId },
-  });
+  const { data, loading, error } = useQuery<ShootingDaysByProject>(
+    GET_SHOOTING_DAYS_BY_PROJECT,
+    {
+      variables: { projectId },
+    },
+  );
 
   const [selectedDay, setSelectedDay] = useState<ShootingDayByProject | null>(
     null,
@@ -63,6 +70,11 @@ const ShootingDaysList = ({ projectId }: Props) => {
         <Heading as="h3" pb={4} pl={4}>
           Shooting Days
         </Heading>
+        <DailyReportForm
+          projectId={projectId}
+          shootingDays={shootingDays}
+        ></DailyReportForm>
+
         <TableContainer overflowX="auto">
           <Table variant="simple" size="sm" colorScheme="gray">
             <Thead>
@@ -109,7 +121,7 @@ const ShootingDaysList = ({ projectId }: Props) => {
         </TableContainer>
       </Box>
 
-      <Box flex="3" p={4} display={selectedDay ? 'block' : 'none'}>
+      <Box flex="5" p={4} display={selectedDay ? 'block' : 'none'}>
         {selectedDay && (
           <DailyReportPreview shootingDay={selectedDay} projectId={projectId} />
         )}

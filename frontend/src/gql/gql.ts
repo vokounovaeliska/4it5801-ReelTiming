@@ -21,6 +21,8 @@ const documents = {
     types.DeleteCarDocument,
   '\n  mutation UpdateCar($data: CarInput!, $updateCarId: String!) {\n    updateCar(data: $data, id: $updateCarId) {\n      kilometer_allow\n      kilometer_rate\n      name\n      id\n    }\n  }\n':
     types.UpdateCarDocument,
+  '\n  mutation AddDailyReport($footer: [ReportItemInput!]!, $shootingProgress: [ReportItemInput!]!, $intro: [ReportItemInput!]!, $projectId: String!, $shootingDayId: String!) {\n  addDailyReport(footer: $footer, shooting_progress: $shootingProgress, intro: $intro, projectId: $projectId, shooting_day_id: $shootingDayId) {\n    id\n    intro {\n      title\n      value\n    }\n    shooting_progress {\n            title\n      value\n    }\n    footer {\n            title\n      value\n    }\n    create_date\n    last_update_date\n    project {\n      id\n      name\n    }\n    shootingDay {\n      id\n      date\n      shooting_day_number\n    }\n  }\n}\n':
+    types.AddDailyReportDocument,
   '\n  mutation AddProject(\n    $productionCompany: String!\n    $name: String!\n    $endDate: DateTimeISO\n    $startDate: DateTimeISO\n    $description: String\n    $create_user_id: String\n    $currency: String\n  ) {\n    addProject(\n      production_company: $productionCompany\n      name: $name\n      end_date: $endDate\n      start_date: $startDate\n      description: $description\n      create_user_id: $create_user_id\n      currency: $currency\n    ) {\n      id\n      name\n      production_company\n      description\n      start_date\n      end_date\n      create_date\n      create_user_id\n      last_update_user_id\n      last_update_date\n      is_active\n      currency\n      departments {\n        id\n        name\n      }\n    }\n  }\n':
     types.AddProjectDocument,
   '\n  mutation AddProjectUser(\n    $projectId: String!\n    $isTeamLeader: Boolean!\n    $rateId: String\n    $departmentId: String\n    $role: String!\n    $invitation: String\n    $phone_number: String\n    $email: String!\n    $name: String!\n    $surname: String!\n    $position: String\n  ) {\n    addProjectUser(\n      projectId: $projectId\n      isTeamLeader: $isTeamLeader\n      rateId: $rateId\n      departmentId: $departmentId\n      role: $role\n      invitation: $invitation\n      phone_number: $phone_number\n      email: $email\n      name: $name\n      surname: $surname\n      position: $position\n    ) {\n      id\n      project {\n        id\n      }\n      is_team_leader\n      role\n      rate{\n        id\n      }\n    }\n  }\n':
@@ -66,6 +68,8 @@ const documents = {
     types.DailyReportPreviewInfoDocument,
   '\n  query Departments($projectId: String!) {\n    departments(projectId: $projectId) {\n      id\n      name\n    }\n  }\n':
     types.DepartmentsDocument,
+  '\nquery LastDailyReportByProjectId($projectId: String!) {\n  lastDailyReportByProjectId(projectId: $projectId) {\n    id\n    intro {\n      title\n      value\n    }\n    shooting_progress {\n      title\n      value\n    }\n    footer {\n      title\n      value\n    }\n    create_date\n    last_update_date\n    shootingDay {\n      id\n      shooting_day_number\n      date\n    }\n  }\n}\n':
+    types.LastDailyReportByProjectIdDocument,
   '\n  query GetProjectByProjectUserToken($token: String!) {\n    projectUsersByToken(token: $token) {\n      project {\n        name\n      }\n    }\n  }\n':
     types.GetProjectByProjectUserTokenDocument,
   '\n  query GetProjectDetail($id: String!) {\n    project(id: $id) {\n      id\n      name\n      description\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n      projectUsers {\n      id\n    }\n    }\n  }\n':
@@ -142,6 +146,12 @@ export function gql(
 export function gql(
   source: '\n  mutation UpdateCar($data: CarInput!, $updateCarId: String!) {\n    updateCar(data: $data, id: $updateCarId) {\n      kilometer_allow\n      kilometer_rate\n      name\n      id\n    }\n  }\n',
 ): (typeof documents)['\n  mutation UpdateCar($data: CarInput!, $updateCarId: String!) {\n    updateCar(data: $data, id: $updateCarId) {\n      kilometer_allow\n      kilometer_rate\n      name\n      id\n    }\n  }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\n  mutation AddDailyReport($footer: [ReportItemInput!]!, $shootingProgress: [ReportItemInput!]!, $intro: [ReportItemInput!]!, $projectId: String!, $shootingDayId: String!) {\n  addDailyReport(footer: $footer, shooting_progress: $shootingProgress, intro: $intro, projectId: $projectId, shooting_day_id: $shootingDayId) {\n    id\n    intro {\n      title\n      value\n    }\n    shooting_progress {\n            title\n      value\n    }\n    footer {\n            title\n      value\n    }\n    create_date\n    last_update_date\n    project {\n      id\n      name\n    }\n    shootingDay {\n      id\n      date\n      shooting_day_number\n    }\n  }\n}\n',
+): (typeof documents)['\n  mutation AddDailyReport($footer: [ReportItemInput!]!, $shootingProgress: [ReportItemInput!]!, $intro: [ReportItemInput!]!, $projectId: String!, $shootingDayId: String!) {\n  addDailyReport(footer: $footer, shooting_progress: $shootingProgress, intro: $intro, projectId: $projectId, shooting_day_id: $shootingDayId) {\n    id\n    intro {\n      title\n      value\n    }\n    shooting_progress {\n            title\n      value\n    }\n    footer {\n            title\n      value\n    }\n    create_date\n    last_update_date\n    project {\n      id\n      name\n    }\n    shootingDay {\n      id\n      date\n      shooting_day_number\n    }\n  }\n}\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -280,6 +290,12 @@ export function gql(
 export function gql(
   source: '\n  query Departments($projectId: String!) {\n    departments(projectId: $projectId) {\n      id\n      name\n    }\n  }\n',
 ): (typeof documents)['\n  query Departments($projectId: String!) {\n    departments(projectId: $projectId) {\n      id\n      name\n    }\n  }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\nquery LastDailyReportByProjectId($projectId: String!) {\n  lastDailyReportByProjectId(projectId: $projectId) {\n    id\n    intro {\n      title\n      value\n    }\n    shooting_progress {\n      title\n      value\n    }\n    footer {\n      title\n      value\n    }\n    create_date\n    last_update_date\n    shootingDay {\n      id\n      shooting_day_number\n      date\n    }\n  }\n}\n',
+): (typeof documents)['\nquery LastDailyReportByProjectId($projectId: String!) {\n  lastDailyReportByProjectId(projectId: $projectId) {\n    id\n    intro {\n      title\n      value\n    }\n    shooting_progress {\n      title\n      value\n    }\n    footer {\n      title\n      value\n    }\n    create_date\n    last_update_date\n    shootingDay {\n      id\n      shooting_day_number\n      date\n    }\n  }\n}\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

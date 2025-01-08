@@ -51,7 +51,7 @@ export class DailyReportResolver {
     return dailyReportService.getAllDailyReportsByProjectId(projectId);
   }
 
-  @Query(() => [DailyReport])
+  @Query(() => [DailyReport], { nullable: true })
   async lastDailyReportByProjectId(
     @Arg('projectId') projectId: string,
     @Ctx() { db }: CustomContext,

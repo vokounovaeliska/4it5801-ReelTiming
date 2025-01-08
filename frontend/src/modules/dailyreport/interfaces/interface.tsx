@@ -14,12 +14,17 @@ export interface Project {
   shootingDays?: ShootingDay[] | null;
 }
 
+export type ShootingDaysByProject = {
+  shootingDaysByProject: ShootingDayByProject[];
+};
+
 export type ShootingDayByProject = {
   id: string;
   shooting_day_number: number;
   date: string;
   dailyReport?: { id: string }[] | null;
 };
+
 export type ShootingDay = {
   id: string;
   shooting_day_number: number;
@@ -32,6 +37,9 @@ export type DailyReport = {
   intro: ReportItem[];
   shooting_progress: ReportItem[];
   footer: ReportItem[];
+  create_date?: string | null;
+  last_update_date?: string | null;
+  shootingDay?: ShootingDay;
 };
 
 export type ReportItem = {
@@ -67,3 +75,28 @@ export type DailyReportPreviewInfoQuery = {
   project?: Project | null;
   shootingDay?: ShootingDay | null;
 };
+
+export interface LastDailyReportByProjectIdQuery {
+  lastDailyReportByProjectId: {
+    id: string;
+    create_date?: string | null;
+    last_update_date?: string | null;
+    intro: {
+      title: string;
+      value: string;
+    }[];
+    shooting_progress: {
+      title: string;
+      value: string;
+    }[];
+    footer: {
+      title: string;
+      value: string;
+    }[];
+    shootingDay?: {
+      id: string;
+      shooting_day_number: number;
+      date: string;
+    } | null;
+  }[];
+}

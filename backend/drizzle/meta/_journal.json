@@ -71,6 +71,13 @@
       "when": 1736286802595,
       "tag": "0009_majestic_wiccan",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1736302535406,
+      "tag": "0010_funny_thaddeus_ross",
+      "breakpoints": true
     }
   ]
 }
