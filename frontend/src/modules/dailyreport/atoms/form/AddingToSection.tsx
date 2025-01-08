@@ -35,7 +35,12 @@ const AddingToSection = ({
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
-      <Button size={'sm'} onClick={handleAddItem} colorScheme="orange">
+      <Button
+        size={'sm'}
+        onClick={handleAddItem}
+        colorScheme="orange"
+        isDisabled={!title.trim()}
+      >
         Add
       </Button>
     </HStack>
