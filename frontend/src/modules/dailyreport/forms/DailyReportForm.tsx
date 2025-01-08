@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import {
   Box,
   Button,
+  Heading,
   HStack,
   Input,
-  Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
   Table,
   Tbody,
   Td,
@@ -25,13 +24,14 @@ import {
 
 import { ADD_DAILY_REPORT } from '@frontend/graphql/mutations/AddDailyReport';
 import { GET_LAST_DAILY_REPORT_BY_PROJECT } from '@frontend/graphql/queries/GetLastDailyReportByProjectId';
-import { formatDateToDisplay } from '@frontend/modules/timesheets/utils/timeUtils';
 import {
   showErrorToast,
   showSuccessToast,
 } from '@frontend/shared/design-system/molecules/toastUtils';
+import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 
 import { AddDailyReportButton } from '../atoms/AddDailyReportButton';
+import ShootingDaySelector from '../atoms/ShootingDaySelector';
 import { ShootingDayByProject } from '../interfaces/interface';
 
 interface ReportItem {
@@ -55,9 +55,6 @@ function DailyReportForm({ projectId, shootingDays }: DailyReportFormProps) {
   const [shootingProgress, setShootingProgress] = useState<ReportItem[]>([]);
   const [footer, setFooter] = useState<ReportItem[]>([]);
   const [newItem, setNewItem] = useState<ReportItem>({ title: '', value: '' });
-  const [section, setSection] = useState<
-    'intro' | 'shootingProgress' | 'footer'
-  >('intro');
   const [selectedShootingDay, setSelectedShootingDay] = useState<string | null>(
     null,
   );
@@ -72,7 +69,7 @@ function DailyReportForm({ projectId, shootingDays }: DailyReportFormProps) {
     }
   }, [data]);
 
-  const handleAddItem = () => {
+  const handleAddItem = (section: 'intro' | 'shootingProgress' | 'footer') => {
     if (!newItem.title || !newItem.value) return;
 
     switch (section) {
@@ -91,7 +88,7 @@ function DailyReportForm({ projectId, shootingDays }: DailyReportFormProps) {
 
   const handleSubmit = async () => {
     if (!selectedShootingDay) {
-      showErrorToast('Please select a shooting day!'); //TODO zod validations
+      showErrorToast('Please select a shooting day!');
       return;
     }
 
@@ -112,37 +109,28 @@ function DailyReportForm({ projectId, shootingDays }: DailyReportFormProps) {
     }
   };
 
-  const availableShootingDays = shootingDays.filter((day) => !day.dailyReport);
-
   if (loading) return <p>Loading...</p>;
 
   return (
     <Box>
       <AddDailyReportButton onClick={onOpen} ml={8} mb={4} />
 
-      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <CustomModal isOpen={isOpen} onClose={onClose} title="Add daily report">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Create Daily Report</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <VStack spacing={4} align="stretch">
-              <Select
-                placeholder="Select a Shooting Day"
-                value={selectedShootingDay || ''}
-                onChange={(e) => setSelectedShootingDay(e.target.value)}
-              >
-                {availableShootingDays.map((day) => (
-                  <option key={day.id} value={day.id}>
-                    {`Day ${day.shooting_day_number} - ${formatDateToDisplay(
-                      day.date,
-                    )}`}
-                  </option>
-                ))}
-              </Select>
+              <ShootingDaySelector
+                selectedShootingDay={selectedShootingDay}
+                setSelectedShootingDay={setSelectedShootingDay}
+                shootingDays={shootingDays}
+              />
 
               <HStack>
                 <Input
+                  w={'xxs'}
                   placeholder="Title"
                   value={newItem.title}
                   onChange={(e) =>
@@ -150,71 +138,98 @@ function DailyReportForm({ projectId, shootingDays }: DailyReportFormProps) {
                   }
                 />
                 <Input
+                  w={'xxs'}
                   placeholder="Value"
                   value={newItem.value}
                   onChange={(e) =>
                     setNewItem({ ...newItem, value: e.target.value })
                   }
                 />
-                <Button onClick={handleAddItem} colorScheme="orange">
-                  Add
+                <Button
+                  size={'sm'}
+                  onClick={() => handleAddItem('intro')}
+                  colorScheme="orange"
+                >
+                  Add to Intro
+                </Button>
+                <Button
+                  size={'sm'}
+                  onClick={() => handleAddItem('shootingProgress')}
+                  colorScheme="orange"
+                >
+                  Add to Shooting Progress
+                </Button>
+                <Button
+                  size={'sm'}
+                  onClick={() => handleAddItem('footer')}
+                  colorScheme="orange"
+                >
+                  Add to Footer
                 </Button>
               </HStack>
 
-              <HStack>
-                <Button
-                  onClick={() => setSection('intro')}
-                  colorScheme={section === 'intro' ? 'orange' : 'gray'}
-                >
-                  Intro
-                </Button>
-                <Button
-                  onClick={() => setSection('shootingProgress')}
-                  colorScheme={
-                    section === 'shootingProgress' ? 'orange' : 'gray'
-                  }
-                >
-                  Shooting Progress
-                </Button>
-                <Button
-                  onClick={() => setSection('footer')}
-                  colorScheme={section === 'footer' ? 'orange' : 'gray'}
-                >
-                  Footer
-                </Button>
-              </HStack>
+              {/* Intro Table */}
+              <VStack align="stretch" spacing={4}>
+                <Heading size="md">Intro</Heading>
+                <Table variant="simple" size="sm">
+                  <Thead>
+                    <Tr>
+                      <Th>Title</Th>
+                      <Th>Value</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {intro.map((item, index) => (
+                      <Tr key={index}>
+                        <Td>{item.title}</Td>
+                        <Td>{item.value}</Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </VStack>
 
-              <Table variant="simple">
-                <Thead>
-                  <Tr>
-                    <Th>Title</Th>
-                    <Th>Value</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {section === 'intro' &&
-                    intro.map((item, index) => (
+              {/* Shooting Progress Table */}
+              <VStack align="stretch" spacing={4}>
+                <Heading size="md">Shooting Progress</Heading>
+                <Table variant="simple" size="sm">
+                  <Thead>
+                    <Tr>
+                      <Th>Title</Th>
+                      <Th>Value</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {shootingProgress.map((item, index) => (
                       <Tr key={index}>
                         <Td>{item.title}</Td>
                         <Td>{item.value}</Td>
                       </Tr>
                     ))}
-                  {section === 'shootingProgress' &&
-                    shootingProgress.map((item, index) => (
+                  </Tbody>
+                </Table>
+              </VStack>
+
+              {/* Footer Table */}
+              <VStack align="stretch" spacing={4}>
+                <Heading size="md">Footer</Heading>
+                <Table variant="simple" size="sm">
+                  <Thead>
+                    <Tr>
+                      <Th>Title</Th>
+                      <Th>Value</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {footer.map((item, index) => (
                       <Tr key={index}>
                         <Td>{item.title}</Td>
                         <Td>{item.value}</Td>
                       </Tr>
                     ))}
-                  {section === 'footer' &&
-                    footer.map((item, index) => (
-                      <Tr key={index}>
-                        <Td>{item.title}</Td>
-                        <Td>{item.value}</Td>
-                      </Tr>
-                    ))}
-                </Tbody>
-              </Table>
+                  </Tbody>
+                </Table>
+              </VStack>
             </VStack>
           </ModalBody>
 
@@ -232,7 +247,7 @@ function DailyReportForm({ projectId, shootingDays }: DailyReportFormProps) {
             </Button>
           </ModalFooter>
         </ModalContent>
-      </Modal>
+      </CustomModal>
     </Box>
   );
 }
