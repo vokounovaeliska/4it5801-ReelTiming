@@ -1,8 +1,10 @@
-import { Box, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import { Box, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 
 import { formatTime } from '@frontend/modules/timesheets/utils/timeUtils';
 
 import { DailyReportPreviewInfoQuery } from '../../interfaces/interface';
+
+import { ReportShootingProgress } from './ReportShootingProgress';
 
 type DailyReportTableProps = {
   data?: DailyReportPreviewInfoQuery;
@@ -37,7 +39,9 @@ export const ReportCrewStatementsTable = ({ data }: DailyReportTableProps) => {
           <Tbody>
             {sortedStatements.map((statement, index) => (
               <Tr key={index}>
-                <Td>{statement.projectUser.position || 'N/A'}</Td>
+                <Td textAlign="right">
+                  {statement.projectUser.position || 'N/A'}
+                </Td>
                 <Td>
                   {statement.projectUser.name} {statement.projectUser.surname}
                 </Td>
@@ -53,7 +57,7 @@ export const ReportCrewStatementsTable = ({ data }: DailyReportTableProps) => {
       </Box>
 
       <Box width="20%" mt={2} boxShadow="sm">
-        <Text>TODO shooting progres metadata</Text>
+        <ReportShootingProgress data={data} />
       </Box>
     </Box>
   );

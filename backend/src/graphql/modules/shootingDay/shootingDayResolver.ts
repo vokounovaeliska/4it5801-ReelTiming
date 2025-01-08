@@ -103,7 +103,7 @@ export class ShootingDayResolver {
   async dailyReport(
     @Root() shootingDay: ShootingDay,
     @Ctx() { db }: CustomContext,
-  ): Promise<DailyReport | null> {
+  ): Promise<DailyReport[] | null> {
     if (shootingDay.id) {
       const dailyReportsService = new DailyReportService(db);
       return dailyReportsService.getDailyReportByShootingDayId(shootingDay.id);

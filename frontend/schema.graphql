@@ -288,7 +288,7 @@ type Query {
     projectUserId: String!
     startDate: DateTimeISO!
   ): [Statement!]!
-  lastDailyReportByProjectId(projectId: String!): [DailyReport!]!
+  lastDailyReportByProjectId(projectId: String!): [DailyReport!]
   project(id: String!): Project
   projectUser(id: String!): ProjectUser
   projectUserDetails(projectId: String!, userId: String!): ProjectUser
