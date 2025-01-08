@@ -10,7 +10,9 @@ import {
 } from '../interfaces/interface';
 
 import { ReportCrewStatementsTable } from './preview/ReportCrewStatementsTable';
+import ReportFooter from './preview/ReportFooter';
 import ReportHeader from './preview/ReportHeader';
+import ReportIntro from './preview/ReportIntro';
 
 type DailyReportPreviewProps = {
   shootingDay: ShootingDayByProject;
@@ -48,19 +50,11 @@ const DailyReportPreview = ({
     <Box>
       <ReportHeader data={data} />
       <Divider />
-      <Box textAlign="center" h={10}>
-        TODO metadata intro
-      </Box>
-      <Divider />
-      <Box textAlign="center" h={10}>
-        TODO
-      </Box>
+      <ReportIntro data={data} />
       <Divider />
       <ReportCrewStatementsTable data={data} />
       <Divider />
-      <Box textAlign="center" h={10}>
-        TODO metadata footer
-      </Box>
+      <ReportFooter data={data} />
     </Box>
   );
 };

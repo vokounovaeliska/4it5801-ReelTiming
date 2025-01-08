@@ -4,11 +4,11 @@ export const initIntroData = [
     value: '',
   },
   {
-    title: 'Vedoucí produkce',
+    title: 'První klapka',
     value: '',
   },
   {
-    title: 'Režisérka',
+    title: 'Vedoucí produkce',
     value: '',
   },
   {
@@ -16,23 +16,29 @@ export const initIntroData = [
     value: '',
   },
   {
+    title: 'Oběd',
+    value: '',
+  },
+
+  {
+    title: 'Režisérka',
+    value: '',
+  },
+
+  {
     title: 'Snídaně',
     value: '',
   },
   {
-    title: 'Early call',
-    value: '',
-  },
-  {
-    title: 'První klapka',
-    value: '',
-  },
-  {
-    title: 'Oběd',
-    value: '',
-  },
-  {
     title: 'Wrap',
+    value: '',
+  },
+  {
+    title: 'Kameraman',
+    value: '',
+  },
+  {
+    title: 'Early call',
     value: '',
   },
 ];
@@ -43,7 +49,7 @@ export const initShootingProgressData = [
     value: '',
   },
   {
-    title: 'Scheduled scenes',
+    title: 'Completed scenes',
     value: '',
   },
   {
@@ -70,4 +76,3 @@ export const initFooterData = [
     value: '',
   },
 ];
-

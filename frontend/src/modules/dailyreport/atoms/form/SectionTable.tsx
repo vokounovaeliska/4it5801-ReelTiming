@@ -76,9 +76,11 @@ const SectionTable = ({
         <Table variant="simple" size="sm" minW="100%">
           <Thead>
             <Tr>
-              <Th>Title</Th>
-              <Th>Value</Th>
-              <Th minW="10rem">Actions</Th>
+              <Th w="auto">Title</Th>
+              <Th w="auto">Value</Th>
+              <Th minW="10rem" w="auto">
+                Actions
+              </Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -114,7 +116,6 @@ const SectionTable = ({
                       }
                       resize="vertical"
                       minHeight={4}
-                      minW={4}
                       h={'auto'}
                       w={'auto'}
                     />

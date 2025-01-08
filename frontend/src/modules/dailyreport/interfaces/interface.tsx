@@ -29,7 +29,7 @@ export type ShootingDay = {
   id: string;
   shooting_day_number: number;
   date: string;
-  dailyReport?: DailyReport | null;
+  dailyReport?: DailyReport[] | null;
 };
 
 export type DailyReport = {
