@@ -8,11 +8,18 @@ type LabelValueProps = {
 const LabelValue = ({ label, value }: LabelValueProps) => {
   return (
     <Box mb={2}>
-      <Text as="span" fontWeight="bold">
+      <Text
+        as="span"
+        fontWeight="bold"
+        whiteSpace="pre-wrap"
+        textTransform="uppercase"
+      >
         {label}
         {label === '' ? '' : ':'}{' '}
       </Text>
-      <Text as="span">{value}</Text>
+      <Text as="span" whiteSpace="pre-wrap">
+        {value}
+      </Text>
     </Box>
   );
 };

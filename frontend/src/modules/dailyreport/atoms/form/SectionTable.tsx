@@ -7,6 +7,7 @@ import {
   Table,
   Tbody,
   Td,
+  Text,
   Textarea,
   Th,
   Thead,
@@ -101,7 +102,7 @@ const SectionTable = ({
                       w={'auto'}
                     />
                   ) : (
-                    item.title
+                    <Text whiteSpace="pre-wrap">{item.title}</Text>
                   )}
                 </Td>
                 <Td>
@@ -120,7 +121,7 @@ const SectionTable = ({
                       w={'auto'}
                     />
                   ) : (
-                    item.value
+                    <Text whiteSpace="pre-wrap">{item.value}</Text>
                   )}
                 </Td>
                 <Td>

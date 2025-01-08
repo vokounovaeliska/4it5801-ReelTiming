@@ -25,10 +25,14 @@ export const ReportShootingProgress = ({
       <VStack spacing={4} align="stretch">
         {items.map((item, index) => (
           <Box key={index} bg="orange.500" textAlign="center" fontSize="sm">
-            <Text fontWeight="bold" textTransform="uppercase">
+            <Text
+              whiteSpace="pre-wrap"
+              fontWeight="bold"
+              textTransform="uppercase"
+            >
               {item.title}
             </Text>
-            <Text color="black" bg="white">
+            <Text whiteSpace="pre-wrap" color="black" bg="white">
               {item.value}
             </Text>
           </Box>

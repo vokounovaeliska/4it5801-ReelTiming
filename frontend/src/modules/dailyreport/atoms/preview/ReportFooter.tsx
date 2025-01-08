@@ -19,8 +19,10 @@ const ReportFooter = ({ data }: ReportFooterProps) => {
       <VStack spacing={20} align={'flex-start'} ml={20}>
         {footerItems.map((item, index) => (
           <Box key={index} textAlign={'left'}>
-            <Text fontWeight="bold">{item.title}</Text>
-            <Text>{item.value}</Text>
+            <Text whiteSpace="pre-wrap" fontWeight="bold">
+              {item.value}
+            </Text>
+            <Text whiteSpace="pre-wrap">{item.title}</Text>
           </Box>
         ))}
       </VStack>
