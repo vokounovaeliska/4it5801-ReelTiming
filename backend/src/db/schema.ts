@@ -251,6 +251,9 @@ export const daily_report = mysqlTable(
       table.shooting_day_id,
       table.project_id,
     ),
+    shootingDayUnique: uniqueIndex('shooting_day_unique').on(
+      table.shooting_day_id,
+    ),
   }),
 );
 
