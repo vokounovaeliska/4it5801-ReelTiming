@@ -6,13 +6,6 @@ import { FormField, type FormFieldBaseProps } from '../FormField';
 
 export type CurrencySelectFieldProps = FormFieldBaseProps<{}>;
 
-export const currencies = currencyCodes.data
-  .map((currency) => ({
-    value: currency.code,
-    label: `${currency.code} - ${currency.currency}`,
-  }))
-  .sort((a, b) => a.label.localeCompare(b.label));
-
 export function CurrencySelectField({
   id,
   name,
@@ -20,6 +13,12 @@ export function CurrencySelectField({
   ...selectProps
 }: CurrencySelectFieldProps) {
   const { control } = useFormContext();
+  const currencies = currencyCodes.data
+    .map((currency) => ({
+      value: currency.code,
+      label: `${currency.code} - ${currency.currency}`,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
   return (
     <FormField
       id={id}

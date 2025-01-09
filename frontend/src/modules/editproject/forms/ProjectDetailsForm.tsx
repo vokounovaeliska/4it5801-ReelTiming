@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 
 import RequiredInfo from '@frontend/modules/auth/organisms/RequiredInfo';
-import { currencies } from '@frontend/shared/forms/molecules/fields/CurrencySelectField';
+import { currencies } from '@frontend/shared/forms/molecules/fields/utils/currenciesUtils';
 import { projectFormValues } from '@frontend/zod/schemas';
 
 type ProjectDetailsFormProps = {
