@@ -9,9 +9,9 @@ import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
 import { useProjectDetails } from '../hooks/queryHooks';
-import DailyReportTemplate from '../templates/DailyReportTemplate';
+import { ShiftOverviewTemplate } from '../templates/ShiftOverviewTemplate';
 
-export function DailyReportPage() {
+export function ShiftOverviewPage() {
   const auth = useAuth();
   const navigate = useNavigate();
   const { projectId } = useParams<{ projectId: string }>();
@@ -54,10 +54,7 @@ export function DailyReportPage() {
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <ProjectNavbar projectId={projectId!} userRole={userRole} />
-      <DailyReportTemplate
-        projectId={projectId!}
-        projectData={projectData?.project}
-      />
+      <ShiftOverviewTemplate projectData={projectData?.project} />
       <Footer />
     </Box>
   );

@@ -15,10 +15,10 @@ import { AcceptInvitationPage } from './modules/crewlist/pages/AcceptInvitationP
 import { CrewListPage } from './modules/crewlist/pages/CrewListPage';
 import { MyProjectSettingPage } from './modules/crewlist/pages/MyProjectSettingsPage';
 import { DailyReportPage } from './modules/dailyreport/pages/DailyReportPage';
-// import { CrewListPage2 } from './modules/crewlist/pages/CrewListPage2';
 import { EditProjectPage } from './modules/editproject/pages/EditProjectPage';
 import { CreateProjectPage } from './modules/myprojects/pages/CreateProjectPage';
 import ProfileSettingsPage from './modules/profilesettings/pages/ProfileSettingsPage';
+import { ShiftOverviewPage } from './modules/shiftoverview/pages/ShiftOverviewPage';
 import { TimesheetPage } from './modules/timesheets/pages/TimesheetsPage';
 import { ToCPage } from './modules/toc/TocPage';
 import { route } from './route';
@@ -59,7 +59,8 @@ function Routes() {
         element={<AcceptInvitationPage />}
       />
       <Route path={route.dailyReports()} element={<DailyReportPage />} />
-      <Route path={route.profileSettings} element={<ProfileSettingsPage />} />
+      <Route path={route.shiftOverview()} element={<ShiftOverviewPage />} />
+      <Route path={route.profileSettings()} element={<ProfileSettingsPage />} />
     </RouterRoutes>
   );
 }

@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
-import { Project } from '@frontend/gql/graphql';
 
+import { Project } from '@frontend/gql/graphql';
 import { GET_PROJECT_DETAILS } from '@frontend/graphql/queries/GetProjectDetails';
 
 export const useProjectDetails = (projectId: string) => {
