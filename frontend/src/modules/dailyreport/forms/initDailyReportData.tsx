@@ -1,6 +1,6 @@
 export const initIntroData = [
   {
-    title: 'Výkoná producentka',
+    title: 'Výkonná producentka',
     value: '',
   },
   {

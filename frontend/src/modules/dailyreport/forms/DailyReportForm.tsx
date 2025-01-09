@@ -26,11 +26,11 @@ import {
 import SectionTable from '../atoms/form/SectionTable';
 import ShootingDaySelector from '../atoms/form/ShootingDaySelector';
 import {
-  DailyReport,
+  DailyReportFormProps,
   LastDailyReportByProjectIdQuery,
   ReportItem,
-  ShootingDayByProject,
 } from '../interfaces/interface';
+import { cleanReportItems } from '../utils/dailyReportUtils';
 
 import {
   initFooterData,
@@ -38,17 +38,6 @@ import {
   initShootingProgressData,
 } from './initDailyReportData';
 
-interface DailyReportFormProps {
-  projectId: string;
-  shootingDays: ShootingDayByProject[];
-  refetchShootingDays: () => void;
-  mode: 'add' | 'edit';
-  dailyReport?: DailyReport;
-  onCloseEdit: () => void;
-  isOpen: boolean;
-  onClose: () => void;
-  shootingDay?: ShootingDayByProject | null;
-}
 const DailyReportForm = ({
   projectId,
   shootingDays,
@@ -70,11 +59,12 @@ const DailyReportForm = ({
   );
   const [addDailyReport] = useMutation(ADD_DAILY_REPORT);
   const [editDailyReport] = useMutation(EDIT_DAILY_REPORT);
-
   const [intro, setIntro] = useState<ReportItem[]>([]);
   const [shootingProgress, setShootingProgress] = useState<ReportItem[]>([]);
   const [footer, setFooter] = useState<ReportItem[]>([]);
-
+  const [selectedShootingDay, setSelectedShootingDay] = useState<string | null>(
+    null,
+  );
   const [introNewItem, setIntroNewItem] = useState<ReportItem>({
     title: '',
     value: '',
@@ -86,41 +76,19 @@ const DailyReportForm = ({
     value: '',
   });
 
-  const [selectedShootingDay, setSelectedShootingDay] = useState<string | null>(
-    null,
-  );
-
-  const cleanReportItems = (items: ReportItem[] | undefined | null) => {
-    if (!items) return [];
-    return items.map((item) => {
-      if ('__typename' in item) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { __typename, ...rest } = item;
-        return rest;
-      }
-      return item;
-    });
-  };
-
-  console.log('data', data);
-
   useEffect(() => {
     if (mode === 'add') {
       const lastReport = data?.lastDailyReportByProjectId[0];
-
-      console.log('lastReport', cleanReportItems(lastReport?.intro));
       setIntro(
         cleanReportItems(lastReport?.intro)?.length > 0
           ? cleanReportItems(lastReport?.intro)
           : initIntroData,
       );
-
       setShootingProgress(
         cleanReportItems(lastReport?.shooting_progress)?.length > 0
           ? cleanReportItems(lastReport?.shooting_progress)
           : initShootingProgressData,
       );
-
       setFooter(
         cleanReportItems(lastReport?.footer)?.length > 0
           ? cleanReportItems(lastReport?.footer)
@@ -203,7 +171,6 @@ const DailyReportForm = ({
       }
       onClose();
       onCloseEdit();
-
       refetchShootingDays();
     } catch (error) {
       console.error(error);

@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { GET_USER_ROLE_IN_PROJECT } from '@frontend/graphql/queries/GetUserRoleInProject';
 
 import { GET_PROJECT_DETAILS } from '@frontend/graphql/queries/GetProjectDetails';
-import { Project, RoleData } from './interfaces/interface';
+import { Project, RoleData } from '../interfaces/interface';
 
 export const useUserRoleInProject = (userId: string, projectId: string) => {
   const {

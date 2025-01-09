@@ -79,3 +79,15 @@ export type DailyReportPreviewInfoQuery = {
 export interface LastDailyReportByProjectIdQuery {
   lastDailyReportByProjectId: DailyReport[];
 }
+
+export interface DailyReportFormProps {
+  projectId: string;
+  shootingDays: ShootingDayByProject[];
+  refetchShootingDays: () => void;
+  mode: 'add' | 'edit';
+  dailyReport?: DailyReport;
+  onCloseEdit: () => void;
+  isOpen: boolean;
+  onClose: () => void;
+  shootingDay?: ShootingDayByProject | null;
+}
