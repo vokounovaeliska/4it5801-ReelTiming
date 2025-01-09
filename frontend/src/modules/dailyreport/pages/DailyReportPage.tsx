@@ -7,7 +7,7 @@ import { route } from '@frontend/route';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
-import { useProjectDetails, useUserRoleInProject } from '../queryHooks';
+import { useProjectDetails, useUserRoleInProject } from '../hooks/queryHooks';
 import DailyReportTemplate from '../templates/DailyReportTemplate';
 
 export function DailyReportPage() {
@@ -44,14 +44,8 @@ export function DailyReportPage() {
     roleError ||
     !roleData ||
     projectError ||
-    (roleData.userRoleInProject !== 'ADMIN' &&
-      roleData.userRoleInProject !== 'CREW')
+    roleData.userRoleInProject !== 'ADMIN'
   ) {
-    navigate(route.myprojects());
-    return null;
-  }
-
-  if (userRole !== 'ADMIN') {
     navigate(route.myprojects());
     return null;
   }

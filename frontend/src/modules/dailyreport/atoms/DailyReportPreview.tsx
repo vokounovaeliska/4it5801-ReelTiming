@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client';
 import { Box, Center, Spinner, Text } from '@chakra-ui/react';
 
 import { GET_DAILY_REPORT_PREVIEW_INFO } from '@frontend/graphql/queries/GetDailyReportPreviewInfo';
+import PDFGenerator from '@frontend/modules/dailyreport/pdf/PdfGenerator';
 
 import { Divider } from '../../../shared/design-system/atoms/Divider';
 import {
@@ -55,6 +56,7 @@ const DailyReportPreview = ({
       <ReportCrewStatementsTable data={data} />
       <Divider />
       <ReportFooter data={data} />
+      <PDFGenerator data={data} />
     </Box>
   );
 };
