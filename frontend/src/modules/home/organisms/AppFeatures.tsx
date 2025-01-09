@@ -15,7 +15,7 @@ const AppFeatures = () => {
         fontWeight="bold"
         bgGradient="linear(to-r, orange.400, orange.600)"
         bgClip="text"
-        id="features"
+        pb={3}
       >
         Features That Make Filmmaking Easier
       </Heading>
