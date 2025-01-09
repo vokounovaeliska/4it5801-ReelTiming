@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Box, Text, useDisclosure } from '@chakra-ui/react';
+import { format, parseISO } from 'date-fns';
 
 import { ShootingDay } from '@frontend/gql/graphql';
 import {
@@ -115,7 +116,10 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
   const handleEditShootingDay = (index: number) => {
     const dayToEdit = shootingDaysCollection[index];
     if (dayToEdit) {
-      setShootingDay(dayToEdit);
+      setShootingDay({
+        ...dayToEdit,
+        date: format(parseISO(dayToEdit.date), 'yyyy-MM-dd'),
+      });
       setIsEditing(true);
     }
   };
