@@ -1581,6 +1581,50 @@ export type GetProjectsQuery = {
   }>;
 };
 
+export type GetShiftOverviewPageDataQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+}>;
+
+export type GetShiftOverviewPageDataQuery = {
+  __typename?: 'Query';
+  project_users: Array<{
+    __typename?: 'ProjectUser';
+    id: string;
+    name: string;
+    surname: string;
+    department?: {
+      __typename?: 'Department';
+      id: string;
+      name: string;
+      order_index?: number | null;
+    } | null;
+    statement: Array<{
+      __typename?: 'Statement';
+      id: string;
+      start_date: string;
+      from: string;
+      to: string;
+    }>;
+  }>;
+  shootingDaysByProject: Array<{
+    __typename?: 'ShootingDay';
+    id: string;
+    shooting_day_number: number;
+    date: string;
+  }>;
+  shiftOverviewsByProjectId: Array<{
+    __typename?: 'ShiftOverview';
+    id: string;
+  }>;
+  project?: {
+    __typename?: 'Project';
+    id: string;
+    name: string;
+    start_date?: string | null;
+    end_date?: string | null;
+  } | null;
+};
+
 export type ShootingDaysByProjectQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
 }>;
@@ -6191,6 +6235,151 @@ export const GetProjectsDocument = {
     },
   ],
 } as unknown as DocumentNode<GetProjectsQuery, GetProjectsQueryVariables>;
+export const GetShiftOverviewPageDataDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetShiftOverviewPageData' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project_users' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'surname' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'department' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'order_index' },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'statement' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'start_date' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'shootingDaysByProject' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shooting_day_number' },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'shiftOverviewsByProjectId' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'start_date' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'end_date' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetShiftOverviewPageDataQuery,
+  GetShiftOverviewPageDataQueryVariables
+>;
 export const ShootingDaysByProjectDocument = {
   kind: 'Document',
   definitions: [

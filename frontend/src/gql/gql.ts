@@ -92,6 +92,8 @@ const documents = {
     types.ProjectUserDocument,
   '\n  query GetProjects {\n    projects {\n      id\n      name\n      description\n    }\n  }\n':
     types.GetProjectsDocument,
+  '\n    query GetShiftOverviewPageData($projectId: String!){\n    project_users {\n      id\n      name\n      surname\n      department {\n        id\n        name\n        order_index\n      }\n      statement {\n        id\n        start_date\n        from\n        to\n      }\n    }\n    shootingDaysByProject(projectId: $projectId) {\n      id\n      shooting_day_number\n      date\n    }\n    shiftOverviewsByProjectId(projectId: $projectId) {\n      id\n    }\n    project(id: $projectId) {\n      id\n      name\n      start_date\n      end_date\n    }\n  }\n':
+    types.GetShiftOverviewPageDataDocument,
   '\n    query ShootingDaysByProject($projectId: String!) {\n        shootingDaysByProject(projectId: $projectId) {\n            id\n            date\n            shooting_day_number\n            event_type\n        }\n    }\n':
     types.ShootingDaysByProjectDocument,
   '\n  query GetShootingDaysByProject($projectId: String!) {\n    shootingDaysByProject(projectId: $projectId) {\n      id\n      shooting_day_number\n      date\n      event_type\n      dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value       \n      }\n      footer {\n        title\n        value\n      }\n    }\n    }\n  }\n':
@@ -374,6 +376,12 @@ export function gql(
 export function gql(
   source: '\n  query GetProjects {\n    projects {\n      id\n      name\n      description\n    }\n  }\n',
 ): (typeof documents)['\n  query GetProjects {\n    projects {\n      id\n      name\n      description\n    }\n  }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\n    query GetShiftOverviewPageData($projectId: String!){\n    project_users {\n      id\n      name\n      surname\n      department {\n        id\n        name\n        order_index\n      }\n      statement {\n        id\n        start_date\n        from\n        to\n      }\n    }\n    shootingDaysByProject(projectId: $projectId) {\n      id\n      shooting_day_number\n      date\n    }\n    shiftOverviewsByProjectId(projectId: $projectId) {\n      id\n    }\n    project(id: $projectId) {\n      id\n      name\n      start_date\n      end_date\n    }\n  }\n',
+): (typeof documents)['\n    query GetShiftOverviewPageData($projectId: String!){\n    project_users {\n      id\n      name\n      surname\n      department {\n        id\n        name\n        order_index\n      }\n      statement {\n        id\n        start_date\n        from\n        to\n      }\n    }\n    shootingDaysByProject(projectId: $projectId) {\n      id\n      shooting_day_number\n      date\n    }\n    shiftOverviewsByProjectId(projectId: $projectId) {\n      id\n    }\n    project(id: $projectId) {\n      id\n      name\n      start_date\n      end_date\n    }\n  }\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
