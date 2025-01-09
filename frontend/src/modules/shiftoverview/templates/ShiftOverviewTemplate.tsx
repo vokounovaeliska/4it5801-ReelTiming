@@ -6,7 +6,7 @@ import { GetShiftOverviewPageDataQuery, Project } from '@frontend/gql/graphql';
 import { GET_SHIFT_OVERVIEW_PAGE_DATA } from '@frontend/graphql/queries/GetShiftOverviewPageData';
 import { Heading } from '@frontend/shared/design-system';
 
-import { ShiftOverviewTable } from '../atoms/ShiftOverviewTable';
+import { ShiftOverviewTable } from '../tables/ShiftOverviewTable';
 
 interface ShiftOverviewTemplateProps {
   projectData?: Project;
