@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Box, Button, Flex, Heading, Image, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,11 +13,23 @@ export function HomePage() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  // Zde specifikujeme typ pro ref, abychom říkali TypeScriptu, že ref bude na HTMLDivElement
+  const featuresSectionRef = useRef<HTMLDivElement>(null); // Reference to the Features section
+
   useEffect(() => {
     if (user) {
       navigate(route.myprojects());
     }
   }, [user, navigate]);
+
+  const handleScrollToFeatures = () => {
+    if (featuresSectionRef.current) {
+      window.scrollTo({
+        top: featuresSectionRef.current.offsetTop,
+        behavior: 'smooth', // Smooth scrolling
+      });
+    }
+  };
 
   if (user) return null;
 
@@ -29,18 +41,18 @@ export function HomePage() {
     >
       {/* Logo and Buttons */}
       <Flex
-        position="fixed" // Fixed position ensures these elements stay at the top
+        position="fixed"
         top="0"
         left="0"
         width="100%"
-        zIndex="1000" // Ensures the logo and buttons are above other content
+        zIndex="1000"
         justify="space-between"
         align="center"
         bgGradient="linear(to-b, gray.800, #1c222e)"
         px={4}
         py={2}
       >
-        <Flex align="center" gap={4}>
+        <Flex align="center" gap={0}>
           <Logo />
           <AppHeading />
         </Flex>
@@ -79,7 +91,7 @@ export function HomePage() {
       {/* Hero Section */}
       <Box
         display="flex"
-        flexDirection={{ base: 'column', lg: 'row' }} // Flex column for small screens, row for larger
+        flexDirection={{ base: 'column', lg: 'row' }}
         justifyContent="center"
         alignItems="center"
         textAlign="center"
@@ -88,7 +100,7 @@ export function HomePage() {
         minHeight="100vh"
         bgGradient="linear(to-b, gray.800, #2D3748)"
         overflow="hidden"
-        pt={{ base: '70px', lg: '0px' }} // Smaller top padding
+        pt={{ base: '70px', lg: '0px' }}
       >
         <Box
           flex="0 0 50%"
@@ -117,7 +129,7 @@ export function HomePage() {
           </Heading>
           <Text fontSize="xl" maxW="100%" mb={6} color="gray.300">
             Reeltiming — the ultimate tool for film professionals to track work
-            hours, manage crews, and&nbsp;streamline the production process.
+            hours, manage crews, and streamline the production process.
           </Text>
 
           <Box width="100%" display="flex" justifyContent="flex-start">
@@ -141,8 +153,7 @@ export function HomePage() {
           </Box>
           <Box width="100%" display="flex" justifyContent="flex-start">
             <Button
-              as="a"
-              href={'#features'}
+              onClick={handleScrollToFeatures} // Handling smooth scroll on click
               variant="link"
               color="orange.400"
               fontSize="md"
@@ -152,7 +163,7 @@ export function HomePage() {
                 color: 'orange.500',
               }}
             >
-              Check out the features
+              Check out the app features
             </Button>
           </Box>
         </Box>
@@ -181,12 +192,20 @@ export function HomePage() {
       </Box>
 
       {/* Features Section */}
-      <Box bgGradient="linear(to-b, #2D3748, orange.500)" py={16} px={8}>
+      <Box
+        bgGradient="linear(to-b, #2D3748, orange.500)"
+        py={16}
+        px={{ base: '2', mb: '8' }}
+        ref={featuresSectionRef} // Set ref on this section
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        flexDirection="column"
+      >
         <Heading
           as="h2"
           fontSize="4xl"
           textAlign="center"
-          mb={8}
           fontWeight="bold"
           bgGradient="linear(to-r, orange.400, orange.600)"
           bgClip="text"
@@ -194,13 +213,211 @@ export function HomePage() {
         >
           Features That Make Filmmaking Easier
         </Heading>
-        <Text>Work in progress 👷</Text>
+        <Box
+          width={{ base: '100%', md: '90%' }}
+          justifyContent="center"
+          alignItems="center"
+          textAlign="center"
+          display="flex"
+          flexDirection="column"
+        >
+          <Box
+            flex="1"
+            justifyContent="center"
+            alignItems="center"
+            textAlign="center"
+            display="flex"
+            flexDirection={{ base: 'column', lg: 'row' }}
+            //backgroundColor="green"
+            p={4}
+            my={3}
+          >
+            <Box
+              flex="0 0 30%"
+              justifyContent="center"
+              alignItems="left"
+              textAlign={{ base: 'center', lg: 'left' }}
+              display="flex"
+              flexDirection="column"
+              px={5}
+              pb={3}
+            >
+              <Heading as="h3" fontSize="3xl" fontWeight="bold">
+                Shift Time Tracking
+              </Heading>
+              <Text fontSize="xl" color="gray.300">
+                Easily report your work hours from the film set with just a few
+                clicks. Track shifts quickly and clearly on any device, making
+                time logging simple, fast, and accessible anywhere.
+              </Text>
+            </Box>
+            <Box
+              flex="0 0 70%"
+              justifyContent="center"
+              alignItems="center"
+              textAlign="left"
+              display="flex"
+              flexDirection="column"
+            >
+              <Image
+                src="/placeholder-feature.jpg"
+                width="100%"
+                alt=""
+                height="auto"
+                maxWidth={{ base: '650px', lg: '700px' }}
+              />
+            </Box>
+          </Box>
+          <Box
+            flex="1"
+            justifyContent="center"
+            alignItems="center"
+            textAlign="center"
+            display="flex"
+            flexDirection={{ base: 'column', lg: 'row' }}
+            //backgroundColor="green"
+            p={4}
+            my={3}
+          >
+            <Box
+              flex="0 0 30%"
+              justifyContent="center"
+              alignItems="left"
+              textAlign={{ base: 'center', lg: 'left' }}
+              display="flex"
+              flexDirection="column"
+              px={5}
+              pb={3}
+            >
+              <Heading as="h3" fontSize="3xl" fontWeight="bold">
+                Crew Management
+              </Heading>
+              <Text fontSize="xl" color="gray.300">
+                Manage your entire crew and departments with ease. Update member
+                info, set hourly and overtime rates, and track vehicle mileage
+                allowances — all from a single, user-friendly platform.
+              </Text>
+            </Box>
+            <Box
+              flex="0 0 70%"
+              justifyContent="center"
+              alignItems="center"
+              textAlign="left"
+              display="flex"
+              flexDirection="column"
+            >
+              <Image
+                src="/placeholder-feature.jpg"
+                width="100%"
+                alt=""
+                height="auto"
+                maxWidth={{ base: '650px', lg: '700px' }}
+              />
+            </Box>
+          </Box>
+          <Box
+            flex="1"
+            justifyContent="center"
+            alignItems="center"
+            textAlign="center"
+            display="flex"
+            flexDirection={{ base: 'column', lg: 'row' }}
+            //backgroundColor="green"
+            p={4}
+            my={3}
+          >
+            <Box
+              flex="0 0 30%"
+              justifyContent="center"
+              alignItems="left"
+              textAlign={{ base: 'center', lg: 'left' }}
+              display="flex"
+              flexDirection="column"
+              px={5}
+              pb={3}
+            >
+              <Heading as="h3" fontSize="3xl" fontWeight="bold">
+                Project Overview
+              </Heading>
+              <Text fontSize="xl" color="gray.300">
+                Get a clear overview of your project details, including shooting
+                days, worked shifts, overtime costs, and mileage. Stay on top of
+                every aspect of your production with simplicity and accuracy.
+              </Text>
+            </Box>
+            <Box
+              flex="0 0 70%"
+              justifyContent="center"
+              alignItems="center"
+              textAlign="left"
+              display="flex"
+              flexDirection="column"
+            >
+              <Image
+                src="/placeholder-feature.jpg"
+                width="100%"
+                alt=""
+                height="auto"
+                maxWidth={{ base: '650px', lg: '700px' }}
+              />
+            </Box>
+          </Box>
+          <Box
+            flex="1"
+            justifyContent="center"
+            alignItems="center"
+            textAlign="center"
+            display="flex"
+            flexDirection={{ base: 'column', lg: 'row' }}
+            //backgroundColor="green"
+            p={4}
+            my={3}
+          >
+            <Box
+              flex="0 0 30%"
+              justifyContent="center"
+              alignItems="left"
+              textAlign={{ base: 'center', lg: 'left' }}
+              display="flex"
+              flexDirection="column"
+              px={5}
+              pb={3}
+            >
+              <Heading as="h3" fontSize="3xl" fontWeight="bold">
+                Comprehensive Reports
+              </Heading>
+              <Text fontSize="xl" color="gray.300">
+                Generate daily production reports, as well as timesheets for
+                individuals, departments, and crews. Export mileage summaries
+                and detailed timesheets for invoicing, all through customizable,
+                comprehensive reports.
+              </Text>
+            </Box>
+            <Box
+              flex="0 0 70%"
+              justifyContent="center"
+              alignItems="center"
+              textAlign="left"
+              display="flex"
+              flexDirection="column"
+            >
+              <Image
+                src="/placeholder-feature.jpg"
+                width="100%"
+                alt=""
+                height="auto"
+                maxWidth={{ base: '650px', lg: '700px' }}
+              />
+            </Box>
+          </Box>
+        </Box>
       </Box>
 
       {/* Call to Action Section */}
       <Box
         bgGradient="linear(to-b, orange.500, white)"
         pt={16}
+        pb={5}
         color="gray.800"
         flex="1"
         justifyContent="center"
