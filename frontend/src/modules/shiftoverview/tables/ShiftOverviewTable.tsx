@@ -1,4 +1,4 @@
-import { Box, Table, Tbody, Td, Tr } from '@chakra-ui/react';
+import { Box, Checkbox, Flex, Table, Tbody, Td, Tr } from '@chakra-ui/react';
 import { format } from 'date-fns';
 
 import { GetShiftOverviewPageDataQuery } from '@frontend/gql/graphql';
@@ -67,11 +67,17 @@ export const ShiftOverviewTable = ({ data }: Props) => {
                     );
 
                     return (
-                      <ShiftWorkedReportedIcons
-                        day={day}
-                        hasWorked={hasWorked}
-                        hasReported={hasReported}
-                      />
+                      <Td key={day.toISOString()} textAlign="center">
+                        <Flex align="center" gap={2}>
+                          <Checkbox isChecked={hasWorked} colorScheme="gray" />
+                          {hasWorked && (
+                            <ShiftWorkedReportedIcons
+                              hasWorked={hasWorked}
+                              hasReported={hasReported}
+                            />
+                          )}
+                        </Flex>
+                      </Td>
                     );
                   })}
                 </Tr>
