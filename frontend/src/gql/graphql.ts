@@ -1587,11 +1587,12 @@ export type GetShiftOverviewPageDataQueryVariables = Exact<{
 
 export type GetShiftOverviewPageDataQuery = {
   __typename?: 'Query';
-  project_users: Array<{
+  projectUsers: Array<{
     __typename?: 'ProjectUser';
     id: string;
     name: string;
     surname: string;
+    position?: string | null;
     department?: {
       __typename?: 'Department';
       id: string;
@@ -1615,6 +1616,8 @@ export type GetShiftOverviewPageDataQuery = {
   shiftOverviewsByProjectId: Array<{
     __typename?: 'ShiftOverview';
     id: string;
+    date: string;
+    crew_working: Array<{ __typename?: 'Crew'; id: string }>;
   }>;
   project?: {
     __typename?: 'Project';
@@ -6263,13 +6266,24 @@ export const GetShiftOverviewPageDataDocument = {
         selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'project_users' },
+            name: { kind: 'Name', value: 'projectUsers' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'surname' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'position' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'department' },
@@ -6346,6 +6360,17 @@ export const GetShiftOverviewPageDataDocument = {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'crew_working' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
               ],
             },
           },
