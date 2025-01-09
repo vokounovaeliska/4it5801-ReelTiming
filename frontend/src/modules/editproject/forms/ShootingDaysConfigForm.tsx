@@ -26,7 +26,7 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
     id: '',
     shooting_day_number:
       shootingDays !== undefined ? shootingDays.length + 1 : 1,
-    date: '',
+    date: format(Date.now(), 'yyyy-MM-dd'),
   });
   const [shootingDaysCollection, setShootingDaysCollection] =
     useState(shootingDays);
