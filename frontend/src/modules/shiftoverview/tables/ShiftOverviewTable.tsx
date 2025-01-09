@@ -1,9 +1,10 @@
-import { Box, Checkbox, Table, Tbody, Td, Tr } from '@chakra-ui/react';
+import { Box, Table, Tbody, Td, Tr } from '@chakra-ui/react';
 import { format } from 'date-fns';
 
 import { GetShiftOverviewPageDataQuery } from '@frontend/gql/graphql';
 
 import { ShiftOverviewHeader } from '../atoms/ShiftOverviewHeader';
+import { ShiftWorkedReportedIcons } from '../atoms/ShiftWorkedReportedIcons';
 import {
   getAllDatesBetween,
   groupUsersByDepartment,
@@ -66,18 +67,11 @@ export const ShiftOverviewTable = ({ data }: Props) => {
                     );
 
                     return (
-                      <Td key={day.toISOString()} textAlign="center">
-                        <Checkbox isChecked={hasWorked} />
-                        {hasReported ? (
-                          <Box as="span" color="green.500">
-                            ✅
-                          </Box>
-                        ) : hasWorked ? (
-                          <Box as="span" color="orange.500">
-                            ⚠️
-                          </Box>
-                        ) : null}
-                      </Td>
+                      <ShiftWorkedReportedIcons
+                        day={day}
+                        hasWorked={hasWorked}
+                        hasReported={hasReported}
+                      />
                     );
                   })}
                 </Tr>
