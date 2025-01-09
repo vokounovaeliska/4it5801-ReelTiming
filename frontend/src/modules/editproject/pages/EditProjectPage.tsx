@@ -40,16 +40,7 @@ export function EditProjectPage() {
     );
   }
 
-  const refs = projectData!.project![' $fragmentRefs'];
-  const basicInfo = refs?.ProjectBasicInfoFragment;
-  const project = {
-    name: basicInfo?.name,
-    description: basicInfo?.description,
-    production_company: projectData?.project?.production_company,
-    start_date: projectData?.project?.start_date,
-    end_date: projectData?.project?.end_date,
-    currency: projectData?.project?.currency,
-  } as ProjectData;
+  const project = projectData?.project!;
 
   const shootingDays: ShootingDay[] = shootingDaysData?.shootingDaysByProject!;
 
