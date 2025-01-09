@@ -263,6 +263,9 @@ export async function vehicleTimesheetTable({
     .font('DejaVuSans')
     .fontSize(11)
     .text(
-      `${currencyUtil.formatAmount(totalOvertimeAmount + totalKilometersAmount, projectCurrency)}`,
+      `${currencyUtil.formatAmount(
+        totalOvertimeAmount + totalKilometersAmount,
+        projectCurrency,
+      )}`,
     );
 }
