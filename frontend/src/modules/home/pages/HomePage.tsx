@@ -214,7 +214,7 @@ export function HomePage() {
           Features That Make Filmmaking Easier
         </Heading>
         <Box
-          width={{ base: '100%', md: '90%' }}
+          width={{ base: '100%', md: '85%' }}
           justifyContent="center"
           alignItems="center"
           textAlign="center"
@@ -260,11 +260,14 @@ export function HomePage() {
               flexDirection="column"
             >
               <Image
-                src="/placeholder-feature.jpg"
+                src="/component_1.png"
                 width="100%"
-                alt=""
+                alt="Adding Timesheets - screenshots"
                 height="auto"
                 maxWidth={{ base: '650px', lg: '700px' }}
+                style={{
+                  boxShadow: '-1px 42px 32px -40px rgba(255,255,255,0.49)',
+                }}
               />
             </Box>
           </Box>
@@ -307,11 +310,14 @@ export function HomePage() {
               flexDirection="column"
             >
               <Image
-                src="/placeholder-feature.jpg"
+                src="/component_2.png"
                 width="100%"
-                alt=""
+                alt="crew list management - screenshot"
                 height="auto"
                 maxWidth={{ base: '650px', lg: '700px' }}
+                style={{
+                  boxShadow: '-1px 42px 32px -40px rgba(255,255,255,0.49)',
+                }}
               />
             </Box>
           </Box>
@@ -354,11 +360,14 @@ export function HomePage() {
               flexDirection="column"
             >
               <Image
-                src="/placeholder-feature.jpg"
+                src="/component_3.png"
                 width="100%"
-                alt=""
+                alt="project dashboard - screenshot"
                 height="auto"
                 maxWidth={{ base: '650px', lg: '700px' }}
+                style={{
+                  boxShadow: '-1px 42px 32px -40px rgba(255,255,255,0.49)',
+                }}
               />
             </Box>
           </Box>
@@ -402,11 +411,14 @@ export function HomePage() {
               flexDirection="column"
             >
               <Image
-                src="/placeholder-feature.jpg"
+                src="/component_4.png"
                 width="100%"
-                alt=""
+                alt="daily reports - screenshot"
                 height="auto"
                 maxWidth={{ base: '650px', lg: '700px' }}
+                style={{
+                  boxShadow: '-1px 42px 32px -40px rgba(255,255,255,0.49)',
+                }}
               />
             </Box>
           </Box>
