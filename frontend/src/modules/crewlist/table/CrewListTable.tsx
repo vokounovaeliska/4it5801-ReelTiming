@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Box, Table, TableContainer, Tbody, Thead, Tr } from '@chakra-ui/react';
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { CrewMemberData, ProjectUser } from '../interfaces/interfaces';
+import { DraggableRow } from './DraggableRow';
 
 import { CrewlistTableHeader } from './CrewlistTableHeader';
-import { CrewMemberRow } from './CrewMemberRow';
-import { DepartmentRow } from './DepartmentRow';
 
 interface CrewListTableProps {
   sortedDepartments: string[];
@@ -47,101 +48,107 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
   authUserId,
   projectCurrency,
 }) => {
+  const [departments, setDepartments] = useState(sortedDepartments);
+
+  const moveDepartment = useCallback((dragIndex: number, hoverIndex: number) => {
+    const updatedDepartments = [...departments];
+    const [removed] = updatedDepartments.splice(dragIndex, 1);
+    updatedDepartments.splice(hoverIndex, 0, removed);
+    setDepartments(updatedDepartments);
+  }, [departments]);
+
   return (
     <Box overflowX="auto" m={1}>
-      <TableContainer className="custom-scrollbar">
-        <Box
-          overflowX="auto"
-          overflowY="auto"
-          maxHeight={'76vh'}
-          sx={{
-            '::-webkit-scrollbar': {
-              height: '12px',
-            },
-            '::-webkit-scrollbar-track': {
-              background: '#2D3748',
-            },
-            '::-webkit-scrollbar-thumb': {
-              background: '#888',
-              borderRadius: '6px',
-            },
-            '::-webkit-scrollbar-thumb:hover': {
-              background: '#555',
-            },
-            scrollbarWidth: 'thin',
-            scrollbarColor: '#2D3748 white',
-          }}
-        >
-          <Table
-            variant="simple"
-            size="sm"
-            mb={2}
+      <DndProvider backend={HTML5Backend}>
+        <TableContainer className="custom-scrollbar">
+          <Box
+            overflowX="auto"
+            overflowY="auto"
+            maxHeight={'76vh'}
             sx={{
-              'tr:hover td': {
-                backgroundColor: 'gray.200',
+              '::-webkit-scrollbar': {
+                height: '12px',
               },
+              '::-webkit-scrollbar-track': {
+                background: '#2D3748',
+              },
+              '::-webkit-scrollbar-thumb': {
+                background: '#888',
+                borderRadius: '6px',
+              },
+              '::-webkit-scrollbar-thumb:hover': {
+                background: '#555',
+              },
+              scrollbarWidth: 'thin',
+              scrollbarColor: '#2D3748 white',
             }}
           >
-            <Thead position="sticky" top={0} zIndex="docked">
-              <Tr>
-                <CrewlistTableHeader
-                  position={'sticky'}
-                  left={0}
-                  zIndex={10}
-                  textAlign="left"
-                >
-                  Surname
-                </CrewlistTableHeader>
-                <CrewlistTableHeader
-                  position={'sticky'}
-                  left={{ base: '100px', md: '120px', lg: '150px' }}
-                  zIndex={9}
-                  textAlign="left"
-                >
-                  Name
-                </CrewlistTableHeader>
-
-                <CrewlistTableHeader
-                  position={'sticky'}
-                  left={{ base: '0', md: '220px', lg: '260px' }}
-                  zIndex={8}
-                  minWidth="90px"
-                  textAlign="left"
-                >
-                  Position
-                </CrewlistTableHeader>
-                {tableHeaders.map((header, index) => (
-                  <CrewlistTableHeader key={index} tooltip={header.tooltip}>
-                    {header.label}
+            <Table
+              variant="simple"
+              size="sm"
+              mb={2}
+              sx={{
+                'tr:hover td': {
+                  backgroundColor: 'gray.200',
+                },
+              }}
+            >
+              <Thead position="sticky" top={0} zIndex="docked">
+                <Tr>
+                  <CrewlistTableHeader
+                    position={'sticky'}
+                    left={0}
+                    zIndex={10}
+                    textAlign="left"
+                  >
+                    Surname
                   </CrewlistTableHeader>
-                ))}
-              </Tr>
-            </Thead>
-            <Tbody>
-              {sortedDepartments.map((departmentName) => (
-                <>
-                  <DepartmentRow
-                    key={departmentName}
-                    departmentName={departmentName}
-                  />
-                  {groupedByDepartment[departmentName]?.map((user) => (
-                    <CrewMemberRow
-                      key={user.id}
-                      user={user}
-                      projectCurrency={projectCurrency!}
-                      handleEditMemberClick={handleEditMemberClick}
-                      sendInvitation={sendInvitation}
-                      handleRemoveButtonClick={handleRemoveButtonClick}
-                      userRoleInProject={userRoleInProject}
-                      authUserId={authUserId}
-                    />
+                  <CrewlistTableHeader
+                    position={'sticky'}
+                    left={{ base: '100px', md: '120px', lg: '150px' }}
+                    zIndex={9}
+                    textAlign="left"
+                  >
+                    Name
+                  </CrewlistTableHeader>
+
+                  <CrewlistTableHeader
+                    position={'sticky'}
+                    left={{ base: '0', md: '220px', lg: '260px' }}
+                    zIndex={8}
+                    minWidth="90px"
+                    textAlign="left"
+                  >
+                    Position
+                  </CrewlistTableHeader>
+                  {tableHeaders.map((header, index) => (
+                    <CrewlistTableHeader key={index} tooltip={header.tooltip}>
+                      {header.label}
+                    </CrewlistTableHeader>
                   ))}
-                </>
-              ))}
-            </Tbody>
-          </Table>
-        </Box>
-      </TableContainer>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {departments.map((departmentName, index) => (
+                  <DraggableRow
+                    key={departmentName}
+                    index={index}
+                    departmentName={departmentName}
+                    groupedByDepartment={groupedByDepartment}
+                    moveDepartment={moveDepartment}
+                    projectCurrency={projectCurrency}
+                    handleEditMemberClick={handleEditMemberClick}
+                    sendInvitation={sendInvitation}
+                    handleRemoveButtonClick={handleRemoveButtonClick}
+                    userRoleInProject={userRoleInProject}
+                    authUserId={authUserId}
+                  />
+                ))}
+              </Tbody>
+            </Table>
+          </Box>
+        </TableContainer>
+      </DndProvider>
     </Box>
   );
 };
