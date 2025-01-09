@@ -7,6 +7,7 @@ import {
   Input,
   SimpleGrid,
 } from '@chakra-ui/react';
+import { format } from 'date-fns';
 
 import { ShootingDay } from '@frontend/gql/graphql';
 
@@ -77,24 +78,24 @@ export const ShootingDaysInputForm: React.FC<ShootingDaysInputFormProps> = ({
           {isEditing ? (
             <>
               <Button
+                colorScheme="gray"
+                onClick={handleAddOrUpdateShootingDay}
+                mr={2}
+              >
+                Update
+              </Button>
+              <Button
                 colorScheme="red"
                 onClick={() => {
                   setShootingDay({
                     id: '',
                     shooting_day_number: shootingDaysLenght + 1,
-                    date: '',
+                    date: format(Date.now(), 'yyyy-MM-dd'),
                   });
                   setIsEditing(false);
                 }}
               >
                 Cancel
-              </Button>
-              <Button
-                colorScheme="blue"
-                onClick={handleAddOrUpdateShootingDay}
-                mr={2}
-              >
-                Update
               </Button>
             </>
           ) : (
