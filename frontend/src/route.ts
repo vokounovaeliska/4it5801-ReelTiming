@@ -21,4 +21,6 @@ export const route = {
     `/projects/${projectId}/edit`,
   acceptInvitation: () => `/accept-invitation`,
   profileSettings: '/profile-settings',
+  dailyReports: (projectId: string = ':projectId') =>
+    `/projects/${projectId}/daily-reports`,
 };

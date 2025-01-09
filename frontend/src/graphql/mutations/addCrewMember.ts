@@ -14,16 +14,16 @@ interface CrewMemberData {
   name: string;
   surname: string;
   department: string;
-  position: string;
-  phone_number: string;
+  position?: string | null;
+  phone_number?: string | null;
   email: string;
-  standard_rate: number;
-  compensation_rate: number;
-  overtime_hour1: number;
-  overtime_hour2: number;
-  overtime_hour3: number;
-  overtime_hour4: number;
-  role: string;
+  standard_rate?: number | null;
+  compensation_rate?: number | null;
+  overtime_hour1?: number | null;
+  overtime_hour2?: number | null;
+  overtime_hour3?: number | null;
+  overtime_hour4?: number | null;
+  role?: string | null;
   user_id: string | null;
   rate_id: string | null;
   cars: Car[] | null;
@@ -43,15 +43,14 @@ export const useCrewMemberMutations = () => {
 
   const addCrewMember = async (data: CrewMemberData, projectId: string) => {
     try {
-      // Add Rate
       const responseRate = await addRate({
         variables: {
-          standardRate: data.standard_rate,
-          compensationRate: data.compensation_rate,
-          overtimeHour1: data.overtime_hour1,
-          overtimeHour2: data.overtime_hour2,
-          overtimeHour3: data.overtime_hour3,
-          overtimeHour4: data.overtime_hour4,
+          standardRate: data.standard_rate ?? 0,
+          compensationRate: data.compensation_rate ?? 0,
+          overtimeHour1: data.overtime_hour1 ?? 0,
+          overtimeHour2: data.overtime_hour2 ?? 0,
+          overtimeHour3: data.overtime_hour3 ?? 0,
+          overtimeHour4: data.overtime_hour4 ?? 0,
         },
       });
 
@@ -64,7 +63,7 @@ export const useCrewMemberMutations = () => {
           rateId: rateId,
           departmentId: data.department,
           position: data.position,
-          role: data.role,
+          role: data.role ?? 'CREW',
           name: data.name,
           surname: data.surname,
           email: data.email,
@@ -183,7 +182,7 @@ export const useCrewMemberMutations = () => {
             overtime_hour3: data.overtime_hour3,
             overtime_hour4: data.overtime_hour4,
           },
-          rateId: data.rate_id,
+          rateId: data.rate_id!,
         },
       });
 

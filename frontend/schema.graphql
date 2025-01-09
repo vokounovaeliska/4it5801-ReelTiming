@@ -200,6 +200,7 @@ type Project {
   create_date: DateTimeISO!
   create_user_id: String!
   currency: String!
+  dailyReports: [DailyReport!]
   departments: [Department!]
   description: String!
   end_date: DateTimeISO
@@ -210,6 +211,9 @@ type Project {
   logo: String
   name: String!
   production_company: String!
+  projectUsers: [ProjectUser!]
+  shiftsOverview: [ShiftOverview!]
+  shootingDays: [ShootingDay!]
   start_date: DateTimeISO
 }
 
@@ -284,7 +288,7 @@ type Query {
     projectUserId: String!
     startDate: DateTimeISO!
   ): [Statement!]!
-  lastDailyReportByProjectId(projectId: String!): [DailyReport!]!
+  lastDailyReportByProjectId(projectId: String!): [DailyReport!]
   project(id: String!): Project
   projectUser(id: String!): ProjectUser
   projectUserDetails(projectId: String!, userId: String!): ProjectUser
@@ -301,6 +305,10 @@ type Query {
   statement(id: String!): Statement
   statements: [Statement!]!
   statementsByProjectId(projectId: String!): [Statement!]!
+  statementsByProjectIdAndDate(
+    date: DateTimeISO!
+    projectId: String!
+  ): [Statement!]!
   statementsByProjectUserId(projectUserId: String!): [Statement!]!
   statementsByUserId(userId: String!): [Statement!]!
   user(id: String!): User
@@ -360,6 +368,7 @@ input ShiftOverviewInput {
 }
 
 type ShootingDay {
+  dailyReport: [DailyReport!]
   date: DateTimeISO!
   event_type: String
   id: ID!
@@ -409,6 +418,7 @@ input StatementInput {
 }
 
 type User {
+  can_create_project: Boolean
   create_date: DateTimeISO!
   create_user_id: String!
   email: String!

@@ -29,6 +29,15 @@ export function getDailyReportRepository(db: Db) {
         .where(eq(daily_report.id, id));
       return record.length > 0 ? record[0] : null;
     },
+    async getDailyReportByShootingDayId(shootingDayId: string) {
+      const record = await db
+        .select()
+        .from(daily_report)
+        .where(eq(daily_report.shooting_day_id, shootingDayId))
+        .orderBy(desc(daily_report.last_update_date))
+        .limit(1);
+      return record.length > 0 ? record[0] : null;
+    },
     async createDailyReport(data: {
       shootingDayId: string;
       projectId: string;

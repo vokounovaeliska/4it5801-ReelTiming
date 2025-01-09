@@ -2,14 +2,14 @@ import React from 'react';
 import { Button } from '@chakra-ui/react';
 import { Link as ReactRouterLink, useLocation } from 'react-router-dom';
 
-import ProjectButtons from '@frontend/modules/myprojects/ProjectButtons';
+import ProjectButtons from '@frontend/modules/myprojects/molecules/ProjectButtons';
 import { route } from '@frontend/route';
 
 import Navbar from './Navbar';
 
 interface ProjectNavbarProps {
   projectId?: string;
-  userRole?: string;
+  userRole?: string | null;
 }
 
 const CustomNavbar: React.FC<ProjectNavbarProps> = ({

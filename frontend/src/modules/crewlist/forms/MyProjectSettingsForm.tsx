@@ -26,8 +26,8 @@ export type CrewListFormProps = {
   isLoading: boolean;
   departments: { id: string; name: string }[];
   initialValues?: crewListFormValues;
-  userRole: 'ADMIN' | 'CREW';
-  projectCurrency: string;
+  userRole: string;
+  projectCurrency?: string;
   cars: Car[] | null;
   carStatements: CarStatement[];
 };

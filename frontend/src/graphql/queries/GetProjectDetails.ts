@@ -3,7 +3,9 @@ import { gql } from '@frontend/gql';
 export const GET_PROJECT_DETAILS = gql(`
   query GetProjectDetail($id: String!) {
     project(id: $id) {
-      ...ProjectBasicInfo
+      id
+      name
+      description
       start_date
       end_date
       production_company
@@ -13,6 +15,9 @@ export const GET_PROJECT_DETAILS = gql(`
       last_update_date
       last_update_user_id
       currency
+      projectUsers {
+      id
+    }
     }
   }
 `);

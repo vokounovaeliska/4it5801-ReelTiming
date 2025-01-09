@@ -3,7 +3,7 @@ import { Box, Text } from '@chakra-ui/react';
 
 import { currencyUtil } from '@shared/currencyUtil';
 
-import { SummarySectionProps } from '../interfaces';
+import { Rate, SummarySectionProps } from '../interfaces';
 
 const SummarySection: React.FC<SummarySectionProps> = ({
   mode,
@@ -16,9 +16,9 @@ const SummarySection: React.FC<SummarySectionProps> = ({
   carRates,
   selectedCarDetails,
 }) => {
-  const calculateTotalOvertimePay = () => {
+  const calculateTotalOvertimePay = (rate?: Rate) => {
     const { overtime_hour1, overtime_hour2, overtime_hour3, overtime_hour4 } =
-      userRates || {};
+      rate || userRates || {};
     let totalOvertimePay = 0;
 
     for (let i = 1; i <= claimedOvertime; i++) {
@@ -84,7 +84,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
         <Text textAlign="center">
           Overtime pay:{' '}
           {currencyUtil.formatAmount(
-            calculateTotalOvertimePay(),
+            calculateTotalOvertimePay(initialValues?.projectUser?.rate),
             projectCurrency,
           )}
         </Text>

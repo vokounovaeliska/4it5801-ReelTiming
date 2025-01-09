@@ -14,7 +14,7 @@ import { InputField } from '@frontend/shared/forms';
 import { FormSection } from '@frontend/shared/forms/molecules/FormSection';
 
 interface ProjectInformationSectionProps {
-  userRole: 'ADMIN' | 'CREW';
+  userRole: string;
   departments: { id: string; name: string }[];
 }
 

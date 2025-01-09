@@ -59,12 +59,12 @@ export const useAddTimesheet = ({
           userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
         variables:
           userRole === 'ADMIN'
-            ? { projectId }
-            : { projectUserId: userInfoData?.projectUserDetails?.id },
+            ? { projectUserId: projectId }
+            : { projectUserId: userInfoData?.projectUserDetails?.id ?? '' },
       });
       const newTimesheet = {
         ...variables,
-        id: response.data.addStatement.id,
+        id: response?.data?.addStatement.id,
         projectUser: userInfo,
       };
       client.writeQuery({
@@ -72,14 +72,14 @@ export const useAddTimesheet = ({
           userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
         variables:
           userRole === 'ADMIN'
-            ? { projectId }
-            : { projectUserId: userInfoData?.projectUserDetails?.id },
+            ? { projectUserId: projectId }
+            : { projectUserId: userInfoData?.projectUserDetails?.id ?? '' },
         data: {
           ...cacheData,
-          statementsByProjectId:
+          statementsByProjectUserId:
             userRole === 'ADMIN'
-              ? [...cacheData.statementsByProjectId, newTimesheet]
-              : cacheData.statementsByProjectUserId
+              ? [...(cacheData?.statementsByProjectUserId || []), newTimesheet]
+              : cacheData?.statementsByProjectUserId
                 ? [...cacheData.statementsByProjectUserId, newTimesheet]
                 : [],
         },

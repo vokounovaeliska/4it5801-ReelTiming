@@ -1,4 +1,4 @@
-import { Box, Center, Heading, Spinner, Text } from '@chakra-ui/react';
+import { Box, Center, Spinner, Text } from '@chakra-ui/react';
 
 import {
   AllCarsOnProjectData,
@@ -8,6 +8,7 @@ import {
   useAllCarsOnProjectByProjectUserId,
   useCarStatementsByProjectId,
 } from '@frontend/modules/timesheets/pages/queryHooks';
+import { Heading } from '@frontend/shared/design-system';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
@@ -95,7 +96,7 @@ export function MyProjectSettingPage() {
   }
 
   const currentUser = getCurrentUserDetails(
-    crewList.projectUsers,
+    crewList?.projectUsers!,
     auth.user.id,
   );
   if (currentUser === null) {
@@ -109,14 +110,15 @@ export function MyProjectSettingPage() {
   const castProjectUserIntoCrewMemberData = (projectUser: ProjectUser) => {
     return {
       id: projectUser.id,
-      user_id: projectUser.user.id,
+      user_id: projectUser?.user!.id!,
       name: projectUser.name,
       surname: projectUser.surname,
-      email: projectUser.email,
+      email: projectUser.email || '',
       phone_number: projectUser.phone_number,
       department: projectUser.department ? projectUser.department.id : '',
-      position: projectUser.position,
+      position: projectUser.position ?? '',
       role: projectUser.role,
+      is_active: projectUser.is_active || false,
       rate_id: projectUser.rate ? projectUser.rate.id : '',
       standard_rate: projectUser.rate?.standard_rate || 0,
       compensation_rate: projectUser.rate?.compensation_rate || 0,
@@ -132,11 +134,11 @@ export function MyProjectSettingPage() {
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <ProjectNavbar
         projectId={projectId!}
-        userRole={crewList.userRoleInProject}
+        userRole={crewList?.userRoleInProject}
       />
       <Box flex="1" p={0} width="100%">
         <Heading mb={4} mt={2} textAlign="center">
-          Crew List for Project {crewList.project.name}
+          Crew List for Project {crewList?.project?.name}
         </Heading>
       </Box>
       <MyProjectSettingsForm
@@ -145,7 +147,7 @@ export function MyProjectSettingPage() {
             {
               ...data,
               id: currentUser.id,
-              user_id: currentUser.user.id,
+              user_id: currentUser?.user?.id!,
               rate_id: currentUser.rate ? currentUser.rate.id : '',
               cars: cars,
             },
@@ -154,17 +156,17 @@ export function MyProjectSettingPage() {
           refetchAllCarsOnProjectData();
         }}
         isLoading={isSubmitting}
-        departments={crewList.departments}
+        departments={crewList?.departments!}
         initialValues={
           castProjectUserIntoCrewMemberData(currentUser) || undefined
         }
-        userRole={crewList.userRoleInProject}
-        projectCurrency={crewList.project?.currency}
+        userRole={crewList?.userRoleInProject ?? 'CREW'}
+        projectCurrency={crewList?.project?.currency}
         cars={
           currentUser
             ? getAvailableCarsForProjectUserId(
                 currentUser.id,
-                allCarsOnProjectData,
+                allCarsOnProjectData!,
               )
             : []
         }

@@ -2,7 +2,7 @@ import { Center, Spinner, Text } from '@chakra-ui/react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { ShootingDay } from '@frontend/gql/graphql';
-import { useProjectConfigOperations } from '@frontend/graphql/mutations/shootingDays';
+import { useProjectConfigOperations } from '@frontend/graphql/mutations/editProjects';
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
 
@@ -51,7 +51,7 @@ export function EditProjectPage() {
 
   return (
     <EditProjectTemplate
-      project={project}
+      project={project!}
       projectId={String(projectId).trim()}
       onSubmit={handleEditProject}
       shootingDays={shootingDays}
@@ -63,7 +63,7 @@ export interface ProjectData {
   name: string;
   description: string;
   production_company: string;
-  start_date: Date;
-  end_date: Date;
+  start_date?: string | null;
+  end_date?: string | null;
   currency: string;
 }

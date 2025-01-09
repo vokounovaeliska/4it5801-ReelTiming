@@ -8,7 +8,7 @@ import { CarFormWithTable } from '@frontend/shared/forms/VehicleFulfillmentForm'
 interface CarCompensationSectionProps {
   cars: Car[] | null;
   onCarCollectionChange: (cars: Car[]) => void;
-  projectCurrency: string;
+  projectCurrency?: string;
   carStatements: CarStatement[];
 }
 

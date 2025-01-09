@@ -13,7 +13,7 @@ interface CarFormWithTableProps {
   onCarCollectionChange: (cars: Car[]) => void;
   cars: Car[] | null;
   carStatements: CarStatement[];
-  projectCurrency: string;
+  projectCurrency?: string;
 }
 
 export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({

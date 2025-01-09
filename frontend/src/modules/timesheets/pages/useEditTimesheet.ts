@@ -9,7 +9,11 @@ import {
   GET_CREW_STATEMENTS,
 } from '@frontend/graphql/queries/GetStatements';
 import { useApolloClient } from '@apollo/client';
-import { Timesheet, UseEditTimesheetProps } from '../interfaces';
+import {
+  Timesheet,
+  TimesheetCache,
+  UseEditTimesheetProps,
+} from '../interfaces';
 import { formatTimeForParsing, toLocalISOString } from '../utils/timeUtils';
 
 export const useEditTimesheet = ({
@@ -44,7 +48,7 @@ export const useEditTimesheet = ({
       const variables = {
         id: selectedTimesheet?.id || '',
         data: {
-          project_user_id: userInfo?.id,
+          project_user_id: userInfo!.id!,
           start_date: toLocalISOString(startDate),
           from: toLocalISOString(fromTime),
           to: toLocalISOString(toTime),
@@ -75,31 +79,37 @@ export const useEditTimesheet = ({
           userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
         variables:
           userRole === 'ADMIN'
-            ? { projectId }
-            : { projectUserId: userInfoData?.projectUserDetails?.id },
+            ? { projectUserId: projectId }
+            : { projectUserId: userInfoData?.projectUserDetails?.id ?? '' },
       });
       const updatedTimesheet = {
         ...variables.data,
         id: selectedTimesheet?.id || '',
-        projectUser: userInfo,
+        projectUser: {
+          ...userInfo,
+          email: userInfo?.email,
+        },
       };
+
       client.writeQuery({
         query:
           userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
         variables:
           userRole === 'ADMIN'
-            ? { projectId }
-            : { projectUserId: userInfoData?.projectUserDetails?.id },
+            ? { projectUserId: projectId }
+            : { projectUserId: userInfoData?.projectUserDetails?.id ?? '' },
         data: {
           ...cacheData,
-          statementsByProjectId:
+          statementsByProjectUserId:
             userRole === 'ADMIN'
-              ? cacheData.statementsByProjectId.map((ts: Timesheet) =>
-                  ts.id === selectedTimesheet?.id ? updatedTimesheet : ts,
-                )
-              : cacheData.statementsByProjectUserId.map((ts: Timesheet) =>
-                  ts.id === selectedTimesheet?.id ? updatedTimesheet : ts,
-                ),
+              ? cacheData?.statementsByProjectUserId?.map(
+                  (ts: TimesheetCache) =>
+                    ts.id === selectedTimesheet?.id ? updatedTimesheet : ts,
+                ) || []
+              : cacheData?.statementsByProjectUserId?.map(
+                  (ts: TimesheetCache) =>
+                    ts.id === selectedTimesheet?.id ? updatedTimesheet : ts,
+                ) || [],
         },
       });
       showSuccessToast('Timesheet updated successfully.');

@@ -24,7 +24,8 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
 }) => {
   const [shootingDay, setShootingDay] = useState<ShootingDay>({
     id: '',
-    shooting_day_number: shootingDays !== undefined ? shootingDays.length : 1,
+    shooting_day_number:
+      shootingDays !== undefined ? shootingDays.length + 1 : 1,
     date: '',
   });
   const [shootingDaysCollection, setShootingDaysCollection] =
@@ -86,11 +87,10 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
             }
           : day,
       );
-      setShootingDaysCollection(updatedDaysCollection);
+      setIsEditing(false);
       showSuccessToast(
         `Day ${shootingDay.shooting_day_number} has been updated.`,
       );
-      setIsEditing(false);
     } else {
       const newShootingDay: ShootingDay = {
         id: Date.now().toString(),
@@ -98,14 +98,23 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
         date: shootingDay.date,
       };
       updatedDaysCollection = [...shootingDaysCollection, newShootingDay];
-      setShootingDaysCollection(updatedDaysCollection);
       showSuccessToast(
         `Day ${shootingDay.shooting_day_number} has been added.`,
       );
     }
 
+    // Sort the collection by date
+    updatedDaysCollection = updatedDaysCollection.sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    );
+
+    // Update the collection
+    setShootingDaysCollection(updatedDaysCollection);
+
+    // Notify parent about changes
     handleShootingDaysChange(updatedDaysCollection);
 
+    // Reset the input fields
     setShootingDay({
       id: '',
       shooting_day_number: updatedDaysCollection.length + 1,
