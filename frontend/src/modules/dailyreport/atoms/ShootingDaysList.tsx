@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import {
   CheckIcon,
@@ -22,11 +22,13 @@ import {
   Tr,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { DELETE_DAILY_REPORT } from '@frontend/graphql/mutations/DeleteDailyReport';
 import { GET_LAST_DAILY_REPORT_BY_PROJECT } from '@frontend/graphql/queries/GetLastDailyReportByProjectId';
 import { GET_SHOOTING_DAYS_BY_PROJECT } from '@frontend/graphql/queries/GetShootingDaysByProject';
 import { formatDateToDisplay } from '@frontend/modules/timesheets/utils/timeUtils';
+import { route } from '@frontend/route';
 import { Heading } from '@frontend/shared/design-system';
 
 import DailyReportForm from '../forms/DailyReportForm';
@@ -46,6 +48,8 @@ type Props = {
 };
 
 const ShootingDaysList = ({ projectId }: Props) => {
+  const navigate = useNavigate();
+  const { shootingDayId } = useParams<{ shootingDayId?: string }>();
   const { data, loading, error, refetch } = useQuery<ShootingDaysByProject>(
     GET_SHOOTING_DAYS_BY_PROJECT,
     {
@@ -66,6 +70,7 @@ const ShootingDaysList = ({ projectId }: Props) => {
       },
     );
 
+  const [deleteDailyReport] = useMutation(DELETE_DAILY_REPORT);
   const [selectedDay, setSelectedDay] = useState<ShootingDayByProject | null>(
     null,
   );
@@ -76,16 +81,25 @@ const ShootingDaysList = ({ projectId }: Props) => {
   const [shootingDay, setShootingDay] = useState<ShootingDayByProject | null>(
     null,
   );
-  const [deleteDailyReport] = useMutation(DELETE_DAILY_REPORT);
-
-  // Edit form disclosure
   const isFormOpen = useDisclosure();
-  // Delete dialog disclosure
   const isDeleteAlertOpen = useDisclosure();
-
   const [dayToDelete, setDayToDelete] = useState<ShootingDayByProject | null>(
     null,
   );
+
+  useEffect(() => {
+    if (shootingDayId && data) {
+      const foundDay = data.shootingDaysByProject.find(
+        (day) => day.id === shootingDayId,
+      );
+      setSelectedDay(foundDay || null);
+    }
+  }, [shootingDayId, data]);
+
+  const handlePreviewClick = (day: ShootingDayByProject) => {
+    navigate(route.dailyReports(projectId, day.id));
+    setSelectedDay(day);
+  };
 
   const handleEditClick = (day: ShootingDayByProject) => {
     setSelectedReport(day.dailyReport?.[0] || null);
@@ -130,11 +144,6 @@ const ShootingDaysList = ({ projectId }: Props) => {
   if (error) return <Text color="red.500">Error: {error.message}</Text>;
 
   const shootingDays = data?.shootingDaysByProject || [];
-
-  const handlePreviewClick = (day: ShootingDayByProject) => {
-    setSelectedDay(day);
-  };
-
   const availableShootingDays = shootingDays.filter((day) => !day.dailyReport);
 
   return (
