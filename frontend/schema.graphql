@@ -288,7 +288,7 @@ type Query {
     projectUserId: String!
     startDate: DateTimeISO!
   ): [Statement!]!
-  lastDailyReportByProjectId(projectId: String!): [DailyReport!]!
+  lastDailyReportByProjectId(projectId: String!): [DailyReport!]
   project(id: String!): Project
   projectUser(id: String!): ProjectUser
   projectUserDetails(projectId: String!, userId: String!): ProjectUser
@@ -305,6 +305,10 @@ type Query {
   statement(id: String!): Statement
   statements: [Statement!]!
   statementsByProjectId(projectId: String!): [Statement!]!
+  statementsByProjectIdAndDate(
+    date: DateTimeISO!
+    projectId: String!
+  ): [Statement!]!
   statementsByProjectUserId(projectUserId: String!): [Statement!]!
   statementsByUserId(userId: String!): [Statement!]!
   user(id: String!): User
@@ -364,6 +368,7 @@ input ShiftOverviewInput {
 }
 
 type ShootingDay {
+  dailyReport: [DailyReport!]
   date: DateTimeISO!
   event_type: String
   id: ID!

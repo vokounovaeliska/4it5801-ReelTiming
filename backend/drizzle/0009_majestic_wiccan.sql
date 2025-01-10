@@ -1,0 +1,1 @@
+ALTER TABLE `daily_report` ADD CONSTRAINT `shooting_day_project_unique` UNIQUE(`shooting_day_id`,`project_id`);

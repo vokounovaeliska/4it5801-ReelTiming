@@ -26,17 +26,18 @@ export class DailyReportService {
 
   async getLastDailyReportByProjectId(
     projectId: string,
-  ): Promise<DailyReport | null> {
+  ): Promise<DailyReport[]> {
     const record =
       await this.dailyReportRepository.getLastDailyReportByProjectId(projectId);
-
-    if (!record) return null;
-    return {
-      ...record,
-      intro: record.intro as ReportItem[],
-      shooting_progress: record.shooting_progress as ReportItem[],
-      footer: record.footer as ReportItem[],
-    };
+    if (!record) return [];
+    return [
+      {
+        ...record,
+        intro: record?.intro as ReportItem[],
+        shooting_progress: record?.shooting_progress as ReportItem[],
+        footer: record?.footer as ReportItem[],
+      },
+    ];
   }
 
   async getDailyReportById(id: string | null): Promise<DailyReport | null> {
@@ -52,6 +53,25 @@ export class DailyReportService {
           footer: record.footer as ReportItem[],
         }
       : null;
+  }
+  async getDailyReportByShootingDayId(
+    shootingId: string,
+  ): Promise<DailyReport[] | null> {
+    const record =
+      await this.dailyReportRepository.getDailyReportByShootingDayId(
+        shootingId,
+      );
+
+    if (!record) return null;
+
+    const formattedReport = {
+      ...record,
+      intro: record.intro as ReportItem[],
+      shooting_progress: record.shooting_progress as ReportItem[],
+      footer: record.footer as ReportItem[],
+    };
+
+    return [formattedReport];
   }
 
   async createDailyReport(data: DailyReportInput): Promise<DailyReport> {
