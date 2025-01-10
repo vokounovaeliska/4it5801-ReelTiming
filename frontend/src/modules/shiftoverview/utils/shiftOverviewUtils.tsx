@@ -109,63 +109,96 @@ export const handleSave = async ({
     return;
   }
 
-  const groupedByDate: Record<
+  const editedGroupedByDate: Record<
     string,
     { memberId: string; hasWorked: boolean }[]
   > = {};
   Object.entries(shiftStates).forEach(([key, hasWorked]) => {
     const [memberId, date] = key.split('/');
-    if (!groupedByDate[date]) groupedByDate[date] = [];
-    groupedByDate[date].push({ memberId, hasWorked });
+    if (!editedGroupedByDate[date]) editedGroupedByDate[date] = [];
+    editedGroupedByDate[date].push({ memberId, hasWorked });
   });
 
+  let existingShiftOverviews = [...data.shiftOverviewsByProjectId];
+
   try {
-    for (const [date, members] of Object.entries(groupedByDate)) {
-      const existingShift = data?.shiftOverviewsByProjectId.find(
+    for (const [date, members] of Object.entries(editedGroupedByDate)) {
+      const existingShiftIndex = existingShiftOverviews.findIndex(
         (overview) => format(new Date(overview.date), 'yyyy-MM-dd') === date,
       );
+      const existingShift =
+        existingShiftIndex !== -1
+          ? existingShiftOverviews[existingShiftIndex]
+          : null;
 
       const hasWorkedMembers = members
-        .filter((m) => m.hasWorked)
-        .map((m) => ({ id: m.memberId }));
+        .filter((member) => member.hasWorked)
+        .map((member) => ({ id: member.memberId }));
 
-      const mergedMembers = existingShift
-        ? [
-            ...new Set([
-              ...existingShift.crew_working.map((member) => member.id),
-              ...hasWorkedMembers.map((member) => member.id),
-            ]),
-          ].map((id) => ({ id }))
-        : hasWorkedMembers;
+      if (existingShift) {
+        const mergedMembers = [
+          ...existingShift.crew_working.filter(
+            (existingMember) =>
+              !editedGroupedByDate[date]?.some(
+                (editedMember) =>
+                  editedMember.memberId === existingMember.id &&
+                  !editedMember.hasWorked,
+              ),
+          ),
+          ...hasWorkedMembers.filter(
+            (newMember) =>
+              !existingShift.crew_working.some(
+                (existingMember) => existingMember.id === newMember.id,
+              ) &&
+              editedGroupedByDate[date]?.some(
+                (editedMember) =>
+                  editedMember.memberId === newMember.id &&
+                  editedMember.hasWorked,
+              ),
+          ),
+        ];
 
-      if (mergedMembers.length === 0) {
-        if (existingShift) {
+        if (mergedMembers.length === 0) {
           await deleteShiftOverview({
             variables: { shiftOverviewId: existingShift.id },
           });
-        }
-      } else if (existingShift) {
-        await editShiftOverview({
-          variables: {
-            shiftOverviewId: existingShift.id,
-            data: {
-              project_id: projectId,
-              date: new Date(date).toISOString(),
-              crew_working: mergedMembers,
+          existingShiftOverviews = existingShiftOverviews.filter(
+            (overview) => overview.id !== existingShift.id,
+          );
+        } else {
+          const sanitizedCrewWorking = mergedMembers.map(({ id }) => ({ id }));
+
+          await editShiftOverview({
+            variables: {
+              shiftOverviewId: existingShift.id,
+              data: {
+                project_id: projectId,
+                date: new Date(date).toISOString(),
+                crew_working: sanitizedCrewWorking,
+              },
             },
-          },
-        });
-      } else {
-        await addShiftOverview({
+          });
+          existingShiftOverviews[existingShiftIndex] = {
+            ...existingShift,
+            crew_working: sanitizedCrewWorking,
+          };
+        }
+      } else if (hasWorkedMembers.length > 0) {
+        const result = await addShiftOverview({
           variables: {
             projectId,
             date: new Date(date).toISOString(),
             crewWorking: hasWorkedMembers,
           },
         });
+        const newShiftOverview = result.data?.addShiftOverview;
+        if (newShiftOverview) {
+          existingShiftOverviews.push(newShiftOverview);
+        }
       }
     }
-    refetch();
+
+    await refetch();
     showSuccessToast('Shift overview saved successfully.');
   } catch (err) {
     console.error(err);

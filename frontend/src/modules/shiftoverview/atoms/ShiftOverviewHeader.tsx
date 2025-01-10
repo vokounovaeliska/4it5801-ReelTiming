@@ -1,4 +1,12 @@
-import { Box, SimpleGrid, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import {
+  Box,
+  Checkbox,
+  SimpleGrid,
+  Text,
+  Th,
+  Thead,
+  Tr,
+} from '@chakra-ui/react';
 import { format } from 'date-fns';
 
 import { ShootingDay } from '@frontend/gql/graphql';
@@ -6,11 +14,13 @@ import { ShootingDay } from '@frontend/gql/graphql';
 type ShiftOverviewHeaderProps = {
   days: Date[];
   shootingDays: ShootingDay[];
+  onSelectAll: (day: Date, isChecked: boolean) => void;
 };
 
 export const ShiftOverviewHeader = ({
   days,
   shootingDays,
+  onSelectAll,
 }: ShiftOverviewHeaderProps) => {
   return (
     <Thead position="sticky" top={0} zIndex="docked" bg="white">
@@ -25,8 +35,13 @@ export const ShiftOverviewHeader = ({
           );
 
           return (
-            <Th key={day.toISOString()} textAlign="center">
-              <SimpleGrid columns={1} alignItems="center">
+            <Th key={day.toISOString()} minW={20} alignItems="center">
+              <SimpleGrid
+                columns={1}
+                alignItems="center"
+                gap={1}
+                fontSize={'small'}
+              >
                 <Text>{format(day, 'dd.MM')}</Text>
                 <Box>
                   {shootingDay ? (
@@ -35,6 +50,15 @@ export const ShiftOverviewHeader = ({
                     <Box height="1em" />
                   )}
                 </Box>
+                <Checkbox
+                  my={1}
+                  onChange={(e) => onSelectAll(day, e.target.checked)}
+                  colorScheme="orange"
+                >
+                  <Text fontSize="small" color={'gray'}>
+                    All
+                  </Text>
+                </Checkbox>
               </SimpleGrid>
             </Th>
           );

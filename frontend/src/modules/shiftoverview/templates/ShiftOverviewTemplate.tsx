@@ -19,8 +19,8 @@ export const ShiftOverviewTemplate: React.FC<ShiftOverviewTemplateProps> = ({
     useQuery<GetShiftOverviewPageDataQuery>(GET_SHIFT_OVERVIEW_PAGE_DATA, {
       variables: { projectId: projectData?.id },
       skip: !projectData?.id,
-      fetchPolicy: 'no-cache',
-      //nextFetchPolicy: 'cache-first',
+      fetchPolicy: 'cache-and-network',
+      nextFetchPolicy: 'cache-first',
     });
 
   if (loading)

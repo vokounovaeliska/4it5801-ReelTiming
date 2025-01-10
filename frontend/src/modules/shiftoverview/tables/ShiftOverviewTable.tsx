@@ -79,6 +79,19 @@ export const ShiftOverviewTable = ({ data, refetch }: Props) => {
     setShiftStates((prev) => ({ ...prev, [key]: isChecked }));
   };
 
+  const handleSelectAllForDay = (day: Date, isChecked: boolean) => {
+    const formattedDate = format(day, 'yyyy-MM-dd');
+    const updatedStates = { ...shiftStates };
+    sortedDepartments.forEach((department) => {
+      groupedUsers[department]?.users.forEach((member) => {
+        const key = `${member.id}/${formattedDate}`;
+        updatedStates[key] = isChecked;
+      });
+    });
+
+    setShiftStates(updatedStates);
+  };
+
   return (
     <Box maxWidth="100%">
       <Button
@@ -96,16 +109,17 @@ export const ShiftOverviewTable = ({ data, refetch }: Props) => {
         }}
         transition="all 0.3s ease"
         m={4}
-        onClick={() =>
-          handleSave({
+        onClick={async () => {
+          await handleSave({
             data,
             shiftStates,
             addShiftOverview,
             editShiftOverview,
             deleteShiftOverview,
             refetch,
-          })
-        }
+          });
+          setShiftStates({});
+        }}
       >
         Save Changes
       </Button>
@@ -134,7 +148,11 @@ export const ShiftOverviewTable = ({ data, refetch }: Props) => {
           }}
         >
           <Table variant="simple" size="sm">
-            <ShiftOverviewHeader shootingDays={shootingDays} days={days} />
+            <ShiftOverviewHeader
+              shootingDays={shootingDays}
+              days={days}
+              onSelectAll={handleSelectAllForDay}
+            />
             {sortedDepartments.map((department) => (
               <Tbody key={`department-${department}`}>
                 <Tr>
