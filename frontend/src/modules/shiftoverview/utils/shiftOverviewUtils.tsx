@@ -1,9 +1,20 @@
+import { FetchResult, MutationFunctionOptions } from '@apollo/client';
 import { format } from 'date-fns';
 
 import {
+  AddShiftOverviewMutation,
+  AddShiftOverviewMutationVariables,
+  DeleteShiftOverviewMutation,
+  DeleteShiftOverviewMutationVariables,
+  EditShiftOverviewMutation,
+  EditShiftOverviewMutationVariables,
   GetShiftOverviewPageDataQuery,
   ShootingDay,
 } from '@frontend/gql/graphql';
+import {
+  showErrorToast,
+  showSuccessToast,
+} from '@frontend/shared/design-system/molecules/toastUtils';
 
 export function getAllDatesBetween(
   startDate?: Date | string | null,
@@ -56,4 +67,106 @@ export const groupUsersByDepartment = (
     },
     {} as Record<string, { orderIndex: number; users: typeof projectUsers }>,
   );
+};
+
+export interface HandleSaveParams {
+  data?: GetShiftOverviewPageDataQuery;
+  shiftStates: Record<string, boolean>;
+  refetch: () => void;
+  addShiftOverview: (
+    options: MutationFunctionOptions<
+      AddShiftOverviewMutation,
+      AddShiftOverviewMutationVariables
+    >,
+  ) => Promise<FetchResult<AddShiftOverviewMutation>>;
+  editShiftOverview: (
+    options: MutationFunctionOptions<
+      EditShiftOverviewMutation,
+      EditShiftOverviewMutationVariables
+    >,
+  ) => Promise<FetchResult<EditShiftOverviewMutation>>;
+  deleteShiftOverview: (
+    options: MutationFunctionOptions<
+      DeleteShiftOverviewMutation,
+      DeleteShiftOverviewMutationVariables
+    >,
+  ) => Promise<FetchResult<DeleteShiftOverviewMutation>>;
+}
+
+export const handleSave = async ({
+  data,
+  shiftStates,
+  refetch,
+  addShiftOverview,
+  editShiftOverview,
+  deleteShiftOverview,
+}: HandleSaveParams) => {
+  const projectId = data?.project?.id;
+  if (!projectId) {
+    showErrorToast('Project ID is missing.');
+    return;
+  }
+
+  const groupedByDate: Record<
+    string,
+    { memberId: string; hasWorked: boolean }[]
+  > = {};
+  Object.entries(shiftStates).forEach(([key, hasWorked]) => {
+    const [memberId, date] = key.split('/');
+    if (!groupedByDate[date]) groupedByDate[date] = [];
+    groupedByDate[date].push({ memberId, hasWorked });
+  });
+
+  console.log('groupedByDate', groupedByDate);
+
+  try {
+    for (const [date, members] of Object.entries(groupedByDate)) {
+      const existingShift = data?.shiftOverviewsByProjectId.find(
+        (overview) => format(new Date(overview.date), 'yyyy-MM-dd') === date,
+      );
+
+      const hasWorkedMembers = members
+        .filter((m) => m.hasWorked)
+        .map((m) => ({ id: m.memberId }));
+
+      console.log(
+        ' data?.shiftOverviewsByProjectId',
+        data?.shiftOverviewsByProjectId,
+      );
+      console.log('hasWorkedMembers', hasWorkedMembers);
+      console.log('existingShift', existingShift);
+
+      if (hasWorkedMembers.length === 0) {
+        if (existingShift) {
+          await deleteShiftOverview({
+            variables: { shiftOverviewId: existingShift.id },
+          });
+        }
+      } else if (existingShift) {
+        await editShiftOverview({
+          variables: {
+            shiftOverviewId: existingShift.id,
+            data: {
+              project_id: projectId,
+              date: new Date(date).toISOString(),
+              crew_working: hasWorkedMembers,
+            },
+          },
+        });
+      } else {
+        await addShiftOverview({
+          variables: {
+            projectId,
+            date: new Date(date).toISOString(),
+            crewWorking: hasWorkedMembers,
+          },
+        });
+      }
+    }
+    refetch();
+    showSuccessToast('Shift overview saved successfully.');
+  } catch (err) {
+    console.error(err);
+    showErrorToast('An error occurred while saving the shift overview.');
+  }
 };

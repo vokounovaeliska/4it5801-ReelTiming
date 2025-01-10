@@ -881,6 +881,22 @@ export type AddRateMutation = {
   addRate: { __typename?: 'Rate'; id: string };
 };
 
+export type AddShiftOverviewMutationVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  date: Scalars['DateTimeISO']['input'];
+  crewWorking: Array<CrewInput> | CrewInput;
+}>;
+
+export type AddShiftOverviewMutation = {
+  __typename?: 'Mutation';
+  addShiftOverview: {
+    __typename?: 'ShiftOverview';
+    id: string;
+    date: string;
+    crew_working: Array<{ __typename?: 'Crew'; id: string }>;
+  };
+};
+
 export type AddShootingDayMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
   date: Scalars['DateTimeISO']['input'];
@@ -940,6 +956,15 @@ export type DeleteInvitationMutationVariables = Exact<{
 export type DeleteInvitationMutation = {
   __typename?: 'Mutation';
   deleteInvitation: boolean;
+};
+
+export type DeleteShiftOverviewMutationVariables = Exact<{
+  shiftOverviewId: Scalars['String']['input'];
+}>;
+
+export type DeleteShiftOverviewMutation = {
+  __typename?: 'Mutation';
+  deleteShiftOverview: boolean;
 };
 
 export type DeleteShootingDayMutationVariables = Exact<{
@@ -1015,6 +1040,21 @@ export type EditRateMutation = {
     overtime_hour3?: number | null;
     overtime_hour4?: number | null;
     compensation_rate?: number | null;
+  };
+};
+
+export type EditShiftOverviewMutationVariables = Exact<{
+  shiftOverviewId: Scalars['String']['input'];
+  data: ShiftOverviewInput;
+}>;
+
+export type EditShiftOverviewMutation = {
+  __typename?: 'Mutation';
+  updateShiftOverview: {
+    __typename?: 'ShiftOverview';
+    id: string;
+    date: string;
+    crew_working: Array<{ __typename?: 'Crew'; id: string }>;
   };
 };
 
@@ -3045,6 +3085,118 @@ export const AddRateDocument = {
     },
   ],
 } as unknown as DocumentNode<AddRateMutation, AddRateMutationVariables>;
+export const AddShiftOverviewDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'AddShiftOverview' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'DateTimeISO' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'crewWorking' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: {
+                  kind: 'NamedType',
+                  name: { kind: 'Name', value: 'CrewInput' },
+                },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'addShiftOverview' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'date' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'date' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'crew_working' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'crewWorking' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'crew_working' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AddShiftOverviewMutation,
+  AddShiftOverviewMutationVariables
+>;
 export const AddShootingDayDocument = {
   kind: 'Document',
   definitions: [
@@ -3453,6 +3605,54 @@ export const DeleteInvitationDocument = {
 } as unknown as DocumentNode<
   DeleteInvitationMutation,
   DeleteInvitationMutationVariables
+>;
+export const DeleteShiftOverviewDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'DeleteShiftOverview' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'shiftOverviewId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'deleteShiftOverview' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'shiftOverviewId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'shiftOverviewId' },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  DeleteShiftOverviewMutation,
+  DeleteShiftOverviewMutationVariables
 >;
 export const DeleteShootingDayDocument = {
   kind: 'Document',
@@ -3869,6 +4069,90 @@ export const EditRateDocument = {
     },
   ],
 } as unknown as DocumentNode<EditRateMutation, EditRateMutationVariables>;
+export const EditShiftOverviewDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'EditShiftOverview' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'shiftOverviewId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'ShiftOverviewInput' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateShiftOverview' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'shiftOverviewId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'shiftOverviewId' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'data' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'data' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'crew_working' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  EditShiftOverviewMutation,
+  EditShiftOverviewMutationVariables
+>;
 export const UpdateShootingDayDocument = {
   kind: 'Document',
   definitions: [

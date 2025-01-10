@@ -15,15 +15,13 @@ interface ShiftOverviewTemplateProps {
 export const ShiftOverviewTemplate: React.FC<ShiftOverviewTemplateProps> = ({
   projectData,
 }) => {
-  const { data, loading, error } = useQuery<GetShiftOverviewPageDataQuery>(
-    GET_SHIFT_OVERVIEW_PAGE_DATA,
-    {
+  const { data, loading, error, refetch } =
+    useQuery<GetShiftOverviewPageDataQuery>(GET_SHIFT_OVERVIEW_PAGE_DATA, {
       variables: { projectId: projectData?.id },
       skip: !projectData?.id,
-      fetchPolicy: 'cache-and-network',
-      nextFetchPolicy: 'cache-first',
-    },
-  );
+      fetchPolicy: 'no-cache',
+      //nextFetchPolicy: 'cache-first',
+    });
 
   if (loading)
     return (
@@ -43,7 +41,7 @@ export const ShiftOverviewTemplate: React.FC<ShiftOverviewTemplateProps> = ({
         <Heading mb={4} textAlign="center">
           Shift overview for Project {projectData?.name}
         </Heading>
-        <ShiftOverviewTable data={data} />
+        <ShiftOverviewTable data={data} refetch={refetch} />
       </Box>
     </Box>
   );
