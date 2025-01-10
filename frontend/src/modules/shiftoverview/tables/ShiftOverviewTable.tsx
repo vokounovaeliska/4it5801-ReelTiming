@@ -23,7 +23,7 @@ import {
   GetShiftOverviewPageDataQuery,
 } from '@frontend/gql/graphql';
 import { ADD_SHIFT_OVERVIEW } from '@frontend/graphql/mutations/AddShiftOverview';
-import { DELETE_SHIFT_OVERVIEW } from '@frontend/graphql/mutations/DeleteshiftOverview';
+import { DELETE_SHIFT_OVERVIEW } from '@frontend/graphql/mutations/DeleteShiftOverview';
 import { EDIT_SHIFT_OVERVIEW } from '@frontend/graphql/mutations/EditShiftOverview';
 
 import { ShiftOverviewHeader } from '../atoms/ShiftOverviewHeader';
@@ -122,7 +122,7 @@ export const ShiftOverviewTable = ({ data, refetch }: Props) => {
                   <Tr key={member.id}>
                     <Td>{member.position}</Td>
                     <Td>
-                      {member.surname} {member.name}
+                      {member.surname} {member.name} {member.id}
                     </Td>
                     {days.map((day) => {
                       const key = `${member.id}/${format(day, 'yyyy-MM-dd')}`;

@@ -93,6 +93,8 @@ export interface HandleSaveParams {
   ) => Promise<FetchResult<DeleteShiftOverviewMutation>>;
 }
 
+//když označím nově něco s has worked a on zároveň má už i vyplněný shift, tak se všem ostatním v tomto dni smaže "has worked"
+
 export const handleSave = async ({
   data,
   shiftStates,
@@ -117,8 +119,6 @@ export const handleSave = async ({
     groupedByDate[date].push({ memberId, hasWorked });
   });
 
-  console.log('groupedByDate', groupedByDate);
-
   try {
     for (const [date, members] of Object.entries(groupedByDate)) {
       const existingShift = data?.shiftOverviewsByProjectId.find(
@@ -129,14 +129,16 @@ export const handleSave = async ({
         .filter((m) => m.hasWorked)
         .map((m) => ({ id: m.memberId }));
 
-      console.log(
-        ' data?.shiftOverviewsByProjectId',
-        data?.shiftOverviewsByProjectId,
-      );
-      console.log('hasWorkedMembers', hasWorkedMembers);
-      console.log('existingShift', existingShift);
+      const mergedMembers = existingShift
+        ? [
+            ...new Set([
+              ...existingShift.crew_working.map((member) => member.id),
+              ...hasWorkedMembers.map((member) => member.id),
+            ]),
+          ].map((id) => ({ id }))
+        : hasWorkedMembers;
 
-      if (hasWorkedMembers.length === 0) {
+      if (mergedMembers.length === 0) {
         if (existingShift) {
           await deleteShiftOverview({
             variables: { shiftOverviewId: existingShift.id },
@@ -149,7 +151,7 @@ export const handleSave = async ({
             data: {
               project_id: projectId,
               date: new Date(date).toISOString(),
-              crew_working: hasWorkedMembers,
+              crew_working: mergedMembers,
             },
           },
         });
