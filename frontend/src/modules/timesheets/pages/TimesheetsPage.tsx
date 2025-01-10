@@ -67,7 +67,7 @@ export function TimesheetPage() {
   } = useDeleteTimesheet({
     projectId: projectId ?? '',
     userRole: roleData?.userRoleInProject ?? '',
-    userInfoData,
+    userInfoData: userInfoData!,
   });
 
   const {
@@ -83,7 +83,12 @@ export function TimesheetPage() {
     handleAddClick,
     handleModalClose,
     handleFormSubmitWrapper,
-  } = useTimesheetHandlers(projectId ?? '', roleData, userInfoData, userInfo);
+  } = useTimesheetHandlers(
+    projectId ?? '',
+    roleData ?? null,
+    userInfoData,
+    userInfo,
+  );
 
   if (loading) {
     return (
@@ -102,17 +107,33 @@ export function TimesheetPage() {
     );
   }
 
-  const carOptionsForLoggedInUser = getCarOptionsForLoggedInUser(userCarsData);
-  const userOptionsForUserFilter = getUserOptionsForUserFilter(
-    allProjectUsersDataForOptions,
-  );
-  const userOptionsForAdminAddTimesheet = getUserOptionsForAdminAddTimesheet(
-    allProjectUsersDataForOptions,
-  );
+  const carOptionsForLoggedInUser = userCarsData
+    ? getCarOptionsForLoggedInUser(userCarsData)
+    : [];
 
-  const userRole = roleData.userRoleInProject;
+  const userOptionsForUserFilter = allProjectUsersDataForOptions?.projectUsers
+    ? getUserOptionsForUserFilter(
+        allProjectUsersDataForOptions.projectUsers.map((user) => ({
+          id: user.id,
+          name: user.name,
+          surname: user.surname,
+        })),
+      )
+    : [];
 
-  if (roleData.userRoleInProject !== 'ADMIN' && userRole !== 'CREW') {
+  const userOptionsForAdminAddTimesheet = allProjectUsersDataForOptions
+    ? getUserOptionsForAdminAddTimesheet(
+        allProjectUsersDataForOptions.projectUsers.map((user) => ({
+          id: user.id,
+          name: user.name,
+          surname: user.surname,
+        })),
+      )
+    : [];
+
+  const userRole = roleData?.userRoleInProject;
+
+  if (roleData?.userRoleInProject !== 'ADMIN' && userRole !== 'CREW') {
     navigate(route.myprojects());
     return null;
   }
@@ -150,11 +171,11 @@ export function TimesheetPage() {
         handleRowClick={handleRowClick}
         onDeleteClick={handleDeleteClick}
         projectId={projectId!}
-        projectName={userInfoData.projectUserDetails.project.name}
-        projectCurrency={userInfoData.projectUserDetails.project.currency}
+        projectName={userInfoData?.projectUserDetails?.project?.name!}
+        projectCurrency={userInfoData?.projectUserDetails.project.currency!}
         userOptions={userOptionsForUserFilter}
-        userRole={userRole}
-        projectUserId={userInfoData.projectUserDetails.id}
+        userRole={userRole ?? ''}
+        projectUserId={userInfoData?.projectUserDetails.id!}
         authUser={authUser}
         selectedUsers={selectedUsers}
       />
@@ -165,9 +186,9 @@ export function TimesheetPage() {
         title={
           mode === 'add'
             ? 'Add Timesheet for ' +
-              userInfoData.projectUserDetails.project.name
+              userInfoData?.projectUserDetails.project.name
             : 'Edit Timesheet for ' +
-              userInfoData.projectUserDetails.project.name
+              userInfoData?.projectUserDetails.project.name
         }
         size="2xl"
       >
@@ -177,14 +198,14 @@ export function TimesheetPage() {
           onClose={handleModalClose}
           mode={mode}
           onSubmit={handleFormSubmitWrapper}
-          userRole={userRole}
+          userRole={userRole ?? ''}
           userOptions={userOptionsForAdminAddTimesheet}
           userInfo={userInfo}
           setSelectedCar={setSelectedCar}
-          allCarsOnProjectData={allCarsOnProjectData}
+          allCarsOnProjectData={allCarsOnProjectData!}
           carOptionsForLoggedInUser={carOptionsForLoggedInUser}
-          userInfoRates={allProjectUsersData.projectUsers}
-          projectCurrency={userInfoData.projectUserDetails.project.currency}
+          userInfoRates={allProjectUsersData!.projectUsers!}
+          projectCurrency={userInfoData?.projectUserDetails?.project?.currency!}
         />
       </CustomModal>
       <AlertDialog

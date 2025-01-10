@@ -13,7 +13,7 @@ interface CarFormWithTableProps {
   onCarCollectionChange: (cars: Car[]) => void;
   cars: Car[] | null;
   carStatements: CarStatement[];
-  projectCurrency: string;
+  projectCurrency?: string;
 }
 
 export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
@@ -39,6 +39,9 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
   const [carToDeleteIndex, setCarToDeleteIndex] = useState<number | null>(null);
 
   const handleAddCar = () => {
+    if (Number.isNaN(carDetails.kilometer_allow)) {
+      carDetails.kilometer_allow = 0;
+    }
     if (carDetails.kilometer_allow < 0) {
       showErrorToast('Allowed kilometers can’t be less than 0!');
       return;
@@ -117,6 +120,7 @@ export const CarFormWithTable: React.FC<CarFormWithTableProps> = ({
         handleUpdateCar={handleUpdateCar}
         handleCancelEdit={handleCancelEdit}
         isEditMode={isEditMode}
+        projectCurrency={projectCurrency}
       />
       {carCollection.length > 0 && (
         <CarTable

@@ -3,8 +3,8 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
-import { UPDATE_USER_PROFILE_SETTINGS } from '@frontend/gql/mutations/UpdateUserProfileSettings';
-import { GET_USER_PROFILE_SETTINGS_INFO } from '@frontend/gql/queries/GetUserProfileSettingsInfo';
+import { UPDATE_USER_PROFILE_SETTINGS } from '@frontend/graphql/mutations/UpdateUserProfileSettings';
+import { GET_USER_PROFILE_SETTINGS_INFO } from '@frontend/graphql/queries/GetUserProfileSettingsInfo';
 import { useAuth } from '@frontend/modules/auth';
 
 import ProfileSettingsTemplate from '../templates/ProfileSettingsTemplate';
@@ -25,7 +25,7 @@ const ProfileSettingsPage = () => {
   const { loading, error, data, refetch } = useQuery(
     GET_USER_PROFILE_SETTINGS_INFO,
     {
-      variables: { userId: user?.id },
+      variables: { userId: user?.id! },
       skip: !user,
       fetchPolicy: 'cache-and-network',
     },
@@ -37,7 +37,14 @@ const ProfileSettingsPage = () => {
     if (!user) {
       navigate('/login');
     } else if (data) {
-      setUserData(data.user);
+      const { phone_number } = data!.user!;
+      setUserData({
+        name: data!.user!.name,
+        surname: data!.user!.surname,
+        email: data!.user!.email,
+        phone_number: phone_number ?? '',
+        last_update_date: data!.user!.last_update_date,
+      });
     }
   }, [data, user, navigate]);
 
@@ -59,7 +66,7 @@ const ProfileSettingsPage = () => {
             phone_number,
             last_update_user_id: user?.id,
           },
-          userId: user?.id,
+          userId: user?.id!,
         },
       });
       toast({ title: 'Profile updated successfully', status: 'success' });

@@ -1,14 +1,15 @@
 import { useCallback } from 'react';
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
-import { GET_PROJECT_BY_PROJECT_USER_TOKEN } from '@frontend/gql/queries/GetProjectByProjectUserToken';
+import { gql } from '@frontend/gql';
+import { GET_PROJECT_BY_PROJECT_USER_TOKEN } from '@frontend/graphql/queries/GetProjectByProjectUserToken';
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
 
 import { LogInTemplate } from '../templates/LogInTemplate';
 
-const SIGNIN_MUTATION = gql(/* GraphQL */ `
+const SIGNIN_MUTATION = gql(`
   mutation SignIn($email: String!, $password: String!) {
     signIn(email: $email, password: $password) {
       user {
@@ -28,12 +29,10 @@ export function LogInPage() {
   const [searchParams] = useSearchParams();
   const invitationToken = searchParams.get('token');
   const { data } = useQuery(GET_PROJECT_BY_PROJECT_USER_TOKEN, {
-    variables: { token: invitationToken },
+    variables: { token: invitationToken! },
     skip: !invitationToken,
   });
 
-  console.log(invitationToken);
-  console.log(data);
   const [loginRequest, loginRequestState] = useMutation(SIGNIN_MUTATION, {
     onCompleted: ({ signIn: { user, token } }) => {
       auth.signIn({ token, user });

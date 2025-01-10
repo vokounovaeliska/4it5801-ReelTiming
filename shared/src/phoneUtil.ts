@@ -1,6 +1,6 @@
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
-export const formatPhoneNumber = (number?: string) => {
+export const formatPhoneNumber = (number?: string | null) => {
   if (!number) return '';
 
   try {

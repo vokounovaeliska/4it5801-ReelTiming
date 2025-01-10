@@ -16,25 +16,12 @@ const DateTimeSection = ({ control, workedHours }: DateTimeSectionProps) => {
   return (
     <Box>
       <FormControl>
-        <FormLabel>Start Date</FormLabel>
+        <FormLabel>Shift date</FormLabel>
         <Controller
           name="start_date"
           control={control}
           render={({ field }) => (
             <Input type="date" {...field} value={formatDate(field.value)} />
-          )}
-        />
-      </FormControl>
-      <FormControl mt={4}>
-        <FormLabel>Shift</FormLabel>
-        <Controller
-          name="shift_lenght"
-          control={control}
-          render={({ field }) => (
-            <Select {...field}>
-              <option value={10}>10h</option>
-              <option value={12}>12h</option>
-            </Select>
           )}
         />
       </FormControl>
@@ -46,7 +33,7 @@ const DateTimeSection = ({ control, workedHours }: DateTimeSectionProps) => {
         gap="5"
       >
         <FormControl mt={4}>
-          <FormLabel>Time From</FormLabel>
+          <FormLabel>Call time</FormLabel>
           <Controller
             name="from"
             control={control}
@@ -64,7 +51,7 @@ const DateTimeSection = ({ control, workedHours }: DateTimeSectionProps) => {
           />
         </FormControl>
         <FormControl mt={4}>
-          <FormLabel>Time To</FormLabel>
+          <FormLabel>Wrap time</FormLabel>
           <Controller
             name="to"
             control={control}
@@ -82,6 +69,19 @@ const DateTimeSection = ({ control, workedHours }: DateTimeSectionProps) => {
           />
         </FormControl>
       </Box>
+      <FormControl mt={4}>
+        <FormLabel>Shift</FormLabel>
+        <Controller
+          name="shift_lenght"
+          control={control}
+          render={({ field }) => (
+            <Select {...field}>
+              <option value={10}>10h</option>
+              <option value={12}>12h</option>
+            </Select>
+          )}
+        />
+      </FormControl>
       <Text color="gray.500">
         {workedHours ? `worked ${workedHours} hours` : ''}
       </Text>
