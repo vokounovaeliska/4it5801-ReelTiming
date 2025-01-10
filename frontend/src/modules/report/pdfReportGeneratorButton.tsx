@@ -4,22 +4,33 @@ import { Box, Button, ButtonProps, Spinner } from '@chakra-ui/react';
 import { config } from '@frontend/config';
 import { showErrorToast } from '@frontend/shared/design-system/molecules/toastUtils';
 
+import { UserOption } from '../timesheets/interfaces';
+
 export type InputFieldProps = ButtonProps;
 
 type PdfReportGeneratorProps = {
   projectUserId: string;
   startDate: string;
   endDate: string;
-  label?: string;
   isDisabled?: boolean;
+  selectedUsers: UserOption[];
+};
+
+const formatDate = (date: string): string => {
+  return new Date(date)
+    .toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'numeric',
+    })
+    .replace(/\//g, '.');
 };
 
 const PdfReportGeneratorButton = ({
   projectUserId,
   startDate,
   endDate,
-  label,
   isDisabled,
+  selectedUsers,
 }: PdfReportGeneratorProps) => {
   const [loading, setLoading] = useState(false);
 
@@ -63,20 +74,33 @@ const PdfReportGeneratorButton = ({
     }
   };
 
+  const formattedStartDate = formatDate(startDate);
+  const formattedEndDate = formatDate(endDate);
+
+  const dynamicLabel =
+    selectedUsers.length === 1
+      ? `Generate shifts report - ${selectedUsers[0]?.label}\n(for ${formattedStartDate} - ${formattedEndDate})`
+      : `Generate shifts report (for ${formattedStartDate} - ${formattedEndDate})`;
+
   return (
     <>
       <Box textAlign="center">
         <Button
-          size={'sm'}
+          size={{ base: 'xs', md: 'sm' }}
           colorScheme="orange"
           type="submit"
-          m={1.5}
+          mt={2}
           variant="outline"
           isLoading={loading}
           isDisabled={loading || isDisabled}
           onClick={handleGeneratePdf}
+          borderRadius="full"
+          maxW="100%"
+          minH="2rem"
+          whiteSpace="normal"
+          wordBreak="break-word"
         >
-          {loading ? <Spinner size="sm" /> : (label ?? 'Generate PDF')}
+          {loading ? <Spinner size="sm" /> : dynamicLabel}
         </Button>
       </Box>
     </>

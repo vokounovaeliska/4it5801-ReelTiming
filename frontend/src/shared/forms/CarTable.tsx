@@ -26,7 +26,7 @@ interface CarTableProps {
   isCarDeletable: (carId: string) => boolean;
   onDeleteAlertOpen: () => void;
   setCarToDeleteIndex: React.Dispatch<React.SetStateAction<number | null>>;
-  projectCurrency: string;
+  projectCurrency?: string;
 }
 
 export const CarTable: React.FC<CarTableProps> = ({

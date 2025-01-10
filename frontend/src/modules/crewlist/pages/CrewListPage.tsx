@@ -1,4 +1,4 @@
-import { Box, Center, Heading, Spinner, Text } from '@chakra-ui/react';
+import { Box, Center, Spinner, Text } from '@chakra-ui/react';
 
 import {
   AllCarsOnProjectData,
@@ -8,6 +8,7 @@ import {
   useAllCarsOnProjectByProjectUserId,
   useCarStatementsByProjectId,
 } from '@frontend/modules/timesheets/pages/queryHooks';
+import { Heading } from '@frontend/shared/design-system';
 import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
@@ -64,12 +65,15 @@ export function CrewListPage() {
   } = useCrewListPageUtils();
 
   const isDataAvailable = !!crewList && Object.keys(crewList).length > 0;
-  const { allCarsOnProjectData, refetch: refetchAllCarsOnProjectData } =
-    useAllCarsOnProjectByProjectUserId(projectId ?? '');
+  const {
+    allCarsOnProjectData,
+    refetch: refetchAllCarsOnProjectData,
+    allCarsOnProjectLoading,
+  } = useAllCarsOnProjectByProjectUserId(projectId ?? '');
 
   const { projectCarStatements } = useCarStatementsByProjectId(projectId ?? '');
 
-  if (!isDataAvailable && crewListLoading) {
+  if ((!isDataAvailable && crewListLoading) || allCarsOnProjectLoading) {
     return (
       <Center minHeight="100vh">
         <Spinner size="xl" color="orange.500" />
@@ -88,7 +92,7 @@ export function CrewListPage() {
     );
   }
 
-  const groupedByDepartment = crewList.projectUsers.reduce(
+  const groupedByDepartment = crewList?.projectUsers.reduce(
     (acc: Record<string, ProjectUser[]>, user: ProjectUser) => {
       if (
         crewList.userRoleInProject === 'ADMIN' ||
@@ -105,19 +109,19 @@ export function CrewListPage() {
     {} as Record<string, ProjectUser[]>,
   );
 
-  const sortedDepartments = Object.keys(groupedByDepartment).sort();
+  const sortedDepartments = Object.keys(groupedByDepartment!).sort();
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <ProjectNavbar
         projectId={projectId!}
-        userRole={crewList.userRoleInProject}
+        userRole={crewList?.userRoleInProject}
       />
       <Box flex="1" p={0} width="100%">
         <Heading mb={4} mt={2} textAlign="center">
-          Crew List for Project {crewList.project.name}
+          Crew List for Project {crewList?.project?.name}
         </Heading>
-        {crewList.userRoleInProject === 'ADMIN' && (
+        {crewList?.userRoleInProject === 'ADMIN' && (
           <Box
             display={{ base: 'grid', md: 'flex' }}
             justifyContent={{ base: 'center', md: 'space-between' }}
@@ -131,13 +135,13 @@ export function CrewListPage() {
         )}
         <CrewListTable
           sortedDepartments={sortedDepartments}
-          groupedByDepartment={groupedByDepartment}
+          groupedByDepartment={groupedByDepartment!}
           handleEditMemberClick={handleEditMemberClick}
           handleRemoveButtonClick={handleRemoveButtonClick}
           sendInvitation={sendInvitation}
-          userRoleInProject={crewList.userRoleInProject}
+          userRoleInProject={crewList?.userRoleInProject!}
           authUserId={auth.user?.id}
-          projectCurrency={crewList.project?.currency}
+          projectCurrency={crewList?.project?.currency}
         ></CrewListTable>
       </Box>
       <Footer />
@@ -171,17 +175,17 @@ export function CrewListPage() {
             }
             refetchAllCarsOnProjectData();
           }}
-          isLoading={isSubmitting}
-          departments={crewList.departments}
-          initialValues={selectedCrewMember || undefined}
+          isLoading={isSubmitting || allCarsOnProjectLoading}
+          departments={crewList!.departments!}
+          initialValues={selectedCrewMember ?? undefined}
           mode={selectedCrewMember ? 'edit' : 'add'}
-          userRole={crewList.userRoleInProject}
-          projectCurrency={crewList.project?.currency}
+          userRole={crewList!.userRoleInProject!}
+          projectCurrency={crewList?.project?.currency!}
           cars={
             selectedCrewMember
               ? getAvailableCarsForProjectUserId(
                   selectedCrewMember?.id,
-                  allCarsOnProjectData,
+                  allCarsOnProjectData!,
                 )
               : []
           }

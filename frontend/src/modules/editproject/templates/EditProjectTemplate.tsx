@@ -1,5 +1,7 @@
-import { Box, Center, Heading, Text } from '@chakra-ui/react';
+import { Box, Center, Text } from '@chakra-ui/react';
 
+import { ShootingDay } from '@frontend/gql/graphql';
+import { Heading } from '@frontend/shared/design-system';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 import { projectFormValues } from '@frontend/zod/schemas';
@@ -11,10 +13,16 @@ export function EditProjectTemplate({
   project,
   projectId,
   onSubmit,
+  shootingDays,
 }: {
   project: ProjectData;
   projectId: string;
-  onSubmit: (data: projectFormValues) => void;
+  onSubmit: (
+    data: projectFormValues,
+    alreadyStoredShootingDays: ShootingDay[],
+    shootingDays: ShootingDay[],
+  ) => void;
+  shootingDays: ShootingDay[];
 }) {
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
@@ -23,7 +31,7 @@ export function EditProjectTemplate({
         flex="1"
         p={{ base: 4, md: 6 }}
         width="100%"
-        maxWidth="1200px"
+        maxWidth="1400px"
         mx="auto"
         bg="white"
       >
@@ -43,6 +51,7 @@ export function EditProjectTemplate({
             projectId={projectId}
             project={project}
             onSubmit={onSubmit}
+            shootingDays={shootingDays}
           />
         </Center>
       </Box>
