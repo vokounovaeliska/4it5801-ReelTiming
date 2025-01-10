@@ -9,6 +9,7 @@ import {
 } from '@frontend/shared/design-system/molecules/toastUtils';
 
 import { DeleteConfirmationDialog } from '../atoms/ShootingDaysDialog';
+import { ProjectData } from '../pages/EditProjectPage';
 
 import { ShootingDaysInputForm } from './ShootingDaysInputForm';
 import { ShootingDaysTable } from './ShootingDaysTable';
@@ -16,11 +17,13 @@ import { ShootingDaysTable } from './ShootingDaysTable';
 interface ShootingDaysConfigFormProps {
   shootingDays: ShootingDay[];
   handleShootingDaysChange: (cars: ShootingDay[]) => void;
+  projectData: ProjectData;
 }
 
 export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
   shootingDays,
   handleShootingDaysChange,
+  projectData,
 }) => {
   const setNewDate = (days: ShootingDay[]): string => {
     const maximumDate = max(days.map((day) => day.date));
@@ -66,6 +69,22 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
       return;
     }
 
+    const isWithinTheProjectDays = (): boolean => {
+      if (!projectData || !shootingDay || !shootingDay.date) {
+        return false;
+      }
+
+      if (projectData.start_date && projectData.end_date) {
+        const shootingDayDate = new Date(shootingDay.date).getTime();
+        const startDate = new Date(projectData.start_date).getTime();
+        const endDate = new Date(projectData.end_date).getTime();
+
+        return shootingDayDate >= startDate && shootingDayDate <= endDate;
+      }
+
+      return false;
+    };
+
     const isDuplicateDayNumber = shootingDaysCollection.some(
       (day) =>
         day.shooting_day_number === shootingDay.shooting_day_number &&
@@ -80,14 +99,21 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
 
     if (isDuplicateDayNumber) {
       showErrorToast(
-        'A day with this number already exists. Please use a unique day number.',
+        'A day with this number already exists! Please use a unique day number.',
       );
       return;
     }
 
     if (isDuplicateDayDate) {
       showErrorToast(
-        'A shooting day with this date already exists. Please use a unique date.',
+        'A shooting day with this date already exists! Please use a unique date.',
+      );
+      return;
+    }
+
+    if (!isWithinTheProjectDays()) {
+      showErrorToast(
+        'A shooting day date is not set withing the project! Please use a date within the project.',
       );
       return;
     }
