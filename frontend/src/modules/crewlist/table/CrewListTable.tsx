@@ -3,7 +3,7 @@ import { Box, Table, TableContainer, Tbody, Thead, Tr } from '@chakra-ui/react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import { CrewMemberData, ProjectUser } from '../interfaces/interfaces';
+import { CrewMemberData, DepartmentProps, ProjectUser } from '../interfaces/interfaces';
 import { DraggableRow } from './DraggableRow';
 
 import { CrewlistTableHeader } from './CrewlistTableHeader';
@@ -22,6 +22,8 @@ interface CrewListTableProps {
   userRoleInProject: string;
   authUserId: string | undefined;
   projectCurrency?: string;
+  handleUpdateDepartmentOrder: (data: DepartmentProps) => void;
+  projectId: string;
 }
 
 const tableHeaders = [
@@ -47,15 +49,40 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
   userRoleInProject,
   authUserId,
   projectCurrency,
+  handleUpdateDepartmentOrder,
+  projectId,
 }) => {
   const [departments, setDepartments] = useState(sortedDepartments);
 
-  const moveDepartment = useCallback((dragIndex: number, hoverIndex: number) => {
-    const updatedDepartments = [...departments];
-    const [removed] = updatedDepartments.splice(dragIndex, 1);
-    updatedDepartments.splice(hoverIndex, 0, removed);
-    setDepartments(updatedDepartments);
-  }, [departments]);
+  const moveDepartment = useCallback(
+    async (dragIndex: number, hoverIndex: number, isDragging: boolean) => {
+      const updatedDepartments = [...departments];
+      const [removed] = updatedDepartments.splice(dragIndex, 1);
+      updatedDepartments.splice(hoverIndex, 0, removed);
+
+      // Update local state
+      setDepartments(updatedDepartments);
+      console.log('Local update')
+    },
+    [departments]
+  );
+
+  const handleDragEnd = useCallback(async () => {
+    console.log('Calling DB')
+    try {
+      await Promise.all(
+        departments.map((department, index) =>
+          handleUpdateDepartmentOrder({
+            name: department,
+            project_id: projectId,
+            order_index: index,
+          })
+        )
+      );
+    } catch (err) {
+      console.error('Failed to update department order:', err);
+    }
+  }, [departments, handleUpdateDepartmentOrder]);
 
   return (
     <Box overflowX="auto" m={1}>
@@ -142,6 +169,7 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                     handleRemoveButtonClick={handleRemoveButtonClick}
                     userRoleInProject={userRoleInProject}
                     authUserId={authUserId}
+                    handleDragEnd={handleDragEnd}
                   />
                 ))}
               </Tbody>
@@ -149,7 +177,7 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
           </Box>
         </TableContainer>
       </DndProvider>
-    </Box>
+    </Box >
   );
 };
 
