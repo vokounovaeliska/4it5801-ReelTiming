@@ -122,7 +122,7 @@ export const ShiftOverviewTable = ({ data, refetch }: Props) => {
                   <Tr key={member.id}>
                     <Td>{member.position}</Td>
                     <Td>
-                      {member.surname} {member.name} {member.id}
+                      {member.surname} {member.name}
                     </Td>
                     {days.map((day) => {
                       const key = `${member.id}/${format(day, 'yyyy-MM-dd')}`;
@@ -157,12 +157,10 @@ export const ShiftOverviewTable = ({ data, refetch }: Props) => {
                               }
                               colorScheme="gray"
                             />
-                            {hasWorked && (
-                              <ShiftWorkedReportedIcons
-                                hasWorked={hasWorked}
-                                hasReported={hasReported}
-                              />
-                            )}
+                            <ShiftWorkedReportedIcons
+                              hasWorked={hasWorked}
+                              hasReported={hasReported}
+                            />
                           </Flex>
                         </Td>
                       );
