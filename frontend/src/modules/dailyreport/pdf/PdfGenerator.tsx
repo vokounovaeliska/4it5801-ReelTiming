@@ -12,7 +12,15 @@ type PDFGeneratorProps = {
 const PDFGenerator = ({ data }: PDFGeneratorProps) => {
   return (
     <div style={{ textAlign: 'center', margin: '20px 0' }}>
-      <PDFViewer style={{ width: '100%', height: '600px' }}>
+      <PDFViewer
+        style={{
+          width: '100%',
+          height: '100vh',
+          overflow: 'hidden',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
         <MyPDFDocument data={data} />
       </PDFViewer>
       <PDFDownloadLink

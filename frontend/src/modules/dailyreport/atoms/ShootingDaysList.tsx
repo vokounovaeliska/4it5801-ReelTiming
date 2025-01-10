@@ -172,8 +172,18 @@ const ShootingDaysList = ({ projectId }: Props) => {
           lastDailyReportRefetch={lastDailyReportRefetch}
         />
 
-        <TableContainer overflowX="auto">
-          <Table variant="simple" size="sm" colorScheme="gray">
+        <TableContainer>
+          <Table
+            variant="simple"
+            size="sm"
+            colorScheme="gray"
+            sx={{
+              borderSpacing: 0,
+              '& th, & td': {
+                px: { base: 1, md: 2 },
+              },
+            }}
+          >
             <Thead>
               <Tr>
                 <Th>Day N.</Th>

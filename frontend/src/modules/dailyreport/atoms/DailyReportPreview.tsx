@@ -48,14 +48,16 @@ const DailyReportPreview = ({
   if (error) return <Text color="red.500">Error: {error.message}</Text>;
 
   return (
-    <Box>
-      <ReportHeader data={data} />
-      <Divider />
-      <ReportIntro data={data} />
-      <Divider />
-      <ReportCrewStatementsTable data={data} />
-      <Divider />
-      <ReportFooter data={data} />
+    <Box overflowX="auto">
+      <Box display={{ base: 'none', md: 'block' }}>
+        <ReportHeader data={data} />
+        <Divider />
+        <ReportIntro data={data} />
+        <Divider />
+        <ReportCrewStatementsTable data={data} />
+        <Divider />
+        <ReportFooter data={data} />
+      </Box>
       <PDFGenerator data={data} />
     </Box>
   );
