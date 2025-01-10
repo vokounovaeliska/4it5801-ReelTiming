@@ -24,7 +24,9 @@ const ProjectStatus: React.FC<ProjectStatusProps> = ({ isActive }) => {
         <Box as="span" mr={2}>
           {isActive ? '✅' : '❌'}
         </Box>
-        <strong>Is Active:</strong> {isActive ? 'Yes' : 'No'}
+        <Text>
+          <strong>Is Active: </strong> {isActive ? 'Yes' : 'No'}
+        </Text>
       </Text>
     </>
   );
