@@ -42,6 +42,7 @@ import {
 import { AddDailyReportButton } from './AddDailyReportButton';
 import DailyReportDeleteAlertDialog from './DailyReportAlertDialog';
 import DailyReportPreview from './DailyReportPreview';
+import DailyReportStatusIcon from './DailyReportStatusIcon';
 
 type Props = {
   projectId: string;
@@ -204,24 +205,17 @@ const ShootingDaysList = ({ projectId }: Props) => {
             </Thead>
             <Tbody>
               {shootingDays.map((day) => (
-                <Tr key={day.id}>
+                <Tr
+                  key={day.id}
+                  bg={selectedDay?.id === day.id ? 'gray.200' : 'transparent'}
+                  _hover={{
+                    bg: selectedDay?.id === day.id ? 'gray.300' : 'gray.100',
+                  }}
+                >
                   <Td>{day.shooting_day_number}</Td>
                   <Td>{formatDateToDisplay(day.date)}</Td>
                   <Td textAlign="center">
-                    {day.dailyReport ? (
-                      <IconButton
-                        colorScheme="green"
-                        size="xs"
-                        icon={<CheckIcon />}
-                        aria-label="Daily report created"
-                      />
-                    ) : (
-                      <IconButton
-                        size="xs"
-                        aria-label="No daily report"
-                        icon={<CloseIcon />}
-                      />
-                    )}
+                    <DailyReportStatusIcon hasDailyReport={!!day.dailyReport} />
                   </Td>
                   <Td textAlign="center">
                     <IconButton
