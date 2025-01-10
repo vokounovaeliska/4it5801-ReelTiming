@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Box, Text, useDisclosure } from '@chakra-ui/react';
-import { format, parseISO } from 'date-fns';
+import { addDays, format, max, parseISO } from 'date-fns';
 
 import { ShootingDay } from '@frontend/gql/graphql';
 import {
@@ -22,12 +22,30 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
   shootingDays,
   handleShootingDaysChange,
 }) => {
+  const setNewDate = (days: ShootingDay[]): string => {
+    const maximumDate = max(days.map((day) => day.date));
+    return format(addDays(maximumDate, 1), 'yyyy-MM-dd');
+  };
+
+  const setNewShootingDayNumber = (days: ShootingDay[]): number => {
+    return Math.max(...days.map((day) => day.shooting_day_number)) + 1;
+  };
+
+  const setNewShootingDay = (days: ShootingDay[]) => {
+    setShootingDay({
+      id: '',
+      shooting_day_number: setNewShootingDayNumber(days),
+      date: setNewDate(days),
+    });
+  };
+
   const [shootingDay, setShootingDay] = useState<ShootingDay>({
     id: '',
     shooting_day_number:
-      shootingDays !== undefined ? shootingDays.length + 1 : 1,
-    date: format(Date.now(), 'yyyy-MM-dd'),
+      shootingDays !== undefined ? setNewShootingDayNumber(shootingDays) : 1,
+    date: setNewDate(shootingDays),
   });
+
   const [shootingDaysCollection, setShootingDaysCollection] =
     useState(shootingDays);
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -48,7 +66,6 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
       return;
     }
 
-    // Check for duplicate dayNumber
     const isDuplicateDayNumber = shootingDaysCollection.some(
       (day) =>
         day.shooting_day_number === shootingDay.shooting_day_number &&
@@ -103,23 +120,15 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
       );
     }
 
-    // Sort the collection by date
     updatedDaysCollection = updatedDaysCollection.sort(
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
     );
 
-    // Update the collection
     setShootingDaysCollection(updatedDaysCollection);
 
-    // Notify parent about changes
     handleShootingDaysChange(updatedDaysCollection);
 
-    // Reset the input fields
-    setShootingDay({
-      id: '',
-      shooting_day_number: updatedDaysCollection.length + 1,
-      date: '',
-    });
+    setNewShootingDay(updatedDaysCollection);
   };
 
   const handleEditShootingDay = (index: number) => {
@@ -141,15 +150,10 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
 
       handleShootingDaysChange(updatedCollection);
 
+      setNewShootingDay(updatedCollection);
+
       return updatedCollection;
     });
-
-    setShootingDay(() => ({
-      id: '',
-      shooting_day_number:
-        shootingDaysCollection.length > 1 ? shootingDaysCollection.length : 1,
-      date: '',
-    }));
 
     showSuccessToast('The shooting day has been removed.');
   };
@@ -166,7 +170,8 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
         isEditing={isEditing}
         setIsEditing={setIsEditing}
         handleAddOrUpdateShootingDay={handleAddOrUpdateShootingDay}
-        shootingDaysLenght={shootingDaysCollection.length}
+        shootingDays={shootingDaysCollection}
+        setNewShootingDay={setNewShootingDay}
       />
 
       {shootingDaysCollection.length > 0 && (
