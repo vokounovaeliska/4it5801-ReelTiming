@@ -131,14 +131,16 @@ export function HomePage() {
           p={4}
         >
           <Image
-            src="/hero-image2.jpg"
+            src="/homePage2.png"
             width="100%"
             alt="Camera pointing at actors"
             style={{
-              boxShadow: '36px 44px 31px -2px rgba(221,107,32,0.5)',
+              borderRadius: '16px',
+              boxShadow: '0px 4px 15px rgba(0,0,0,0.6)',
+              zIndex: 2,
             }}
             height="auto"
-            maxWidth={{ base: '500px', lg: '700px' }}
+            maxWidth={{ base: '600px', lg: '900px' }} // Increased size
             mb={8}
           />
         </Box>
