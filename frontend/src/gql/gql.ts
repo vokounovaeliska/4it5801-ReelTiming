@@ -21,24 +21,34 @@ const documents = {
     types.DeleteCarDocument,
   '\n  mutation UpdateCar($data: CarInput!, $updateCarId: String!) {\n    updateCar(data: $data, id: $updateCarId) {\n      kilometer_allow\n      kilometer_rate\n      name\n      id\n    }\n  }\n':
     types.UpdateCarDocument,
+  '\n  mutation AddDailyReport($footer: [ReportItemInput!]!, $shootingProgress: [ReportItemInput!]!, $intro: [ReportItemInput!]!, $projectId: String!, $shootingDayId: String!) {\n  addDailyReport(footer: $footer, shooting_progress: $shootingProgress, intro: $intro, projectId: $projectId, shooting_day_id: $shootingDayId) {\n    id\n    intro {\n      title\n      value\n    }\n    shooting_progress {\n            title\n      value\n    }\n    footer {\n            title\n      value\n    }\n    create_date\n    last_update_date\n    project {\n      id\n      name\n    }\n    shootingDay {\n      id\n      date\n      shooting_day_number\n    }\n  }\n}\n':
+    types.AddDailyReportDocument,
   '\n  mutation AddProject(\n    $productionCompany: String!\n    $name: String!\n    $endDate: DateTimeISO\n    $startDate: DateTimeISO\n    $description: String\n    $create_user_id: String\n    $currency: String\n  ) {\n    addProject(\n      production_company: $productionCompany\n      name: $name\n      end_date: $endDate\n      start_date: $startDate\n      description: $description\n      create_user_id: $create_user_id\n      currency: $currency\n    ) {\n      id\n      name\n      production_company\n      description\n      start_date\n      end_date\n      create_date\n      create_user_id\n      last_update_user_id\n      last_update_date\n      is_active\n      currency\n      departments {\n        id\n        name\n      }\n    }\n  }\n':
     types.AddProjectDocument,
   '\n  mutation AddProjectUser(\n    $projectId: String!\n    $isTeamLeader: Boolean!\n    $rateId: String\n    $departmentId: String\n    $role: String!\n    $invitation: String\n    $phone_number: String\n    $email: String!\n    $name: String!\n    $surname: String!\n    $position: String\n  ) {\n    addProjectUser(\n      projectId: $projectId\n      isTeamLeader: $isTeamLeader\n      rateId: $rateId\n      departmentId: $departmentId\n      role: $role\n      invitation: $invitation\n      phone_number: $phone_number\n      email: $email\n      name: $name\n      surname: $surname\n      position: $position\n    ) {\n      id\n      project {\n        id\n      }\n      is_team_leader\n      role\n      rate{\n        id\n      }\n    }\n  }\n':
     types.AddProjectUserDocument,
   '\n  mutation AddRate(\n    $standardRate: Float!\n    $compensationRate: Float!\n    $overtimeHour1: Float!\n    $overtimeHour2: Float!\n    $overtimeHour3: Float!\n    $overtimeHour4: Float!\n  ) {\n    addRate(\n      standard_rate: $standardRate\n      compensation_rate: $compensationRate\n      overtime_hour1: $overtimeHour1\n      overtime_hour2: $overtimeHour2\n      overtime_hour3: $overtimeHour3\n      overtime_hour4: $overtimeHour4\n    ) {\n      id\n    }\n  }\n':
     types.AddRateDocument,
+  '\n    mutation AddShootingDay(\n        $projectId: String!, \n        $date: DateTimeISO!, \n        $shootingDayNumber: Float!, \n        $eventType: String\n    ) {\n        addShootingDay(\n            projectId: $projectId,\n            date: $date,\n            shootingDayNumber: $shootingDayNumber,\n            eventType: $eventType\n        ) {\n            project{\n                id\n            }\n        }\n    }\n':
+    types.AddShootingDayDocument,
   '\n  mutation AddStatement(\n    $project_user_id: String!\n    $start_date: DateTimeISO!\n    $from: DateTimeISO!\n    $to: DateTimeISO!\n    $shift_lenght: Float!\n    $calculated_overtime: Float\n    $claimed_overtime: Float\n    $car_id: String\n    $kilometers: Float\n  ) {\n    addStatement(\n      project_user_id: $project_user_id\n      start_date: $start_date\n      from: $from\n      to: $to\n      shift_lenght: $shift_lenght\n      calculated_overtime: $calculated_overtime\n      claimed_overtime: $claimed_overtime\n      car_id: $car_id\n      kilometers: $kilometers\n    ) {\n      id\n      projectUser {\n        id\n        user {\n          id\n          name\n          surname\n        }\n      }\n      start_date\n      from\n      to\n      shift_lenght\n      calculated_overtime\n      claimed_overtime\n      create_date\n    }\n  }\n':
     types.AddStatementDocument,
   '\n  mutation DeleteInvitation($projectUserId: String!) {\n    deleteInvitation(projectUserId: $projectUserId)\n  }\n':
     types.DeleteInvitationDocument,
+  '\n    mutation DeleteShootingDay($shootingDayId: String!) {\n        deleteShootingDay(shootingDayId: $shootingDayId)\n    }\n':
+    types.DeleteShootingDayDocument,
   '\n  mutation DeleteStatement($id: String!) {\n    deleteStatement(id: $id)\n  }\n':
     types.DeleteStatementDocument,
+  '\nmutation EditDailyReport($data: DailyReportInput!, $dailyReportId: String!) {\n    updateDailyReport(data: $data, dailyReportId: $dailyReportId) {\n      id\n      \n    }\n  }\n':
+    types.EditDailyReportDocument,
   '\n    mutation EditProject($data: ProjectInput!, $projectId: String!){\n        updateProject(data: $data, projectId: $projectId){\n            description,\n            name,\n            production_company,\n            end_date,\n            is_active,\n            last_update_user_id,\n            currency,\n            # start_date\n        }\n    } \n':
     types.EditProjectDocument,
   '\n  mutation EditProjectUser($data: ProjectUserInput!, $updateProjectUserId: String!) {\n    updateProjectUser(data: $data, id: $updateProjectUserId) {\n      id\n    }\n  }\n':
     types.EditProjectUserDocument,
   '\n  mutation EditRate($data: RateInput!, $rateId: String!) {\n    updateRate(data: $data, rateId: $rateId) {\n      id\n      standard_rate\n      overtime_hour1\n      overtime_hour2\n      overtime_hour3\n      overtime_hour4\n      compensation_rate\n    }\n  }\n':
     types.EditRateDocument,
+  '\n    mutation UpdateShootingDay(\n        $data: ShootingDayInput!,\n        $shootingDayId: String!\n    ) {\n        updateShootingDay(\n            data: $data,\n            shootingDayId: $shootingDayId\n        ) {\n            project {\n                id\n            }\n        }\n}\n':
+    types.UpdateShootingDayDocument,
   '\n  mutation UpdateStatement($id: String!, $data: StatementInput!) {\n    updatestatement(id: $id, data: $data) {\n      id\n      projectUser {\n        id\n      }\n      start_date\n      from\n      to\n      shift_lenght\n      calculated_overtime\n      claimed_overtime\n      create_date\n      last_update_date\n      create_user_id\n      last_update_user_id\n      kilometers\n    }\n  }\n':
     types.UpdateStatementDocument,
   '\n  mutation EditUser($data: UserInput!, $userId: String!) {\n    updateUser(data: $data, userId: $userId) {\n      id\n      name\n      surname\n      email\n      is_active\n    }\n  }\n':
@@ -62,8 +72,14 @@ const documents = {
     types.GetCrewListInfoDocument,
   '\n  query GetProjectUserDetails($userId: String!, $projectId: String!) {\n    projectUserDetails(userId: $userId, projectId: $projectId) {\n      project {\n        id\n        name\n        currency\n      }\n      id\n      name\n      surname\n      email\n    }\n  }\n':
     types.GetProjectUserDetailsDocument,
+  '\n  query GetDailyReportByShootingDay($shootingDayId: String!) {\n    shootingDay(id: $shootingDayId) {\n      id\n      dailyReport {\n        id\n        intro {\n          title\n          value\n        }\n        shooting_progress {\n          title\n          value       \n        }\n        footer {\n          title\n          value\n        }\n      }\n    }\n  }\n':
+    types.GetDailyReportByShootingDayDocument,
+  '\n  query DailyReportPreviewInfo($date: DateTimeISO!, $projectId: String!, $shootingDayId: String!) {\n  statementsByProjectIdAndDate(date: $date, projectId: $projectId) {\n    id\n    start_date\n    from\n    to\n    claimed_overtime\n    projectUser {\n      name\n      surname\n      position\n      department {\n        id\n        name\n        order_index\n        is_visible\n      }\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    production_company\n    currency\n    shootingDays {\n      id\n    }\n  }\n  shootingDay(id: $shootingDayId) {\n    id\n    shooting_day_number\n    date\n    dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value\n      }\n      footer {\n        title\n        value\n      }\n    }\n  }\n}\n':
+    types.DailyReportPreviewInfoDocument,
   '\n  query Departments($projectId: String!) {\n    departments(projectId: $projectId) {\n      id\n      name\n    }\n  }\n':
     types.DepartmentsDocument,
+  '\nquery LastDailyReportByProjectId($projectId: String!) {\n  lastDailyReportByProjectId(projectId: $projectId) {\n    id\n    intro {\n      title\n      value\n    }\n    shooting_progress {\n      title\n      value\n    }\n    footer {\n      title\n      value\n    }\n    create_date\n    last_update_date\n    shootingDay {\n      id\n      shooting_day_number\n      date\n    }\n  }\n}\n':
+    types.LastDailyReportByProjectIdDocument,
   '\n  query GetProjectByProjectUserToken($token: String!) {\n    projectUsersByToken(token: $token) {\n      project {\n        name\n      }\n    }\n  }\n':
     types.GetProjectByProjectUserTokenDocument,
   '\n  query GetProjectDetail($id: String!) {\n    project(id: $id) {\n      id\n      name\n      description\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n      projectUsers {\n      id\n    }\n    }\n  }\n':
@@ -76,6 +92,10 @@ const documents = {
     types.ProjectUserDocument,
   '\n  query GetProjects {\n    projects {\n      id\n      name\n      description\n    }\n  }\n':
     types.GetProjectsDocument,
+  '\n    query ShootingDaysByProject($projectId: String!) {\n        shootingDaysByProject(projectId: $projectId) {\n            id\n            date\n            shooting_day_number\n            event_type\n        }\n    }\n':
+    types.ShootingDaysByProjectDocument,
+  '\n  query GetShootingDaysByProject($projectId: String!) {\n    shootingDaysByProject(projectId: $projectId) {\n      id\n      shooting_day_number\n      date\n      event_type\n      dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value       \n      }\n      footer {\n        title\n        value\n      }\n    }\n    }\n  }\n':
+    types.GetShootingDaysByProjectDocument,
   '\n  query GetCrewStatements($projectUserId: String!) {\n    statementsByProjectUserId(projectUserId: $projectUserId) {\n      id\n      projectUser {\n        id\n        name\n        surname\n        email\n        rate {\n          compensation_rate\n          standard_rate\n          overtime_hour1\n          overtime_hour2\n          overtime_hour3\n          overtime_hour4\n        }\n      }\n      start_date\n      from\n      to\n      shift_lenght\n      calculated_overtime\n      claimed_overtime\n      create_date\n      car {\n        id\n        kilometer_allow\n        kilometer_rate\n        name\n      }\n      kilometers\n    }\n  }\n':
     types.GetCrewStatementsDocument,
   '\n  query GetAdminStatements($projectId: String!) {\n    statementsByProjectId(projectId: $projectId) {\n      id\n      projectUser {\n        id\n        name\n        surname\n        email\n        rate {\n          compensation_rate\n          standard_rate\n          overtime_hour1\n          overtime_hour2\n          overtime_hour3\n          overtime_hour4\n        }\n      }\n      start_date\n      from\n      to\n      shift_lenght\n      calculated_overtime\n      claimed_overtime\n      create_date\n      car {\n        id\n        kilometer_allow\n        kilometer_rate\n        name\n      }\n      kilometers\n    }\n  }\n  ':
@@ -142,6 +162,12 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
+  source: '\n  mutation AddDailyReport($footer: [ReportItemInput!]!, $shootingProgress: [ReportItemInput!]!, $intro: [ReportItemInput!]!, $projectId: String!, $shootingDayId: String!) {\n  addDailyReport(footer: $footer, shooting_progress: $shootingProgress, intro: $intro, projectId: $projectId, shooting_day_id: $shootingDayId) {\n    id\n    intro {\n      title\n      value\n    }\n    shooting_progress {\n            title\n      value\n    }\n    footer {\n            title\n      value\n    }\n    create_date\n    last_update_date\n    project {\n      id\n      name\n    }\n    shootingDay {\n      id\n      date\n      shooting_day_number\n    }\n  }\n}\n',
+): (typeof documents)['\n  mutation AddDailyReport($footer: [ReportItemInput!]!, $shootingProgress: [ReportItemInput!]!, $intro: [ReportItemInput!]!, $projectId: String!, $shootingDayId: String!) {\n  addDailyReport(footer: $footer, shooting_progress: $shootingProgress, intro: $intro, projectId: $projectId, shooting_day_id: $shootingDayId) {\n    id\n    intro {\n      title\n      value\n    }\n    shooting_progress {\n            title\n      value\n    }\n    footer {\n            title\n      value\n    }\n    create_date\n    last_update_date\n    project {\n      id\n      name\n    }\n    shootingDay {\n      id\n      date\n      shooting_day_number\n    }\n  }\n}\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
   source: '\n  mutation AddProject(\n    $productionCompany: String!\n    $name: String!\n    $endDate: DateTimeISO\n    $startDate: DateTimeISO\n    $description: String\n    $create_user_id: String\n    $currency: String\n  ) {\n    addProject(\n      production_company: $productionCompany\n      name: $name\n      end_date: $endDate\n      start_date: $startDate\n      description: $description\n      create_user_id: $create_user_id\n      currency: $currency\n    ) {\n      id\n      name\n      production_company\n      description\n      start_date\n      end_date\n      create_date\n      create_user_id\n      last_update_user_id\n      last_update_date\n      is_active\n      currency\n      departments {\n        id\n        name\n      }\n    }\n  }\n',
 ): (typeof documents)['\n  mutation AddProject(\n    $productionCompany: String!\n    $name: String!\n    $endDate: DateTimeISO\n    $startDate: DateTimeISO\n    $description: String\n    $create_user_id: String\n    $currency: String\n  ) {\n    addProject(\n      production_company: $productionCompany\n      name: $name\n      end_date: $endDate\n      start_date: $startDate\n      description: $description\n      create_user_id: $create_user_id\n      currency: $currency\n    ) {\n      id\n      name\n      production_company\n      description\n      start_date\n      end_date\n      create_date\n      create_user_id\n      last_update_user_id\n      last_update_date\n      is_active\n      currency\n      departments {\n        id\n        name\n      }\n    }\n  }\n'];
 /**
@@ -160,6 +186,12 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
+  source: '\n    mutation AddShootingDay(\n        $projectId: String!, \n        $date: DateTimeISO!, \n        $shootingDayNumber: Float!, \n        $eventType: String\n    ) {\n        addShootingDay(\n            projectId: $projectId,\n            date: $date,\n            shootingDayNumber: $shootingDayNumber,\n            eventType: $eventType\n        ) {\n            project{\n                id\n            }\n        }\n    }\n',
+): (typeof documents)['\n    mutation AddShootingDay(\n        $projectId: String!, \n        $date: DateTimeISO!, \n        $shootingDayNumber: Float!, \n        $eventType: String\n    ) {\n        addShootingDay(\n            projectId: $projectId,\n            date: $date,\n            shootingDayNumber: $shootingDayNumber,\n            eventType: $eventType\n        ) {\n            project{\n                id\n            }\n        }\n    }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
   source: '\n  mutation AddStatement(\n    $project_user_id: String!\n    $start_date: DateTimeISO!\n    $from: DateTimeISO!\n    $to: DateTimeISO!\n    $shift_lenght: Float!\n    $calculated_overtime: Float\n    $claimed_overtime: Float\n    $car_id: String\n    $kilometers: Float\n  ) {\n    addStatement(\n      project_user_id: $project_user_id\n      start_date: $start_date\n      from: $from\n      to: $to\n      shift_lenght: $shift_lenght\n      calculated_overtime: $calculated_overtime\n      claimed_overtime: $claimed_overtime\n      car_id: $car_id\n      kilometers: $kilometers\n    ) {\n      id\n      projectUser {\n        id\n        user {\n          id\n          name\n          surname\n        }\n      }\n      start_date\n      from\n      to\n      shift_lenght\n      calculated_overtime\n      claimed_overtime\n      create_date\n    }\n  }\n',
 ): (typeof documents)['\n  mutation AddStatement(\n    $project_user_id: String!\n    $start_date: DateTimeISO!\n    $from: DateTimeISO!\n    $to: DateTimeISO!\n    $shift_lenght: Float!\n    $calculated_overtime: Float\n    $claimed_overtime: Float\n    $car_id: String\n    $kilometers: Float\n  ) {\n    addStatement(\n      project_user_id: $project_user_id\n      start_date: $start_date\n      from: $from\n      to: $to\n      shift_lenght: $shift_lenght\n      calculated_overtime: $calculated_overtime\n      claimed_overtime: $claimed_overtime\n      car_id: $car_id\n      kilometers: $kilometers\n    ) {\n      id\n      projectUser {\n        id\n        user {\n          id\n          name\n          surname\n        }\n      }\n      start_date\n      from\n      to\n      shift_lenght\n      calculated_overtime\n      claimed_overtime\n      create_date\n    }\n  }\n'];
 /**
@@ -172,8 +204,20 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
+  source: '\n    mutation DeleteShootingDay($shootingDayId: String!) {\n        deleteShootingDay(shootingDayId: $shootingDayId)\n    }\n',
+): (typeof documents)['\n    mutation DeleteShootingDay($shootingDayId: String!) {\n        deleteShootingDay(shootingDayId: $shootingDayId)\n    }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
   source: '\n  mutation DeleteStatement($id: String!) {\n    deleteStatement(id: $id)\n  }\n',
 ): (typeof documents)['\n  mutation DeleteStatement($id: String!) {\n    deleteStatement(id: $id)\n  }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\nmutation EditDailyReport($data: DailyReportInput!, $dailyReportId: String!) {\n    updateDailyReport(data: $data, dailyReportId: $dailyReportId) {\n      id\n      \n    }\n  }\n',
+): (typeof documents)['\nmutation EditDailyReport($data: DailyReportInput!, $dailyReportId: String!) {\n    updateDailyReport(data: $data, dailyReportId: $dailyReportId) {\n      id\n      \n    }\n  }\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -192,6 +236,12 @@ export function gql(
 export function gql(
   source: '\n  mutation EditRate($data: RateInput!, $rateId: String!) {\n    updateRate(data: $data, rateId: $rateId) {\n      id\n      standard_rate\n      overtime_hour1\n      overtime_hour2\n      overtime_hour3\n      overtime_hour4\n      compensation_rate\n    }\n  }\n',
 ): (typeof documents)['\n  mutation EditRate($data: RateInput!, $rateId: String!) {\n    updateRate(data: $data, rateId: $rateId) {\n      id\n      standard_rate\n      overtime_hour1\n      overtime_hour2\n      overtime_hour3\n      overtime_hour4\n      compensation_rate\n    }\n  }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\n    mutation UpdateShootingDay(\n        $data: ShootingDayInput!,\n        $shootingDayId: String!\n    ) {\n        updateShootingDay(\n            data: $data,\n            shootingDayId: $shootingDayId\n        ) {\n            project {\n                id\n            }\n        }\n}\n',
+): (typeof documents)['\n    mutation UpdateShootingDay(\n        $data: ShootingDayInput!,\n        $shootingDayId: String!\n    ) {\n        updateShootingDay(\n            data: $data,\n            shootingDayId: $shootingDayId\n        ) {\n            project {\n                id\n            }\n        }\n}\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -268,8 +318,26 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
+  source: '\n  query GetDailyReportByShootingDay($shootingDayId: String!) {\n    shootingDay(id: $shootingDayId) {\n      id\n      dailyReport {\n        id\n        intro {\n          title\n          value\n        }\n        shooting_progress {\n          title\n          value       \n        }\n        footer {\n          title\n          value\n        }\n      }\n    }\n  }\n',
+): (typeof documents)['\n  query GetDailyReportByShootingDay($shootingDayId: String!) {\n    shootingDay(id: $shootingDayId) {\n      id\n      dailyReport {\n        id\n        intro {\n          title\n          value\n        }\n        shooting_progress {\n          title\n          value       \n        }\n        footer {\n          title\n          value\n        }\n      }\n    }\n  }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\n  query DailyReportPreviewInfo($date: DateTimeISO!, $projectId: String!, $shootingDayId: String!) {\n  statementsByProjectIdAndDate(date: $date, projectId: $projectId) {\n    id\n    start_date\n    from\n    to\n    claimed_overtime\n    projectUser {\n      name\n      surname\n      position\n      department {\n        id\n        name\n        order_index\n        is_visible\n      }\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    production_company\n    currency\n    shootingDays {\n      id\n    }\n  }\n  shootingDay(id: $shootingDayId) {\n    id\n    shooting_day_number\n    date\n    dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value\n      }\n      footer {\n        title\n        value\n      }\n    }\n  }\n}\n',
+): (typeof documents)['\n  query DailyReportPreviewInfo($date: DateTimeISO!, $projectId: String!, $shootingDayId: String!) {\n  statementsByProjectIdAndDate(date: $date, projectId: $projectId) {\n    id\n    start_date\n    from\n    to\n    claimed_overtime\n    projectUser {\n      name\n      surname\n      position\n      department {\n        id\n        name\n        order_index\n        is_visible\n      }\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    production_company\n    currency\n    shootingDays {\n      id\n    }\n  }\n  shootingDay(id: $shootingDayId) {\n    id\n    shooting_day_number\n    date\n    dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value\n      }\n      footer {\n        title\n        value\n      }\n    }\n  }\n}\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
   source: '\n  query Departments($projectId: String!) {\n    departments(projectId: $projectId) {\n      id\n      name\n    }\n  }\n',
 ): (typeof documents)['\n  query Departments($projectId: String!) {\n    departments(projectId: $projectId) {\n      id\n      name\n    }\n  }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\nquery LastDailyReportByProjectId($projectId: String!) {\n  lastDailyReportByProjectId(projectId: $projectId) {\n    id\n    intro {\n      title\n      value\n    }\n    shooting_progress {\n      title\n      value\n    }\n    footer {\n      title\n      value\n    }\n    create_date\n    last_update_date\n    shootingDay {\n      id\n      shooting_day_number\n      date\n    }\n  }\n}\n',
+): (typeof documents)['\nquery LastDailyReportByProjectId($projectId: String!) {\n  lastDailyReportByProjectId(projectId: $projectId) {\n    id\n    intro {\n      title\n      value\n    }\n    shooting_progress {\n      title\n      value\n    }\n    footer {\n      title\n      value\n    }\n    create_date\n    last_update_date\n    shootingDay {\n      id\n      shooting_day_number\n      date\n    }\n  }\n}\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -306,6 +374,18 @@ export function gql(
 export function gql(
   source: '\n  query GetProjects {\n    projects {\n      id\n      name\n      description\n    }\n  }\n',
 ): (typeof documents)['\n  query GetProjects {\n    projects {\n      id\n      name\n      description\n    }\n  }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\n    query ShootingDaysByProject($projectId: String!) {\n        shootingDaysByProject(projectId: $projectId) {\n            id\n            date\n            shooting_day_number\n            event_type\n        }\n    }\n',
+): (typeof documents)['\n    query ShootingDaysByProject($projectId: String!) {\n        shootingDaysByProject(projectId: $projectId) {\n            id\n            date\n            shooting_day_number\n            event_type\n        }\n    }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\n  query GetShootingDaysByProject($projectId: String!) {\n    shootingDaysByProject(projectId: $projectId) {\n      id\n      shooting_day_number\n      date\n      event_type\n      dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value       \n      }\n      footer {\n        title\n        value\n      }\n    }\n    }\n  }\n',
+): (typeof documents)['\n  query GetShootingDaysByProject($projectId: String!) {\n    shootingDaysByProject(projectId: $projectId) {\n      id\n      shooting_day_number\n      date\n      event_type\n      dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value       \n      }\n      footer {\n        title\n        value\n      }\n    }\n    }\n  }\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

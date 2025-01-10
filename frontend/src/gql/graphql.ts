@@ -452,7 +452,7 @@ export type Query = {
   department?: Maybe<Department>;
   departments: Array<Department>;
   getStatementsByDateRangeAndProjectUserId: Array<Statement>;
-  lastDailyReportByProjectId: Array<DailyReport>;
+  lastDailyReportByProjectId?: Maybe<Array<DailyReport>>;
   project?: Maybe<Project>;
   projectUser?: Maybe<ProjectUser>;
   projectUserDetails?: Maybe<ProjectUser>;
@@ -469,6 +469,7 @@ export type Query = {
   statement?: Maybe<Statement>;
   statements: Array<Statement>;
   statementsByProjectId: Array<Statement>;
+  statementsByProjectIdAndDate: Array<Statement>;
   statementsByProjectUserId: Array<Statement>;
   statementsByUserId: Array<Statement>;
   user?: Maybe<User>;
@@ -564,6 +565,11 @@ export type QueryStatementsByProjectIdArgs = {
   projectId: Scalars['String']['input'];
 };
 
+export type QueryStatementsByProjectIdAndDateArgs = {
+  date: Scalars['DateTimeISO']['input'];
+  projectId: Scalars['String']['input'];
+};
+
 export type QueryStatementsByProjectUserIdArgs = {
   projectUserId: Scalars['String']['input'];
 };
@@ -640,6 +646,7 @@ export type ShiftOverviewInput = {
 
 export type ShootingDay = {
   __typename?: 'ShootingDay';
+  dailyReport?: Maybe<Array<DailyReport>>;
   date: Scalars['DateTimeISO']['output'];
   event_type?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
@@ -768,6 +775,38 @@ export type UpdateCarMutation = {
   };
 };
 
+export type AddDailyReportMutationVariables = Exact<{
+  footer: Array<ReportItemInput> | ReportItemInput;
+  shootingProgress: Array<ReportItemInput> | ReportItemInput;
+  intro: Array<ReportItemInput> | ReportItemInput;
+  projectId: Scalars['String']['input'];
+  shootingDayId: Scalars['String']['input'];
+}>;
+
+export type AddDailyReportMutation = {
+  __typename?: 'Mutation';
+  addDailyReport: {
+    __typename?: 'DailyReport';
+    id: string;
+    create_date?: string | null;
+    last_update_date?: string | null;
+    intro: Array<{ __typename?: 'ReportItem'; title: string; value: string }>;
+    shooting_progress: Array<{
+      __typename?: 'ReportItem';
+      title: string;
+      value: string;
+    }>;
+    footer: Array<{ __typename?: 'ReportItem'; title: string; value: string }>;
+    project?: { __typename?: 'Project'; id: string; name: string } | null;
+    shootingDay?: {
+      __typename?: 'ShootingDay';
+      id: string;
+      date: string;
+      shooting_day_number: number;
+    } | null;
+  };
+};
+
 export type AddProjectMutationVariables = Exact<{
   productionCompany: Scalars['String']['input'];
   name: Scalars['String']['input'];
@@ -842,6 +881,21 @@ export type AddRateMutation = {
   addRate: { __typename?: 'Rate'; id: string };
 };
 
+export type AddShootingDayMutationVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  date: Scalars['DateTimeISO']['input'];
+  shootingDayNumber: Scalars['Float']['input'];
+  eventType?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type AddShootingDayMutation = {
+  __typename?: 'Mutation';
+  addShootingDay: {
+    __typename?: 'ShootingDay';
+    project?: { __typename?: 'Project'; id: string } | null;
+  };
+};
+
 export type AddStatementMutationVariables = Exact<{
   project_user_id: Scalars['String']['input'];
   start_date: Scalars['DateTimeISO']['input'];
@@ -888,6 +942,15 @@ export type DeleteInvitationMutation = {
   deleteInvitation: boolean;
 };
 
+export type DeleteShootingDayMutationVariables = Exact<{
+  shootingDayId: Scalars['String']['input'];
+}>;
+
+export type DeleteShootingDayMutation = {
+  __typename?: 'Mutation';
+  deleteShootingDay: boolean;
+};
+
 export type DeleteStatementMutationVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
@@ -895,6 +958,16 @@ export type DeleteStatementMutationVariables = Exact<{
 export type DeleteStatementMutation = {
   __typename?: 'Mutation';
   deleteStatement: boolean;
+};
+
+export type EditDailyReportMutationVariables = Exact<{
+  data: DailyReportInput;
+  dailyReportId: Scalars['String']['input'];
+}>;
+
+export type EditDailyReportMutation = {
+  __typename?: 'Mutation';
+  updateDailyReport: { __typename?: 'DailyReport'; id: string };
 };
 
 export type EditProjectMutationVariables = Exact<{
@@ -942,6 +1015,19 @@ export type EditRateMutation = {
     overtime_hour3?: number | null;
     overtime_hour4?: number | null;
     compensation_rate?: number | null;
+  };
+};
+
+export type UpdateShootingDayMutationVariables = Exact<{
+  data: ShootingDayInput;
+  shootingDayId: Scalars['String']['input'];
+}>;
+
+export type UpdateShootingDayMutation = {
+  __typename?: 'Mutation';
+  updateShootingDay: {
+    __typename?: 'ShootingDay';
+    project?: { __typename?: 'Project'; id: string } | null;
   };
 };
 
@@ -1223,6 +1309,93 @@ export type GetProjectUserDetailsQuery = {
   } | null;
 };
 
+export type GetDailyReportByShootingDayQueryVariables = Exact<{
+  shootingDayId: Scalars['String']['input'];
+}>;
+
+export type GetDailyReportByShootingDayQuery = {
+  __typename?: 'Query';
+  shootingDay?: {
+    __typename?: 'ShootingDay';
+    id: string;
+    dailyReport?: Array<{
+      __typename?: 'DailyReport';
+      id: string;
+      intro: Array<{ __typename?: 'ReportItem'; title: string; value: string }>;
+      shooting_progress: Array<{
+        __typename?: 'ReportItem';
+        title: string;
+        value: string;
+      }>;
+      footer: Array<{
+        __typename?: 'ReportItem';
+        title: string;
+        value: string;
+      }>;
+    }> | null;
+  } | null;
+};
+
+export type DailyReportPreviewInfoQueryVariables = Exact<{
+  date: Scalars['DateTimeISO']['input'];
+  projectId: Scalars['String']['input'];
+  shootingDayId: Scalars['String']['input'];
+}>;
+
+export type DailyReportPreviewInfoQuery = {
+  __typename?: 'Query';
+  statementsByProjectIdAndDate: Array<{
+    __typename?: 'Statement';
+    id: string;
+    start_date: string;
+    from: string;
+    to: string;
+    claimed_overtime?: number | null;
+    projectUser: {
+      __typename?: 'ProjectUser';
+      name: string;
+      surname: string;
+      position?: string | null;
+      department?: {
+        __typename?: 'Department';
+        id: string;
+        name: string;
+        order_index?: number | null;
+        is_visible?: boolean | null;
+      } | null;
+    };
+  }>;
+  project?: {
+    __typename?: 'Project';
+    id: string;
+    name: string;
+    production_company: string;
+    currency: string;
+    shootingDays?: Array<{ __typename?: 'ShootingDay'; id: string }> | null;
+  } | null;
+  shootingDay?: {
+    __typename?: 'ShootingDay';
+    id: string;
+    shooting_day_number: number;
+    date: string;
+    dailyReport?: Array<{
+      __typename?: 'DailyReport';
+      id: string;
+      intro: Array<{ __typename?: 'ReportItem'; title: string; value: string }>;
+      shooting_progress: Array<{
+        __typename?: 'ReportItem';
+        title: string;
+        value: string;
+      }>;
+      footer: Array<{
+        __typename?: 'ReportItem';
+        title: string;
+        value: string;
+      }>;
+    }> | null;
+  } | null;
+};
+
 export type DepartmentsQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
 }>;
@@ -1230,6 +1403,33 @@ export type DepartmentsQueryVariables = Exact<{
 export type DepartmentsQuery = {
   __typename?: 'Query';
   departments: Array<{ __typename?: 'Department'; id: string; name: string }>;
+};
+
+export type LastDailyReportByProjectIdQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+}>;
+
+export type LastDailyReportByProjectIdQuery = {
+  __typename?: 'Query';
+  lastDailyReportByProjectId?: Array<{
+    __typename?: 'DailyReport';
+    id: string;
+    create_date?: string | null;
+    last_update_date?: string | null;
+    intro: Array<{ __typename?: 'ReportItem'; title: string; value: string }>;
+    shooting_progress: Array<{
+      __typename?: 'ReportItem';
+      title: string;
+      value: string;
+    }>;
+    footer: Array<{ __typename?: 'ReportItem'; title: string; value: string }>;
+    shootingDay?: {
+      __typename?: 'ShootingDay';
+      id: string;
+      shooting_day_number: number;
+      date: string;
+    } | null;
+  }> | null;
 };
 
 export type GetProjectByProjectUserTokenQueryVariables = Exact<{
@@ -1378,6 +1578,51 @@ export type GetProjectsQuery = {
     id: string;
     name: string;
     description: string;
+  }>;
+};
+
+export type ShootingDaysByProjectQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+}>;
+
+export type ShootingDaysByProjectQuery = {
+  __typename?: 'Query';
+  shootingDaysByProject: Array<{
+    __typename?: 'ShootingDay';
+    id: string;
+    date: string;
+    shooting_day_number: number;
+    event_type?: string | null;
+  }>;
+};
+
+export type GetShootingDaysByProjectQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+}>;
+
+export type GetShootingDaysByProjectQuery = {
+  __typename?: 'Query';
+  shootingDaysByProject: Array<{
+    __typename?: 'ShootingDay';
+    id: string;
+    shooting_day_number: number;
+    date: string;
+    event_type?: string | null;
+    dailyReport?: Array<{
+      __typename?: 'DailyReport';
+      id: string;
+      intro: Array<{ __typename?: 'ReportItem'; title: string; value: string }>;
+      shooting_progress: Array<{
+        __typename?: 'ReportItem';
+        title: string;
+        value: string;
+      }>;
+      footer: Array<{
+        __typename?: 'ReportItem';
+        title: string;
+        value: string;
+      }>;
+    }> | null;
   }>;
 };
 
@@ -1933,6 +2178,230 @@ export const UpdateCarDocument = {
     },
   ],
 } as unknown as DocumentNode<UpdateCarMutation, UpdateCarMutationVariables>;
+export const AddDailyReportDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'AddDailyReport' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'footer' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: {
+                  kind: 'NamedType',
+                  name: { kind: 'Name', value: 'ReportItemInput' },
+                },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'shootingProgress' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: {
+                  kind: 'NamedType',
+                  name: { kind: 'Name', value: 'ReportItemInput' },
+                },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'intro' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: {
+                  kind: 'NamedType',
+                  name: { kind: 'Name', value: 'ReportItemInput' },
+                },
+              },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'shootingDayId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'addDailyReport' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'footer' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'footer' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'shooting_progress' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'shootingProgress' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'intro' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'intro' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'shooting_day_id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'shootingDayId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'intro' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shooting_progress' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'footer' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'create_date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'last_update_date' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shootingDay' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'shooting_day_number' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AddDailyReportMutation,
+  AddDailyReportMutationVariables
+>;
 export const AddProjectDocument = {
   kind: 'Document',
   definitions: [
@@ -2529,6 +2998,123 @@ export const AddRateDocument = {
     },
   ],
 } as unknown as DocumentNode<AddRateMutation, AddRateMutationVariables>;
+export const AddShootingDayDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'AddShootingDay' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'DateTimeISO' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'shootingDayNumber' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Float' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'eventType' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'addShootingDay' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'date' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'date' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'shootingDayNumber' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'shootingDayNumber' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'eventType' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'eventType' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AddShootingDayMutation,
+  AddShootingDayMutationVariables
+>;
 export const AddStatementDocument = {
   kind: 'Document',
   definitions: [
@@ -2821,6 +3407,54 @@ export const DeleteInvitationDocument = {
   DeleteInvitationMutation,
   DeleteInvitationMutationVariables
 >;
+export const DeleteShootingDayDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'DeleteShootingDay' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'shootingDayId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'deleteShootingDay' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'shootingDayId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'shootingDayId' },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  DeleteShootingDayMutation,
+  DeleteShootingDayMutationVariables
+>;
 export const DeleteStatementDocument = {
   kind: 'Document',
   definitions: [
@@ -2865,6 +3499,79 @@ export const DeleteStatementDocument = {
 } as unknown as DocumentNode<
   DeleteStatementMutation,
   DeleteStatementMutationVariables
+>;
+export const EditDailyReportDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'EditDailyReport' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'DailyReportInput' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'dailyReportId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateDailyReport' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'data' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'data' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'dailyReportId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'dailyReportId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  EditDailyReportMutation,
+  EditDailyReportMutationVariables
 >;
 export const EditProjectDocument = {
   kind: 'Document',
@@ -3115,6 +3822,88 @@ export const EditRateDocument = {
     },
   ],
 } as unknown as DocumentNode<EditRateMutation, EditRateMutationVariables>;
+export const UpdateShootingDayDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'UpdateShootingDay' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'ShootingDayInput' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'shootingDayId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateShootingDay' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'data' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'data' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'shootingDayId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'shootingDayId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UpdateShootingDayMutation,
+  UpdateShootingDayMutationVariables
+>;
 export const UpdateStatementDocument = {
   kind: 'Document',
   definitions: [
@@ -4342,6 +5131,380 @@ export const GetProjectUserDetailsDocument = {
   GetProjectUserDetailsQuery,
   GetProjectUserDetailsQueryVariables
 >;
+export const GetDailyReportByShootingDayDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetDailyReportByShootingDay' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'shootingDayId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'shootingDay' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'shootingDayId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'dailyReport' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'intro' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'title' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'shooting_progress' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'title' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'footer' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'title' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetDailyReportByShootingDayQuery,
+  GetDailyReportByShootingDayQueryVariables
+>;
+export const DailyReportPreviewInfoDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'DailyReportPreviewInfo' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'DateTimeISO' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'shootingDayId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'statementsByProjectIdAndDate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'date' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'date' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'start_date' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'claimed_overtime' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'projectUser' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'surname' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'position' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'department' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'name' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'order_index' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'is_visible' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'production_company' },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'currency' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shootingDays' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'shootingDay' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'shootingDayId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shooting_day_number' },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'dailyReport' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'intro' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'title' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'shooting_progress' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'title' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'footer' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'title' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  DailyReportPreviewInfoQuery,
+  DailyReportPreviewInfoQueryVariables
+>;
 export const DepartmentsDocument = {
   kind: 'Document',
   definitions: [
@@ -4394,6 +5557,113 @@ export const DepartmentsDocument = {
     },
   ],
 } as unknown as DocumentNode<DepartmentsQuery, DepartmentsQueryVariables>;
+export const LastDailyReportByProjectIdDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'LastDailyReportByProjectId' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'lastDailyReportByProjectId' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'intro' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shooting_progress' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'footer' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'create_date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'last_update_date' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shootingDay' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'shooting_day_number' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  LastDailyReportByProjectIdQuery,
+  LastDailyReportByProjectIdQueryVariables
+>;
 export const GetProjectByProjectUserTokenDocument = {
   kind: 'Document',
   definitions: [
@@ -4921,6 +6191,187 @@ export const GetProjectsDocument = {
     },
   ],
 } as unknown as DocumentNode<GetProjectsQuery, GetProjectsQueryVariables>;
+export const ShootingDaysByProjectDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'ShootingDaysByProject' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'shootingDaysByProject' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shooting_day_number' },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'event_type' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  ShootingDaysByProjectQuery,
+  ShootingDaysByProjectQueryVariables
+>;
+export const GetShootingDaysByProjectDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetShootingDaysByProject' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'shootingDaysByProject' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shooting_day_number' },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'event_type' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'dailyReport' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'intro' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'title' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'shooting_progress' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'title' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'footer' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'title' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'value' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetShootingDaysByProjectQuery,
+  GetShootingDaysByProjectQueryVariables
+>;
 export const GetCrewStatementsDocument = {
   kind: 'Document',
   definitions: [

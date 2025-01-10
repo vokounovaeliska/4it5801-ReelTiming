@@ -1,4 +1,5 @@
 import React from 'react';
+import { AttachmentIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -44,6 +45,7 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
   const crewlistPath = `/projects/${projectId}/crewlist`;
   const myProjectSettings = `/projects/${projectId}/myProjectSettings`;
   const editPath = `/projects/${projectId}/edit`;
+  const dailyReport = `/projects/${projectId}/daily-reports`;
   const handleNavigation = (path: string) => {
     navigate(path);
   };
@@ -53,7 +55,7 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
 
   return (
     <Box>
-      <StackComponent spacing={4}>
+      <StackComponent>
         <Button
           {...buttonStyle}
           leftIcon={<MdOutlineSummarize />}
@@ -90,6 +92,18 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
         >
           My project settings
         </Button>
+        {userRole === 'ADMIN' && (
+          <>
+            <Button
+              {...buttonStyle}
+              leftIcon={<AttachmentIcon />}
+              bg={activePath === dailyReport ? 'orange.600' : 'transparent'}
+              onClick={() => handleNavigation(dailyReport)}
+            >
+              Daily report
+            </Button>
+          </>
+        )}
         {userRole === 'ADMIN' && (
           <>
             <Button

@@ -12,14 +12,13 @@ export function CurrencySelectField({
   label,
   ...selectProps
 }: CurrencySelectFieldProps) {
+  const { control } = useFormContext();
   const currencies = currencyCodes.data
     .map((currency) => ({
       value: currency.code,
       label: `${currency.code} - ${currency.currency}`,
     }))
     .sort((a, b) => a.label.localeCompare(b.label));
-
-  const { control } = useFormContext();
   return (
     <FormField
       id={id}

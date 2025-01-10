@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
-import { Button } from '@chakra-ui/react';
+import { Button, ButtonProps } from '@chakra-ui/react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 
-interface DashButtonProps {
+interface DashButtonProps extends ButtonProps {
   text: string;
   icon: ReactElement;
   ariaLabel: string;
@@ -14,9 +14,11 @@ const DashButton: React.FC<DashButtonProps> = ({
   icon,
   ariaLabel,
   to,
+  ...buttonProps
 }) => {
   return (
     <Button
+      {...buttonProps}
       as={ReactRouterLink}
       to={to}
       leftIcon={icon}
