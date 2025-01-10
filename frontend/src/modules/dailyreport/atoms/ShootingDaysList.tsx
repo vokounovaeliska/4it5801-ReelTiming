@@ -1,12 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import {
-  CheckIcon,
-  CloseIcon,
-  DeleteIcon,
-  EditIcon,
-  Search2Icon,
-} from '@chakra-ui/icons';
+import { DeleteIcon, EditIcon, Search2Icon } from '@chakra-ui/icons';
 import {
   Box,
   Center,
@@ -41,8 +35,8 @@ import {
 
 import { AddDailyReportButton } from './AddDailyReportButton';
 import DailyReportDeleteAlertDialog from './DailyReportAlertDialog';
-import DailyReportPreview from './DailyReportPreview';
 import DailyReportStatusIcon from './DailyReportStatusIcon';
+import DailyReportTabs from './DailyReportTabs';
 
 type Props = {
   projectId: string;
@@ -254,7 +248,7 @@ const ShootingDaysList = ({ projectId }: Props) => {
 
       <Box flex="5" p={4} display={selectedDay ? 'block' : 'none'}>
         {selectedDay && (
-          <DailyReportPreview shootingDay={selectedDay} projectId={projectId} />
+          <DailyReportTabs shootingDay={selectedDay} projectId={projectId} />
         )}
       </Box>
 
