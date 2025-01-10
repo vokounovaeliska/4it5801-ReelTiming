@@ -7,7 +7,6 @@ import {
   Input,
   SimpleGrid,
 } from '@chakra-ui/react';
-import { format } from 'date-fns';
 
 import { ShootingDay } from '@frontend/gql/graphql';
 
