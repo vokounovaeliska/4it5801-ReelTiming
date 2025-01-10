@@ -38,7 +38,7 @@ export const ShiftOverviewTable = ({ data }: Props) => {
   );
 
   return (
-    <Box overflowX="auto">
+    <Box maxWidth="100%">
       <TableContainer className="custom-scrollbar">
         <Box
           overflowX="auto"
