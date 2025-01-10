@@ -18,6 +18,7 @@ export const GET_CREWLIST_INFO = gql(`
     departments(projectId: $projectId) {
       id
       name
+      is_visible
     }
     projectUsers(projectId: $projectId) {
       id

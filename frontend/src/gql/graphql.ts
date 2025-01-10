@@ -1122,6 +1122,22 @@ export type UpdateAndActivateProjectUserMutation = {
   };
 };
 
+export type UpdateDepartmentOrderMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+  data: DepartmentInput;
+}>;
+
+export type UpdateDepartmentOrderMutation = {
+  __typename?: 'Mutation';
+  updateDepartment: {
+    __typename?: 'Department';
+    id: string;
+    name: string;
+    order_index?: number | null;
+    is_visible?: boolean | null;
+  };
+};
+
 export type UpdateUserMutationVariables = Exact<{
   data: UserInput;
   userId: Scalars['String']['input'];
@@ -1256,7 +1272,12 @@ export type GetCrewListInfoQuery = {
     last_update_user_id: string;
     currency: string;
   } | null;
-  departments: Array<{ __typename?: 'Department'; id: string; name: string }>;
+  departments: Array<{
+    __typename?: 'Department';
+    id: string;
+    name: string;
+    is_visible?: boolean | null;
+  }>;
   projectUsers: Array<{
     __typename?: 'ProjectUser';
     id: string;
@@ -4360,6 +4381,79 @@ export const UpdateAndActivateProjectUserDocument = {
   UpdateAndActivateProjectUserMutation,
   UpdateAndActivateProjectUserMutationVariables
 >;
+export const UpdateDepartmentOrderDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'UpdateDepartmentOrder' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'DepartmentInput' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateDepartment' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'departmentId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'id' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'data' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'data' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'order_index' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_visible' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UpdateDepartmentOrderMutation,
+  UpdateDepartmentOrderMutationVariables
+>;
 export const UpdateUserDocument = {
   kind: 'Document',
   definitions: [
@@ -4902,6 +4996,7 @@ export const GetCrewListInfoDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_visible' } },
               ],
             },
           },
