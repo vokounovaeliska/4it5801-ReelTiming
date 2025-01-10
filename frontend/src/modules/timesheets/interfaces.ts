@@ -9,7 +9,6 @@ export interface UserInfo {
   id: string;
   name: string;
   surname: string;
-  email?: string;
 }
 
 export interface Rate {
@@ -42,7 +41,6 @@ export interface Timesheet {
     name: string;
     surname: string;
     rate?: Rate;
-    email?: string;
   };
   create_date: string;
   car?: Car;
@@ -120,7 +118,7 @@ export interface TimesheetsFormProps {
   carOptionsForLoggedInUser: { value: string; label: string }[];
   // carOptionsForLoggedInUser: Car[];
   allCarsOnProjectData: AllCarsOnProjectData;
-  userInfoRates: TimesheetProjectUsers[];
+  userInfoRates: TimesheetProjectUsers;
   projectCurrency: string;
 }
 
@@ -130,7 +128,7 @@ export interface AllCarsOnProjectData {
 }
 
 export interface TimesheetProjectUsers {
-  // projectUserss?: ProjectUser[];
+  projectUserss?: ProjectUser[];
   projectUsers: {
     id: string;
     name: string;
@@ -238,8 +236,6 @@ export type FormValues = {
 export interface UserInfoData {
   projectUserDetails: {
     id: string;
-    name: string;
-    surname: string;
     project: {
       name: string;
       currency: string;
@@ -250,8 +246,8 @@ export interface UserInfoData {
 export interface UseAddTimesheetProps {
   projectId: string;
   userRole: string;
-  userInfoData?: UserInfoData | null;
-  userInfo?: UserInfo | null;
+  userInfoData: UserInfoData;
+  userInfo: UserInfo | null;
 }
 
 export interface UseDeleteTimesheetProps {
@@ -263,9 +259,9 @@ export interface UseDeleteTimesheetProps {
 export interface UseEditTimesheetProps {
   projectId: string;
   userRole: string;
-  userInfoData?: UserInfoData | null;
+  userInfoData: UserInfoData;
   selectedTimesheet: Timesheet | null;
-  userInfo?: UserInfo | null;
+  userInfo: UserInfo | null;
 }
 
 export interface DataLoadingUtilsProps {
@@ -284,9 +280,9 @@ export interface Statement {
   shift_lenght: number;
   calculated_overtime?: number | null;
   claimed_overtime?: number | null;
-  create_date?: string;
-  last_update_date?: string;
-  create_user_id?: string;
+  create_date: string;
+  last_update_date: string;
+  create_user_id: string;
   last_update_user_id: string;
   car_id?: string | null;
   kilometers?: number | null;
@@ -305,7 +301,7 @@ export interface AdminData {
 }
 
 export interface AllProjectUsersData {
-  projectUsers: TimesheetProjectUsers[];
+  projectUsers: TimesheetProjectUsers;
 }
 
 export interface AllProjectUsersDataForOptions {
@@ -320,45 +316,18 @@ export interface DataLoadingUtilsResult {
   isDataAvailable: boolean;
   loading: boolean;
   error: boolean | string;
-  roleData?: RoleData;
-  crewData?: CrewData;
-  adminData?: AdminData;
-  allProjectUsersData?: AllProjectUsersData;
-  allProjectUsersDataForOptions?: AllProjectUsersData;
+  roleData: RoleData;
+  crewData: CrewData | null;
+  adminData: AdminData | null;
+  allProjectUsersData: AllProjectUsersData;
+  allProjectUsersDataForOptions: AllProjectUsersDataForOptions;
   // allProjectUsersData: TimesheetProjectUsers;
-  allCarsOnProjectData?: AllCarsOnProjectData;
-  userInfoData?: UserInfoData;
-  userCarsData?: UserCarsData;
+  allCarsOnProjectData: AllCarsOnProjectData;
+  userInfoData: UserInfoData;
+  userCarsData: UserCarsData;
 }
 
 export interface CarStatement {
   car_id: string;
-  kilometers?: number | null;
-}
-
-export interface TimesheetCache {
-  id: string;
-  start_date: string;
-  from: string;
-  to: string;
-  shift_lenght: number;
-  calculated_overtime?: number | null;
-  claimed_overtime?: number | null;
-  create_date: string;
-  kilometers?: number | null;
-  projectUser: {
-    id: string;
-    name: string;
-    surname: string;
-    email: string;
-    rate?: {
-      compensation_rate?: number | null;
-      standard_rate?: number | null;
-      overtime_hour1?: number | null;
-      overtime_hour2?: number | null;
-      overtime_hour3?: number | null;
-      overtime_hour4?: number | null;
-    } | null;
-  };
-  car?: Car | null;
+  kilometers: string;
 }

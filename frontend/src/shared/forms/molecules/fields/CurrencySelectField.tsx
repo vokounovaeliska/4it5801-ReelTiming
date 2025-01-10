@@ -1,10 +1,10 @@
 import currencyCodes from 'currency-codes';
-import { Controller, useFormContext } from 'react-hook-form';
-import Select from 'react-select';
+
+import { Select, type SelectProps } from '@frontend/shared/design-system';
 
 import { FormField, type FormFieldBaseProps } from '../FormField';
 
-export type CurrencySelectFieldProps = FormFieldBaseProps<{}>;
+export type CurrencySelectFieldProps = FormFieldBaseProps<SelectProps>;
 
 export function CurrencySelectField({
   id,
@@ -12,13 +12,13 @@ export function CurrencySelectField({
   label,
   ...selectProps
 }: CurrencySelectFieldProps) {
-  const { control } = useFormContext();
   const currencies = currencyCodes.data
     .map((currency) => ({
-      value: currency.code,
+      code: currency.code,
       label: `${currency.code} - ${currency.currency}`,
     }))
     .sort((a, b) => a.label.localeCompare(b.label));
+
   return (
     <FormField
       id={id}
@@ -26,34 +26,27 @@ export function CurrencySelectField({
       label={label}
       isRequired={selectProps.isRequired}
     >
-      {() => (
-        <Controller
-          name={name}
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              options={currencies}
-              placeholder="Select currency"
-              styles={{
-                control: (provided) => ({
-                  ...provided,
-                  borderColor: '#a0aec0',
-                  borderWidth: '1px',
-                  height: '40px',
-                }),
-                menu: (provided) => ({
-                  ...provided,
-                  overflowY: 'auto',
-                }),
-              }}
-              value={currencies.find((c) => c.value === field.value)}
-              onChange={(selectedOption) =>
-                field.onChange(selectedOption?.value)
-              }
-            />
-          )}
-        />
+      {(field) => (
+        <Select
+          borderColor="gray.400"
+          borderWidth={1}
+          placeholder="Select currency"
+          {...selectProps}
+          {...field}
+          filterOption={(
+            inputValue: string,
+            option: { label: string; value: string },
+          ) =>
+            option?.label.toLowerCase().includes(inputValue.toLowerCase()) ||
+            option?.value.toLowerCase().includes(inputValue.toLowerCase())
+          }
+        >
+          {currencies.map((currency) => (
+            <option key={currency.code} value={currency.code}>
+              {currency.label}
+            </option>
+          ))}
+        </Select>
       )}
     </FormField>
   );

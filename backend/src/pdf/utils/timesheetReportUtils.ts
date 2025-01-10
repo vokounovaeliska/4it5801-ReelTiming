@@ -64,9 +64,9 @@ export const formatTime = (date: Date): string => {
  * @returns The formatted date string.
  */
 export const formatDate = (date: Date): string => {
-  const day = date.getUTCDate().toString().padStart(2, '0');
-  const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); // Month is 0-based
-  const year = date.getUTCFullYear().toString();
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-based
+  const year = date.getFullYear().toString();
   return `${day}.${month}.${year}`;
 };
 

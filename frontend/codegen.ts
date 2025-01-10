@@ -13,12 +13,6 @@ const config: CodegenConfig = {
   },
   ignoreNoDocuments: true,
   hooks: { afterAllFileWrite: ['prettier --write'] },
-  config: {
-    scalars: {
-      Date: 'string',
-      DateTimeISO: 'string',
-    },
-  },
 };
 
 export default config;

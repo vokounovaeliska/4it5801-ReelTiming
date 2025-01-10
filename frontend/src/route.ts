@@ -13,14 +13,10 @@ export const route = {
   projectDetail: (id: string = ':id') => `/projects/${id}`,
   crewList: (projectId: string = ':projectId') =>
     `/projects/${projectId}/crewlist`,
-  myProjectSettings: (projectId: string = ':projectId') =>
-    `/projects/${projectId}/myProjectSettings`,
   timesheets: (projectId: string = ':projectId') =>
     `/projects/${projectId}/timesheets`,
   editprojectpage: (projectId: string = ':projectId') =>
     `/projects/${projectId}/edit`,
   acceptInvitation: () => `/accept-invitation`,
   profileSettings: '/profile-settings',
-  dailyReports: (projectId: string = ':projectId') =>
-    `/projects/${projectId}/daily-reports`,
 };

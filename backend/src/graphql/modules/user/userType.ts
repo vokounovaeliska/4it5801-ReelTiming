@@ -37,9 +37,6 @@ export class User {
 
   @Field(() => String, { nullable: true })
   phone_number?: string | null;
-
-  @Field(() => Boolean, { nullable: true })
-  can_create_project?: boolean | null;
 }
 
 @ObjectType()

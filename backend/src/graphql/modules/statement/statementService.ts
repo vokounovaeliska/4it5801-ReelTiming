@@ -117,13 +117,4 @@ export class StatementService {
     await this.statementRepository.deleteStatement(statement.id);
     return true;
   }
-
-  async getStatementsByProjectIdAndDate(projectId: string, date: Date) {
-    const statementRecords =
-      await this.statementRepository.getStatementsByProjectIdAndDate(
-        projectId,
-        date,
-      );
-    return statementRecords.map((record) => record.statement);
-  }
 }

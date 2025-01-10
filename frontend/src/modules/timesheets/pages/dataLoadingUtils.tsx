@@ -24,7 +24,7 @@ export const DataLoadingUtils = ({
     projectId ?? '',
   );
   const { crewData, crewLoading, crewError } = useCrewStatements(
-    userInfoData?.projectUserDetails?.id ?? '',
+    userInfoData?.projectUserDetails?.id,
   );
   const { adminData, adminLoading, adminError } = useAdminStatements(
     projectId ?? '',
@@ -47,12 +47,12 @@ export const DataLoadingUtils = ({
   }, [userInfoData, setUserInfo]);
 
   const isDataAvailable =
-    !!roleData?.userRoleInProject &&
+    roleData?.userRoleInProject &&
     (crewData?.statementsByProjectUserId || adminData?.statementsByProjectId) &&
-    !!userInfoData?.projectUserDetails &&
-    !!allProjectUsersData?.projectUsers &&
-    !!allCarsOnProjectData?.projectUsers &&
-    !!userCarsData;
+    userInfoData?.projectUserDetails &&
+    allProjectUsersData?.projectUsers &&
+    allCarsOnProjectData?.cars &&
+    userCarsData;
 
   const loading =
     !isDataAvailable &&
@@ -75,7 +75,7 @@ export const DataLoadingUtils = ({
     (!auth.user && 'User not authenticated');
 
   return {
-    isDataAvailable: !!isDataAvailable, // Ensure it's always a boolean
+    isDataAvailable,
     loading,
     error,
     roleData,

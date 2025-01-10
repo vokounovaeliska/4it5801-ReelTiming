@@ -3,7 +3,6 @@ import { GraphQLError } from 'graphql';
 import { Db } from '@backend/types/types';
 
 import { getDepartmentRepository } from './departamentRepository';
-import { DepartmentInput } from './departmentType';
 
 export class DepartmentService {
   constructor(private db: Db) {
@@ -15,9 +14,8 @@ export class DepartmentService {
   /**
    * Get all departments in the system
    */
-  async getAllDepartmentsByProject(projectId: string) {
-    const users =
-      await this.departmentRepository.getAllDepartmentsByProject(projectId);
+  async getAllDepartments() {
+    const users = await this.departmentRepository.getAllDepartments();
     return users.map((department) => ({
       ...department,
     }));
@@ -39,12 +37,8 @@ export class DepartmentService {
    * Get a department by name
    * @param name string - department name
    */
-  async getDepartmentByNameAndProject(name: string, projectId: string) {
-    const department =
-      await this.departmentRepository.geDepartmentByNameAndProject(
-        name,
-        projectId,
-      );
+  async getDepartmentByEmail(name: string) {
+    const department = await this.departmentRepository.geDepartmentByName(name);
     if (!department || department.length === 0) {
       throw new GraphQLError('Department not found');
     }
@@ -55,17 +49,9 @@ export class DepartmentService {
    * Create a new department
    * @param data - object containing department creation data
    */
-  async createDepartment(
-    name: string,
-    project_id: string,
-    order_index?: number,
-    is_visible?: boolean,
-  ) {
+  async createDepartment(name: string) {
     const departmentData = {
-      name,
-      project_id,
-      order_index,
-      is_visible,
+      name: name,
     };
 
     const departmentId =
@@ -82,14 +68,12 @@ export class DepartmentService {
    * @param id string - department id
    * @param data - object containing department update data
    */
-  async updateDepartment(id: string, data: DepartmentInput) {
+  async updateDepartment(id: string, name: string) {
     const department = await this.getDepartmentById(id);
+
     const updatedDepartmentData = {
       ...department,
-      name: data.name,
-      project_id: data.project_id,
-      order_index: data.order_index,
-      is_visible: data.is_visible,
+      name,
     };
 
     await this.departmentRepository.updateDepartment(id, updatedDepartmentData);

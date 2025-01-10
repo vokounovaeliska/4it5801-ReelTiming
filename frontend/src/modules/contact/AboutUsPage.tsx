@@ -1,7 +1,6 @@
-import { Box, Divider, Image, Text } from '@chakra-ui/react';
+import { Box, Divider, Heading, Image, Text } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
-import { Heading } from '@frontend/shared/design-system';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 

@@ -1,12 +1,11 @@
 import { type ReactNode } from 'react';
-import { HStack, Text } from '@chakra-ui/react';
+import { Heading, HStack, Text } from '@chakra-ui/react';
 
 import { route } from '@frontend/route';
 import {
   Box,
   Button,
   ErrorBanner,
-  Heading,
   Stack,
 } from '@frontend/shared/design-system';
 import { CheckboxField, Form, InputField } from '@frontend/shared/forms';

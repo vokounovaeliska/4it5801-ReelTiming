@@ -1,14 +1,13 @@
 import { useCallback } from 'react';
-import { useMutation } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import { useToast } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
-import { gql } from '@frontend/gql';
 import { route } from '@frontend/route';
 
 import { ForgotPasswordTemplate } from '../templates/ForgotPasswordTemplate';
 
-const FORGOT_PASSWORD_MUTATION = gql(`
+const FORGOT_PASSWORD_MUTATION = gql(/* GraphQL */ `
   mutation ForgotPassword($email: String!) {
     forgotPassword(email: $email)
   }

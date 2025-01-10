@@ -51,18 +51,19 @@ export const useTimesheetsFormLogic = (
 export const useSelectedUser = (
   selectedUser: string | null,
   selectedCar: string | null,
-  userInfoRates: TimesheetProjectUsers[],
+  userInfoRates: TimesheetProjectUsers,
 ) => {
   const [userRates, setUserRates] = useState<Rate | null>(null);
   const [carRates, setCarRates] = useState<Car | null>(null);
   useEffect(() => {
     if (selectedUser) {
-      const user = userInfoRates.find((user) => user.id === selectedUser);
+      const user = Object.values(userInfoRates).find(
+        (user) => user.id === selectedUser,
+      );
       if (user) {
         setUserRates(user.rate || null);
-
         const selectedCarInfo =
-          user.car && user.car.id === selectedCar ? user.car : null;
+          user.car?.find((car: Car) => car.id === selectedCar) || null;
         setCarRates(selectedCarInfo);
       } else {
         setUserRates(null);
@@ -73,6 +74,7 @@ export const useSelectedUser = (
       setCarRates(null);
     }
   }, [selectedUser, selectedCar, userInfoRates]);
+
   return { userRates, carRates };
 };
 

@@ -29,7 +29,7 @@ export function CreateProjectTemplate({
         width="100%"
         maxWidth={{ base: '100%', sm: '900px' }}
       >
-        <Box width="full">
+        <Box textAlign="center" width="full">
           <CreateProjectForm
             isLoading={isLoading}
             errorMessage={error && error.message}

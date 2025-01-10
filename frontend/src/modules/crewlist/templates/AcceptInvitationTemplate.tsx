@@ -1,6 +1,7 @@
 // AcceptInvitationTemplate.tsx
 import { Box } from '@chakra-ui/react';
 
+import { AuthUser } from '@frontend/modules/auth/auth-core';
 import { Car, CarStatement } from '@frontend/modules/timesheets/interfaces';
 import { crewListFormValues } from '@frontend/zod/schemas';
 
@@ -16,6 +17,7 @@ export type AcceptInvitationTemplateProps = {
   departments: { id: string; name: string }[];
   errorMessage?: string;
   isLoading: boolean;
+  authUser: AuthUser;
   cars: Car[];
   carStatements: CarStatement[];
 };
@@ -26,6 +28,7 @@ export const AcceptInvitationTemplate = ({
   departments,
   errorMessage,
   isLoading,
+  authUser,
   cars,
   carStatements,
 }: AcceptInvitationTemplateProps) => {
@@ -57,6 +60,7 @@ export const AcceptInvitationTemplate = ({
               departments={departments}
               errorMessage={errorMessage}
               projectUserData={projectUserData}
+              authUser={authUser}
               cars={cars}
               carStatements={carStatements}
             />

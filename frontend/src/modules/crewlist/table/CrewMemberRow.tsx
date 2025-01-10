@@ -38,7 +38,7 @@ export const CrewMemberRow = ({
     surname: user?.surname,
     department: user.department?.id || 'No Department',
     position: user.position,
-    phone_number: user.phone_number ?? '',
+    phone_number: user.phone_number,
     email: user?.email,
     standard_rate: user.rate?.standard_rate || 0,
     compensation_rate: user.rate?.compensation_rate || 0,
@@ -47,7 +47,7 @@ export const CrewMemberRow = ({
     overtime_hour3: user.rate?.overtime_hour3 || 0,
     overtime_hour4: user.rate?.overtime_hour4 || 0,
     role: user.role,
-    user_id: user.user?.id ?? null,
+    user_id: user.user?.id,
     rate_id: user.rate?.id || null,
     cars: user.car || null,
   };

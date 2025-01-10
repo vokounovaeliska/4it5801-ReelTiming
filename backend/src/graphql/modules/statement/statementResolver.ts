@@ -190,14 +190,4 @@ export class StatementResolver {
     const statementService = new StatementService(db);
     return statementService.deleteStatementById(validatedData.id);
   }
-
-  @Query(() => [Statement])
-  async statementsByProjectIdAndDate(
-    @Arg('projectId') projectId: string,
-    @Arg('date') date: Date,
-    @Ctx() { db }: CustomContext,
-  ): Promise<Statement[]> {
-    const statementService = new StatementService(db);
-    return statementService.getStatementsByProjectIdAndDate(projectId, date);
-  }
 }

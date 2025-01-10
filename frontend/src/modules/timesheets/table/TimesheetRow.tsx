@@ -105,10 +105,11 @@ const TimesheetRow = ({
       >
         {displayDate(ts.start_date)}
       </Td>
+
+      <Td textAlign="center">{ts.shift_lenght}</Td>
       <Td textAlign="center">
         {formatTime(ts.from)} - {formatTime(ts.to)}
       </Td>
-      <Td textAlign="center">{ts.shift_lenght}</Td>
       <Td textAlign="center">{ts.calculated_overtime}</Td>
       <Td textAlign="center">{ts.claimed_overtime}</Td>
       <Td textAlign={shouldShowCarColumns ? 'right' : 'center'}>

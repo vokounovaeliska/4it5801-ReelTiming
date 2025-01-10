@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, useBreakpointValue } from '@chakra-ui/react';
-import { BsPersonAdd } from 'react-icons/bs';
+import { MdAddChart } from 'react-icons/md';
 
 type AddCrewMemberButtonProps = {
   handleAddMemberClick: () => void;
@@ -21,7 +21,7 @@ export const AddCrewMemberButton: React.FC<AddCrewMemberButtonProps> = ({
       bgColor="orange.500"
       onClick={handleAddMemberClick}
       size="md"
-      leftIcon={<BsPersonAdd />}
+      leftIcon={<MdAddChart />}
       borderRadius="full"
       boxShadow="md"
       _hover={{

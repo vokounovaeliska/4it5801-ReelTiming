@@ -68,12 +68,21 @@ export class RateResolver {
 
     @Ctx() { db }: CustomContext,
   ): Promise<Rate> {
+    // const rateService = new RateService(db);
+    // const data: RateInput = {
+    //   standard_rate: standardRate,
+    //   overtime_hour1: overtimeHour1,
+    //   overtime_hour2: overtimeHour2,
+    //   overtime_hour3: overtimeHour3,
+    //   overtime_hour4: overtimeHour4,
+    //   compensation_rate: compensationRate,
+    // };
     const validatedData = rateInputSchema.parse({
       standard_rate: standardRate,
-      overtime_hour1: overtimeHour1,
-      overtime_hour2: overtimeHour2,
-      overtime_hour3: overtimeHour3,
-      overtime_hour4: overtimeHour4,
+      overtimeHour1,
+      overtimeHour2,
+      overtimeHour3,
+      overtimeHour4,
       compensation_rate: compensationRate,
     });
     const rateService = new RateService(db);

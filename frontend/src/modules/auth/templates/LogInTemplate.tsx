@@ -12,7 +12,7 @@ export type LogInTemplateProps = {
   error?: Error;
   onSubmit: (data: { email: string; password: string }) => void;
   token?: string | null;
-  project?: { name?: string; description?: string };
+  project: { name: string; description: string };
 };
 export function LogInTemplate({
   isLoading,
@@ -41,7 +41,7 @@ export function LogInTemplate({
         maxWidth={{ base: '100%', sm: '90%', md: '60%' }}
       >
         <Box textAlign="center" width="full">
-          {project && <ProjectInvitationInfo name={project.name!} />}
+          {project && <ProjectInvitationInfo name={project?.name} />}
           <LogInForm
             isLoading={isLoading}
             errorMessage={error && error.message}

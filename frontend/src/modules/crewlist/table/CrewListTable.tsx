@@ -20,7 +20,7 @@ interface CrewListTableProps {
   ) => void;
   userRoleInProject: string;
   authUserId: string | undefined;
-  projectCurrency?: string;
+  projectCurrency: string;
 }
 
 const tableHeaders = [
@@ -28,11 +28,11 @@ const tableHeaders = [
   { label: 'Email', tooltip: 'Email adress' },
   { label: 'Phone number' },
   { label: 'Rate', tooltip: 'Standard rate' },
-  { label: 'TA', tooltip: 'Turn around rate' },
-  { label: 'OT 1', tooltip: 'Overtime hour 1' },
-  { label: 'OT 2', tooltip: 'Overtime hour 2' },
-  { label: 'OT 3', tooltip: 'Overtime hour 3' },
-  { label: 'OT 4', tooltip: 'Overtime hour 4' },
+  { label: 'Compensation', tooltip: 'Compensation rate' },
+  { label: 'OH 1', tooltip: 'Overtime hour 1' },
+  { label: 'OH 2', tooltip: 'Overtime hour 2' },
+  { label: 'OH 3', tooltip: 'Overtime hour 3' },
+  { label: 'OH 4', tooltip: 'Overtime hour 4' },
   { label: 'Status' },
   { label: 'Actions' },
 ];
@@ -48,12 +48,12 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
   projectCurrency,
 }) => {
   return (
-    <Box overflowX="auto" m={1}>
+    <Box overflowX="auto" m={{ base: 2, md: 4 }}>
       <TableContainer className="custom-scrollbar">
         <Box
           overflowX="auto"
           overflowY="auto"
-          maxHeight={'76vh'}
+          maxHeight={'70vh'}
           sx={{
             '::-webkit-scrollbar': {
               height: '12px',
@@ -76,6 +76,7 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
             variant="simple"
             size="sm"
             mb={2}
+            pr={2}
             sx={{
               'tr:hover td': {
                 backgroundColor: 'gray.200',
@@ -128,7 +129,7 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                     <CrewMemberRow
                       key={user.id}
                       user={user}
-                      projectCurrency={projectCurrency!}
+                      projectCurrency={projectCurrency}
                       handleEditMemberClick={handleEditMemberClick}
                       sendInvitation={sendInvitation}
                       handleRemoveButtonClick={handleRemoveButtonClick}

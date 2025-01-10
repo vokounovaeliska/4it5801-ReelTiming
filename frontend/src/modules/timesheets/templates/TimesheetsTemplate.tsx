@@ -1,9 +1,8 @@
-import React from 'react';
-import { Box, Button } from '@chakra-ui/react';
-import { MdAddChart } from 'react-icons/md';
+import React, { useState } from 'react';
+import { Box, Button, Heading } from '@chakra-ui/react';
+import { MdAddChart, MdFilterAlt } from 'react-icons/md';
 
 import PdfReportGeneratorButton from '@frontend/modules/report/pdfReportGeneratorButton';
-import { Heading } from '@frontend/shared/design-system';
 
 import { TimesheetsTemplateProps } from '../interfaces';
 import TimesheetTable from '../table/TimesheetsTable';
@@ -25,12 +24,14 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
   projectUserId,
   selectedUsers,
 }) => {
+  const [showFilters, setShowFilters] = useState(true);
+
   const isGeneratePdfDisabled =
     (!startDate || !endDate || selectedUsers.length !== 1) &&
     userRole === 'ADMIN';
 
   return (
-    <Box flex="1" width="100%" p={1} alignSelf="center">
+    <Box flex="1" p={4} width="98%" alignSelf="center">
       <Box
         justifyItems={{ base: 'center', sm: 'flex-start' }}
         py={{ base: '4', sm: '0' }}
@@ -38,15 +39,25 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
         <Heading mb={4} textAlign="center">
           Timesheets for Project {projectName}
         </Heading>
+        <Button
+          variant="ghost"
+          colorScheme="orange"
+          leftIcon={<MdFilterAlt />}
+          onClick={() => setShowFilters((prev) => !prev)}
+        >
+          {showFilters ? 'Hide filters' : 'Show filters'}
+        </Button>
       </Box>
-      <TimesheetFilter
-        startDate={startDate}
-        endDate={endDate}
-        userRole={userRole}
-        handleDateChange={handleDateChange}
-        userOptions={userOptions}
-        handleUserChange={handleUserChange}
-      />
+      {showFilters && (
+        <TimesheetFilter
+          startDate={startDate}
+          endDate={endDate}
+          userRole={userRole}
+          handleDateChange={handleDateChange}
+          userOptions={userOptions}
+          handleUserChange={handleUserChange}
+        />
+      )}
       <Box
         display={{ base: 'grid', sm: 'flex' }}
         justifyContent={{ base: 'center', sm: 'space-between' }}
@@ -55,34 +66,46 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
         mb={4}
         px={3}
       >
-        <Button
-          aria-label="Add statement"
-          colorScheme="orange"
-          bgColor="orange.500"
-          onClick={handleAddClick}
-          size="md"
-          leftIcon={<MdAddChart />}
-          borderRadius="full"
-          boxShadow="md"
-          _hover={{
-            bg: 'orange.500',
-            color: 'white',
-            transform: 'scale(1.2)',
-          }}
-          transition="all 0.3s ease"
+        <Box
+          display={{ base: 'grid', sm: 'flex' }}
+          fontSize="sm"
+          gap="4"
+          mt={{ base: 2, md: 3 }}
         >
-          Add Shift
-        </Button>
-
-        <PdfReportGeneratorButton
-          projectUserId={
-            selectedUsers.length === 1 ? selectedUsers[0]?.value : projectUserId
-          }
-          startDate={startDate}
-          endDate={endDate}
-          selectedUsers={selectedUsers}
-          isDisabled={isGeneratePdfDisabled}
-        />
+          <Button
+            aria-label="Add statement"
+            colorScheme="orange"
+            bgColor="orange.500"
+            onClick={handleAddClick}
+            size="md"
+            leftIcon={<MdAddChart />}
+            borderRadius="full"
+            boxShadow="md"
+            _hover={{
+              bg: 'orange.500',
+              color: 'white',
+              transform: 'scale(1.2)',
+            }}
+            transition="all 0.3s ease"
+          >
+            Add Statement
+          </Button>
+          <PdfReportGeneratorButton
+            projectUserId={
+              selectedUsers.length === 1
+                ? selectedUsers[0]?.value
+                : projectUserId
+            }
+            startDate={startDate}
+            endDate={endDate}
+            label={
+              selectedUsers.length === 1
+                ? `Generate PDF for ${selectedUsers[0]?.label}`
+                : 'Generate PDF'
+            }
+            isDisabled={isGeneratePdfDisabled}
+          />
+        </Box>
       </Box>
       <TimesheetTable
         sortedTimesheets={sortedTimesheets}

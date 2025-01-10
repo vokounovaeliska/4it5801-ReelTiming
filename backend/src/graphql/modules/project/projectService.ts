@@ -21,10 +21,7 @@ export class ProjectService {
     }));
   }
 
-  async getProjectById(id: string | null): Promise<Project | null> {
-    if (!id) {
-      return null;
-    }
+  async getProjectById(id: string): Promise<Project | null> {
     const project = await this.projectRepository.getProjectById(id);
     if (!project) {
       return null;
@@ -50,7 +47,6 @@ export class ProjectService {
       create_user_id: data.create_user_id ?? '',
       last_update_user_id: data.create_user_id ?? '',
       currency: data.currency,
-      logo: data.logo ?? undefined,
     });
     const project = await this.getProjectById(projectId);
     if (!project) {
@@ -66,7 +62,6 @@ export class ProjectService {
       start_date: data.start_date ?? undefined,
       end_date: data.end_date ?? undefined,
       last_update_date: new Date(),
-      logo: data.logo ?? undefined,
     };
     await this.projectRepository.updateProject(id, updateData);
     return this.getProjectById(id);

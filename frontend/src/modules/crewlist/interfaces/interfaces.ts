@@ -5,19 +5,28 @@ export interface CrewMemberData {
   name: string;
   surname: string;
   department: string;
-  position?: string | null;
+  position: string;
   phone_number: string;
   email: string;
-  standard_rate?: number | null;
-  compensation_rate?: number | null;
-  overtime_hour1?: number | null;
-  overtime_hour2?: number | null;
-  overtime_hour3?: number | null;
-  overtime_hour4?: number | null;
-  role?: string | null;
+  standard_rate: number;
+  compensation_rate: number;
+  overtime_hour1: number;
+  overtime_hour2: number;
+  overtime_hour3: number;
+  overtime_hour4: number;
+  role: string;
   user_id: string | null;
   rate_id: string | null;
   cars: Car[] | null;
+  // cars:
+  //   | [
+  //       {
+  //         vehicle_name: string;
+  //         included_mileage: number;
+  //         extra_mileage: number;
+  //       },
+  //     ]
+  //   | null;
 }
 
 export interface CarData {
@@ -28,29 +37,28 @@ export interface CarData {
 
 export interface ProjectUser {
   id: string;
-  user?: {
+  user: {
     id: string;
-  } | null;
-  department?: { name: string; id: string } | null;
-  role?: string | null;
-  position?: string | null;
-  phone_number?: string | null;
+  };
+  department: { name: string; id: string } | null;
+  role: string;
+  position: string;
+  phone_number: string;
   is_active: boolean;
-  invitation?: string | null;
+  invitation: string;
   name: string;
   surname: string;
   email: string;
-  rate?: {
+  rate: {
     id: string;
-    create_date?: string;
-    standard_rate?: number | null;
-    compensation_rate?: number | null;
-    overtime_hour1?: number | null;
-    overtime_hour2?: number | null;
-    overtime_hour3?: number | null;
-    overtime_hour4?: number | null;
+    standard_rate: number;
+    compensation_rate: number;
+    overtime_hour1: number;
+    overtime_hour2: number;
+    overtime_hour3: number;
+    overtime_hour4: number;
   } | null;
-  car?: Car[] | null;
+  car: Car[] | null;
 }
 
 export interface CrewAlertDialogProps {
@@ -65,35 +73,3 @@ export type CrewListTemplateProps = {
   cars: Car[];
   carStatements: CarStatement[];
 };
-
-export interface Rate {
-  id: string;
-  compensation_rate?: number | null;
-  create_user_id: string;
-  last_update_user_id: string;
-  overtime_hour1?: number | null;
-  overtime_hour2?: number | null;
-  overtime_hour3?: number | null;
-  overtime_hour4?: number | null;
-  standard_rate?: number | null;
-}
-
-export interface Department {
-  id: string;
-  name: string;
-}
-
-export interface ProjectUserLightVersion {
-  id: string;
-  is_active: boolean;
-  position?: string | null;
-  invitation?: string | null;
-  role?: string | null;
-  phone_number?: string | null;
-  email: string;
-  name: string;
-  surname: string;
-  user?: { id: string } | null;
-  rate?: Rate | null;
-  department?: Department | null;
-}

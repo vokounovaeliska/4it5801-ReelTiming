@@ -28,7 +28,6 @@
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@hookform/resolvers": "~3.9.0",
-    "@react-pdf/renderer": "^4.1.6",
     "@types/react-select": "^5.0.1",
     "apollo-upload-client": "^18.0.1",
     "cross-fetch": "^4.0.0",

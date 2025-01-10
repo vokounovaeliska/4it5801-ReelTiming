@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { ADD_STATEMENT } from '@frontend/graphql/mutations/AddStatement';
+import { ADD_STATEMENT } from '@frontend/gql/mutations/AddStatement';
 import {
   showErrorToast,
   showSuccessToast,
@@ -7,7 +7,7 @@ import {
 import {
   GET_ADMIN_STATEMENTS,
   GET_CREW_STATEMENTS,
-} from '@frontend/graphql/queries/GetStatements';
+} from '@frontend/gql/queries/GetStatements';
 import { useApolloClient } from '@apollo/client';
 import { Timesheet, UseAddTimesheetProps } from '../interfaces';
 import { formatTimeForParsing, toLocalISOString } from '../utils/timeUtils';
@@ -59,12 +59,12 @@ export const useAddTimesheet = ({
           userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
         variables:
           userRole === 'ADMIN'
-            ? { projectUserId: projectId }
-            : { projectUserId: userInfoData?.projectUserDetails?.id ?? '' },
+            ? { projectId }
+            : { projectUserId: userInfoData?.projectUserDetails?.id },
       });
       const newTimesheet = {
         ...variables,
-        id: response?.data?.addStatement.id,
+        id: response.data.addStatement.id,
         projectUser: userInfo,
       };
       client.writeQuery({
@@ -72,14 +72,14 @@ export const useAddTimesheet = ({
           userRole === 'ADMIN' ? GET_ADMIN_STATEMENTS : GET_CREW_STATEMENTS,
         variables:
           userRole === 'ADMIN'
-            ? { projectUserId: projectId }
-            : { projectUserId: userInfoData?.projectUserDetails?.id ?? '' },
+            ? { projectId }
+            : { projectUserId: userInfoData?.projectUserDetails?.id },
         data: {
           ...cacheData,
-          statementsByProjectUserId:
+          statementsByProjectId:
             userRole === 'ADMIN'
-              ? [...(cacheData?.statementsByProjectUserId || []), newTimesheet]
-              : cacheData?.statementsByProjectUserId
+              ? [...cacheData.statementsByProjectId, newTimesheet]
+              : cacheData.statementsByProjectUserId
                 ? [...cacheData.statementsByProjectUserId, newTimesheet]
                 : [],
         },

@@ -13,9 +13,9 @@ import { useEditTimesheet } from './useEditTimesheet';
 
 export const useTimesheetHandlers = (
   projectId: string,
-  roleData: { userRoleInProject: string } | null,
-  userInfoData?: UserInfoData | null,
-  userInfo?: UserInfo | null,
+  roleData: { userRoleInProject: string },
+  userInfoData: UserInfoData,
+  userInfo: UserInfo | null,
 ) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');

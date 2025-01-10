@@ -3,7 +3,7 @@ import { Td } from '@chakra-ui/react';
 import { currencyUtil } from '@shared/currencyUtil';
 
 type RateCellProps = {
-  value: number | undefined | null;
+  value: number | undefined;
   currency: string;
 };
 

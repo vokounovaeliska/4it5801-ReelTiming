@@ -30,7 +30,7 @@ export async function vehicleTimesheetTable({
 }: TableConfig): Promise<void> {
   // Define table structure
   const table = {
-    title: 'Shifts Report',
+    title: 'Timesheet Report',
     subtitle: 'Details of overtime',
     headers: [
       {
@@ -41,16 +41,16 @@ export async function vehicleTimesheetTable({
         headerAlign: 'center',
       },
       {
-        label: 'Call - wrap',
-        property: 'time_range',
-        width: 70,
+        label: 'Shift',
+        property: 'shift_length',
+        width: 22,
         align: 'center',
         headerAlign: 'center',
       },
       {
-        label: 'Shift',
-        property: 'shift_length',
-        width: 22,
+        label: 'Time (From - To)',
+        property: 'time_range',
+        width: 70,
         align: 'center',
         headerAlign: 'center',
       },
@@ -86,7 +86,7 @@ export async function vehicleTimesheetTable({
           if (rectCell && typeof value !== 'undefined') {
             const textWidth = doc.widthOfString(String(value));
             const xPosition = rectCell.x + rectCell.width - textWidth - margin;
-            doc.text(String(value), xPosition, rectCell.y + 4, {
+            doc.text(String(value), xPosition, rectCell.y + 5, {
               align: 'left',
             });
           }
@@ -146,7 +146,7 @@ export async function vehicleTimesheetTable({
           if (rectCell && typeof value !== 'undefined') {
             const textWidth = doc.widthOfString(String(value));
             const xPosition = rectCell.x + rectCell.width - textWidth - margin;
-            doc.text(String(value), xPosition, rectCell.y + 4, {
+            doc.text(String(value), xPosition, rectCell.y + 5, {
               align: 'left',
             });
           }
@@ -160,7 +160,6 @@ export async function vehicleTimesheetTable({
   // Initialize totals
   let totalOvertime = 0;
   let totalOvertimeAmount = 0;
-  let totalKilometersOver = 0;
   let totalKilometers = 0;
   let totalKilometersAmount = 0;
   const projectCurrency = crewInfo.project.currency;
@@ -180,11 +179,11 @@ export async function vehicleTimesheetTable({
 
     table.rows.push([
       formatDate(new Date(statement.start_date)),
-      `${formattedFrom} - ${formattedTo}`,
       statement.shift_lenght.toString(),
+      `${formattedFrom} - ${formattedTo}`,
       statement.calculated_overtime.toString(),
       statement.claimed_overtime.toString(),
-      currencyUtil.formatAmount(overtimeAmount ?? 0, projectCurrency),
+      currencyUtil.formatAmount(overtimeAmount ?? 0, projectCurrency, 2),
       statement.car_name ?? '-',
       statement.kilometers?.toString() ?? '-',
       statement.kilometer_allow?.toString() ?? '-',
@@ -203,26 +202,9 @@ export async function vehicleTimesheetTable({
 
     totalOvertime += statement.claimed_overtime;
     totalOvertimeAmount += overtimeAmount;
-    totalKilometersOver += kilometersOver ?? 0;
-    totalKilometers += statement.kilometers ?? 0;
+    totalKilometers += kilometersOver ?? 0;
     totalKilometersAmount += kilometersSum ?? 0;
   });
-
-  // Add summary row
-  table.rows.push([
-    `${statements.length} days`,
-    '',
-    '',
-    '',
-    `${totalOvertime.toString()}`,
-    currencyUtil.formatAmount(totalOvertimeAmount, projectCurrency),
-    '',
-    `${totalKilometers.toString()}`,
-    '',
-    `${totalKilometersOver.toString()}`,
-    '',
-    currencyUtil.formatAmount(totalKilometersAmount, projectCurrency, 2),
-  ]);
 
   // Render the table
   let pageHeight =
@@ -232,30 +214,34 @@ export async function vehicleTimesheetTable({
   if (doc.y + table.rows.length * 15 > pageHeight) {
     doc.addPage();
   }
+
   await doc.table(table, {
-    prepareRow: (row, i) => {
-      const rowHeight = 15;
-      const pageWidth =
-        doc.page.width - doc.page.margins.left - doc.page.margins.right;
-
-      if (row[0]?.endsWith('days') && i === 0) {
-        doc
-          .rect(doc.page.margins.left, doc.y + 12, pageWidth + 3, rowHeight)
-          .fill('#F2F2F1');
-        doc.fill('#000');
-      }
-
-      if (row[0]?.endsWith('days')) {
-        doc.font('DejaVuSans-Bold').fontSize(8);
-      } else {
-        doc.font('DejaVuSans').fontSize(8);
-      }
-
-      return doc;
-    },
+    prepareRow: () => doc.font('DejaVuSans').fontSize(8),
   });
 
   doc
+    .moveDown(1)
+    .fontSize(10)
+    .font('DejaVuSans-Bold')
+    .text(`Total Overtime: `, { align: 'left', continued: true })
+    .font('DejaVuSans')
+    .text(`${totalOvertime} hours`)
+    .font('DejaVuSans-Bold')
+    .text('Total Overtime Amount: ', { align: 'left', continued: true })
+    .font('DejaVuSans')
+    .text(
+      `${currencyUtil.formatAmount(totalOvertimeAmount, projectCurrency, 2)}`,
+    )
+    .font('DejaVuSans-Bold')
+    .text('Total Kilometers Over: ', { align: 'left', continued: true })
+    .font('DejaVuSans')
+    .text(`${totalKilometers} Km`)
+    .font('DejaVuSans-Bold')
+    .text('Total Kilometers Amount: ', { align: 'left', continued: true })
+    .font('DejaVuSans')
+    .text(
+      `${currencyUtil.formatAmount(totalKilometersAmount, projectCurrency, 2)}`,
+    )
     .moveDown(0.3)
     .fontSize(10.5)
     .font('DejaVuSans-Bold')
@@ -263,9 +249,6 @@ export async function vehicleTimesheetTable({
     .font('DejaVuSans')
     .fontSize(11)
     .text(
-      `${currencyUtil.formatAmount(
-        totalOvertimeAmount + totalKilometersAmount,
-        projectCurrency,
-      )}`,
+      `${currencyUtil.formatAmount(totalOvertimeAmount + totalKilometersAmount, projectCurrency, 2)}`,
     );
 }

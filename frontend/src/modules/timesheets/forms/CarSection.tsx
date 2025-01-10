@@ -34,6 +34,33 @@ const CarSection: React.FC<CarSectionProps> = ({
   }, [selectedCar, getAvailableCars, setSelectedCarDetails]);
   return (
     <Box>
+      {/* <FormControl display="flex" alignItems="center" mb={4}>
+        {
+          ((carOptionsForLoggedInUser && userRole === 'CREW') ||
+            getAvailableCars().length > 0) && (
+            <>
+              <FormLabel htmlFor="car-switch" mb="0">
+                Add Mileage
+              </FormLabel>
+              <Switch
+                id="car-switch"
+                isChecked={isCarVisible}
+                onChange={() => {
+                  setIsCarVisible(!isCarVisible);
+                  if (!isCarVisible) {
+                    const availableCars = getAvailableCars();
+                    if (availableCars.length > 0) {
+                      const initialCarId = availableCars[0].id;
+                      setSelectedCar(initialCarId);
+                      setValue('carId', initialCarId);
+                    }
+                  }
+                }}
+                colorScheme="orange"
+              />
+            </>
+          )}
+      </FormControl> */}
       {getAvailableCars().length > 0 && (
         <>
           <FormControl>
@@ -84,7 +111,7 @@ const CarSection: React.FC<CarSectionProps> = ({
             )}
           </FormControl>
           <FormControl>
-            <FormLabel mt={2}>Total kilometers</FormLabel>
+            <FormLabel mt={2}>Kilometers</FormLabel>
             <Controller
               name="kilometers"
               control={control}

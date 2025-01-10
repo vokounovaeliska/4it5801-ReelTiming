@@ -37,9 +37,6 @@ export class Project {
 
   @Field(() => String)
   currency!: string;
-
-  @Field(() => String, { nullable: true })
-  logo?: string | null;
 }
 
 @InputType()
@@ -76,7 +73,4 @@ export class ProjectInput {
 
   @Field(() => String, { nullable: true })
   currency!: string;
-
-  @Field(() => String, { nullable: true })
-  logo?: string | null;
 }

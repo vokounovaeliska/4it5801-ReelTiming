@@ -27,7 +27,6 @@ export function getProjectRepository(db: Db) {
       create_user_id: string;
       last_update_user_id: string;
       currency: string;
-      logo?: string;
     }) {
       const result = await db
         .insert(project)
@@ -43,7 +42,6 @@ export function getProjectRepository(db: Db) {
           create_user_id: data.create_user_id,
           last_update_user_id: data.last_update_user_id,
           currency: data.currency,
-          logo: data.logo ? Buffer.from(data.logo).toString('base64') : null,
         })
         .$returningId();
       return result[0].id;
@@ -60,15 +58,9 @@ export function getProjectRepository(db: Db) {
         is_active?: boolean;
         currency?: string;
         last_update_user_id?: string;
-        logo?: string;
       }>,
     ) {
-      const preparedData = {
-        ...data,
-        logo: data.logo ? Buffer.from(data.logo).toString('base64') : undefined,
-      };
-
-      return db.update(project).set(preparedData).where(eq(project.id, id));
+      return db.update(project).set(data).where(eq(project.id, id));
     },
     async deleteProject(id: string) {
       return db.delete(project).where(eq(project.id, id));

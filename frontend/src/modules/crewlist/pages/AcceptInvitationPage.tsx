@@ -1,24 +1,24 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
+import { useToast } from '@chakra-ui/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
-import { ADD_CAR } from '@frontend/graphql/mutations/AddCar';
-import { UPDATE_AND_ACTIVATE_PROJECT_USER } from '@frontend/graphql/mutations/UpdateAdActivateProjectUser';
-import { GET_DEPARTMENTS } from '@frontend/graphql/queries/GetDepartments';
-import { GET_PROJECT_USER_BY_TOKEN } from '@frontend/graphql/queries/GetProjectUserByToken';
+import { ADD_CAR } from '@frontend/gql/mutations/AddCar';
+import { UPDATE_AND_ACTIVATE_PROJECT_USER } from '@frontend/gql/mutations/UpdateAdActivateProjectUser';
+import { GET_DEPARTMENTS } from '@frontend/gql/queries/GetDepartments';
 import { useAuth } from '@frontend/modules/auth';
 import { Car, CarStatement } from '@frontend/modules/timesheets/interfaces';
 import { route } from '@frontend/route';
-import { showErrorToast } from '@frontend/shared/design-system/molecules/toastUtils';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
-import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 import { crewListFormValues } from '@frontend/zod/schemas';
 
+import { GET_PROJECT_USER_BY_TOKEN } from '../../../gql/queries/GetProjectUserByToken';
 import { AcceptInvitationTemplate } from '../templates/AcceptInvitationTemplate';
 
 export function AcceptInvitationPage() {
   const navigate = useNavigate();
+  const toast = useToast();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
 
@@ -26,7 +26,7 @@ export function AcceptInvitationPage() {
   const isAuthenticated = user !== null;
 
   const { data, loading, error } = useQuery(GET_PROJECT_USER_BY_TOKEN, {
-    variables: { token: token! },
+    variables: { token },
     skip: !token,
   });
 
@@ -52,10 +52,7 @@ export function AcceptInvitationPage() {
     data: departmentsData,
     loading: departmentsLoading,
     error: departmentsError,
-  } = useQuery(GET_DEPARTMENTS, {
-    variables: { projectId: data?.projectUsersByToken.project.id! },
-    skip: !data?.projectUsersByToken.project.id,
-  });
+  } = useQuery(GET_DEPARTMENTS);
 
   const departments = departmentsData?.departments || [];
   const projectUser = data?.projectUsersByToken;
@@ -67,7 +64,7 @@ export function AcceptInvitationPage() {
           kilometerRate: car.kilometer_rate,
           kilometerAllow: car.kilometer_allow,
           name: car.name,
-          projectUserId: projectUser!.id!,
+          projectUserId: projectUser.id,
         },
       });
     }
@@ -76,10 +73,10 @@ export function AcceptInvitationPage() {
   const handleFormSubmit = (formData: crewListFormValues, cars: Car[]) => {
     UpdateAdActivateProjectUser({
       variables: {
-        updateProjectUserId: projectUser?.id!,
+        updateProjectUserId: projectUser.id!,
         data: {
           user_id: user?.id!,
-          project_id: projectUser!.project?.id!,
+          project_id: projectUser.project?.id!,
           name: formData.name,
           surname: formData.surname,
           email: formData.email,
@@ -87,8 +84,8 @@ export function AcceptInvitationPage() {
           position: formData.position,
           department_id: formData.department,
           is_active: true,
-          role: projectUser!.role,
-          rate_id: projectUser!.rate?.id,
+          role: projectUser.role,
+          rate_id: projectUser.rate?.id,
         },
         updateRateData: {
           standard_rate: formData.standard_rate,
@@ -98,28 +95,22 @@ export function AcceptInvitationPage() {
           overtime_hour3: formData.overtime_hour3,
           overtime_hour4: formData.overtime_hour4,
         },
-        rateId: projectUser!.rate?.id!,
+        rateId: projectUser.rate?.id,
       },
     })
       .then(() => addCarsForUser(cars))
       .then(() => {
-        navigate(`/projects/${projectUser!.project?.id}`);
+        navigate(`/projects/${projectUser.project?.id}`);
       })
       .catch((err) => {
         console.error('Error activating project user:', err);
-        if (
-          err.graphQLErrors?.some((error: { message: string | string[] }) => {
-            return (
-              error.message.includes('Duplicate entry') ||
-              error.message.includes('already exists')
-            );
-          })
-        ) {
-          showErrorToast('You have already joined this project before!');
-        } else {
-          showErrorToast('An unexpected error occurred!');
-          console.error(err.message);
-        }
+        toast({
+          title: 'Error',
+          description: 'Failed to join the project. ' + err,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
       });
   };
 
@@ -135,20 +126,17 @@ export function AcceptInvitationPage() {
   if (error || departmentsError)
     return <p>Error: {error?.message ?? departmentsError?.message}</p>;
 
-  if (!user) {
-    return <NotFoundPage />;
-  }
-
   return (
     <div>
       <Navbar children={undefined} />
       <AcceptInvitationTemplate
         onSubmit={handleFormSubmit}
         onCarCollectionChange={handleCarCollectionChange}
-        projectUserData={projectUser!}
+        projectUserData={projectUser}
         departments={departments}
         errorMessage={error}
         isLoading={loading}
+        authUser={user!}
         cars={carData}
         carStatements={carStatementsData}
       />

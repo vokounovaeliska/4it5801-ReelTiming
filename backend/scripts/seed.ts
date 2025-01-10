@@ -1,5 +1,6 @@
 import { getConnection } from '../src/db/db';
 
+import seedDepartment from './seedDepartment';
 import seedProjects from './seedProjects';
 import seedProjectUsers from './seedProjectUser';
 import seedRates from './seedRates';
@@ -14,6 +15,7 @@ async function seed() {
   try {
     await seedUsers(db);
     await seedProjects(db);
+    await seedDepartment(db);
     await seedRates(db);
     await seedProjectUsers(db);
   } catch (error) {

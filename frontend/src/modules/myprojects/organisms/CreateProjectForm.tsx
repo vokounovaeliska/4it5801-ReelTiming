@@ -50,7 +50,13 @@ export function CreateProjectForm({
   children,
 }: CreateProjectFormProps) {
   return (
-    <Box display="flex" flexDirection="column" p={2}>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      p={2}
+    >
       <Box
         width={{ base: '100%' }}
         p={{ base: 4, sm: 4, md: 4, lg: 6 }}
@@ -70,7 +76,7 @@ export function CreateProjectForm({
           resolver={zodResolver(projectFormSchema)}
           noValidate
         >
-          <Stack py="0">
+          <Stack py="0" justify="center">
             {errorMessage && <ErrorBanner title={errorMessage} />}
             <InputField
               name="name"
