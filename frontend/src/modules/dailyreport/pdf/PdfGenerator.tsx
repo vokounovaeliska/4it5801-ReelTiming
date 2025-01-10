@@ -17,6 +17,7 @@ const PDFGenerator = ({ data }: PDFGeneratorProps) => {
         fileName="DailyReport.pdf"
         style={{
           marginBottom: '20px',
+          textAlign: 'right',
           padding: '10px 20px',
           backgroundColor: '#DD6B20',
           color: 'white',
@@ -25,6 +26,7 @@ const PDFGenerator = ({ data }: PDFGeneratorProps) => {
           fontWeight: 'bold',
           display: 'flex',
           width: 'fit-content',
+          justifySelf: 'flex-end',
         }}
       >
         <FaDownload style={{ marginRight: '10px' }} />

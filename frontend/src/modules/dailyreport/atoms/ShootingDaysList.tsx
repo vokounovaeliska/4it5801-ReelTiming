@@ -248,7 +248,12 @@ const ShootingDaysList = ({ projectId }: Props) => {
 
       <Box flex="5" p={4} display={selectedDay ? 'block' : 'none'}>
         {selectedDay && (
-          <DailyReportTabs shootingDay={selectedDay} projectId={projectId} />
+          <DailyReportTabs
+            shootingDay={selectedDay}
+            projectId={projectId}
+            onEdit={() => handleEditClick(selectedDay)}
+            onDelete={() => handleDeleteClick(selectedDay)}
+          />
         )}
       </Box>
 
