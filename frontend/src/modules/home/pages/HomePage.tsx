@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Box, Button, Heading, Image, Text } from '@chakra-ui/react';
+import { FaClock, FaUsers } from 'react-icons/fa';
+import { HiOutlineDocumentReport } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
@@ -193,6 +195,7 @@ export function HomePage() {
             Focus on the art while we handle the logistics!
           </Text>
         </Text>
+
         <Button
           as={ReactRouterLink}
           to={route.register()}
@@ -200,10 +203,69 @@ export function HomePage() {
           color="white"
           size="lg"
           _hover={{ transform: 'scale(1.1)', bg: 'orange.700' }}
-          mb={5}
+          mb={7}
         >
           Get Started Now
         </Button>
+        {/* Benefits Section */}
+        <Box
+          display="flex"
+          justifyContent="center"
+          gap={8}
+          mb={6}
+          flexDirection={{ base: 'column', md: 'row' }} // Úprava pro flexibilitu
+        >
+          <Box
+            textAlign="center"
+            flex="1"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            <Box mb={3}>
+              <FaClock size={40} style={{ color: '#92310a' }} />{' '}
+              {/* Barva a velikost ikony */}
+            </Box>
+            <Text fontWeight="bold" color="orange.600">
+              Save Time
+            </Text>
+            <Text color="gray.700">Quickly report shifts from any device.</Text>
+          </Box>
+          <Box
+            textAlign="center"
+            flex="1"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            <Box mb={3}>
+              <FaUsers size={40} style={{ color: '#92310a' }} />{' '}
+              {/* Barva a velikost ikony */}
+            </Box>
+            <Text fontWeight="bold" color="orange.600">
+              Manage Your Crew
+            </Text>
+            <Text color="gray.700">
+              Effortlessly manage your team in real time.
+            </Text>
+          </Box>
+          <Box
+            textAlign="center"
+            flex="1"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            <Box mb={3}>
+              <HiOutlineDocumentReport size={40} style={{ color: '#92310a' }} />{' '}
+              {/* Barva a velikost ikony */}
+            </Box>
+            <Text fontWeight="bold" color="orange.600">
+              Create Reports
+            </Text>
+            <Text color="gray.700">Clear and with just a few clicks.</Text>
+          </Box>
+        </Box>
       </Box>
 
       <Footer />
