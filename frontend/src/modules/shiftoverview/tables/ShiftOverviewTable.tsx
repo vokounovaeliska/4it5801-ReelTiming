@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useMutation } from '@apollo/client';
+import { LockIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -80,6 +81,35 @@ export const ShiftOverviewTable = ({ data, refetch }: Props) => {
 
   return (
     <Box maxWidth="100%">
+      <Button
+        aria-label="Save shift overview"
+        colorScheme="orange"
+        bgColor="orange.500"
+        size="md"
+        leftIcon={<LockIcon />}
+        borderRadius="full"
+        boxShadow="md"
+        _hover={{
+          bg: 'orange.500',
+          color: 'white',
+          transform: 'scale(1.1)',
+        }}
+        transition="all 0.3s ease"
+        m={4}
+        onClick={() =>
+          handleSave({
+            data,
+            shiftStates,
+            addShiftOverview,
+            editShiftOverview,
+            deleteShiftOverview,
+            refetch,
+          })
+        }
+      >
+        Save Changes
+      </Button>
+
       <TableContainer className="custom-scrollbar">
         <Box
           overflowX="auto"
@@ -172,22 +202,6 @@ export const ShiftOverviewTable = ({ data, refetch }: Props) => {
           </Table>
         </Box>
       </TableContainer>
-      <Button
-        mt={4}
-        colorScheme="orange"
-        onClick={() =>
-          handleSave({
-            data,
-            shiftStates,
-            addShiftOverview,
-            editShiftOverview,
-            deleteShiftOverview,
-            refetch,
-          })
-        }
-      >
-        Save Changes
-      </Button>
     </Box>
   );
 };
