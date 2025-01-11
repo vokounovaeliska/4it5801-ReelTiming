@@ -26,11 +26,17 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
   projectData,
 }) => {
   const setNewDate = (days: ShootingDay[]): string => {
+    if (days.length === 0) {
+      return projectData.start_date || format(Date.now(), 'yyyy-MM-dd');
+    }
     const maximumDate = max(days.map((day) => day.date));
     return format(addDays(maximumDate, 1), 'yyyy-MM-dd');
   };
 
   const setNewShootingDayNumber = (days: ShootingDay[]): number => {
+    if (days.length === 0) {
+      return 1;
+    }
     return Math.max(...days.map((day) => day.shooting_day_number)) + 1;
   };
 
