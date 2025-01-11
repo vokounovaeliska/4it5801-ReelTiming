@@ -76,54 +76,61 @@ const DailyReportTabs = ({
 
   return (
     <Box>
-      <Tabs
-        variant="enclosed"
-        colorScheme="orange"
-        size="lg"
-        index={activeTab}
-        onChange={(index) => setActiveTab(index)}
-      >
-        <TabList>
-          <Tab>Preview</Tab>
-          <Tab>PDF</Tab>
-        </TabList>
+      {/* Desktop view */}
+      <Box display={{ base: 'none', md: 'block' }}>
+        <Tabs
+          variant="enclosed"
+          colorScheme="orange"
+          size="lg"
+          index={activeTab}
+          onChange={(index) => setActiveTab(index)}
+        >
+          <TabList>
+            <Tab>Preview</Tab>
+            <Tab>PDF</Tab>
+          </TabList>
 
-        <TabPanels>
-          <TabPanel>
-            <Box textAlign={'right'} mb={8}>
-              <Button
-                leftIcon={<EditIcon />}
-                colorScheme="gray"
-                borderWidth={3}
-                onClick={onEdit}
-              >
-                Edit Daily Report
-              </Button>
-              <Button
-                ml={4}
-                leftIcon={<DeleteIcon />}
-                colorScheme="red"
-                onClick={onDelete}
-              >
-                Delete
-              </Button>
-            </Box>
-            <Box>
-              <ReportHeader data={data} />
-              <Divider />
-              <ReportIntro data={data} />
-              <Divider />
-              <ReportCrewStatementsTable data={data} />
-              <Divider />
-              <ReportFooter data={data} />
-            </Box>
-          </TabPanel>
+          <TabPanels>
+            <TabPanel>
+              <Box textAlign={'right'} mb={8}>
+                <Button
+                  leftIcon={<EditIcon />}
+                  colorScheme="gray"
+                  borderWidth={3}
+                  onClick={onEdit}
+                >
+                  Edit Daily Report
+                </Button>
+                <Button
+                  ml={4}
+                  leftIcon={<DeleteIcon />}
+                  colorScheme="red"
+                  onClick={onDelete}
+                >
+                  Delete
+                </Button>
+              </Box>
+              <Box>
+                <ReportHeader data={data} />
+                <Divider />
+                <ReportIntro data={data} />
+                <Divider />
+                <ReportCrewStatementsTable data={data} />
+                <Divider />
+                <ReportFooter data={data} />
+              </Box>
+            </TabPanel>
 
-          <TabPanel>
-            <PDFGenerator data={data} />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+            <TabPanel>
+              <PDFGenerator data={data} />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </Box>
+      {/* Mobile view */}
+      <Box flex="5" p={4} display={{ base: 'block', md: 'none' }}>
+        <PDFGenerator data={data} />
+      </Box>
     </Box>
   );
 };

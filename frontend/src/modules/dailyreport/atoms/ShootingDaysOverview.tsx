@@ -1,27 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { DeleteIcon, EditIcon, Search2Icon } from '@chakra-ui/icons';
-import {
-  Box,
-  Center,
-  IconButton,
-  Spinner,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Box, Center, Spinner, Text, useDisclosure } from '@chakra-ui/react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { DELETE_DAILY_REPORT } from '@frontend/graphql/mutations/DeleteDailyReport';
 import { GET_LAST_DAILY_REPORT_BY_PROJECT } from '@frontend/graphql/queries/GetLastDailyReportByProjectId';
 import { GET_SHOOTING_DAYS_BY_PROJECT } from '@frontend/graphql/queries/GetShootingDaysByProject';
-import { formatDateToDisplay } from '@frontend/modules/timesheets/utils/timeUtils';
 import { route } from '@frontend/route';
 import { Heading } from '@frontend/shared/design-system';
 
@@ -35,14 +19,14 @@ import {
 
 import { AddDailyReportButton } from './AddDailyReportButton';
 import DailyReportDeleteAlertDialog from './DailyReportAlertDialog';
-import DailyReportStatusIcon from './DailyReportStatusIcon';
 import DailyReportTabs from './DailyReportTabs';
+import ShootingDaysTable from './ShootingDaysTable';
 
-type Props = {
+type ShootingDaysOverviewProps = {
   projectId: string;
 };
 
-const ShootingDaysList = ({ projectId }: Props) => {
+const ShootingDaysOverview = ({ projectId }: ShootingDaysOverviewProps) => {
   const navigate = useNavigate();
   const { shootingDayId } = useParams<{ shootingDayId?: string }>();
   const { data, loading, error, refetch } = useQuery<ShootingDaysByProject>(
@@ -176,74 +160,11 @@ const ShootingDaysList = ({ projectId }: Props) => {
           lastDailyReportRefetch={lastDailyReportRefetch}
         />
 
-        <TableContainer>
-          <Table
-            variant="simple"
-            size="sm"
-            colorScheme="gray"
-            sx={{
-              borderSpacing: 0,
-              '& th, & td': {
-                px: { base: 1, md: 2 },
-              },
-            }}
-          >
-            <Thead>
-              <Tr>
-                <Th>Day N.</Th>
-                <Th>Date</Th>
-                <Th>Status</Th>
-                <Th>Actions</Th>
-                <Th>Preview</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {shootingDays.map((day) => (
-                <Tr
-                  key={day.id}
-                  bg={selectedDay?.id === day.id ? 'gray.200' : 'transparent'}
-                  _hover={{
-                    bg: selectedDay?.id === day.id ? 'gray.300' : 'gray.100',
-                  }}
-                >
-                  <Td>{day.shooting_day_number}</Td>
-                  <Td>{formatDateToDisplay(day.date)}</Td>
-                  <Td textAlign="center">
-                    <DailyReportStatusIcon hasDailyReport={!!day.dailyReport} />
-                  </Td>
-                  <Td textAlign="center">
-                    <IconButton
-                      colorScheme="gray"
-                      size="xs"
-                      aria-label="Edit"
-                      icon={<EditIcon />}
-                      onClick={() => handleEditClick(day)}
-                      isDisabled={!day.dailyReport}
-                    />
-                    <IconButton
-                      ml={2}
-                      colorScheme="red"
-                      size="xs"
-                      aria-label="Delete"
-                      icon={<DeleteIcon />}
-                      onClick={() => handleDeleteClick(day)}
-                      isDisabled={!day.dailyReport}
-                    />
-                  </Td>
-                  <Td textAlign="center">
-                    <IconButton
-                      colorScheme="orange"
-                      size="xs"
-                      onClick={() => handlePreviewClick(day)}
-                      aria-label="Preview shooting day"
-                      icon={<Search2Icon />}
-                    />
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
+        <ShootingDaysTable
+          shootingDays={shootingDays}
+          selectedDayId={selectedDay?.id || null}
+          onPreview={handlePreviewClick}
+        />
       </Box>
 
       <Box flex="5" p={4} display={selectedDay ? 'block' : 'none'}>
@@ -266,4 +187,4 @@ const ShootingDaysList = ({ projectId }: Props) => {
   );
 };
 
-export default ShootingDaysList;
+export default ShootingDaysOverview;
