@@ -2,6 +2,7 @@ import { project_user } from '../../src/db/schema';
 import { faker } from '@faker-js/faker';
 import { v4 as uuidv4 } from 'uuid';
 import { MySql2Database } from 'drizzle-orm/mysql2';
+import { departmentPositions } from './customFakeData/departmentPostions';
 
 // Type for project users
 export interface ProjectUser {
@@ -24,16 +25,23 @@ export interface ProjectUser {
   role: string;
   invitation: string | null;
   phone_number: string;
-  car_id: string | null;
 }
 
 export async function seedProjectUsers(
   db: MySql2Database<typeof import('../../src/db/schema')>,
   projectId: string,
-  userIds: string[],
-  rateIds: string[],
+  users: {
+    id: string;
+    name: string;
+    surname: string;
+    email: string;
+    phone_number: string | null;
+  }[],
+  rateIds: {
+    id: string;
+  }[],
   departments: { id: string; name: string }[],
-  carIds: string[],
+  // carIds: { id: string }[], // This will be a list of car ids
   count: number,
 ): Promise<ProjectUser[]> {
   console.log('Seeding project users...');
@@ -42,12 +50,12 @@ export async function seedProjectUsers(
 
   // Loop over userIds and rateIds sequentially
   for (let i = 0; i < count; i++) {
-    const userId = userIds[i];
-    const rateId = rateIds[i];
-    const department = faker.helpers.arrayElement(departments);
+    const userId = users[i].id;
+    const rateId = rateIds[i].id;
+    const department = departments[i]; // Get department
 
-    // Assign a car to approximately 25% of users
-    const carId = carIds[i % carIds.length] || null; // Ensuring the car assignment is safe
+    const departmentPosition = departmentPositions[department.name];
+    const position = faker.helpers.arrayElement(departmentPosition);
 
     projectUsers.push({
       id: uuidv4(),
@@ -55,12 +63,12 @@ export async function seedProjectUsers(
       user_id: userId,
       department_id: department.id,
       rate_id: rateId,
-      position: faker.person.jobTitle(),
+      position: position,
       number_of_people: faker.number.int({ min: 1, max: 5 }),
       is_team_leader: faker.datatype.boolean(),
-      name: faker.person.firstName(),
-      surname: faker.person.lastName(),
-      email: faker.internet.email(),
+      name: users[i].name,
+      surname: users[i].surname,
+      email: users[i].email,
       create_date: new Date(),
       create_user_id: 'system-user',
       last_update_user_id: 'system-user',
@@ -69,17 +77,10 @@ export async function seedProjectUsers(
       role: 'CREW',
       invitation: faker.datatype.boolean() ? uuidv4() : null,
       phone_number: `+420${faker.string.numeric(3)}${faker.string.numeric(3)}${faker.string.numeric(3)}`,
-      car_id: carId,
     });
   }
 
-  // Insert into the database and return the project users
-  if (projectUsers.length > 0) {
-    await db.insert(project_user).values(projectUsers);
-    console.log(`${projectUsers.length} project users inserted`);
-    return projectUsers; // Return the list of project users
-  } else {
-    console.log('No new project users to insert');
-    return []; // Return an empty array if no users are created
-  }
+  await db.insert(project_user).values(projectUsers);
+  console.log(`${projectUsers.length} project users inserted`);
+  return projectUsers;
 }

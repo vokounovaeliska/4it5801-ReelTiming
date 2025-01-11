@@ -11,12 +11,11 @@ export async function seedStatements(
   shootingDays: { id: string; date: Date }[],
 ) {
   console.log('Seeding statements for project users...');
-
   const statements: StatementInsert[] = [];
 
   // Iterate over each project user
   projectUserIds.forEach(({ id: projectUserId, car_id: carId }) => {
-    const hasAllStatements = Math.random() < 0.7; // 70% chance to have all shooting days
+    const hasAllStatements = Math.random() < 0.6; // 60% chance to have all shooting days
 
     // Determine the shooting days to use
     const daysToFill = hasAllStatements
@@ -68,7 +67,8 @@ function generateStatement(
   const startMinute = Math.floor(Math.random() * 60);
 
   // Randomly calculate shift length
-  const actualShiftLength = Math.random() < 0.8 ? shiftLength : shiftLength + Math.random() * 4;
+  const actualShiftLength =
+    Math.random() < 0.8 ? shiftLength : shiftLength + Math.random() * 4;
 
   // Start time
   const startTime = new Date(date);

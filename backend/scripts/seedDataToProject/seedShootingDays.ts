@@ -19,30 +19,35 @@ export async function seedShootingDays(
     event_type: 'Shooting' | 'Rehearsal' | 'Post-production';
   }[] = [];
 
-  for (let index = 0; index < count; index++) {
-    const date = new Date(projectStartDate);
-    date.setDate(date.getDate() + index); // Increment the date by `index` days
+  let lastDate = new Date(projectStartDate);
 
-    // Ensure the shooting day number is unique for the project
+  for (let index = 0; index < count; index++) {
+    const randomDayIncrement = Math.floor(Math.random() * 3) + 1;
+    const newDate = new Date(lastDate);
+    newDate.setDate(newDate.getDate() + randomDayIncrement);
+
+    if (newDate <= lastDate) {
+      newDate.setDate(lastDate.getDate() + randomDayIncrement);
+    }
+
     const shootingDayNumber = index + 1;
 
     shootingDays.push({
       id: uuidv4(),
       project_id: projectId,
       shooting_day_number: shootingDayNumber,
-      date,
+      date: newDate,
       event_type: faker.helpers.arrayElement([
         'Shooting',
         'Rehearsal',
         'Post-production',
       ]),
     });
+
+    lastDate = newDate;
   }
-
   await db.insert(shooting_day).values(shootingDays);
-
   console.log(`${shootingDays.length} shooting days inserted`);
 
-  // Return an array with shooting day IDs and dates
   return shootingDays.map(({ id, date }) => ({ id, date }));
 }

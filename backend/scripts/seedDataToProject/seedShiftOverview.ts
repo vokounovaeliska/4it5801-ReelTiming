@@ -3,7 +3,6 @@ import { MySql2Database } from 'drizzle-orm/mysql2';
 import { v4 as uuidv4 } from 'uuid';
 import { InferInsertModel } from 'drizzle-orm';
 
-// Typ pro vkládání záznamů do tabulky `shift_overview`
 type ShiftOverviewInsert = InferInsertModel<typeof shift_overview>;
 
 export async function seedShiftOverview(
@@ -16,41 +15,40 @@ export async function seedShiftOverview(
 
   const overviews: ShiftOverviewInsert[] = [];
 
-  // 1. Shift overview pro 20 prvních shooting days
+  // 1. Generate shift overview for the first 20 shooting days
   shootingDays.slice(0, 20).forEach((day) => {
+    // Randomly select 80% of the project users for each shooting day
     const selectedUsers = projectUsers
-      .sort(() => Math.random() - 0.5) // Zamícháme uživatele
-      .slice(0, Math.floor(projectUsers.length * 0.8)); // Většina uživatelů (80 %)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, Math.floor(projectUsers.length * 0.8));
 
     overviews.push({
       id: uuidv4(),
       project_id: projectId,
       date: day.date,
-      crew_working: selectedUsers.map((user) => ({ id: user.id })), // Directly passing an array of objects
+      crew_working: selectedUsers.map((user) => ({ id: user.id })),
     });
   });
 
-  // 2. Shift overview pro náhodné dny mimo shooting_days
+  // 2. Generate shift overview for random days outside of shooting days
   const randomDays = Array.from({ length: 10 }, () => {
     const randomDate = new Date();
-    randomDate.setDate(randomDate.getDate() - Math.floor(Math.random() * 30)); // Náhodné datum v minulosti
+    randomDate.setDate(randomDate.getDate() - Math.floor(Math.random() * 30));
 
+    // Randomly select 60% of the project users for the random days
     const selectedUsers = projectUsers
       .sort(() => Math.random() - 0.5)
-      .slice(0, Math.floor(projectUsers.length * 0.6)); // 60 % uživatelů
+      .slice(0, Math.floor(projectUsers.length * 0.6));
 
     return {
       id: uuidv4(),
       project_id: projectId,
       date: randomDate,
-      crew_working: selectedUsers.map((user) => ({ id: user.id })), // Directly passing an array of objects
+      crew_working: selectedUsers.map((user) => ({ id: user.id })),
     };
   });
 
-  // Sloučíme všechna data
   overviews.push(...randomDays);
-
-  // Vložení do databáze
   await db.insert(shift_overview).values(overviews);
 
   console.log(
