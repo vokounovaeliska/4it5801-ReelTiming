@@ -32,12 +32,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     flex: 1,
     textAlign: 'center',
+    overflow: 'hidden',
+  },
+  wideCellPosition: {
+    flex: 2.9,
   },
   wideCell: {
-    flex: 1.3,
+    flex: 1.8,
   },
   shortCell: {
-    flex: 1,
+    flex: 0.8,
   },
   shootingProgressWrapper: {
     width: '20%',
@@ -45,7 +49,6 @@ const styles = StyleSheet.create({
   },
   alignRight: {
     textAlign: 'right',
-    paddingRight: 10,
   },
   alignLeft: {
     paddingLeft: 10,
@@ -75,14 +78,22 @@ const ReportCrewStatementsTable = ({
         <View style={styles.table}>
           {/* Table Header */}
           <View style={styles.tableRow}>
-            <Text style={[styles.tableCellHeader, styles.shortCell]}>
+            <Text style={[styles.tableCellHeader, styles.wideCellPosition]}>
               POSITION
             </Text>
-            <Text style={[styles.tableCellHeader, styles.wideCell]}>NAME</Text>
+            <Text
+              style={[
+                styles.tableCellHeader,
+                styles.wideCell,
+                styles.alignLeft,
+              ]}
+            >
+              NAME
+            </Text>
             <Text style={[styles.tableCellHeader, styles.shortCell]}>CALL</Text>
             <Text style={[styles.tableCellHeader, styles.shortCell]}>WRAP</Text>
             <Text style={[styles.tableCellHeader, styles.shortCell]}>OT</Text>
-            <Text style={[styles.tableCellHeader, styles.shortCell]}>
+            <Text style={[styles.tableCellHeader, styles.wideCell]}>
               TURN AROUND
             </Text>
             <Text style={[styles.tableCellHeader, styles.shortCell]}>NOTE</Text>
@@ -91,7 +102,11 @@ const ReportCrewStatementsTable = ({
           {sortedStatements.map((statement, index) => (
             <View key={index} style={styles.tableRow}>
               <Text
-                style={[styles.tableCell, styles.shortCell, styles.alignRight]}
+                style={[
+                  styles.tableCell,
+                  styles.wideCellPosition,
+                  styles.alignRight,
+                ]}
               >
                 {statement.projectUser.position || 'N/A'}
               </Text>
@@ -109,8 +124,8 @@ const ReportCrewStatementsTable = ({
               <Text style={[styles.tableCell, styles.shortCell]}>
                 {statement.claimed_overtime || '0'}
               </Text>
-              <Text style={[styles.tableCell, styles.shortCell]}></Text>
-              <Text style={[styles.tableCell, styles.shortCell]}></Text>
+              <Text style={[styles.tableCell, styles.wideCell]}></Text>
+              <Text style={[styles.tableCell, styles.wideCell]}></Text>
             </View>
           ))}
         </View>
