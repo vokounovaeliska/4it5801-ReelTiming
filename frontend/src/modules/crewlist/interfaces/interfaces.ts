@@ -90,6 +90,13 @@ export interface DepartmentProps {
    is_visible?: boolean | undefined;
 }
 
+export interface DepartmentInput {
+   id: string,
+   name: string;
+   order_index?: number | undefined;
+   is_visible?: boolean | undefined;
+}
+
 export interface ProjectUserLightVersion {
    id: string;
    is_active: boolean;

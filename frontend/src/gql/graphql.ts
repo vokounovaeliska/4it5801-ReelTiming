@@ -1423,7 +1423,13 @@ export type DepartmentsQueryVariables = Exact<{
 
 export type DepartmentsQuery = {
   __typename?: 'Query';
-  departments: Array<{ __typename?: 'Department'; id: string; name: string }>;
+  departments: Array<{
+    __typename?: 'Department';
+    id: string;
+    name: string;
+    is_visible?: boolean | null;
+    order_index?: number | null;
+  }>;
 };
 
 export type LastDailyReportByProjectIdQueryVariables = Exact<{
@@ -5644,6 +5650,8 @@ export const DepartmentsDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_visible' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'order_index' } },
               ],
             },
           },
