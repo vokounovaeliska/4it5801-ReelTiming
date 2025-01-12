@@ -28,18 +28,13 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
-    if (formData.isActive === 1) {
-      setIsActive(true);
-    } else {
-      setIsActive(false);
-    }
+    setIsActive(formData.isActive);
   }, [formData.isActive]);
 
   const handleSwitchChange = () => {
     const newValue = !isActive;
     setIsActive(newValue);
-
-    onInputChange('isActive', newValue ? 1 : 0);
+    onInputChange('isActive', newValue);
   };
 
   return (
