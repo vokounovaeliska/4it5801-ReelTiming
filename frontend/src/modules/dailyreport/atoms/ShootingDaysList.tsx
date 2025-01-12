@@ -195,4 +195,3 @@ const ShootingDaysList = ({ project }: Props) => {
 };
 
 export default ShootingDaysList;
-
