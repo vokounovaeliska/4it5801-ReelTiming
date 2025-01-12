@@ -15,7 +15,8 @@ const FeatureCard = ({ title, description, imageUrl }: FeatureCardProps) => (
     display="flex"
     flexDirection={{ base: 'column', lg: 'row' }}
     p={4}
-    my={3}
+    my={2}
+    mb={{ base: 16, lg: 0 }}
   >
     <Box
       flex="0 0 30%"
@@ -25,7 +26,7 @@ const FeatureCard = ({ title, description, imageUrl }: FeatureCardProps) => (
       display="flex"
       flexDirection="column"
       px={5}
-      pb={3}
+      pb={{ base: 0, lg: 3 }}
     >
       <Heading as="h3" fontSize="4xl" fontWeight="bold">
         {title}

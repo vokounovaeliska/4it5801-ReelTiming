@@ -78,6 +78,7 @@ export function EditProjectForm({
         <ShootingDaysConfigForm
           shootingDays={shootingDaysCollection}
           handleShootingDaysChange={handleShootingDaysChange}
+          projectData={project}
         />
       </SimpleGrid>
       <Button

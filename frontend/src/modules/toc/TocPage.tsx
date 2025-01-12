@@ -19,7 +19,7 @@ export function ToCPage() {
       >
         <Box
           w="100%"
-          maxW={{ md: '650px', xl: '800px' }} // Responsive width
+          maxW={{ md: '650px', xl: '800px' }}
           p="6"
           borderRadius="md"
           borderWidth={1}
