@@ -7,12 +7,10 @@ import ShootingDaysList from '../atoms/ShootingDaysList';
 import { Project } from '../interfaces/interface';
 
 interface DailyReportTemplateProps {
-  projectId: string;
-  projectData?: Project;
+  projectData: Project;
 }
 
 const DailyReportTemplate: React.FC<DailyReportTemplateProps> = ({
-  projectId,
   projectData,
 }) => {
   return (
@@ -24,7 +22,7 @@ const DailyReportTemplate: React.FC<DailyReportTemplateProps> = ({
         <Heading mb={4} textAlign="center">
           Daily reports for Project {projectData?.name}
         </Heading>
-        <ShootingDaysList projectId={projectId}></ShootingDaysList>
+        <ShootingDaysList project={projectData}></ShootingDaysList>
       </Box>
     </Box>
   );

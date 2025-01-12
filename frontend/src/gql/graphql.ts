@@ -1305,6 +1305,7 @@ export type GetProjectUserDetailsQuery = {
       id: string;
       name: string;
       currency: string;
+      is_active: boolean;
     };
   } | null;
 };
@@ -5113,6 +5114,10 @@ export const GetProjectUserDetailsDocument = {
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'currency' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'is_active' },
                       },
                     ],
                   },

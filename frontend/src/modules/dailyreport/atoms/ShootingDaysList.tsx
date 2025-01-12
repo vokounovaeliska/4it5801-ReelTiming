@@ -24,6 +24,7 @@ import { Heading } from '@frontend/shared/design-system';
 import DailyReportForm from '../forms/DailyReportForm';
 import {
   DailyReport,
+  Project,
   ShootingDayByProject,
   ShootingDaysByProject,
 } from '../interfaces/interface';
@@ -32,15 +33,15 @@ import { AddDailyReportButton } from './AddDailyReportButton';
 import DailyReportPreview from './DailyReportPreview';
 
 type Props = {
-  projectId: string;
+  project: Project;
 };
 
-const ShootingDaysList = ({ projectId }: Props) => {
+const ShootingDaysList = ({ project }: Props) => {
   const { data, loading, error, refetch } = useQuery<ShootingDaysByProject>(
     GET_SHOOTING_DAYS_BY_PROJECT,
     {
-      variables: { projectId },
-      skip: !projectId,
+      variables: { projectId: project?.id },
+      skip: !project?.id,
       fetchPolicy: 'cache-and-network',
       nextFetchPolicy: 'cache-first',
     },
@@ -105,11 +106,11 @@ const ShootingDaysList = ({ projectId }: Props) => {
           onClick={handleAddClick}
           ml={8}
           mb={4}
-          isDisabled={availableShootingDays.length === 0}
+          isDisabled={availableShootingDays.length === 0 || !project?.is_active}
         />
 
         <DailyReportForm
-          projectId={projectId}
+          projectId={project?.id}
           shootingDays={shootingDays}
           refetchShootingDays={refetch}
           mode={editMode}
@@ -183,7 +184,10 @@ const ShootingDaysList = ({ projectId }: Props) => {
 
       <Box flex="5" p={4} display={selectedDay ? 'block' : 'none'}>
         {selectedDay && (
-          <DailyReportPreview shootingDay={selectedDay} projectId={projectId} />
+          <DailyReportPreview
+            shootingDay={selectedDay}
+            projectId={project.id}
+          />
         )}
       </Box>
     </Box>

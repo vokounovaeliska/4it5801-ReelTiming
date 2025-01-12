@@ -70,7 +70,7 @@ const documents = {
     types.GetCarsByProjectUserIdDocument,
   '\n  query GetCrewListInfo($projectId: String!, $userId: String!) {\n    project(id: $projectId) {\n      id\n      name\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n    }\n    departments(projectId: $projectId) {\n      id\n      name\n    }\n    projectUsers(projectId: $projectId) {\n      id\n      is_active\n      position\n      user {\n        id\n      }\n      rate {\n        id\n        compensation_rate\n        create_date\n        create_user_id\n        last_update_date\n        last_update_user_id\n        overtime_hour1\n        overtime_hour2\n        overtime_hour3\n        overtime_hour4\n        standard_rate\n      }\n      invitation\n      role\n      phone_number\n      department {\n        name\n        id\n      }\n      email\n      name\n      surname\n    }\n    userRoleInProject(projectId: $projectId, userId: $userId)\n  }\n':
     types.GetCrewListInfoDocument,
-  '\n  query GetProjectUserDetails($userId: String!, $projectId: String!) {\n    projectUserDetails(userId: $userId, projectId: $projectId) {\n      project {\n        id\n        name\n        currency\n      }\n      id\n      name\n      surname\n      email\n    }\n  }\n':
+  '\n  query GetProjectUserDetails($userId: String!, $projectId: String!) {\n    projectUserDetails(userId: $userId, projectId: $projectId) {\n      project {\n        id\n        name\n        currency\n        is_active\n      }\n      id\n      name\n      surname\n      email\n    }\n  }\n':
     types.GetProjectUserDetailsDocument,
   '\n  query GetDailyReportByShootingDay($shootingDayId: String!) {\n    shootingDay(id: $shootingDayId) {\n      id\n      dailyReport {\n        id\n        intro {\n          title\n          value\n        }\n        shooting_progress {\n          title\n          value       \n        }\n        footer {\n          title\n          value\n        }\n      }\n    }\n  }\n':
     types.GetDailyReportByShootingDayDocument,
@@ -312,8 +312,8 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n  query GetProjectUserDetails($userId: String!, $projectId: String!) {\n    projectUserDetails(userId: $userId, projectId: $projectId) {\n      project {\n        id\n        name\n        currency\n      }\n      id\n      name\n      surname\n      email\n    }\n  }\n',
-): (typeof documents)['\n  query GetProjectUserDetails($userId: String!, $projectId: String!) {\n    projectUserDetails(userId: $userId, projectId: $projectId) {\n      project {\n        id\n        name\n        currency\n      }\n      id\n      name\n      surname\n      email\n    }\n  }\n'];
+  source: '\n  query GetProjectUserDetails($userId: String!, $projectId: String!) {\n    projectUserDetails(userId: $userId, projectId: $projectId) {\n      project {\n        id\n        name\n        currency\n        is_active\n      }\n      id\n      name\n      surname\n      email\n    }\n  }\n',
+): (typeof documents)['\n  query GetProjectUserDetails($userId: String!, $projectId: String!) {\n    projectUserDetails(userId: $userId, projectId: $projectId) {\n      project {\n        id\n        name\n        currency\n        is_active\n      }\n      id\n      name\n      surname\n      email\n    }\n  }\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
