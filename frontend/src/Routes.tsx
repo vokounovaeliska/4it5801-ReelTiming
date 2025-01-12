@@ -66,7 +66,7 @@ function Routes() {
         path={route.dailyReports(':projectId', ':shootingDayId')}
         element={<DailyReportPage />}
       />
-      <Route path={route.profileSettings} element={<ProfileSettingsPage />} />
+      <Route path={route.profileSettings()} element={<ProfileSettingsPage />} />
     </RouterRoutes>
   );
 }
