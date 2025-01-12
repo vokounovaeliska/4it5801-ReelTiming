@@ -33,6 +33,8 @@ const documents = {
     types.AddShootingDayDocument,
   '\n  mutation AddStatement(\n    $project_user_id: String!\n    $start_date: DateTimeISO!\n    $from: DateTimeISO!\n    $to: DateTimeISO!\n    $shift_lenght: Float!\n    $calculated_overtime: Float\n    $claimed_overtime: Float\n    $car_id: String\n    $kilometers: Float\n  ) {\n    addStatement(\n      project_user_id: $project_user_id\n      start_date: $start_date\n      from: $from\n      to: $to\n      shift_lenght: $shift_lenght\n      calculated_overtime: $calculated_overtime\n      claimed_overtime: $claimed_overtime\n      car_id: $car_id\n      kilometers: $kilometers\n    ) {\n      id\n      projectUser {\n        id\n        user {\n          id\n          name\n          surname\n        }\n      }\n      start_date\n      from\n      to\n      shift_lenght\n      calculated_overtime\n      claimed_overtime\n      create_date\n    }\n  }\n':
     types.AddStatementDocument,
+  '\n mutation AddDepartment($name: String!, $isVisible: Boolean, $orderIndex: Float, $projectId: String!) {\n    addDepartment(name: $name, isVisible: $isVisible, orderIndex: $orderIndex, projectId: $projectId) {\n      id\n      is_visible\n      name\n      order_index\n    }\n  }\n':
+    types.AddDepartmentDocument,
   '\n  mutation DeleteInvitation($projectUserId: String!) {\n    deleteInvitation(projectUserId: $projectUserId)\n  }\n':
     types.DeleteInvitationDocument,
   '\n    mutation DeleteShootingDay($shootingDayId: String!) {\n        deleteShootingDay(shootingDayId: $shootingDayId)\n    }\n':
@@ -196,6 +198,12 @@ export function gql(
 export function gql(
   source: '\n  mutation AddStatement(\n    $project_user_id: String!\n    $start_date: DateTimeISO!\n    $from: DateTimeISO!\n    $to: DateTimeISO!\n    $shift_lenght: Float!\n    $calculated_overtime: Float\n    $claimed_overtime: Float\n    $car_id: String\n    $kilometers: Float\n  ) {\n    addStatement(\n      project_user_id: $project_user_id\n      start_date: $start_date\n      from: $from\n      to: $to\n      shift_lenght: $shift_lenght\n      calculated_overtime: $calculated_overtime\n      claimed_overtime: $claimed_overtime\n      car_id: $car_id\n      kilometers: $kilometers\n    ) {\n      id\n      projectUser {\n        id\n        user {\n          id\n          name\n          surname\n        }\n      }\n      start_date\n      from\n      to\n      shift_lenght\n      calculated_overtime\n      claimed_overtime\n      create_date\n    }\n  }\n',
 ): (typeof documents)['\n  mutation AddStatement(\n    $project_user_id: String!\n    $start_date: DateTimeISO!\n    $from: DateTimeISO!\n    $to: DateTimeISO!\n    $shift_lenght: Float!\n    $calculated_overtime: Float\n    $claimed_overtime: Float\n    $car_id: String\n    $kilometers: Float\n  ) {\n    addStatement(\n      project_user_id: $project_user_id\n      start_date: $start_date\n      from: $from\n      to: $to\n      shift_lenght: $shift_lenght\n      calculated_overtime: $calculated_overtime\n      claimed_overtime: $claimed_overtime\n      car_id: $car_id\n      kilometers: $kilometers\n    ) {\n      id\n      projectUser {\n        id\n        user {\n          id\n          name\n          surname\n        }\n      }\n      start_date\n      from\n      to\n      shift_lenght\n      calculated_overtime\n      claimed_overtime\n      create_date\n    }\n  }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\n mutation AddDepartment($name: String!, $isVisible: Boolean, $orderIndex: Float, $projectId: String!) {\n    addDepartment(name: $name, isVisible: $isVisible, orderIndex: $orderIndex, projectId: $projectId) {\n      id\n      is_visible\n      name\n      order_index\n    }\n  }\n',
+): (typeof documents)['\n mutation AddDepartment($name: String!, $isVisible: Boolean, $orderIndex: Float, $projectId: String!) {\n    addDepartment(name: $name, isVisible: $isVisible, orderIndex: $orderIndex, projectId: $projectId) {\n      id\n      is_visible\n      name\n      order_index\n    }\n  }\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

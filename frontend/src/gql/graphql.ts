@@ -933,6 +933,24 @@ export type AddStatementMutation = {
   };
 };
 
+export type AddDepartmentMutationVariables = Exact<{
+  name: Scalars['String']['input'];
+  isVisible?: InputMaybe<Scalars['Boolean']['input']>;
+  orderIndex?: InputMaybe<Scalars['Float']['input']>;
+  projectId: Scalars['String']['input'];
+}>;
+
+export type AddDepartmentMutation = {
+  __typename?: 'Mutation';
+  addDepartment: {
+    __typename?: 'Department';
+    id: string;
+    is_visible?: boolean | null;
+    name: string;
+    order_index?: number | null;
+  };
+};
+
 export type DeleteInvitationMutationVariables = Exact<{
   projectUserId: Scalars['String']['input'];
 }>;
@@ -3385,6 +3403,114 @@ export const AddStatementDocument = {
 } as unknown as DocumentNode<
   AddStatementMutation,
   AddStatementMutationVariables
+>;
+export const AddDepartmentDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'AddDepartment' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'isVisible' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'orderIndex' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Float' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'addDepartment' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'name' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'name' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'isVisible' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'isVisible' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderIndex' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'orderIndex' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_visible' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'order_index' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AddDepartmentMutation,
+  AddDepartmentMutationVariables
 >;
 export const DeleteInvitationDocument = {
   kind: 'Document',
