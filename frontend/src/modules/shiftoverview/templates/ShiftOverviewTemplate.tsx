@@ -41,6 +41,15 @@ export const ShiftOverviewTemplate: React.FC<ShiftOverviewTemplateProps> = ({
       </Center>
     );
 
+  if (!projectData) {
+    return (
+      <Center minHeight="100vh">
+        <Spinner size="xl" color="orange.500" />
+        <Text ml={4}>Error fetching project data...</Text>
+      </Center>
+    );
+  }
+
   if (error) return <Text color="red.500">Error: {error.message}</Text>;
   return (
     <Box flex="1" width="100%" p={1} alignSelf="center">
@@ -56,7 +65,7 @@ export const ShiftOverviewTemplate: React.FC<ShiftOverviewTemplateProps> = ({
           refetch={refetch}
           workDays={days}
           notReportedByDate={notReportedByDate}
-          projectName={projectData?.name || 'Project'}
+          project={projectData}
         />
       </Box>
     </Box>

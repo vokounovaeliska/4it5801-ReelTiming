@@ -6,8 +6,9 @@ export const NOTIFY_USERS = gql(`
     $message: String!,
     $email: String!,
     $name: String!,
-    $projectName: String!
+    $projectName: String!,
+    $link: String!,
 ) {
-    notifyUser(dates: $dates, message: $message, email: $email, name: $name, projectName: $projectName)
+    notifyUser(dates: $dates, message: $message, email: $email, name: $name, projectName: $projectName, link: $link)
 }
 `);

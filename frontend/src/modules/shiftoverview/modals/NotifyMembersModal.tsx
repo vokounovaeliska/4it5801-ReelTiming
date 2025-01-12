@@ -25,6 +25,7 @@ import {
   GetShiftOverviewPageDataQuery,
   NotifyUserMutation,
   NotifyUserMutationVariables,
+  Project,
 } from '@frontend/gql/graphql';
 import { NOTIFY_USERS } from '@frontend/graphql/mutations/NotifyUsers';
 
@@ -38,7 +39,7 @@ type NotifyMembersModalProps = {
     Set<GetShiftOverviewPageDataQuery['projectUsers'][number]>
   >;
   workDays: Date[];
-  projectName: string;
+  project: Project;
 };
 
 export const NotifyMembersModal = ({
@@ -46,7 +47,7 @@ export const NotifyMembersModal = ({
   onClose,
   membersByDate,
   workDays,
-  projectName,
+  project,
 }: NotifyMembersModalProps) => {
   const [notifyUsers] = useMutation<
     NotifyUserMutation,
@@ -58,9 +59,9 @@ export const NotifyMembersModal = ({
     Set<GetShiftOverviewPageDataQuery['projectUsers'][number]>
   >(new Set());
 
-  const [datesByMeberId] = useState<Map<string, Set<number>>>(
-    transformToMemberDateMap(membersByDate),
-  );
+  // const [datesByMeberId] = useState<Map<string, Set<number>>>(
+  //   transformToMemberDateMap(membersByDate),
+  // );
 
   const getMembersToNotify = (selectedDate: Date) => {
     if (notificationDate?.getTime() === selectedDate.getTime()) {
@@ -97,18 +98,19 @@ export const NotifyMembersModal = ({
           email: user.email,
           dates: formattedDates,
           message: message,
-          projectName: projectName,
+          projectName: project?.name || 'Project',
+          link: `/projects/${project.id}/timesheets`,
         },
       });
     });
   };
 
   const concatDates = (dates: Set<number> | undefined): string => {
-    if (!dates || dates.size === 0) return ''; // Check if dates is undefined or empty
+    if (!dates || dates.size === 0) return '';
 
-    return Array.from(dates) // Convert Set to an array
-      .map((timestamp) => format(new Date(timestamp), 'dd-MM-yyyy')) // Format each timestamp
-      .join(', '); // Join all formatted dates with a comma and space
+    return Array.from(dates)
+      .map((timestamp) => format(new Date(timestamp), 'dd-MM-yyyy'))
+      .join(', ');
   };
 
   return (
@@ -234,7 +236,11 @@ export const NotifyMembersModal = ({
             colorScheme="orange"
             mr={3}
             onClick={async () => {
-              notifyMembers(message, usersToNotify, datesByMeberId);
+              notifyMembers(
+                message,
+                usersToNotify,
+                transformToMemberDateMap(membersByDate),
+              );
               onClose();
             }}
             isDisabled={!notificationDate || usersToNotify.size === 0}

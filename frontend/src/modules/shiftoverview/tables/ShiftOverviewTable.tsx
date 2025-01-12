@@ -23,6 +23,7 @@ import {
   EditShiftOverviewMutation,
   EditShiftOverviewMutationVariables,
   GetShiftOverviewPageDataQuery,
+  Project,
 } from '@frontend/gql/graphql';
 import { ADD_SHIFT_OVERVIEW } from '@frontend/graphql/mutations/AddShiftOverview';
 import { DELETE_SHIFT_OVERVIEW } from '@frontend/graphql/mutations/DeleteShiftOverview';
@@ -44,7 +45,7 @@ type Props = {
     number,
     Set<GetShiftOverviewPageDataQuery['projectUsers'][number]>
   >;
-  projectName: string;
+  project: Project;
 };
 
 export const ShiftOverviewTable = ({
@@ -52,7 +53,7 @@ export const ShiftOverviewTable = ({
   workDays,
   refetch,
   notReportedByDate,
-  projectName,
+  project,
 }: Props) => {
   const shootingDays = data?.shootingDaysByProject || [];
   const groupedUsers = groupUsersByDepartment(data?.projectUsers);
@@ -141,7 +142,7 @@ export const ShiftOverviewTable = ({
           onClose={onClose}
           membersByDate={notReportedByDate}
           workDays={workDays}
-          projectName={projectName}
+          project={project}
         />
       </Flex>
 
@@ -181,16 +182,44 @@ export const ShiftOverviewTable = ({
                     bg="gray.50"
                     borderTop="solid"
                     borderColor="gray.300"
-                    colSpan={workDays.length + 2}
-                    style={{ fontWeight: 'bold', textAlign: 'left' }}
+                    colSpan={2}
+                    style={{
+                      fontWeight: 'bold',
+                      textAlign: 'left',
+                      position: 'sticky',
+                      left: 0,
+                      zIndex: 1,
+                    }}
                   >
                     {department}
                   </Td>
+                  <Td
+                    colSpan={workDays.length}
+                    bg="gray.50"
+                    borderTop="solid"
+                    borderColor="gray.300"
+                  ></Td>
                 </Tr>
                 {groupedUsers[department]?.users.map((member) => (
                   <Tr key={member.id}>
-                    <Td>{member.position}</Td>
-                    <Td>
+                    <Td
+                      style={{
+                        position: 'sticky',
+                        left: 0,
+                        zIndex: 1,
+                        backgroundColor: 'white',
+                      }}
+                    >
+                      {member.position}
+                    </Td>
+                    <Td
+                      style={{
+                        position: 'sticky',
+                        left: 172,
+                        zIndex: 1,
+                        backgroundColor: 'white',
+                      }}
+                    >
                       {member.surname} {member.name}
                     </Td>
                     {workDays.map((day) => {

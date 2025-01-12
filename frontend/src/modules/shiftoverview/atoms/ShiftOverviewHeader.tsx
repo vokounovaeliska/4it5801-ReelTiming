@@ -25,8 +25,26 @@ export const ShiftOverviewHeader = ({
   return (
     <Thead position="sticky" top={0} zIndex="docked" bg="white">
       <Tr>
-        <Th>Position</Th>
-        <Th>Name</Th>
+        <Th
+          style={{
+            position: 'sticky',
+            left: 0,
+            zIndex: 1,
+            backgroundColor: 'white',
+          }}
+        >
+          Position
+        </Th>
+        <Th
+          style={{
+            position: 'sticky',
+            left: 172,
+            zIndex: 1,
+            backgroundColor: 'white',
+          }}
+        >
+          Name
+        </Th>
         {days.map((day) => {
           const shootingDay = shootingDays.find(
             (sd) =>

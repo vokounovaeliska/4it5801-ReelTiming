@@ -5,6 +5,7 @@ import { getShiftOveviewRepository } from './shiftOverviewRepository';
 import path from 'path';
 import { promises as fs } from 'fs';
 import { sendMail } from '@backend/mailer/mailer';
+import { APP_LINK } from '@backend/config';
 
 export class ShiftOverviewService {
   private shiftOverviewRepository: ReturnType<typeof getShiftOveviewRepository>;
@@ -78,6 +79,7 @@ export class ShiftOverviewService {
     email: string,
     message: string,
     dates: string,
+    link: string,
   ): Promise<boolean> {
     if (!email) {
       throw new Error('Email not provided');
@@ -94,16 +96,18 @@ export class ShiftOverviewService {
       );
 
       let htmlContent = await fs.readFile(templatePath, 'utf-8');
+      const reportLink = APP_LINK + link;
 
       // Replace placeholders in the HTML template
       htmlContent = htmlContent.replace('{{message}}', message);
       htmlContent = htmlContent.replace('{{userName}}', name);
       htmlContent = htmlContent.replace('{{dates}}', dates);
+      htmlContent = htmlContent.replace('{{reportsLink}}', reportLink);
 
       // Send the email
       await sendMail(email, `${projectName} - shift not reported`, htmlContent);
     } catch (error) {
-      console.error('Error sending invitation email:', error);
+      console.error('Error sending shift notification email:', error);
       if (error instanceof Error) {
         console.error('Stack trace:', error.stack);
       }

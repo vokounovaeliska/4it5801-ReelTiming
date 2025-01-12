@@ -169,6 +169,7 @@ type Mutation {
   notifyUser(
     dates: String!
     email: String!
+    link: String!
     message: String!
     name: String!
     projectName: String!

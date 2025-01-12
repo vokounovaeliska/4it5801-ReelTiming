@@ -111,6 +111,7 @@ export class ShiftOverviewResolver {
     @Arg('email') email: string,
     @Arg('message') message: string,
     @Arg('dates') dates: string,
+    @Arg('link') link: string,
     @Ctx() { db }: CustomContext,
   ): Promise<boolean | null> {
     if (email && dates.length > 0) {
@@ -121,6 +122,7 @@ export class ShiftOverviewResolver {
         email,
         message,
         dates,
+        link,
       );
     }
     return false;

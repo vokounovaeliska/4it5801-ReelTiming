@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AlertDialog,
   AlertDialogBody,
@@ -41,6 +41,8 @@ export function TimesheetPage() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [, setSelectedCar] = useState<string | null>(null);
   const cancelRef = React.useRef<HTMLButtonElement>(null);
+
+  const isAuthenticated = auth.user !== null;
 
   const {
     loading,
@@ -89,6 +91,13 @@ export function TimesheetPage() {
     userInfoData,
     userInfo,
   );
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate(`${route.login()}${`?projectId=${projectId}`}`);
+      return;
+    }
+  }, [isAuthenticated, navigate, loading, projectId]);
 
   if (loading) {
     return (

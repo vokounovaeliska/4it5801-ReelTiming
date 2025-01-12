@@ -39,15 +39,27 @@
         font-size: 12px;
         color: #aaa;
       }
+      a.button {
+            display: inline-block;
+            padding: 10px 15px;
+            margin-top: 10px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <h2>Important Notification</h2>
+      <h2>Please report your shift</h2>
       <p>Dear {{userName}},</p>
-      <p>{{message}}</p>
+      <p>you have not reported your working hours during the woring days.</p>
+      <p>{{message}}</p>        
       <p>The following dates are associated with your activities:</p>
       <p>{{dates}}</>
+      <p>Please fill the shifts ASAP.</p>
+       <a href="{{reportsLink}}" class="button" style="background: #dd6b20">Fill the reports</a>
       <p>If you have any questions, please feel free to reach out to us.</p>
       <footer>
         <p>Best regards,<br />ReelTiming</p>

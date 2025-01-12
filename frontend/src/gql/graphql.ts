@@ -297,6 +297,7 @@ export type MutationInviteUserArgs = {
 export type MutationNotifyUserArgs = {
   dates: Scalars['String']['input'];
   email: Scalars['String']['input'];
+  link: Scalars['String']['input'];
   message: Scalars['String']['input'];
   name: Scalars['String']['input'];
   projectName: Scalars['String']['input'];
@@ -1139,6 +1140,7 @@ export type NotifyUserMutationVariables = Exact<{
   email: Scalars['String']['input'];
   name: Scalars['String']['input'];
   projectName: Scalars['String']['input'];
+  link: Scalars['String']['input'];
 }>;
 
 export type NotifyUserMutation = {
@@ -4605,6 +4607,17 @@ export const NotifyUserDocument = {
             },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'link' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -4651,6 +4664,14 @@ export const NotifyUserDocument = {
                 value: {
                   kind: 'Variable',
                   name: { kind: 'Name', value: 'projectName' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'link' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'link' },
                 },
               },
             ],
