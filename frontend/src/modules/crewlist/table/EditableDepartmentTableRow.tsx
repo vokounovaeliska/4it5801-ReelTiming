@@ -4,6 +4,7 @@ import { Tr, Td } from '@chakra-ui/react';
 import { Department } from '@frontend/modules/dailyreport/interfaces/interface';
 import { UPDATE_DEPARTMENT_ORDER } from "@frontend/graphql/mutations/UpdateDepartmentOrder";
 import { useMutation } from '@apollo/client';
+import { EditDepartmentButton } from '../atoms/EditDepartmentButton';
 
 interface EditableDepartmentTableRowProps {
    department: Department,
@@ -126,7 +127,12 @@ export const EditableDepartmentTableRow: React.FC<EditableDepartmentTableRowProp
                   <button onClick={handleCancel}>Cancel</button>
                </>
             ) : (
-               <button onClick={() => handleEdit(department)}>Edit</button>
+               <EditDepartmentButton
+                  handleEdit={handleEdit}
+                  department={department}
+                  aria-label={'Edit department'}
+                  mr={2}
+               />
             )}
          </Td>
       </Tr>
