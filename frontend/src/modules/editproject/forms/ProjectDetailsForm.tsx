@@ -27,7 +27,6 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
 }) => {
   const [isActive, setIsActive] = useState(false);
 
-  // Použijeme useEffect pro inicializaci stavu na základě hodnoty z formData.isActive
   useEffect(() => {
     if (formData.isActive === 1) {
       setIsActive(true);
@@ -39,7 +38,8 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
   const handleSwitchChange = () => {
     const newValue = !isActive;
     setIsActive(newValue);
-    onInputChange('isActive', newValue ? 1 : 0); // Aktualizujeme hodnotu isActive na 1 nebo 0
+
+    onInputChange('isActive', newValue ? 1 : 0);
   };
 
   return (
