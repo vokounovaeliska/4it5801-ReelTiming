@@ -31,12 +31,7 @@ export const ShiftOverviewTemplate: React.FC<ShiftOverviewTemplateProps> = ({
 
   const [notReportedByDate] = useState<
     Map<number, Set<GetShiftOverviewPageDataQuery['projectUsers'][number]>>
-  >(
-    () =>
-      new Map(
-        days.map((date) => [date.getTime(), new Set()]), // Use date.getTime() as the key, initialize with a Set
-      ),
-  );
+  >(() => new Map(days.map((date) => [date.getTime(), new Set()])));
 
   if (loading)
     return (
@@ -61,6 +56,7 @@ export const ShiftOverviewTemplate: React.FC<ShiftOverviewTemplateProps> = ({
           refetch={refetch}
           workDays={days}
           notReportedByDate={notReportedByDate}
+          projectName={projectData?.name || 'Project'}
         />
       </Box>
     </Box>

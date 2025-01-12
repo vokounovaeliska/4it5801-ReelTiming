@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useMutation } from '@apollo/client';
 import {
   Box,
   Button,
@@ -20,12 +21,14 @@ import {
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
 
-import { GetShiftOverviewPageDataQuery } from '@frontend/gql/graphql';
-
 import {
-  notifyMembers,
-  transformToMemberDateMap,
-} from '../utils/shiftOverviewUtils';
+  GetShiftOverviewPageDataQuery,
+  NotifyUserMutation,
+  NotifyUserMutationVariables,
+} from '@frontend/gql/graphql';
+import { NOTIFY_USERS } from '@frontend/graphql/mutations/NotifyUsers';
+
+import { transformToMemberDateMap } from '../utils/shiftOverviewUtils';
 
 type NotifyMembersModalProps = {
   isOpen: boolean;
@@ -35,6 +38,7 @@ type NotifyMembersModalProps = {
     Set<GetShiftOverviewPageDataQuery['projectUsers'][number]>
   >;
   workDays: Date[];
+  projectName: string;
 };
 
 export const NotifyMembersModal = ({
@@ -42,7 +46,12 @@ export const NotifyMembersModal = ({
   onClose,
   membersByDate,
   workDays,
+  projectName,
 }: NotifyMembersModalProps) => {
+  const [notifyUsers] = useMutation<
+    NotifyUserMutation,
+    NotifyUserMutationVariables
+  >(NOTIFY_USERS);
   const [notificationDate, setNotificationDate] = useState<Date | null>(null);
   const [message, setMessage] = useState<string>('');
   const [usersToNotify, setUsersToNotify] = useState<
@@ -73,16 +82,33 @@ export const NotifyMembersModal = ({
     setUsersToNotify(usersToNotifyUpdated);
   };
 
-  const notifyMembersLocal = (
+  const notifyMembers = async (
     message: string,
     members: Set<GetShiftOverviewPageDataQuery['projectUsers'][number]>,
     dates: Map<string, Set<number>>,
   ) => {
-    notifyMembers(message, members, dates);
+    members.forEach((user) => {
+      const userDates = dates.get(user.id);
+      const formattedDates = concatDates(userDates);
 
-    setUsersToNotify(new Set());
-    setMessage('');
-    onClose();
+      notifyUsers({
+        variables: {
+          name: user.name,
+          email: user.email,
+          dates: formattedDates,
+          message: message,
+          projectName: projectName,
+        },
+      });
+    });
+  };
+
+  const concatDates = (dates: Set<number> | undefined): string => {
+    if (!dates || dates.size === 0) return ''; // Check if dates is undefined or empty
+
+    return Array.from(dates) // Convert Set to an array
+      .map((timestamp) => format(new Date(timestamp), 'dd-MM-yyyy')) // Format each timestamp
+      .join(', '); // Join all formatted dates with a comma and space
   };
 
   return (
@@ -207,9 +233,10 @@ export const NotifyMembersModal = ({
           <Button
             colorScheme="orange"
             mr={3}
-            onClick={() =>
-              notifyMembersLocal(message, usersToNotify, datesByMeberId)
-            }
+            onClick={async () => {
+              notifyMembers(message, usersToNotify, datesByMeberId);
+              onClose();
+            }}
             isDisabled={!notificationDate || usersToNotify.size === 0}
           >
             Notify Members

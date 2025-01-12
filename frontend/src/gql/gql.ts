@@ -61,6 +61,8 @@ const documents = {
     types.EditUserDocument,
   '\n  mutation InviteUserToProject(\n    $email: String!\n    $name: String!\n    $projectUserId: String!\n  ) {\n    inviteUser(email: $email, name: $name, projectUserId: $projectUserId)\n  }\n':
     types.InviteUserToProjectDocument,
+  '\n  mutation NotifyUser(\n    $dates: String!,\n    $message: String!,\n    $email: String!,\n    $name: String!,\n    $projectName: String!\n) {\n    notifyUser(dates: $dates, message: $message, email: $email, name: $name, projectName: $projectName)\n}\n':
+    types.NotifyUserDocument,
   '\n  mutation UpdateAndActivateProjectUser(\n    $data: ProjectUserInput!\n    $updateProjectUserId: String!\n    $updateRateData: RateInput!\n    $rateId: String!\n  ) {\n    updateRate(data: $updateRateData, rateId: $rateId) {\n      compensation_rate\n      overtime_hour1\n      overtime_hour2\n      overtime_hour3\n      overtime_hour4\n      standard_rate\n    }\n    updateProjectUser(data: $data, id: $updateProjectUserId) {\n      id\n      position\n      number_of_people\n      is_team_leader\n      name\n      surname\n      email\n      create_date\n      create_user_id\n      last_update_user_id\n      last_update_date\n      is_active\n      role\n      invitation\n      phone_number\n    }\n  }\n':
     types.UpdateAndActivateProjectUserDocument,
   '\n  mutation UpdateUser($data: UserInput!, $userId: String!) {\n    updateUser(data: $data, userId: $userId) {\n      name\n      surname\n      phone_number\n      email\n      last_update_date\n    }\n  }\n':
@@ -286,6 +288,12 @@ export function gql(
 export function gql(
   source: '\n  mutation InviteUserToProject(\n    $email: String!\n    $name: String!\n    $projectUserId: String!\n  ) {\n    inviteUser(email: $email, name: $name, projectUserId: $projectUserId)\n  }\n',
 ): (typeof documents)['\n  mutation InviteUserToProject(\n    $email: String!\n    $name: String!\n    $projectUserId: String!\n  ) {\n    inviteUser(email: $email, name: $name, projectUserId: $projectUserId)\n  }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\n  mutation NotifyUser(\n    $dates: String!,\n    $message: String!,\n    $email: String!,\n    $name: String!,\n    $projectName: String!\n) {\n    notifyUser(dates: $dates, message: $message, email: $email, name: $name, projectName: $projectName)\n}\n',
+): (typeof documents)['\n  mutation NotifyUser(\n    $dates: String!,\n    $message: String!,\n    $email: String!,\n    $name: String!,\n    $projectName: String!\n) {\n    notifyUser(dates: $dates, message: $message, email: $email, name: $name, projectName: $projectName)\n}\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

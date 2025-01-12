@@ -44,6 +44,7 @@ type Props = {
     number,
     Set<GetShiftOverviewPageDataQuery['projectUsers'][number]>
   >;
+  projectName: string;
 };
 
 export const ShiftOverviewTable = ({
@@ -51,6 +52,7 @@ export const ShiftOverviewTable = ({
   workDays,
   refetch,
   notReportedByDate,
+  projectName,
 }: Props) => {
   const shootingDays = data?.shootingDaysByProject || [];
   const groupedUsers = groupUsersByDepartment(data?.projectUsers);
@@ -139,6 +141,7 @@ export const ShiftOverviewTable = ({
           onClose={onClose}
           membersByDate={notReportedByDate}
           workDays={workDays}
+          projectName={projectName}
         />
       </Flex>
 

@@ -137,6 +137,7 @@ export type Mutation = {
   deleteUser: Scalars['Boolean']['output'];
   forgotPassword: Scalars['Boolean']['output'];
   inviteUser: Scalars['Boolean']['output'];
+  notifyUser: Scalars['Boolean']['output'];
   resetPassword: AuthInfo;
   signIn: AuthInfo;
   signUp: AuthInfo;
@@ -291,6 +292,14 @@ export type MutationInviteUserArgs = {
   email: Scalars['String']['input'];
   name: Scalars['String']['input'];
   projectUserId: Scalars['String']['input'];
+};
+
+export type MutationNotifyUserArgs = {
+  dates: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  message: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  projectName: Scalars['String']['input'];
 };
 
 export type MutationResetPasswordArgs = {
@@ -1122,6 +1131,19 @@ export type InviteUserToProjectMutationVariables = Exact<{
 export type InviteUserToProjectMutation = {
   __typename?: 'Mutation';
   inviteUser: boolean;
+};
+
+export type NotifyUserMutationVariables = Exact<{
+  dates: Scalars['String']['input'];
+  message: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  projectName: Scalars['String']['input'];
+}>;
+
+export type NotifyUserMutation = {
+  __typename?: 'Mutation';
+  notifyUser: boolean;
 };
 
 export type UpdateAndActivateProjectUserMutationVariables = Exact<{
@@ -4508,6 +4530,136 @@ export const InviteUserToProjectDocument = {
   InviteUserToProjectMutation,
   InviteUserToProjectMutationVariables
 >;
+export const NotifyUserDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'NotifyUser' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'dates' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'message' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'email' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectName' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'notifyUser' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'dates' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'dates' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'message' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'message' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'email' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'email' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'name' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'name' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectName' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectName' },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<NotifyUserMutation, NotifyUserMutationVariables>;
 export const UpdateAndActivateProjectUserDocument = {
   kind: 'Document',
   definitions: [
