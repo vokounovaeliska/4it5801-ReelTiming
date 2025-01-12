@@ -18,7 +18,6 @@ import { DailyReportPage } from './modules/dailyreport/pages/DailyReportPage';
 import { EditProjectPage } from './modules/editproject/pages/EditProjectPage';
 import { CreateProjectPage } from './modules/myprojects/pages/CreateProjectPage';
 import ProfileSettingsPage from './modules/profilesettings/pages/ProfileSettingsPage';
-import { ShiftOverviewPage } from './modules/shiftoverview/pages/ShiftOverviewPage';
 import { TimesheetPage } from './modules/timesheets/pages/TimesheetsPage';
 import { ToCPage } from './modules/toc/TocPage';
 import { route } from './route';
