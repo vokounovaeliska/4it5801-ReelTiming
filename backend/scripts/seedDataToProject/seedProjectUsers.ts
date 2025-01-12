@@ -52,7 +52,7 @@ export async function seedProjectUsers(
   for (let i = 0; i < count; i++) {
     const userId = users[i].id;
     const rateId = rateIds[i].id;
-    const department = departments[i]; // Get department
+    const department = departments[i % departments.length];
 
     const departmentPosition = departmentPositions[department.name];
     const position = faker.helpers.arrayElement(departmentPosition);
