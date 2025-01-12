@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import {
   Box,
   Button,
@@ -16,7 +16,6 @@ import {
 
 import { ADD_DAILY_REPORT } from '@frontend/graphql/mutations/AddDailyReport';
 import { EDIT_DAILY_REPORT } from '@frontend/graphql/mutations/EditDailyReport';
-import { GET_LAST_DAILY_REPORT_BY_PROJECT } from '@frontend/graphql/queries/GetLastDailyReportByProjectId';
 import { formatDateToDisplay } from '@frontend/modules/timesheets/utils/timeUtils';
 import {
   showErrorToast,
@@ -25,11 +24,7 @@ import {
 
 import SectionTable from '../atoms/form/SectionTable';
 import ShootingDaySelector from '../atoms/form/ShootingDaySelector';
-import {
-  DailyReportFormProps,
-  LastDailyReportByProjectIdQuery,
-  ReportItem,
-} from '../interfaces/interface';
+import { DailyReportFormProps, ReportItem } from '../interfaces/interface';
 import { cleanReportItems } from '../utils/dailyReportUtils';
 
 import {
@@ -48,15 +43,9 @@ const DailyReportForm = ({
   isOpen,
   onClose,
   shootingDay,
+  lastDailyReport: data,
+  lastDailyReportRefetch: refetch,
 }: DailyReportFormProps) => {
-  const { data, refetch } = useQuery<LastDailyReportByProjectIdQuery>(
-    GET_LAST_DAILY_REPORT_BY_PROJECT,
-    {
-      variables: { projectId },
-      skip: !projectId,
-      fetchPolicy: 'cache-and-network',
-    },
-  );
   const [addDailyReport] = useMutation(ADD_DAILY_REPORT);
   const [editDailyReport] = useMutation(EDIT_DAILY_REPORT);
   const [intro, setIntro] = useState<ReportItem[]>([]);
@@ -170,7 +159,6 @@ const DailyReportForm = ({
         showSuccessToast('Daily report updated successfully.');
       }
       onClose();
-      onCloseEdit();
       refetchShootingDays();
     } catch (error) {
       console.error(error);
@@ -194,7 +182,7 @@ const DailyReportForm = ({
       onCloseEdit();
     }
     refetch();
-
+    setSelectedShootingDay(null);
     onClose();
   };
 

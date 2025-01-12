@@ -3,7 +3,7 @@ import { Box } from '@chakra-ui/react';
 
 import { Heading } from '@frontend/shared/design-system';
 
-import ShootingDaysList from '../atoms/ShootingDaysList';
+import ShootingDaysOverview from '../atoms/ShootingDaysOverview';
 import { Project } from '../interfaces/interface';
 
 interface DailyReportTemplateProps {
@@ -24,7 +24,7 @@ const DailyReportTemplate: React.FC<DailyReportTemplateProps> = ({
         <Heading mb={4} textAlign="center">
           Daily reports for Project {projectData?.name}
         </Heading>
-        <ShootingDaysList projectId={projectId}></ShootingDaysList>
+        <ShootingDaysOverview projectId={projectId}></ShootingDaysOverview>
       </Box>
     </Box>
   );
