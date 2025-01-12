@@ -58,7 +58,15 @@ function Routes() {
         path={route.acceptInvitation()}
         element={<AcceptInvitationPage />}
       />
-      <Route path={route.dailyReports()} element={<DailyReportPage />} />
+      {/* <Route path={route.dailyReports()} element={<DailyReportPage />} /> */}
+      <Route
+        path={route.dailyReports(':projectId')}
+        element={<DailyReportPage />}
+      />
+      <Route
+        path={route.dailyReports(':projectId', ':shootingDayId')}
+        element={<DailyReportPage />}
+      />
       <Route path={route.profileSettings} element={<ProfileSettingsPage />} />
     </RouterRoutes>
   );
