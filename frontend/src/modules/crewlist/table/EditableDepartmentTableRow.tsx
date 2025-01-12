@@ -6,6 +6,7 @@ import { UPDATE_DEPARTMENT_ORDER } from "@frontend/graphql/mutations/UpdateDepar
 import { useMutation } from '@apollo/client';
 import { EditDepartmentButton } from '../atoms/EditDepartmentButton';
 import { CancelDepartmentButton } from '../atoms/CancelDepartmentButton';
+import { SaveDepartmentButton } from '../atoms/SaveDepartmentButton';
 
 interface EditableDepartmentTableRowProps {
    department: Department,
@@ -122,9 +123,12 @@ export const EditableDepartmentTableRow: React.FC<EditableDepartmentTableRowProp
          <Td>
             {editRowId === department.id ? (
                <>
-                  <button onClick={() => handleSave(department.id)} disabled={loading}>
-                     Save
-                  </button>
+                  <SaveDepartmentButton
+                     departmentId={department.id}
+                     handleSave={handleSave}
+                     aria-label={'Edit department'}
+                     mr={2}
+                  />
                   <CancelDepartmentButton
                      handleCancel={handleCancel}
                      aria-label={'Edit department'}

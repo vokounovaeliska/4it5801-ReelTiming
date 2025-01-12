@@ -1,15 +1,18 @@
-import { CloseIcon } from '@chakra-ui/icons';
+import { CheckIcon } from '@chakra-ui/icons';
 import { IconButton, IconButtonProps, Tooltip } from '@chakra-ui/react';
+import { Department } from '@frontend/gql/graphql';
 
 interface EditDepartmentButton extends IconButtonProps {
-   handleCancel: () => void;
+   departmentId: string;
+   handleSave: (id: string) => void;
 }
 
-export const CancelDepartmentButton = ({
-   handleCancel,
+export const SaveDepartmentButton = ({
+   departmentId,
+   handleSave,
    ...buttonProps
 }: EditDepartmentButton) => {
-   const label = 'Cancel';
+   const label = 'Save';
    return (
       <Tooltip
          label={label}
@@ -26,12 +29,11 @@ export const CancelDepartmentButton = ({
             borderColor="gray.300"
             bg={'white'}
             size="xs"
-            icon={<CloseIcon color="gray.500" />}
+            icon={<CheckIcon color="gray.500" />}
             onClick={() => {
-               handleCancel()
+               handleSave(departmentId)
             }}
          />
       </Tooltip>
    );
 };
-
