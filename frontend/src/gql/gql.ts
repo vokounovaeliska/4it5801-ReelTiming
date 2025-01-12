@@ -41,7 +41,7 @@ const documents = {
     types.DeleteStatementDocument,
   '\nmutation EditDailyReport($data: DailyReportInput!, $dailyReportId: String!) {\n    updateDailyReport(data: $data, dailyReportId: $dailyReportId) {\n      id\n      \n    }\n  }\n':
     types.EditDailyReportDocument,
-  '\n    mutation EditProject($data: ProjectInput!, $projectId: String!){\n        updateProject(data: $data, projectId: $projectId){\n            description,\n            name,\n            production_company,\n            end_date,\n            is_active,\n            last_update_user_id,\n            currency,\n            # start_date\n        }\n    } \n':
+  '\n    mutation EditProject($data: ProjectInput!, $projectId: String!){\n        updateProject(data: $data, projectId: $projectId){\n            description,\n            name,\n            production_company,\n            end_date,\n            is_active,\n            last_update_user_id,\n            currency,\n            logo,\n            # start_date\n        }\n    } \n':
     types.EditProjectDocument,
   '\n  mutation EditProjectUser($data: ProjectUserInput!, $updateProjectUserId: String!) {\n    updateProjectUser(data: $data, id: $updateProjectUserId) {\n      id\n    }\n  }\n':
     types.EditProjectUserDocument,
@@ -82,7 +82,7 @@ const documents = {
     types.LastDailyReportByProjectIdDocument,
   '\n  query GetProjectByProjectUserToken($token: String!) {\n    projectUsersByToken(token: $token) {\n      project {\n        name\n      }\n    }\n  }\n':
     types.GetProjectByProjectUserTokenDocument,
-  '\n  query GetProjectDetail($id: String!) {\n    project(id: $id) {\n      id\n      name\n      description\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n      projectUsers {\n      id\n    }\n    }\n  }\n':
+  '\n  query GetProjectDetail($id: String!) {\n    project(id: $id) {\n      id\n      name\n      description\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n      projectUsers {\n      id\n    }\n      logo\n    }\n  }\n':
     types.GetProjectDetailDocument,
   '\n  query GetProjectUserByToken($token: String!) {\n    projectUsersByToken(token: $token) {\n      id\n      position\n      name\n      surname\n      email\n      is_active\n      role\n      invitation\n      phone_number\n      project {\n        id\n        name\n        description\n        currency\n      }\n      rate {\n        standard_rate\n        overtime_hour1\n        overtime_hour2\n        overtime_hour3\n        overtime_hour4\n        compensation_rate\n        id\n      }\n      department {\n        id\n        name\n      }\n    }\n  }\n':
     types.GetProjectUserByTokenDocument,
@@ -222,8 +222,8 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n    mutation EditProject($data: ProjectInput!, $projectId: String!){\n        updateProject(data: $data, projectId: $projectId){\n            description,\n            name,\n            production_company,\n            end_date,\n            is_active,\n            last_update_user_id,\n            currency,\n            # start_date\n        }\n    } \n',
-): (typeof documents)['\n    mutation EditProject($data: ProjectInput!, $projectId: String!){\n        updateProject(data: $data, projectId: $projectId){\n            description,\n            name,\n            production_company,\n            end_date,\n            is_active,\n            last_update_user_id,\n            currency,\n            # start_date\n        }\n    } \n'];
+  source: '\n    mutation EditProject($data: ProjectInput!, $projectId: String!){\n        updateProject(data: $data, projectId: $projectId){\n            description,\n            name,\n            production_company,\n            end_date,\n            is_active,\n            last_update_user_id,\n            currency,\n            logo,\n            # start_date\n        }\n    } \n',
+): (typeof documents)['\n    mutation EditProject($data: ProjectInput!, $projectId: String!){\n        updateProject(data: $data, projectId: $projectId){\n            description,\n            name,\n            production_company,\n            end_date,\n            is_active,\n            last_update_user_id,\n            currency,\n            logo,\n            # start_date\n        }\n    } \n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -348,8 +348,8 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n  query GetProjectDetail($id: String!) {\n    project(id: $id) {\n      id\n      name\n      description\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n      projectUsers {\n      id\n    }\n    }\n  }\n',
-): (typeof documents)['\n  query GetProjectDetail($id: String!) {\n    project(id: $id) {\n      id\n      name\n      description\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n      projectUsers {\n      id\n    }\n    }\n  }\n'];
+  source: '\n  query GetProjectDetail($id: String!) {\n    project(id: $id) {\n      id\n      name\n      description\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n      projectUsers {\n      id\n    }\n      logo\n    }\n  }\n',
+): (typeof documents)['\n  query GetProjectDetail($id: String!) {\n    project(id: $id) {\n      id\n      name\n      description\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n      projectUsers {\n      id\n    }\n      logo\n    }\n  }\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

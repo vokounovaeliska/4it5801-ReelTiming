@@ -986,6 +986,7 @@ export type EditProjectMutation = {
     is_active: boolean;
     last_update_user_id: string;
     currency: string;
+    logo?: string | null;
   };
 };
 
@@ -1464,6 +1465,7 @@ export type GetProjectDetailQuery = {
     last_update_date: string;
     last_update_user_id: string;
     currency: string;
+    logo?: string | null;
     projectUsers?: Array<{ __typename?: 'ProjectUser'; id: string }> | null;
   } | null;
 };
@@ -3647,6 +3649,7 @@ export const EditProjectDocument = {
                   name: { kind: 'Name', value: 'last_update_user_id' },
                 },
                 { kind: 'Field', name: { kind: 'Name', value: 'currency' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'logo' } },
               ],
             },
           },
@@ -5800,6 +5803,7 @@ export const GetProjectDetailDocument = {
                     ],
                   },
                 },
+                { kind: 'Field', name: { kind: 'Name', value: 'logo' } },
               ],
             },
           },

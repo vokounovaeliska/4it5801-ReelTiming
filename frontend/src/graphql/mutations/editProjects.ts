@@ -157,6 +157,7 @@ export const useProjectConfigOperations = (
             end_date: data.endDate ?? null,
             last_update_user_id: userId,
             currency: data.currency,
+            logo: data.logo,
           },
         },
       });

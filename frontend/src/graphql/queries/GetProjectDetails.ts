@@ -18,6 +18,7 @@ export const GET_PROJECT_DETAILS = gql(`
       projectUsers {
       id
     }
+      logo
     }
   }
 `);

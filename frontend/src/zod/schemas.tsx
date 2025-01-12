@@ -121,6 +121,7 @@ export const projectFormSchema = z
         message: 'End date must be a valid date or empty',
       }),
     currency: zod.string().length(3, { message: 'Currency must be selected.' }),
+    logo: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     const startDate = data.startDate.setHours(0, 0, 0, 0);

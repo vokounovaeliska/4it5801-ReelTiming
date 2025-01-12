@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, SimpleGrid } from '@chakra-ui/react';
+import { Box, Button, Input, SimpleGrid } from '@chakra-ui/react';
 
 import { ShootingDay } from '@frontend/gql/graphql';
 import { projectFormValues } from '@frontend/zod/schemas';
@@ -33,15 +33,46 @@ export function EditProjectForm({
     startDate: project?.start_date ? new Date(project.start_date) : new Date(),
     endDate: project?.end_date ? new Date(project.end_date) : null,
     currency: project.currency!,
+    logo: '',
   };
 
   const [formData, setFormData] = useState(initialValues);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
   const handleInputChange = (name: keyof projectFormValues, value: unknown) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSaveChanges = () => {
-    onSubmit(formData, shootingDays, shootingDaysCollection);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        if (img.width <= 400 && img.height <= 100) {
+          setLogoFile(file);
+        } else {
+          alert('Image dimensions should be 400x100 pixels or smaller.');
+        }
+      };
+    } else {
+      alert('Please upload a valid .png or .jpg file');
+    }
+  };
+
+  const handleSaveChanges = async () => {
+    if (logoFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result?.toString().split(',')[1];
+        if (base64String) {
+          const updatedFormData = { ...formData, logo: base64String };
+          onSubmit(updatedFormData, shootingDays, shootingDaysCollection);
+        }
+      };
+      reader.readAsDataURL(logoFile);
+    } else {
+      onSubmit(formData, shootingDays, shootingDaysCollection);
+    }
   };
 
   const [shootingDaysCollection, setShootingDaysCollection] = useState<
@@ -79,6 +110,7 @@ export function EditProjectForm({
           shootingDays={shootingDaysCollection}
           handleShootingDaysChange={handleShootingDaysChange}
         />
+        <Input type="file" accept=".png" onChange={handleFileChange} />
       </SimpleGrid>
       <Button
         colorScheme="orange"

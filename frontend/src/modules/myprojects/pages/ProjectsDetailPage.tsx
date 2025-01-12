@@ -83,7 +83,11 @@ export function MyProjectDetailPage() {
       minHeight="100vh"
       bgColor="gray.50"
     >
-      <ProjectNavbar projectId={id} userRole={userRole.userRoleInProject} />
+      <ProjectNavbar
+        projectId={id}
+        userRole={userRole.userRoleInProject}
+        projectLogo={project.logo}
+      />
       <Box
         flex="1"
         p={{ base: 3, md: 8 }}
