@@ -1632,6 +1632,7 @@ export type GetShiftOverviewPageDataQuery = {
     id: string;
     name: string;
     surname: string;
+    email: string;
     position?: string | null;
     department?: {
       __typename?: 'Department';
@@ -6567,6 +6568,7 @@ export const GetShiftOverviewPageDataDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'surname' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'email' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'position' } },
                 {
                   kind: 'Field',

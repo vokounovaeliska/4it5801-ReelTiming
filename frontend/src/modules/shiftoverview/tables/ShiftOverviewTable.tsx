@@ -11,6 +11,7 @@ import {
   Tbody,
   Td,
   Tr,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
 
@@ -29,29 +30,36 @@ import { EDIT_SHIFT_OVERVIEW } from '@frontend/graphql/mutations/EditShiftOvervi
 
 import { ShiftOverviewHeader } from '../atoms/ShiftOverviewHeader';
 import { ShiftWorkedReportedIcons } from '../atoms/ShiftWorkedReportedIcons';
+import { NotifyMembersModal } from '../modals/NotifyMembersModal';
 import {
-  getAllDatesBetween,
   groupUsersByDepartment,
   handleSave,
 } from '../utils/shiftOverviewUtils';
 
 type Props = {
   data?: GetShiftOverviewPageDataQuery;
+  workDays: Date[];
   refetch: () => void;
+  notReportedByDate: Map<
+    number,
+    Set<GetShiftOverviewPageDataQuery['projectUsers'][number]>
+  >;
 };
 
-export const ShiftOverviewTable = ({ data, refetch }: Props) => {
-  const days: Date[] = getAllDatesBetween(
-    data?.project?.start_date,
-    data?.project?.end_date,
-  );
-
+export const ShiftOverviewTable = ({
+  data,
+  workDays,
+  refetch,
+  notReportedByDate,
+}: Props) => {
   const shootingDays = data?.shootingDaysByProject || [];
   const groupedUsers = groupUsersByDepartment(data?.projectUsers);
 
   const sortedDepartments = Object.keys(groupedUsers).sort(
     (a, b) => groupedUsers[a].orderIndex - groupedUsers[b].orderIndex,
   );
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [shiftStates, setShiftStates] = useState<Record<string, boolean>>({});
 
@@ -94,35 +102,45 @@ export const ShiftOverviewTable = ({ data, refetch }: Props) => {
 
   return (
     <Box maxWidth="100%">
-      <Button
-        aria-label="Save shift overview"
-        colorScheme="orange"
-        bgColor="orange.500"
-        size="md"
-        leftIcon={<LockIcon />}
-        borderRadius="full"
-        boxShadow="md"
-        _hover={{
-          bg: 'orange.500',
-          color: 'white',
-          transform: 'scale(1.1)',
-        }}
-        transition="all 0.3s ease"
-        m={4}
-        onClick={async () => {
-          await handleSave({
-            data,
-            shiftStates,
-            addShiftOverview,
-            editShiftOverview,
-            deleteShiftOverview,
-            refetch,
-          });
-          setShiftStates({});
-        }}
-      >
-        Save Changes
-      </Button>
+      <Flex justifyContent="space-between" alignItems="center">
+        <Button
+          aria-label="Save shift overview"
+          colorScheme="orange"
+          bgColor="orange.500"
+          size="md"
+          leftIcon={<LockIcon />}
+          borderRadius="full"
+          boxShadow="md"
+          _hover={{
+            bg: 'orange.500',
+            color: 'white',
+            transform: 'scale(1.1)',
+          }}
+          transition="all 0.3s ease"
+          m={4}
+          onClick={async () => {
+            await handleSave({
+              data,
+              shiftStates,
+              addShiftOverview,
+              editShiftOverview,
+              deleteShiftOverview,
+              refetch,
+            });
+            setShiftStates({});
+          }}
+        >
+          Save Changes
+        </Button>
+
+        <Button onClick={onOpen}>Notify members</Button>
+        <NotifyMembersModal
+          isOpen={isOpen}
+          onClose={onClose}
+          membersByDate={notReportedByDate}
+          workDays={workDays}
+        />
+      </Flex>
 
       <TableContainer className="custom-scrollbar">
         <Box
@@ -150,7 +168,7 @@ export const ShiftOverviewTable = ({ data, refetch }: Props) => {
           <Table variant="simple" size="sm">
             <ShiftOverviewHeader
               shootingDays={shootingDays}
-              days={days}
+              days={workDays}
               onSelectAll={handleSelectAllForDay}
             />
             {sortedDepartments.map((department) => (
@@ -160,7 +178,7 @@ export const ShiftOverviewTable = ({ data, refetch }: Props) => {
                     bg="gray.50"
                     borderTop="solid"
                     borderColor="gray.300"
-                    colSpan={days.length + 2}
+                    colSpan={workDays.length + 2}
                     style={{ fontWeight: 'bold', textAlign: 'left' }}
                   >
                     {department}
@@ -172,7 +190,7 @@ export const ShiftOverviewTable = ({ data, refetch }: Props) => {
                     <Td>
                       {member.surname} {member.name}
                     </Td>
-                    {days.map((day) => {
+                    {workDays.map((day) => {
                       const key = `${member.id}/${format(day, 'yyyy-MM-dd')}`;
                       const hasWorked =
                         shiftStates[key] ??
@@ -191,6 +209,9 @@ export const ShiftOverviewTable = ({ data, refetch }: Props) => {
                           format(day, 'yyyy-MM-dd'),
                       );
 
+                      if (hasWorked && !hasReported) {
+                        notReportedByDate.get(day.getTime())?.add(member);
+                      }
                       return (
                         <Td key={key} textAlign="center">
                           <Flex align="center" gap={2}>

@@ -205,3 +205,22 @@ export const handleSave = async ({
     showErrorToast('An error occurred while saving the shift overview.');
   }
 };
+
+export function transformToMemberDateMap(
+  membersByDate: Map<
+    number,
+    Set<GetShiftOverviewPageDataQuery['projectUsers'][number]>
+  >,
+): Map<string, Set<number>> {
+  const memberDateMap = new Map<string, Set<number>>();
+
+  membersByDate.forEach((members, date) => {
+    members.forEach((member) => {
+      const memberDates = memberDateMap.get(member.id) || new Set<number>();
+      memberDates.add(date);
+      memberDateMap.set(member.id, memberDates);
+    });
+  });
+
+  return memberDateMap;
+}

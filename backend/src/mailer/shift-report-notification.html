@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notification Email</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f7f7f7;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        color: #333;
+      }
+      p {
+        font-size: 16px;
+        color: #555;
+      }
+      ul {
+        padding-left: 20px;
+        font-size: 16px;
+        color: #555;
+      }
+      li {
+        margin-bottom: 5px;
+      }
+      footer {
+        margin-top: 30px;
+        font-size: 12px;
+        color: #aaa;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Important Notification</h2>
+      <p>Dear {{userName}},</p>
+      <p>{{message}}</p>
+      <p>The following dates are associated with your activities:</p>
+      <ul>
+        {{#dates}}
+        <li>{{.}}</li>
+        {{/dates}}
+      </ul>
+      <p>If you have any questions, please feel free to reach out to us.</p>
+      <footer>
+        <p>Best regards,<br />ReelTiming</p>
+      </footer>
+    </div>
+  </body>
+</html>

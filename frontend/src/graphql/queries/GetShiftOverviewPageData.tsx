@@ -6,6 +6,7 @@ export const GET_SHIFT_OVERVIEW_PAGE_DATA = gql(`
     id
     name
     surname
+    email
     position
     department {
       id
