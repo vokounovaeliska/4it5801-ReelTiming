@@ -4,6 +4,7 @@ import {
   Button,
   FormControl,
   FormLabel,
+  Heading,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -14,6 +15,7 @@ import {
   SimpleGrid,
   Text,
   Textarea,
+  Tooltip,
   VStack,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
@@ -94,26 +96,43 @@ export const NotifyMembersModal = ({
         <ModalBody>
           <Box display={{ base: 'grid', md: 'flex' }} gap={4}>
             <Box flex="3" mb={4}>
-              <Text fontWeight="bold" mb={2}>
-                Select a Date
-              </Text>
-              <SimpleGrid columns={{ base: 2, md: 5 }} spacing={2}>
-                {workDays.map((day) => (
-                  <Button
-                    key={day.toISOString()}
-                    onClick={() => getMembersToNotify(day)}
-                    size="sm"
-                    variant="outline"
-                    colorScheme={
-                      notificationDate?.getTime() === day.getTime()
-                        ? 'orange'
-                        : 'gray'
-                    }
+              <Box>
+                <Heading as="h5" size="sm" fontWeight="bold" mb={2}>
+                  <Tooltip
+                    label="Select the ending day of reporting interval."
+                    rounded="md"
                   >
-                    {format(day, 'dd.MM.yy')}
-                  </Button>
-                ))}
-              </SimpleGrid>
+                    Select a Date
+                  </Tooltip>
+                </Heading>
+              </Box>
+
+              <Box
+                maxHeight={{ base: '300px', sm: '150px' }}
+                overflowY="auto"
+                border="1px solid"
+                borderColor="gray.200"
+                p={2}
+                borderRadius="md"
+              >
+                <SimpleGrid columns={{ base: 2, md: 5, xl: 7 }} spacing={2}>
+                  {workDays.map((day) => (
+                    <Button
+                      key={day.toISOString()}
+                      onClick={() => getMembersToNotify(day)}
+                      size="sm"
+                      variant="outline"
+                      colorScheme={
+                        notificationDate?.getTime() === day.getTime()
+                          ? 'orange'
+                          : 'gray'
+                      }
+                    >
+                      {format(day, 'dd.MM.yy')}
+                    </Button>
+                  ))}
+                </SimpleGrid>
+              </Box>
             </Box>
             <Box flex="2">
               <FormControl isRequired>
@@ -174,6 +193,11 @@ export const NotifyMembersModal = ({
                     </VStack>
                   </Box>
                 </Box>
+              )}
+              {usersToNotify.size === 0 && (
+                <Text>
+                  All user reports are correct in your selected date interval!
+                </Text>
               )}
             </VStack>
           </Box>
