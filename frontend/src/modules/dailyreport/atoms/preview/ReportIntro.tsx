@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Grid } from '@chakra-ui/react';
 
 import { formatDateToDisplay } from '@frontend/modules/timesheets/utils/timeUtils';
 import LabelValue from '@frontend/shared/design-system/atoms/LabelValue';
@@ -24,13 +24,13 @@ const ReportIntro = ({ data }: ReportIntroProps) => {
   ];
 
   return (
-    <Flex justify="space-between" wrap="wrap" pl={2}>
+    <Grid templateColumns="repeat(3, 1fr)" pl={2}>
       {items.map((item, index) => (
-        <Box key={index} flexBasis={'33%'}>
+        <Box key={index}>
           <LabelValue label={item.title ?? ''} value={item.value ?? ''} />
         </Box>
       ))}
-    </Flex>
+    </Grid>
   );
 };
 

@@ -31,7 +31,7 @@ export function DailyReportPage() {
     }
   }, [roleData]);
 
-  if (roleLoading || !auth.user || projectLoading) {
+  if (roleLoading || projectLoading) {
     return (
       <Center minHeight="100vh">
         <Spinner size="xl" color="orange.500" />
@@ -42,6 +42,7 @@ export function DailyReportPage() {
 
   if (
     roleError ||
+    !auth.user?.id ||
     !roleData ||
     projectError ||
     !projectData?.project ||

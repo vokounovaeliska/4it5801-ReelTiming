@@ -14,7 +14,7 @@ const ReportFooter = ({ data }: ReportFooterProps) => {
   return (
     <Box p={4} textAlign="center">
       <Text fontWeight="bold" fontSize="md" mb={20}>
-        DENNÍ ZPRÁVU SCHVÁLILY
+        REPORT APPROVED BY
       </Text>
       <VStack spacing={20} align={'flex-start'} ml={20}>
         {footerItems.map((item, index) => (
