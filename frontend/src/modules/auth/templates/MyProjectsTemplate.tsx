@@ -19,6 +19,7 @@ export type MyProjectsTemplateProps = {
     id: string;
     name: string;
     description: string;
+    isActive: boolean;
   }[];
   onAddProject: () => void;
   user?: AuthUser | null;
@@ -32,6 +33,10 @@ export function MyProjectsTemplate({
   const boxBg = useColorModeValue('white', 'gray.700');
   const border = useColorModeValue('gray.300', 'gray.600');
   const textColor = useColorModeValue('2D3748', 'gray.100');
+
+  const activeProjects = projects.filter(
+    (project) => project.isActive === true,
+  );
 
   return (
     <Box
@@ -54,7 +59,7 @@ export function MyProjectsTemplate({
         </Center>
 
         <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} mb={10}>
-          {projects.map((project) => (
+          {activeProjects.map((project) => (
             <Link
               key={project.id}
               to={`/projects/${project.id}`}
