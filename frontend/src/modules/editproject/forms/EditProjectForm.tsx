@@ -42,6 +42,7 @@ export function EditProjectForm({
   };
 
   const handleSaveChanges = () => {
+    console.log('FormData před odesláním:', formData); // Zkontroluj aktuální stav formData před odesláním
     onSubmit(formData, shootingDays, shootingDaysCollection);
   };
 
