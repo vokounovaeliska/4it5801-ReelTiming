@@ -33,6 +33,7 @@ export function EditProjectForm({
     startDate: project?.start_date ? new Date(project.start_date) : new Date(),
     endDate: project?.end_date ? new Date(project.end_date) : null,
     currency: project.currency!,
+    isActive: project.is_active ? 1 : 0,
   };
 
   const [formData, setFormData] = useState(initialValues);

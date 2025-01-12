@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   FormControl,
@@ -27,8 +27,19 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
 }) => {
   const [isActive, setIsActive] = useState(false);
 
+  // Použijeme useEffect pro inicializaci stavu na základě hodnoty z formData.isActive
+  useEffect(() => {
+    if (formData.isActive === 1) {
+      setIsActive(true);
+    } else {
+      setIsActive(false);
+    }
+  }, [formData.isActive]);
+
   const handleSwitchChange = () => {
-    setIsActive(!isActive);
+    const newValue = !isActive;
+    setIsActive(newValue);
+    onInputChange('isActive', newValue ? 1 : 0); // Aktualizujeme hodnotu isActive na 1 nebo 0
   };
 
   return (
