@@ -11,14 +11,16 @@ interface InviteCrewButtonProps extends IconButtonProps {
     email: string,
     resend: boolean,
   ) => void;
+  isDisabled: boolean;
 }
 
 export const InviteCrewButton = ({
   user,
   sendInvitation,
+  isDisabled = false,
   ...buttonProps
 }: InviteCrewButtonProps) => {
-  const joined = user.invitation != null && user.is_active;
+  const joined = (user.invitation != null && user.is_active) || isDisabled;
   const invitationNotSent = user.invitation == null && !user.is_active;
   const invitationSent = user.invitation != null && !user.is_active;
 

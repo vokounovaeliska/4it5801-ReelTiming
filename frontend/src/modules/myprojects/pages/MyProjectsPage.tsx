@@ -48,10 +48,16 @@ export function MyProjectsPage() {
 
   const projects =
     data?.userProjects?.map(
-      (project: { id: string; name: string; description: string }) => ({
+      (project: {
+        id: string;
+        name: string;
+        description: string;
+        is_active: boolean;
+      }) => ({
         id: project.id,
         name: project.name,
         description: project.description,
+        isActive: project.is_active,
       }),
     ) || [];
 

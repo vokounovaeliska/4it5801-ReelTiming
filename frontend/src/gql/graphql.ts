@@ -1305,6 +1305,7 @@ export type GetProjectUserDetailsQuery = {
       id: string;
       name: string;
       currency: string;
+      is_active: boolean;
     };
   } | null;
 };
@@ -1754,6 +1755,7 @@ export type GetUserProjectsQuery = {
     id: string;
     name: string;
     description: string;
+    is_active: boolean;
   }>;
 };
 
@@ -5113,6 +5115,10 @@ export const GetProjectUserDetailsDocument = {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'currency' },
                       },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'is_active' },
+                      },
                     ],
                   },
                 },
@@ -6822,6 +6828,7 @@ export const GetUserProjectsDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_active' } },
               ],
             },
           },

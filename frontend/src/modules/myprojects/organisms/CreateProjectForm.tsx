@@ -34,6 +34,7 @@ const initialValues: projectFormValues = {
   startDate: today,
   endDate: addDays(today, 3),
   currency: 'CZK',
+  isActive: true,
 };
 
 export type CreateProjectFormProps = {

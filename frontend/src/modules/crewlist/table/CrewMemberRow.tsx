@@ -6,13 +6,13 @@ import { CrewInvitationStatus } from '../atoms/CrewInvitationStatus';
 import { DeleteCrewButton } from '../atoms/DeleteCrewButton';
 import { EditCrewButton } from '../atoms/EditCrewButton';
 import { InviteCrewButton } from '../atoms/InviteCrewButton';
-import { CrewMemberData, ProjectUser } from '../interfaces/interfaces';
+import { CrewMemberData, Project, ProjectUser } from '../interfaces/interfaces';
 
 import { CrewlistTableRateCell } from './CrewlistTableRateCell';
 
 export const CrewMemberRow = ({
   user,
-  projectCurrency,
+  project,
   handleEditMemberClick,
   sendInvitation,
   handleRemoveButtonClick,
@@ -20,7 +20,7 @@ export const CrewMemberRow = ({
   authUserId,
 }: {
   user: ProjectUser;
-  projectCurrency: string;
+  project: Project;
   handleEditMemberClick: (user: CrewMemberData) => void;
   sendInvitation: (
     userId: string,
@@ -55,11 +55,14 @@ export const CrewMemberRow = ({
   return (
     <Tr
       key={user.id}
-      onClick={() => handleEditMemberClick(userData)}
-      _hover={{
-        cursor: 'pointer',
-        backgroundColor: 'gray.200',
-      }}
+      onClick={
+        project.is_active ? () => handleEditMemberClick(userData) : undefined
+      }
+      _hover={
+        project.is_active
+          ? { cursor: 'pointer', backgroundColor: 'gray.200' }
+          : { cursor: 'default', backgroundColor: 'gray.200' }
+      }
     >
       <Td
         position="sticky"
@@ -118,27 +121,27 @@ export const CrewMemberRow = ({
       </Td>
       <CrewlistTableRateCell
         value={user.rate?.standard_rate}
-        currency={projectCurrency}
+        currency={project.currency}
       />
       <CrewlistTableRateCell
         value={user.rate?.compensation_rate}
-        currency={projectCurrency}
+        currency={project.currency}
       />
       <CrewlistTableRateCell
         value={user.rate?.overtime_hour1}
-        currency={projectCurrency}
+        currency={project.currency}
       />
       <CrewlistTableRateCell
         value={user.rate?.overtime_hour2}
-        currency={projectCurrency}
+        currency={project.currency}
       />
       <CrewlistTableRateCell
         value={user.rate?.overtime_hour3}
-        currency={projectCurrency}
+        currency={project.currency}
       />
       <CrewlistTableRateCell
         value={user.rate?.overtime_hour4}
-        currency={projectCurrency}
+        currency={project.currency}
       />
       <Td textAlign="center">
         <CrewInvitationStatus user={user}></CrewInvitationStatus>
@@ -149,18 +152,21 @@ export const CrewMemberRow = ({
           sendInvitation={sendInvitation}
           mr={2}
           aria-label={''}
+          isDisabled={!project.is_active}
         />
         <EditCrewButton
           user={userData}
           handleEditMemberClick={handleEditMemberClick}
           aria-label={'Edit member'}
           mr={2}
+          isDisabled={!project.is_active}
         />
         <DeleteCrewButton
           userId={user.id}
           userRoleInProject={userRoleInProject}
           authUserId={authUserId}
           handleRemoveButtonClick={handleRemoveButtonClick}
+          isDisabled={!project.is_active}
         />
       </Td>
     </Tr>

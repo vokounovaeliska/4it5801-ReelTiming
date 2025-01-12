@@ -82,7 +82,7 @@ export function CrewListPage() {
     );
   }
 
-  if (crewListError || !auth.user) {
+  if (crewListError || !auth.user || !crewList?.project) {
     return (
       <Center minHeight="100vh">
         <Text color="red.500">
@@ -130,7 +130,10 @@ export function CrewListPage() {
             mb={4}
             px={10}
           >
-            <AddCrewMemberButton handleAddMemberClick={handleAddMemberClick} />
+            <AddCrewMemberButton
+              handleAddMemberClick={handleAddMemberClick}
+              isShown={crewList.project?.is_active}
+            />
           </Box>
         )}
         <CrewListTable
@@ -141,7 +144,7 @@ export function CrewListPage() {
           sendInvitation={sendInvitation}
           userRoleInProject={crewList?.userRoleInProject!}
           authUserId={auth.user?.id}
-          projectCurrency={crewList?.project?.currency}
+          project={crewList?.project!}
         ></CrewListTable>
       </Box>
       <Footer />

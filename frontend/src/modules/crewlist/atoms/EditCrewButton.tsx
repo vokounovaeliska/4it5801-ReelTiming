@@ -6,11 +6,13 @@ import { CrewMemberData } from '../interfaces/interfaces';
 interface EditCrewButtonProps extends IconButtonProps {
   user: CrewMemberData;
   handleEditMemberClick: (user: CrewMemberData) => void;
+  isDisabled: boolean;
 }
 
 export const EditCrewButton = ({
   user,
   handleEditMemberClick,
+  isDisabled,
   ...buttonProps
 }: EditCrewButtonProps) => {
   const label = 'Edit member';
@@ -35,6 +37,7 @@ export const EditCrewButton = ({
           e.stopPropagation();
           handleEditMemberClick(user);
         }}
+        isDisabled={isDisabled}
       />
     </Tooltip>
   );
