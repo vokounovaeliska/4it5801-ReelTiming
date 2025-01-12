@@ -1,7 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { Box, Button, Heading, Image, Text } from '@chakra-ui/react';
-import { FaClock, FaUsers } from 'react-icons/fa';
-import { HiOutlineDocumentReport } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
@@ -9,7 +7,10 @@ import { route } from '@frontend/route';
 import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 
+import BigSignUpButton from '../atoms/BigSignUpButton';
+import LandingBox from '../atoms/LandingBox';
 import LandingHeader from '../molecules/LandingHeader';
+import AppBenefits from '../organisms/AppBenefits';
 import AppFeatures from '../organisms/AppFeatures';
 
 export function HomePage() {
@@ -43,7 +44,6 @@ export function HomePage() {
     >
       <LandingHeader />
 
-      {/* Hero Section */}
       <Box
         display="flex"
         flexDirection={{ base: 'column', lg: 'row' }}
@@ -86,26 +86,7 @@ export function HomePage() {
             Reeltiming — the ultimate tool for film professionals to track work
             hours, manage crews, and streamline the production process.
           </Text>
-
-          <Box width="100%" display="flex" justifyContent="flex-start">
-            <Button
-              as={ReactRouterLink}
-              to={route.register()}
-              bgGradient="linear(to-r, orange.400, orange.500)"
-              color="white"
-              size="lg"
-              fontSize={{ base: 'xl', md: '2xl' }}
-              px={{ base: 8, md: 12 }}
-              py={{ base: 6, md: 8 }}
-              mb={4}
-              _hover={{
-                bgGradient: 'linear(to-r, orange.500, orange.600)',
-                transform: 'scale(1.1)',
-              }}
-            >
-              Sign Up for Free
-            </Button>
-          </Box>
+          <BigSignUpButton />
           <Box width="100%" display="flex" justifyContent="flex-start">
             <Button
               onClick={handleScrollToFeatures}
@@ -135,53 +116,43 @@ export function HomePage() {
           <Image
             src="/homePage2.png"
             width="100%"
-            alt="Camera pointing at actors"
+            alt="Movie set"
             style={{
               borderRadius: '16px',
               boxShadow: '0px 4px 15px rgba(0,0,0,0.6)',
               zIndex: 2,
             }}
             height="auto"
-            maxWidth={{ base: '600px', lg: '900px' }} // Increased size
+            maxWidth={{ base: '600px', lg: '900px' }}
             mb={8}
           />
         </Box>
       </Box>
 
-      {/* Features Section */}
-      <Box
-        bgGradient="linear(to-b, #2D3748, orange.500)"
-        py={16}
+      <LandingBox
+        bgGradient="linear(to-b, #2D3748, #b05e2a)"
+        pt={16}
+        pb={{ base: 10, lg: 16 }}
         px={{ base: '2', mb: '8' }}
         ref={featuresSectionRef}
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        flexDirection="column"
       >
         <AppFeatures />
-      </Box>
+      </LandingBox>
 
-      {/* Call to Action Section */}
-      <Box
-        bgGradient="linear(to-b, orange.500, orange.100, white)"
-        pt={16}
+      <LandingBox
+        bgGradient="linear(to-b, #b05e2a, orange.50, white)"
+        pt={{ base: 8, lg: 12 }}
         pb={5}
         color="gray.800"
-        flex="1"
-        justifyContent="center"
-        alignItems="center"
-        textAlign="center"
-        display="flex"
-        flexDirection="column"
         minHeight="40vh"
+        textAlign={'center'}
       >
         <Heading
           as="h2"
           fontSize="5xl"
           mb={6}
           fontWeight="bold"
-          bgGradient="linear(to-r, orange.600, orange.700)"
+          bgGradient="linear(to-r, orange.700, orange.800)"
           bgClip="text"
           pb={3}
         >
@@ -207,66 +178,8 @@ export function HomePage() {
         >
           Get Started Now
         </Button>
-        {/* Benefits Section */}
-        <Box
-          display="flex"
-          justifyContent="center"
-          gap={8}
-          mb={6}
-          flexDirection={{ base: 'column', md: 'row' }} // Úprava pro flexibilitu
-        >
-          <Box
-            textAlign="center"
-            flex="1"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-          >
-            <Box mb={3}>
-              <FaClock size={40} style={{ color: '#92310a' }} />{' '}
-              {/* Barva a velikost ikony */}
-            </Box>
-            <Text fontWeight="bold" color="orange.600">
-              Save Time
-            </Text>
-            <Text color="gray.700">Quickly report shifts from any device.</Text>
-          </Box>
-          <Box
-            textAlign="center"
-            flex="1"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-          >
-            <Box mb={3}>
-              <FaUsers size={40} style={{ color: '#92310a' }} />{' '}
-              {/* Barva a velikost ikony */}
-            </Box>
-            <Text fontWeight="bold" color="orange.600">
-              Manage Your Crew
-            </Text>
-            <Text color="gray.700">
-              Effortlessly manage your team in real time.
-            </Text>
-          </Box>
-          <Box
-            textAlign="center"
-            flex="1"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-          >
-            <Box mb={3}>
-              <HiOutlineDocumentReport size={40} style={{ color: '#92310a' }} />{' '}
-              {/* Barva a velikost ikony */}
-            </Box>
-            <Text fontWeight="bold" color="orange.600">
-              Create Reports
-            </Text>
-            <Text color="gray.700">Clear and with just a few clicks.</Text>
-          </Box>
-        </Box>
-      </Box>
+        <AppBenefits />
+      </LandingBox>
 
       <Footer />
     </Box>

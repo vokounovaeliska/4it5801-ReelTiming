@@ -7,61 +7,73 @@ import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 
 const AboutUsPage = () => {
   return (
-    <>
+    <Box display="flex" flexDirection="column" minHeight="100vh">
       <Navbar children={undefined} />
-      <Box boxSize={{ base: '80px', md: '100px' }} mx="auto" py={30}>
-        <Image src="/faviconlogo.png" alt="ReelTiming Logo" />
-      </Box>
+
       <Box
-        maxW={{ base: '90%', md: '800px' }}
-        mx="auto"
-        p={4}
-        mt={8}
-        minHeight="100vh"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        bg="#F7FAFC"
+        p={{ base: 0, sm: 4, md: 8, xl: 8 }}
+        flex="1"
       >
-        <Heading
-          as="h1"
-          size={{ base: 'xl', md: '2xl' }}
+        <Box
+          w="100%"
+          maxW={{ md: '650px', xl: '800px' }}
+          p="6"
+          borderRadius="md"
+          borderWidth={1}
+          boxShadow="md"
+          bg="white"
           textAlign="center"
-          mb={6}
         >
-          About Us
-        </Heading>
+          <Box boxSize={{ base: '80px', md: '100px' }} mx="auto" py={8}>
+            <Image src="/faviconlogo.png" alt="ReelTiming Logo" />
+          </Box>
 
-        <Text fontSize={{ base: 'md', md: 'lg' }} mb={4} textAlign="center">
-          At ReelTiming, we solve critical challenges for film producers by
-          simplifying their attendance and production scheduling systems. Our
-          platform is designed to streamline crew management, ensuring that
-          producers can focus on creating great films while we handle the
-          logistics.
-        </Text>
+          <Heading as="h1" size={{ base: 'xl', md: '2xl' }} mt={10}>
+            About Us
+          </Heading>
+          <Text fontSize={{ base: 'md', md: 'lg' }} mb={4} textAlign="center">
+            At ReelTiming, we solve critical challenges for film producers by
+            simplifying their attendance and production scheduling systems. Our
+            platform is designed to streamline crew management, ensuring that
+            producers can focus on creating great films while we handle the
+            logistics.
+          </Text>
 
-        <Text fontSize={{ base: 'sm', md: 'md' }} mb={8} textAlign="center">
-          If you’re a film producer looking for innovative solutions to improve
-          the efficiency of your productions, we’d love to hear from you. Let us
-          know how we can assist with your attendance tracking and production
-          needs.
-        </Text>
+          <Text fontSize={{ base: 'sm', md: 'md' }} mb={8} textAlign="center">
+            If you’re a film producer looking for innovative solutions to
+            improve the efficiency of your productions, we’d love to hear from
+            you. Let us know how we can assist with your attendance tracking and
+            production needs.
+          </Text>
 
-        <Divider my={6} />
+          <Divider my={6} />
 
-        {/* Contact Section */}
-        <Heading as="h2" size={{ base: 'lg', md: 'xl' }} mb={4} id="contact-us">
-          Get in Touch
-        </Heading>
-
-        <Text fontSize={{ base: 'sm', md: 'md' }} mb={6}>
-          For inquiries, partnerships, or support, please reach out to us via
-          the form below or email us directly at{' '}
-          <Link to="mailto:reeltiming@gmail.com">
-            <strong>reeltiming@gmail.com</strong>
-          </Link>
-          . Our team is here to help you optimize your production process.
-        </Text>
+          <Heading
+            as="h2"
+            size={{ base: 'lg', md: 'xl' }}
+            mb={4}
+            id="contact-us"
+          >
+            Get in Touch
+          </Heading>
+          <Text fontSize={{ base: 'sm', md: 'md' }} mb={6}>
+            For inquiries, partnerships, or support, please reach out to us via
+            the form below or email us directly at{' '}
+            <Link to="mailto:reeltiming@gmail.com">
+              <strong>reeltiming@gmail.com</strong>
+            </Link>
+            . Our team is here to help you optimize your production process.
+          </Text>
+        </Box>
       </Box>
 
       <Footer />
-    </>
+    </Box>
   );
 };
 
