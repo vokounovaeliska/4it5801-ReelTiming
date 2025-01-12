@@ -73,10 +73,11 @@ export class ShiftOverviewService {
   }
 
   async notifyUser(
+    projectName: string,
     name: string,
     email: string,
     message: string,
-    dates: number[],
+    dates: string,
   ): Promise<boolean> {
     if (!email) {
       throw new Error('Email not provided');
@@ -97,15 +98,10 @@ export class ShiftOverviewService {
       // Replace placeholders in the HTML template
       htmlContent = htmlContent.replace('{{message}}', message);
       htmlContent = htmlContent.replace('{{userName}}', name);
-
-      // Generate the dates list as HTML
-      const datesListHtml = dates
-        .map((date) => `<li>${new Date(date).toLocaleDateString('en-GB')}</li>`)
-        .join('');
-      htmlContent = htmlContent.replace('{{#dates}}', datesListHtml);
+      htmlContent = htmlContent.replace('{{dates}}', dates);
 
       // Send the email
-      await sendMail(email, 'Invitation to project', htmlContent);
+      await sendMail(email, `${projectName} - shift not reported`, htmlContent);
     } catch (error) {
       console.error('Error sending invitation email:', error);
       if (error instanceof Error) {

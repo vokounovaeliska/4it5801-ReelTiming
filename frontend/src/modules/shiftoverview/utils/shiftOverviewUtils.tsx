@@ -224,3 +224,17 @@ export function transformToMemberDateMap(
 
   return memberDateMap;
 }
+
+export const notifyMembers = (
+  message: string,
+  membersToNotify: Set<GetShiftOverviewPageDataQuery['projectUsers'][number]>,
+  dates: Map<string, Set<number>>,
+) => {
+  console.log(
+    `Notifying ${membersToNotify.size} members with message: "${message}"`,
+  );
+
+  membersToNotify.forEach((user) => {
+    console.log(`Notifying user: ${user.name} (${user.email})`);
+  });
+};

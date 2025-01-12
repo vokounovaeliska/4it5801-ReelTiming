@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Button,
@@ -22,7 +22,10 @@ import { format } from 'date-fns';
 
 import { GetShiftOverviewPageDataQuery } from '@frontend/gql/graphql';
 
-import { transformToMemberDateMap } from '../utils/shiftOverviewUtils';
+import {
+  notifyMembers,
+  transformToMemberDateMap,
+} from '../utils/shiftOverviewUtils';
 
 type NotifyMembersModalProps = {
   isOpen: boolean;
@@ -46,9 +49,9 @@ export const NotifyMembersModal = ({
     Set<GetShiftOverviewPageDataQuery['projectUsers'][number]>
   >(new Set());
 
-  const [datesByMeberId, setDatesByMemberId] = useState<
-    Map<string, Set<number>>
-  >(transformToMemberDateMap(membersByDate));
+  const [datesByMeberId] = useState<Map<string, Set<number>>>(
+    transformToMemberDateMap(membersByDate),
+  );
 
   const getMembersToNotify = (selectedDate: Date) => {
     if (notificationDate?.getTime() === selectedDate.getTime()) {
@@ -70,14 +73,12 @@ export const NotifyMembersModal = ({
     setUsersToNotify(usersToNotifyUpdated);
   };
 
-  const notifyMembers = () => {
-    console.log(
-      `Notifying ${usersToNotify.size} members with message: "${message}"`,
-    );
-
-    usersToNotify.forEach((user) => {
-      console.log(`Notifying user: ${user.name} (${user.email})`);
-    });
+  const notifyMembersLocal = (
+    message: string,
+    members: Set<GetShiftOverviewPageDataQuery['projectUsers'][number]>,
+    dates: Map<string, Set<number>>,
+  ) => {
+    notifyMembers(message, members, dates);
 
     setUsersToNotify(new Set());
     setMessage('');
@@ -206,7 +207,9 @@ export const NotifyMembersModal = ({
           <Button
             colorScheme="orange"
             mr={3}
-            onClick={notifyMembers}
+            onClick={() =>
+              notifyMembersLocal(message, usersToNotify, datesByMeberId)
+            }
             isDisabled={!notificationDate || usersToNotify.size === 0}
           >
             Notify Members
