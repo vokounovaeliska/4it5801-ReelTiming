@@ -103,4 +103,28 @@ export class ShiftOverviewResolver {
     }
     return null;
   }
+
+  @Mutation(() => Boolean)
+  async notifyUser(
+    @Arg('projectName') projectName: string,
+    @Arg('name') name: string,
+    @Arg('email') email: string,
+    @Arg('message') message: string,
+    @Arg('dates') dates: string,
+    @Arg('link') link: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<boolean | null> {
+    if (email && dates.length > 0) {
+      const shiftOverviewService = new ShiftOverviewService(db);
+      return shiftOverviewService.notifyUser(
+        projectName,
+        name,
+        email,
+        message,
+        dates,
+        link,
+      );
+    }
+    return false;
+  }
 }

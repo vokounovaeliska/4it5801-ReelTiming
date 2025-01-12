@@ -28,6 +28,7 @@ export function LogInPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const invitationToken = searchParams.get('token');
+  const projectId = searchParams.get('projectId');
   const { data } = useQuery(GET_PROJECT_BY_PROJECT_USER_TOKEN, {
     variables: { token: invitationToken! },
     skip: !invitationToken,
@@ -38,6 +39,8 @@ export function LogInPage() {
       auth.signIn({ token, user });
       if (invitationToken) {
         navigate(`/accept-invitation?token=${invitationToken}`);
+      } else if (projectId) {
+        navigate(`/projects/${projectId}/timesheets`);
       } else {
         navigate(route.myprojects());
       }

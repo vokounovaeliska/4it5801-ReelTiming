@@ -90,7 +90,12 @@ export function getProjectUserRepository(db: Db) {
       const projectUserRecord = await db
         .select()
         .from(project_user)
-        .where(eq(project_user.invitation, token));
+        .where(
+          and(
+            eq(project_user.invitation, token),
+            eq(project_user.is_active, false),
+          ),
+        );
       return projectUserRecord.length > 0 ? projectUserRecord[0] : null;
     },
     async inviteUserToProject(id: string, token: string) {
