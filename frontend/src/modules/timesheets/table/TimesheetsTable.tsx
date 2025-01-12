@@ -10,7 +10,12 @@ interface TimesheetsTableProps {
   sortedTimesheets: Timesheet[];
   handleRowClick: (timesheet: Timesheet) => void;
   onDeleteClick: (id: string) => void;
-  projectCurrency: string;
+  project: {
+    id: string;
+    name?: string;
+    currency?: string;
+    is_active?: boolean;
+  };
 }
 
 const tableHeaders = [
@@ -34,7 +39,7 @@ const TimesheetTable = ({
   sortedTimesheets,
   handleRowClick,
   onDeleteClick,
-  projectCurrency,
+  project,
 }: TimesheetsTableProps) => {
   const duplicateStatements = sortedTimesheets.reduce(
     (acc, ts) => {
@@ -144,7 +149,7 @@ const TimesheetTable = ({
                     ts={ts}
                     isDuplicate={isDuplicate}
                     hasCar={hasCar}
-                    projectCurrency={projectCurrency}
+                    project={project}
                     onDeleteClick={onDeleteClick}
                     handleRowClick={handleRowClick}
                     hasDuplicates={hasDuplicates}

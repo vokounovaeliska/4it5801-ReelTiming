@@ -7,6 +7,7 @@ export const GET_CREWUSERINFO_TIMESHEETS = gql(`
         id
         name
         currency
+        is_active
       }
       id
       name

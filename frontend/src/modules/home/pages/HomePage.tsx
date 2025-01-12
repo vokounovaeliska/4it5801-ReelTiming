@@ -7,7 +7,10 @@ import { route } from '@frontend/route';
 import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 
+import BigSignUpButton from '../atoms/BigSignUpButton';
+import LandingBox from '../atoms/LandingBox';
 import LandingHeader from '../molecules/LandingHeader';
+import AppBenefits from '../organisms/AppBenefits';
 import AppFeatures from '../organisms/AppFeatures';
 
 export function HomePage() {
@@ -41,7 +44,6 @@ export function HomePage() {
     >
       <LandingHeader />
 
-      {/* Hero Section */}
       <Box
         display="flex"
         flexDirection={{ base: 'column', lg: 'row' }}
@@ -84,26 +86,7 @@ export function HomePage() {
             Reeltiming — the ultimate tool for film professionals to track work
             hours, manage crews, and streamline the production process.
           </Text>
-
-          <Box width="100%" display="flex" justifyContent="flex-start">
-            <Button
-              as={ReactRouterLink}
-              to={route.register()}
-              bgGradient="linear(to-r, orange.400, orange.500)"
-              color="white"
-              size="lg"
-              fontSize={{ base: 'xl', md: '2xl' }}
-              px={{ base: 8, md: 12 }}
-              py={{ base: 6, md: 8 }}
-              mb={4}
-              _hover={{
-                bgGradient: 'linear(to-r, orange.500, orange.600)',
-                transform: 'scale(1.1)',
-              }}
-            >
-              Sign Up for Free
-            </Button>
-          </Box>
+          <BigSignUpButton />
           <Box width="100%" display="flex" justifyContent="flex-start">
             <Button
               onClick={handleScrollToFeatures}
@@ -131,53 +114,45 @@ export function HomePage() {
           p={4}
         >
           <Image
-            src="/hero-image2.jpg"
+            src="/homePage2.png"
             width="100%"
-            alt="Camera pointing at actors"
+            alt="Movie set"
             style={{
-              boxShadow: '36px 44px 31px -2px rgba(221,107,32,0.5)',
+              borderRadius: '16px',
+              boxShadow: '0px 4px 15px rgba(0,0,0,0.6)',
+              zIndex: 2,
             }}
             height="auto"
-            maxWidth={{ base: '500px', lg: '700px' }}
+            maxWidth={{ base: '600px', lg: '900px' }}
             mb={8}
           />
         </Box>
       </Box>
 
-      {/* Features Section */}
-      <Box
-        bgGradient="linear(to-b, #2D3748, orange.500)"
-        py={16}
+      <LandingBox
+        bgGradient="linear(to-b, #2D3748, #b05e2a)"
+        pt={16}
+        pb={{ base: 10, lg: 16 }}
         px={{ base: '2', mb: '8' }}
         ref={featuresSectionRef}
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        flexDirection="column"
       >
         <AppFeatures />
-      </Box>
+      </LandingBox>
 
-      {/* Call to Action Section */}
-      <Box
-        bgGradient="linear(to-b, orange.500, orange.100, white)"
-        pt={16}
+      <LandingBox
+        bgGradient="linear(to-b, #b05e2a, orange.50, white)"
+        pt={{ base: 8, lg: 12 }}
         pb={5}
         color="gray.800"
-        flex="1"
-        justifyContent="center"
-        alignItems="center"
-        textAlign="center"
-        display="flex"
-        flexDirection="column"
         minHeight="40vh"
+        textAlign={'center'}
       >
         <Heading
           as="h2"
           fontSize="5xl"
           mb={6}
           fontWeight="bold"
-          bgGradient="linear(to-r, orange.600, orange.700)"
+          bgGradient="linear(to-r, orange.700, orange.800)"
           bgClip="text"
           pb={3}
         >
@@ -191,6 +166,7 @@ export function HomePage() {
             Focus on the art while we handle the logistics!
           </Text>
         </Text>
+
         <Button
           as={ReactRouterLink}
           to={route.register()}
@@ -198,11 +174,12 @@ export function HomePage() {
           color="white"
           size="lg"
           _hover={{ transform: 'scale(1.1)', bg: 'orange.700' }}
-          mb={5}
+          mb={7}
         >
           Get Started Now
         </Button>
-      </Box>
+        <AppBenefits />
+      </LandingBox>
 
       <Footer />
     </Box>

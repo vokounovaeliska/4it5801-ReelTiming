@@ -4,16 +4,17 @@ import { BsPersonAdd } from 'react-icons/bs';
 
 type AddCrewMemberButtonProps = {
   handleAddMemberClick: () => void;
+  isShown?: boolean;
 };
 
 export const AddCrewMemberButton: React.FC<AddCrewMemberButtonProps> = ({
   handleAddMemberClick,
+  isShown = true,
 }) => {
   const label = useBreakpointValue({
     base: 'Add Member',
     md: 'Add New Member',
   });
-
   return (
     <Button
       aria-label="Add New Member"
@@ -24,6 +25,7 @@ export const AddCrewMemberButton: React.FC<AddCrewMemberButtonProps> = ({
       leftIcon={<BsPersonAdd />}
       borderRadius="full"
       boxShadow="md"
+      isDisabled={!isShown}
       _hover={{
         bg: 'orange.500',
         color: 'white',

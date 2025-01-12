@@ -66,4 +66,5 @@ export interface ProjectData {
   start_date?: string | null;
   end_date?: string | null;
   currency: string;
+  is_active: boolean;
 }

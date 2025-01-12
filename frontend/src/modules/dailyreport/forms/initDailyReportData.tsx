@@ -1,32 +1,30 @@
 export const initIntroData = [
   {
-    title: 'Výkonná producentka',
+    title: 'Line Producer',
     value: '',
   },
   {
-    title: 'První klapka',
+    title: 'Ready to Shoot',
     value: '',
   },
   {
-    title: 'Vedoucí produkce',
+    title: 'Production Manager',
     value: '',
   },
   {
-    title: 'Crewcall',
+    title: 'Crew Call',
     value: '',
   },
   {
-    title: 'Oběd',
+    title: 'Lunch Break',
     value: '',
   },
-
   {
-    title: 'Režisérka',
+    title: 'Director',
     value: '',
   },
-
   {
-    title: 'Snídaně',
+    title: 'Breakfast',
     value: '',
   },
   {
@@ -34,11 +32,11 @@ export const initIntroData = [
     value: '',
   },
   {
-    title: 'Kameraman',
+    title: 'DOP',
     value: '',
   },
   {
-    title: 'Early call',
+    title: 'Early Calls',
     value: '',
   },
 ];

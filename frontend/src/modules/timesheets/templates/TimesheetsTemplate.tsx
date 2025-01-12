@@ -1,10 +1,10 @@
 import React from 'react';
-import { Box, Button } from '@chakra-ui/react';
-import { MdAddChart } from 'react-icons/md';
+import { Box } from '@chakra-ui/react';
 
 import PdfReportGeneratorButton from '@frontend/modules/report/pdfReportGeneratorButton';
 import { Heading } from '@frontend/shared/design-system';
 
+import { AddShiftButton } from '../atoms/AddShiftButton';
 import { TimesheetsTemplateProps } from '../interfaces';
 import TimesheetTable from '../table/TimesheetsTable';
 import { TimesheetFilter } from '../timesheetFilter';
@@ -20,14 +20,15 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
   handleRowClick,
   onDeleteClick,
   userRole,
-  projectName,
-  projectCurrency,
   projectUserId,
   selectedUsers,
+  project,
 }) => {
   const isGeneratePdfDisabled =
     (!startDate || !endDate || selectedUsers.length !== 1) &&
     userRole === 'ADMIN';
+
+  console.log('project', project);
 
   return (
     <Box flex="1" width="100%" p={1} alignSelf="center">
@@ -36,7 +37,7 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
         py={{ base: '4', sm: '0' }}
       >
         <Heading mb={4} textAlign="center">
-          Timesheets for Project {projectName}
+          Timesheets for Project {project?.name}
         </Heading>
       </Box>
       <TimesheetFilter
@@ -55,24 +56,10 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
         mb={4}
         px={3}
       >
-        <Button
-          aria-label="Add statement"
-          colorScheme="orange"
-          bgColor="orange.500"
-          onClick={handleAddClick}
-          size="md"
-          leftIcon={<MdAddChart />}
-          borderRadius="full"
-          boxShadow="md"
-          _hover={{
-            bg: 'orange.500',
-            color: 'white',
-            transform: 'scale(1.2)',
-          }}
-          transition="all 0.3s ease"
-        >
-          Add Shift
-        </Button>
+        <AddShiftButton
+          handleAddClick={handleAddClick}
+          isShown={project?.is_active}
+        />
 
         <PdfReportGeneratorButton
           projectUserId={
@@ -88,7 +75,7 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
         sortedTimesheets={sortedTimesheets}
         handleRowClick={handleRowClick}
         onDeleteClick={onDeleteClick}
-        projectCurrency={projectCurrency}
+        project={project}
       ></TimesheetTable>
     </Box>
   );

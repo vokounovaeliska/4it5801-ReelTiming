@@ -86,4 +86,6 @@ export interface DailyReportFormProps {
   isOpen: boolean;
   onClose: () => void;
   shootingDay?: ShootingDayByProject | null;
+  lastDailyReport?: LastDailyReportByProjectIdQuery;
+  lastDailyReportRefetch: () => void;
 }

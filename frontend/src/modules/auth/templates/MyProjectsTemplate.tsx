@@ -19,6 +19,7 @@ export type MyProjectsTemplateProps = {
     id: string;
     name: string;
     description: string;
+    isActive: boolean;
   }[];
   onAddProject: () => void;
   user?: AuthUser | null;
@@ -32,6 +33,15 @@ export function MyProjectsTemplate({
   const boxBg = useColorModeValue('white', 'gray.700');
   const border = useColorModeValue('gray.300', 'gray.600');
   const textColor = useColorModeValue('2D3748', 'gray.100');
+  const inactiveBoxBg = useColorModeValue('gray.200', 'gray.600');
+  const inactiveTextColor = useColorModeValue('gray.500', 'gray.300');
+
+  const activeProjects = projects.filter(
+    (project) => project.isActive === true,
+  );
+  const inactiveProjects = projects.filter(
+    (project) => project.isActive === false,
+  );
 
   return (
     <Box
@@ -53,50 +63,104 @@ export function MyProjectsTemplate({
           <AddProjectButton handleAddMemberClick={onAddProject} user={user} />
         </Center>
 
-        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} mb={10}>
-          {projects.map((project) => (
-            <Link
-              key={project.id}
-              to={`/projects/${project.id}`}
-              style={{ textDecoration: 'none' }}
-            >
-              <Box
-                bg={boxBg}
-                borderRadius="md"
-                borderWidth={1}
-                borderColor={border}
-                p={6}
-                boxShadow="md"
-                _hover={{
-                  boxShadow: 'md',
-                  transform: 'scale(1.02)',
-                  bg: 'orange.400',
-                }}
-                transition="all 0.3s ease"
+        <Box mb={6}>
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+            {activeProjects.map((project) => (
+              <Link
+                key={project.id}
+                to={`/projects/${project.id}`}
+                style={{ textDecoration: 'none' }}
               >
-                <Text
-                  fontWeight="bold"
-                  fontSize="lg"
-                  color={textColor}
-                  mb={4}
-                  textAlign="center"
+                <Box
+                  bg={boxBg}
+                  borderRadius="md"
+                  borderWidth={1}
+                  borderColor={border}
+                  p={6}
+                  boxShadow="md"
+                  _hover={{
+                    boxShadow: 'md',
+                    transform: 'scale(1.02)',
+                    bg: 'orange.400',
+                  }}
+                  transition="all 0.3s ease"
                 >
-                  {project.name}
-                </Text>
-                <Text
-                  fontSize="sm"
-                  color={textColor}
-                  textAlign="center"
-                  noOfLines={2}
-                  overflow="hidden"
-                  textOverflow="ellipsis"
+                  <Text
+                    fontWeight="bold"
+                    fontSize="lg"
+                    color={textColor}
+                    mb={4}
+                    textAlign="center"
+                  >
+                    {project.name}
+                  </Text>
+                  <Text
+                    fontSize="sm"
+                    color={textColor}
+                    textAlign="center"
+                    noOfLines={2}
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                  >
+                    {project.description || 'No description available'}
+                  </Text>
+                </Box>
+              </Link>
+            ))}
+          </SimpleGrid>
+        </Box>
+
+        {inactiveProjects.length > 0 && (
+          <Box>
+            <Heading size="lg" as="h2" textAlign="left" mb={4}>
+              Inactive Projects
+            </Heading>
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+              {inactiveProjects.map((project) => (
+                <Link
+                  key={project.id}
+                  to={`/projects/${project.id}`}
+                  style={{ textDecoration: 'none' }}
                 >
-                  {project.description || 'No description available'}
-                </Text>
-              </Box>
-            </Link>
-          ))}
-        </SimpleGrid>
+                  <Box
+                    bg={inactiveBoxBg}
+                    borderRadius="md"
+                    borderWidth={1}
+                    borderColor={border}
+                    p={6}
+                    boxShadow="md"
+                    _hover={{
+                      boxShadow: 'none',
+                      transform: 'none',
+                      bg: 'gray.400',
+                    }}
+                    transition="all 0.3s ease"
+                  >
+                    <Text
+                      fontWeight="bold"
+                      fontSize="lg"
+                      color={inactiveTextColor}
+                      mb={4}
+                      textAlign="center"
+                    >
+                      {project.name}
+                    </Text>
+                    <Text
+                      fontSize="sm"
+                      color={inactiveTextColor}
+                      textAlign="center"
+                      noOfLines={2}
+                      overflow="hidden"
+                      textOverflow="ellipsis"
+                    >
+                      {project.description || 'No description available'}
+                    </Text>
+                  </Box>
+                </Link>
+              ))}
+            </SimpleGrid>
+          </Box>
+        )}
       </Box>
       <Footer />
     </Box>

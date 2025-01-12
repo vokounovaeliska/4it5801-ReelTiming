@@ -20,9 +20,11 @@ export const route = {
   editprojectpage: (projectId: string = ':projectId') =>
     `/projects/${projectId}/edit`,
   acceptInvitation: () => `/accept-invitation`,
-  profileSettings: () => '/profile-settings',
-  dailyReports: (projectId: string = ':projectId') =>
-    `/projects/${projectId}/daily-reports`,
-  shiftOverview: (projectId: string = ':projectId') =>
-    `/projects/${projectId}/shift-overview`,
+  profileSettings: '/profile-settings',
+  // dailyReports: (projectId: string = ':projectId') =>
+  //   `/projects/${projectId}/daily-reports`,
+  dailyReports: (projectId: string = ':projectId', shootingDayId?: string) =>
+    shootingDayId
+      ? `/projects/${projectId}/daily-reports/${shootingDayId}`
+      : `/projects/${projectId}/daily-reports`,
 };
