@@ -15,7 +15,7 @@ export async function seedCars(
     id: uuidv4(),
     name: carTypes[Math.floor(Math.random() * carTypes.length)],
     kilometer_allow: Math.floor(Math.random() * 30) + 1,
-    kilometer_rate: Math.random() * 25 + 5,
+    kilometer_rate: Math.round(Math.random() * 25),
     project_user_id: user.id,
     create_date: new Date(),
     create_user_id: 'system-user',
