@@ -5,6 +5,7 @@ import { Department } from '@frontend/modules/dailyreport/interfaces/interface';
 import { UPDATE_DEPARTMENT_ORDER } from "@frontend/graphql/mutations/UpdateDepartmentOrder";
 import { useMutation } from '@apollo/client';
 import { EditDepartmentButton } from '../atoms/EditDepartmentButton';
+import { CancelDepartmentButton } from '../atoms/CancelDepartmentButton';
 
 interface EditableDepartmentTableRowProps {
    department: Department,
@@ -55,7 +56,7 @@ export const EditableDepartmentTableRow: React.FC<EditableDepartmentTableRowProp
    };
 
    const handleCancel = () => {
-      setEditRowId(null); // Exit edit mode without saving
+      setEditRowId(null);
    };
 
    const handleChange = (e) => {
@@ -124,7 +125,11 @@ export const EditableDepartmentTableRow: React.FC<EditableDepartmentTableRowProp
                   <button onClick={() => handleSave(department.id)} disabled={loading}>
                      Save
                   </button>
-                  <button onClick={handleCancel}>Cancel</button>
+                  <CancelDepartmentButton
+                     handleCancel={handleCancel}
+                     aria-label={'Edit department'}
+                     mr={2}
+                  />
                </>
             ) : (
                <EditDepartmentButton
