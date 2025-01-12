@@ -1,99 +1,144 @@
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { Box, Center, Spinner, Text } from '@chakra-ui/react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 
 
 import { Heading } from '@frontend/shared/design-system';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
-import { EMPTY_QUERY } from '@frontend/graphql/queries/EmptyQuery';
 import { GET_DEPARTMENTS } from '@frontend/graphql/queries/GetDepartments';
-import { EditDepartmentForm } from '@frontend/modules/crewlist/forms/EditDepartmentForm';
 import { DepartmentTable } from '@frontend/modules/crewlist/table/DepartmentTable';
-import { DraggableDepartmentSection } from '@frontend/modules/crewlist/atoms/DraggableDepartmentSection';
 import { useAuth } from '@frontend/modules/auth';
 import { useProjectDetails, useUserRoleInProject } from '@frontend/modules/timesheets/pages/queryHooks';
 import { route } from '@frontend/route';
-import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { id } from 'date-fns/locale';
+import { Department } from '@frontend/gql/graphql';
+import { UPDATE_DEPARTMENT_ORDER } from '@frontend/graphql/mutations/UpdateDepartmentOrder';
 import { DepartmentProps } from '../interfaces/interfaces';
 
 export function EditDepartmentsPage() {
-  const auth = useAuth();
-  const navigate = useNavigate();
-  const { projectId } = useParams<{ projectId: string }>();
+   const auth = useAuth();
+   const navigate = useNavigate();
+   const { projectId } = useParams<{ projectId: string }>();
 
-  const [userRole, setUserRole] = useState<string | null>(null);
-  const [departments, setDepartments] = useState<DepartmentProps[]>([]);
+   const [userRole, setUserRole] = useState<string | null>(null);
+   const [departments, setDepartments] = useState<Department[]>([]);
 
-  const { roleData, roleLoading, roleError } = useUserRoleInProject(
-    auth.user?.id ?? '',
-    projectId ?? '',
-  );
+   const [updateDepartment] = useMutation(UPDATE_DEPARTMENT_ORDER);
 
-  const { projectData, projectLoading, projectError } = useProjectDetails(
-    projectId ?? '',
-  );
+   const { roleData, roleLoading, roleError } = useUserRoleInProject(
+      auth.user?.id ?? '',
+      projectId ?? '',
+   );
 
-  const {
-    data: departmentsData,
-    loading: departmentsLoading,
-    error: departmentsError,
-  } = useQuery(GET_DEPARTMENTS, {
-    variables: { projectId: projectId ?? '' },
-  });
+   const { projectData, projectLoading, projectError } = useProjectDetails(
+      projectId ?? '',
+   );
 
-  useEffect(() => {
-    if (roleData && roleData.userRoleInProject !== 'ADMIN') {
-      navigate(route.myprojects());
-    }
-  }, [roleData, navigate]);
+   const {
+      data: departmentsData,
+      loading: departmentsLoading,
+      error: departmentsError,
+   } = useQuery(GET_DEPARTMENTS, {
+      variables: { projectId: projectId ?? '' },
+   });
 
-  useEffect(() => {
-    if (roleData) {
-      setUserRole(roleData.userRoleInProject);
-    }
-  }, [roleData]);
+   useEffect(() => {
+      if (roleData && roleData.userRoleInProject !== 'ADMIN') {
+         navigate(route.myprojects());
+      }
+   }, [roleData, navigate]);
 
-  useEffect(() => {
-    if (departmentsData?.departments) {
-      setDepartments(departmentsData.departments)
-    }
-  }, [departmentsData]);
+   useEffect(() => {
+      if (roleData) {
+         setUserRole(roleData.userRoleInProject);
+      }
+   }, [roleData]);
 
-  const moveDepartment = (fromIndex: number, toIndex: number) => {
-    const updatedDepartments = [...departments];
-    const [movedDepartment] = updatedDepartments.splice(fromIndex, 1);
-    updatedDepartments.splice(toIndex, 0, movedDepartment);
+   useEffect(() => {
+      if (departmentsData?.departments) {
+         setDepartments(
+            [...departmentsData.departments].sort((a, b) => (a.order_index ?? 0) - (b.order_index ?? 0))
+         );
+      }
+   }, [departmentsData]);
 
-    setDepartments(updatedDepartments);
-  };
 
-  if (roleLoading || !auth.user || projectLoading || departmentsLoading) {
-    return (
-      <Center minHeight="100vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading departments...</Text>
-      </Center>
-    );
-  }
+   const moveDepartment = useCallback(
+      async (dragIndex: number, hoverIndex: number, isDragging: boolean) => {
+         const updatedDepartments = [...departments];
+         const [removed] = updatedDepartments.splice(dragIndex, 1);
+         updatedDepartments.splice(hoverIndex, 0, removed);
 
-  return (
-    <Box display="flex" flexDirection="column" minHeight="100vh">
-      <ProjectNavbar
-        projectId={projectId!}
-        userRole={roleData.userRoleInProject}
-      />
-      <Box flex="1" p={0} width="100%">
-        <Heading mb={4} mt={2} textAlign="center">
-          Edit departments for Project {projectData?.project?.name}
-        </Heading>
-      </Box>
-      <DepartmentTable
-        departments={departments ?? []}
-        projectId={projectId ?? ''} />
-    </Box >
-  );
+         // Update local state
+         setDepartments(updatedDepartments);
+         console.log('Local update')
+      },
+      [departments]
+   );
+
+   if (roleLoading || !auth.user || projectLoading || departmentsLoading) {
+      return (
+         <Center minHeight="100vh">
+            <Spinner size="xl" color="orange.500" />
+            <Text ml={4}>Loading departments...</Text>
+         </Center>
+      );
+   }
+
+   const handleUpdateDepartmentOrder = async (id: string, data: DepartmentProps) => {
+      try {
+         await updateDepartment({
+            variables: {
+               id,
+               data
+            },
+         });
+      } catch (err) {
+         console.error('Failed to update department:', err);
+         throw err;
+      }
+   };
+
+
+   const handleDragEnd = async () => {
+      console.log('Calling DB')
+      try {
+         await Promise.all(
+            departments.map((department, index) =>
+               handleUpdateDepartmentOrder(
+                  department.id,
+                  {
+                     name: department.name,
+                     order_index: index,
+                     is_visible: department.is_visible ?? false,
+                     project_id: projectId ?? "",
+                  }
+               )
+            )
+         );
+      } catch (err) {
+         console.error('Failed to update department order:', err);
+      }
+   };
+
+   return (
+      <Box display="flex" flexDirection="column" minHeight="100vh">
+         <ProjectNavbar
+            projectId={projectId!}
+            userRole={roleData.userRoleInProject}
+         />
+         <Box flex="1" p={0} width="100%">
+            <Heading mb={4} mt={2} textAlign="center">
+               Edit departments for Project {projectData?.project?.name}
+            </Heading>
+         </Box>
+         <DepartmentTable
+            departments={departments ?? []}
+            projectId={projectId ?? ''}
+            handleMoveDepartment={moveDepartment}
+            handleUpdateDepartmentOrder={handleUpdateDepartmentOrder}
+            handleDragEnd={handleDragEnd}
+         />
+      </Box >
+   );
 }

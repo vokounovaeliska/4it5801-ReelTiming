@@ -1,3 +1,4 @@
+import { useDrag, useDrop } from 'react-dnd';
 import React, { useState } from 'react';
 import { Tr, Td } from '@chakra-ui/react';
 import { Department } from '@frontend/modules/dailyreport/interfaces/interface';
@@ -5,11 +6,14 @@ import { UPDATE_DEPARTMENT_ORDER } from "@frontend/graphql/mutations/UpdateDepar
 import { useMutation } from '@apollo/client';
 
 interface EditableDepartmentTableRowProps {
-   department: Department;
-   projectId: string
+   department: Department,
+   projectId: string,
+   index: number,
+   handleMoveDepartment: (dragIndex: number, hoverIndex: number, isDragging: boolean) => void,
+   handleDragEnd: () => void;
 }
 
-export const EditableDepartmentTableRow: React.FC<EditableDepartmentTableRowProps> = ({ department, projectId }) => {
+export const EditableDepartmentTableRow: React.FC<EditableDepartmentTableRowProps> = ({ department, projectId, index, handleMoveDepartment, handleDragEnd }) => {
    const [editRowId, setEditRowId] = useState<string | null>(null);
    const [formState, setFormState] = useState({
       name: "",
@@ -61,8 +65,37 @@ export const EditableDepartmentTableRow: React.FC<EditableDepartmentTableRowProp
       }));
    };
 
+   const ref = React.useRef<HTMLTableRowElement>(null);
+
+   const [{ isDragging }, drag] = useDrag({
+      type: 'DEPARTMENT',
+      item: { index },
+      collect: (monitor) => ({
+         isDragging: monitor.isDragging(),
+      }),
+      end: () => {
+         handleDragEnd();
+      }
+   });
+
+   const [, drop] = useDrop({
+      accept: 'DEPARTMENT',
+      hover: (item: { index: number }) => {
+         if (item.index !== index) {
+            handleMoveDepartment(item.index, index, isDragging);
+            item.index = index;
+         }
+      },
+   });
+
+   drag(drop(ref));
+
    return (
-      <Tr key={department.id}>
+      <Tr key={department.id} ref={ref}
+         style={{
+            opacity: isDragging ? 0.5 : 1,
+            cursor: 'move',
+         }}>
          <Td>
             {editRowId === department.id ? (
                <input
