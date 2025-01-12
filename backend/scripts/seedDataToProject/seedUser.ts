@@ -8,6 +8,7 @@ import {
   czechLastNamesFemale,
   czechLastNamesMale,
 } from './customFakeData/czechNames';
+import { generateCzechPhoneNumber } from './customFakeData/fakeDataUtils';
 
 export async function seedUsers(
   db: MySql2Database<typeof import('../../src/db/schema')>,
@@ -52,7 +53,7 @@ export async function seedUsers(
       last_update_user_id: 'system-user',
       last_update_date: new Date(),
       is_active: true,
-      phone_number: `+420${Math.floor(Math.random() * 1000000000)}`,
+      phone_number: generateCzechPhoneNumber(),
       password_reset_token: null,
       password_reset_expiration_time: null,
     };

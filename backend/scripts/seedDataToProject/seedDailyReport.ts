@@ -7,6 +7,7 @@ import {
   czechLastNamesFemale,
   czechLastNamesMale,
 } from './customFakeData/czechNames';
+import { getRandomTime } from './customFakeData/fakeDataUtils';
 
 export async function seedDailyReports(
   db: MySql2Database<typeof import('../../src/db/schema')>,
@@ -45,12 +46,6 @@ export async function seedDailyReports(
     const directorName = getRandomName(false);
     const productionManagerName = getRandomName(false);
     const dopName = getRandomName(true);
-
-    const getRandomTime = () => {
-      const hour = Math.floor(Math.random() * 12) + 8;
-      const minute = Math.floor(Math.random() * 60);
-      return `${hour}:${minute < 10 ? '0' + minute : minute}`;
-    };
 
     return {
       id: uuidv4(),
