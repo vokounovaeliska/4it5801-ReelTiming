@@ -20,62 +20,73 @@ async function main() {
 
   try {
     // Start the transaction
-    await db.transaction(async (trx) => {
-      console.log('Transaction started');
+    await Promise.race([
+      db.transaction(async (trx) => {
+        console.log('Transaction started');
 
-      // Seed basic entities first
-      const { users, rateIds, departments } = await seedDatabase(
-        trx,
-        projectId,
-        howManyProjectUsers,
-      );
-
-      // Seed project users first, as statements depend on project_user
-      const projectUsers = await seedProjectUsers(
-        trx,
-        projectId,
-        users,
-        rateIds,
-        departments,
-        howManyProjectUsers,
-      );
-
-      console.log('Seeding cars...');
-      const cars = await seedCars(
-        db,
-        Math.round(howManyProjectUsers * 0.25),
-        projectUsers,
-      );
-      console.log(`Seeded ${cars.length} cars.`);
-
-      const projectUsersList = projectUsers.map((user) => {
-        const assignedCar = cars.find((car) => car.project_user_id === user.id);
-        return {
-          id: user.id,
-          car_id: assignedCar ? assignedCar.id : null,
-        };
-      });
-      console.log('projectUsersList', projectUsersList);
-
-      if (!generateDaysReportsOverview) {
-        const shootingDays = await getShootingdaysForProject(db, projectId);
-        await seedStatements(trx, projectUsersList, shootingDays);
-      }
-
-      if (generateDaysReportsOverview) {
-        const shootingDays = await seedShootingDays(
+        // Seed basic entities first
+        const { users, rateIds, departments } = await seedDatabase(
           trx,
           projectId,
-          30,
-          new Date(),
+          howManyProjectUsers,
         );
-        await seedStatements(trx, projectUsersList, shootingDays);
-        await seedShiftOverview(trx, projectId, shootingDays, projectUsersList);
-        await seedDailyReports(trx, projectId, shootingDays);
-      }
 
-      console.log('Transaction completed successfully');
-    });
+        // Seed project users first, as statements depend on project_user
+        const projectUsers = await seedProjectUsers(
+          trx,
+          projectId,
+          users,
+          rateIds,
+          departments,
+          howManyProjectUsers,
+        );
+
+        console.log('Seeding cars...');
+        const cars = await seedCars(
+          trx,
+          Math.round(howManyProjectUsers * 0.25),
+          projectUsers,
+        );
+        console.log(`Seeded ${cars.length} cars.`);
+
+        const projectUsersList = projectUsers.map((user) => {
+          const assignedCar = cars.find(
+            (car) => car.project_user_id === user.id,
+          );
+          return {
+            id: user.id,
+            car_id: assignedCar ? assignedCar.id : null,
+          };
+        });
+
+        if (!generateDaysReportsOverview) {
+          const shootingDays = await getShootingdaysForProject(trx, projectId);
+          await seedStatements(trx, projectUsersList, shootingDays);
+        }
+
+        if (generateDaysReportsOverview) {
+          const shootingDays = await seedShootingDays(
+            trx,
+            projectId,
+            30,
+            new Date(),
+          );
+          await seedStatements(trx, projectUsersList, shootingDays);
+          await seedShiftOverview(
+            trx,
+            projectId,
+            shootingDays,
+            projectUsersList,
+          );
+          await seedDailyReports(trx, projectId, shootingDays);
+        }
+
+        console.log('Transaction completed successfully');
+      }),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Transaction timed out')), 20000),
+      ),
+    ]);
   } catch (error) {
     console.error('Error during seeding:', error);
     console.log('Rolling back transaction');

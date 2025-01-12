@@ -9,22 +9,18 @@ export async function seedRates(
 ) {
   console.log('Seeding rates...');
 
-  function generateNumber(min, max) {
-    let number;
-    do {
-      number = faker.number.int({ min, max });
-    } while (number % 10 === 0 || number % 10 === 9);
-    return number;
+  function generateNumber(min: number, max: number) {
+    return faker.number.int({ min, max });
   }
 
   const rates = Array.from({ length: count }, () => ({
     id: uuidv4(),
     standard_rate: generateNumber(1500, 20000),
-    overtime_hour1: generateNumber(200, 1000),
-    overtime_hour2: generateNumber(200, 300),
-    overtime_hour3: generateNumber(300, 300),
-    overtime_hour4: generateNumber(300, 300),
-    compensation_rate: generateNumber(300, 2000),
+    overtime_hour1: generateNumber(300, 1000),
+    overtime_hour2: generateNumber(300, 1200),
+    overtime_hour3: generateNumber(400, 1500),
+    overtime_hour4: generateNumber(400, 2000),
+    compensation_rate: generateNumber(400, 2000),
     create_date: new Date(),
     create_user_id: 'system-user',
     last_update_user_id: 'system-user',
