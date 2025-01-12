@@ -23,7 +23,12 @@ interface TimesheetRowProps {
   ts: Timesheet;
   isDuplicate: boolean;
   hasCar: boolean;
-  projectCurrency: string;
+  project: {
+    id: string;
+    name?: string;
+    currency?: string;
+    is_active?: boolean;
+  };
   onDeleteClick: (id: string) => void;
   handleRowClick: (timesheet: Timesheet) => void;
   hasDuplicates: boolean;
@@ -34,7 +39,7 @@ const TimesheetRow = ({
   ts,
   isDuplicate,
   hasCar,
-  projectCurrency,
+  project,
   onDeleteClick,
   handleRowClick,
   hasDuplicates,
@@ -52,11 +57,18 @@ const TimesheetRow = ({
   return (
     <Tr
       key={ts.id}
-      onClick={() => handleRowClick(ts)}
-      _hover={{
-        cursor: 'pointer',
-        backgroundColor: isDuplicate ? 'orange.300' : 'gray.100',
-      }}
+      onClick={project.is_active ? () => handleRowClick(ts) : undefined}
+      _hover={
+        project.is_active
+          ? {
+              cursor: 'pointer',
+              backgroundColor: isDuplicate ? 'orange.300' : 'gray.100',
+            }
+          : {
+              cursor: 'not-allowed',
+              backgroundColor: isDuplicate ? 'orange.300' : 'gray.100',
+            }
+      }
       bg={isDuplicate ? 'orange.100' : 'transparent'}
     >
       {hasDuplicates && (
@@ -114,7 +126,7 @@ const TimesheetRow = ({
       <Td textAlign={shouldShowCarColumns ? 'right' : 'center'}>
         {currencyUtil.formatAmount(
           statementUtil.calculateOvertimeAmount(ts),
-          projectCurrency,
+          project.currency,
         )}
       </Td>
       {shouldShowCarColumns && (
@@ -129,7 +141,7 @@ const TimesheetRow = ({
             {hasCar
               ? currencyUtil.formatAmountPerKM(
                   ts.car?.kilometer_rate,
-                  projectCurrency,
+                  project.currency,
                 )
               : ''}
           </Td>
@@ -137,7 +149,7 @@ const TimesheetRow = ({
             {hasCar
               ? currencyUtil.formatAmount(
                   statementUtil.calculateKilometerSum(ts),
-                  projectCurrency,
+                  project.currency,
                   2,
                 )
               : ''}
@@ -147,12 +159,13 @@ const TimesheetRow = ({
       <Td textAlign="right">
         {currencyUtil.formatAmount(
           statementUtil.calculateTotalCost(ts),
-          projectCurrency,
+          project.currency,
           2,
         )}
       </Td>
       <Td textAlign="center">
         <IconButton
+          isDisabled={!project.is_active}
           aria-label="Delete timesheet"
           icon={<DeleteIcon />}
           colorScheme="red"

@@ -13,6 +13,7 @@ import DailyReportForm from '../forms/DailyReportForm';
 import {
   DailyReport,
   LastDailyReportByProjectIdQuery,
+  Project,
   ShootingDayByProject,
   ShootingDaysByProject,
 } from '../interfaces/interface';
@@ -23,17 +24,17 @@ import DailyReportTabs from './DailyReportTabs';
 import ShootingDaysTable from './ShootingDaysTable';
 
 type ShootingDaysOverviewProps = {
-  projectId: string;
+  project: Project;
 };
 
-const ShootingDaysOverview = ({ projectId }: ShootingDaysOverviewProps) => {
+const ShootingDaysOverview = ({ project }: ShootingDaysOverviewProps) => {
   const navigate = useNavigate();
   const { shootingDayId } = useParams<{ shootingDayId?: string }>();
   const { data, loading, error, refetch } = useQuery<ShootingDaysByProject>(
     GET_SHOOTING_DAYS_BY_PROJECT,
     {
-      variables: { projectId },
-      skip: !projectId,
+      variables: { projectId: project.id },
+      skip: !project.id,
       fetchPolicy: 'cache-and-network',
       nextFetchPolicy: 'cache-first',
     },
@@ -43,8 +44,8 @@ const ShootingDaysOverview = ({ projectId }: ShootingDaysOverviewProps) => {
     useQuery<LastDailyReportByProjectIdQuery>(
       GET_LAST_DAILY_REPORT_BY_PROJECT,
       {
-        variables: { projectId },
-        skip: !projectId,
+        variables: { projectId: project.id },
+        skip: !project.id,
         fetchPolicy: 'no-cache',
       },
     );
@@ -76,7 +77,7 @@ const ShootingDaysOverview = ({ projectId }: ShootingDaysOverviewProps) => {
   }, [shootingDayId, data]);
 
   const handlePreviewClick = (day: ShootingDayByProject) => {
-    navigate(route.dailyReports(projectId, day.id));
+    navigate(route.dailyReports(project.id, day.id));
     setSelectedDay(day);
   };
 
@@ -140,11 +141,11 @@ const ShootingDaysOverview = ({ projectId }: ShootingDaysOverviewProps) => {
           onClick={handleAddClick}
           ml={8}
           mb={4}
-          isDisabled={availableShootingDays.length === 0}
+          isDisabled={availableShootingDays.length === 0 || !project?.is_active}
         />
 
         <DailyReportForm
-          projectId={projectId}
+          projectId={project.id}
           shootingDays={shootingDays}
           refetchShootingDays={refetch}
           mode={editMode}
@@ -171,7 +172,7 @@ const ShootingDaysOverview = ({ projectId }: ShootingDaysOverviewProps) => {
         {selectedDay && (
           <DailyReportTabs
             shootingDay={selectedDay}
-            projectId={projectId}
+            projectId={project.id}
             onEdit={() => handleEditClick(selectedDay)}
             onDelete={() => handleDeleteClick(selectedDay)}
           />

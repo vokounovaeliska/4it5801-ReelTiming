@@ -45,6 +45,7 @@ export function DailyReportPage() {
     !auth.user?.id ||
     !roleData ||
     projectError ||
+    !projectData?.project ||
     roleData.userRoleInProject !== 'ADMIN'
   ) {
     navigate(route.myprojects());
@@ -54,10 +55,7 @@ export function DailyReportPage() {
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <ProjectNavbar projectId={projectId!} userRole={userRole} />
-      <DailyReportTemplate
-        projectId={projectId!}
-        projectData={projectData?.project}
-      />
+      <DailyReportTemplate projectData={projectData?.project} />
       <Footer />
     </Box>
   );

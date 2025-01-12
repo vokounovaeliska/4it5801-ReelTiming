@@ -33,10 +33,10 @@ const AboutUsPage = () => {
             <Image src="/faviconlogo.png" alt="ReelTiming Logo" />
           </Box>
 
-          <Heading as="h1" size={{ base: 'xl', md: '2xl' }} mt={10}>
+          <Heading as="h1" size={{ base: 'xl', md: '2xl' }} mt={12} mb={4}>
             About Us
           </Heading>
-          <Text fontSize={{ base: 'md', md: 'lg' }} mb={4} textAlign="center">
+          <Text fontSize={{ base: 'md', md: 'lg' }} mb={4} textAlign="justify">
             At ReelTiming, we solve critical challenges for film producers by
             simplifying their attendance and production scheduling systems. Our
             platform is designed to streamline crew management, ensuring that
@@ -44,7 +44,7 @@ const AboutUsPage = () => {
             logistics.
           </Text>
 
-          <Text fontSize={{ base: 'sm', md: 'md' }} mb={8} textAlign="center">
+          <Text fontSize={{ base: 'md', md: 'lg' }} mb={8} textAlign="justify">
             If you’re a film producer looking for innovative solutions to
             improve the efficiency of your productions, we’d love to hear from
             you. Let us know how we can assist with your attendance tracking and
@@ -61,7 +61,7 @@ const AboutUsPage = () => {
           >
             Get in Touch
           </Heading>
-          <Text fontSize={{ base: 'sm', md: 'md' }} mb={6}>
+          <Text fontSize={{ base: 'md', md: 'lg' }} mb={6} textAlign="justify">
             For inquiries, partnerships, or support, please reach out to us via
             the form below or email us directly at{' '}
             <Link to="mailto:reeltiming@gmail.com">

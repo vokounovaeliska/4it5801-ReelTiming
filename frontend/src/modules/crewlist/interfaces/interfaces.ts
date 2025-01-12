@@ -83,6 +83,13 @@ export interface Department {
   name: string;
 }
 
+export interface Project {
+  id: string;
+  name: string;
+  is_active: boolean;
+  currency: string;
+}
+
 export interface ProjectUserLightVersion {
   id: string;
   is_active: boolean;
