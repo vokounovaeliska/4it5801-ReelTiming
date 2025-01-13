@@ -17,6 +17,7 @@ import { DepartmentProps } from '../interfaces/interfaces';
 import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 import { CreateDepartmentForm } from '@frontend/modules/crewlist/forms/DepartmentForm';
 import { AddCrewMemberButton } from '../atoms/AddDepartmentButton';
+import { createDepartmentFormValues } from '@frontend/zod/schemas';
 
 export function EditDepartmentsPage() {
    const auth = useAuth();
@@ -28,6 +29,15 @@ export function EditDepartmentsPage() {
    const [isModalOpen, setIsModalOpen] = useState(false);
 
    const [updateDepartment] = useMutation(UPDATE_DEPARTMENT_ORDER);
+   const initialValues: createDepartmentFormValues = {
+      name: "",
+      isVisible: true,
+   };
+
+   const [formData, setFormData] = useState(initialValues);
+   const handleInputChange = (name: keyof createDepartmentFormValues, value: unknown) => {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+   };
 
    const { roleData, roleLoading, roleError } = useUserRoleInProject(
       auth.user?.id ?? '',
@@ -174,6 +184,8 @@ export function EditDepartmentsPage() {
                projectId={projectId ?? ""}
                onSave={handleAddDepartment}
                onCancel={handleModalClose}
+               formData={formData}
+               onInputChange={handleInputChange}
             />
          </CustomModal>
       </Box >

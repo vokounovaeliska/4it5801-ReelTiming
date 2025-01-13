@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { CREATE_DEPARTMENT } from '@frontend/graphql/mutations/CreateDepartment';
+import { Box, Checkbox, FormControl, FormLabel, Input } from '@chakra-ui/react';
+import { createDepartmentFormValues } from '@frontend/zod/schemas';
 
 interface CreateDepartmentFormProps {
    projectId: string;
    onSave: (department: any) => void;
    onCancel: () => void;
+   formData: createDepartmentFormValues;
+   onInputChange: (name: keyof createDepartmentFormValues, value: unknown) => void;
 }
 
-export const CreateDepartmentForm = ({ projectId, onSave, onCancel }: CreateDepartmentFormProps) => {
-   const [name, setName] = useState('');
-   const [isVisible, setIsVisible] = useState(true);
+export const CreateDepartmentForm = ({ projectId, onSave, onCancel, formData, onInputChange }: CreateDepartmentFormProps) => {
    const [addDepartment] = useMutation(CREATE_DEPARTMENT);
    const [loading, setLoading] = useState(false);
 
@@ -20,8 +22,8 @@ export const CreateDepartmentForm = ({ projectId, onSave, onCancel }: CreateDepa
 
          const { data } = await addDepartment({
             variables: {
-               name,
-               isVisible,
+               name: formData.name,
+               isVisible: formData.isVisible,
                orderIndex: 0,
                projectId,
             },
@@ -29,8 +31,8 @@ export const CreateDepartmentForm = ({ projectId, onSave, onCancel }: CreateDepa
 
          const newDepartment = {
             id: data.addDepartment.id,
-            name,
-            is_visible: isVisible,
+            name: data.name,
+            is_visible: data.isVisible,
             order_index: 0,
             project_id: projectId,
          };
@@ -52,23 +54,32 @@ export const CreateDepartmentForm = ({ projectId, onSave, onCancel }: CreateDepa
                handleSubmit();
             }}
          >
-            <label>
-               Name:
-               <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-               />
-            </label>
-            <label>
-               Visible:
-               <input
-                  type="checkbox"
-                  checked={isVisible}
-                  onChange={(e) => setIsVisible(e.target.checked)}
-               />
-            </label>
+            <Box mb={6}>
+               <FormControl isRequired>
+                  <FormLabel>Name</FormLabel>
+                  <Input
+                     name="name"
+                     autoComplete="on"
+                     autoCorrect="off"
+                     autoCapitalize="off"
+                     value={formData.name}
+                     onChange={(e) => onInputChange('name', e.target.value)}
+                  />
+               </FormControl>
+            </Box>
+            <Box mb={6}>
+               <FormControl isRequired>
+                  <FormLabel>Visible</FormLabel>
+                  <Checkbox
+                     name="isVisible"
+                     autoComplete="on"
+                     autoCorrect="off"
+                     autoCapitalize="off"
+                     isChecked={formData.isVisible}
+                     onChange={(e) => onInputChange('isVisible', e.target.checked)}
+                  />
+               </FormControl>
+            </Box>
             <div>
                <button type="submit" disabled={loading}>
                   {loading ? 'Saving...' : 'Save'}
