@@ -12,13 +12,30 @@ interface LogoProps {
   projectLogo?: string;
 }
 
+const decodeBase64 = (str: string) => {
+  try {
+    return decodeURIComponent(
+      atob(str)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join(''),
+    );
+  } catch (e) {
+    console.error('Failed to decode base64 string', e);
+    return str;
+  }
+};
+
 const Logo: React.FC<LogoProps> = ({ size = '50px', projectLogo }) => {
   const { user } = useAuth();
+  const decodedLogo = projectLogo ? decodeBase64(projectLogo) : null;
 
   return (
     <ReactRouterLink to={user ? route.myprojects() : route.landingPage()}>
       <Image
-        src={projectLogo ? `data:image/png;base64,${projectLogo}` : defaultLogo}
+        src={
+          decodedLogo ? `data:image/jpeg;base64,${decodedLogo}` : defaultLogo
+        }
         alt="Logo"
         boxSize={size}
         mr={2}
