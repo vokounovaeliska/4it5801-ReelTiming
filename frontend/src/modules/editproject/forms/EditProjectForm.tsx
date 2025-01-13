@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
-import { Box, Button, Input, SimpleGrid } from '@chakra-ui/react';
+import { DeleteIcon } from '@chakra-ui/icons';
+import {
+  Box,
+  Button,
+  IconButton,
+  Input,
+  SimpleGrid,
+  Tooltip,
+} from '@chakra-ui/react';
 
 import { ShootingDay } from '@frontend/gql/graphql';
+import { showSuccessToast } from '@frontend/shared/design-system/molecules/toastUtils';
 import { projectFormValues } from '@frontend/zod/schemas';
 
 import { ProjectData } from '../pages/EditProjectPage';
@@ -33,11 +42,12 @@ export function EditProjectForm({
     startDate: project?.start_date ? new Date(project.start_date) : new Date(),
     endDate: project?.end_date ? new Date(project.end_date) : null,
     currency: project.currency!,
-    logo: '',
+    logo: project?.logo ?? undefined,
   };
 
   const [formData, setFormData] = useState(initialValues);
   const [logoFile, setLogoFile] = useState<File | null>(null);
+
   const handleInputChange = (name: keyof projectFormValues, value: unknown) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -57,6 +67,12 @@ export function EditProjectForm({
     } else {
       alert('Please upload a valid .png or .jpg file');
     }
+  };
+
+  const handleRemoveLogo = () => {
+    setFormData((prev) => ({ ...prev, logo: null }));
+    setLogoFile(null);
+    showSuccessToast('Logo successfully removed');
   };
 
   const handleSaveChanges = async () => {
@@ -110,7 +126,33 @@ export function EditProjectForm({
           shootingDays={shootingDaysCollection}
           handleShootingDaysChange={handleShootingDaysChange}
         />
-        <Input type="file" accept=".png" onChange={handleFileChange} />
+        <Box pl={5}>
+          <Input
+            alignContent={'center'}
+            w={'max-content'}
+            type="file"
+            accept=".png, .jpeg"
+            onChange={handleFileChange}
+          />
+          <Tooltip
+            label="Remove logo"
+            aria-label="Remove logo"
+            placement="top"
+            bg="red.600"
+            rounded={'lg'}
+          >
+            <IconButton
+              ml={5}
+              aria-label="Remove logo"
+              icon={<DeleteIcon />}
+              colorScheme="red"
+              size="sm"
+              w={10}
+              h={10}
+              onClick={() => handleRemoveLogo()}
+            />
+          </Tooltip>
+        </Box>
       </SimpleGrid>
       <Button
         colorScheme="orange"
