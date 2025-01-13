@@ -68,13 +68,10 @@ export const CreateDepartmentForm = ({ projectId, onSave, onCancel, formData, on
                </FormControl>
             </Box>
             <Box mb={6}>
-               <FormControl isRequired>
+               <FormControl >
                   <FormLabel>Visible</FormLabel>
                   <Checkbox
                      name="isVisible"
-                     autoComplete="on"
-                     autoCorrect="off"
-                     autoCapitalize="off"
                      isChecked={formData.isVisible}
                      onChange={(e) => onInputChange('isVisible', e.target.checked)}
                   />
