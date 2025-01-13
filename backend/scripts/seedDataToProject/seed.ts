@@ -16,7 +16,11 @@ async function main() {
   //Set PROJECT ID and if you want to set project info
   const projectId = 'PROJECT ID';
   const generateDaysReportsOverview = true;
-  const howManyProjectUsers = 3;
+  const howManyProjectUsers = 25;
+  const howManyShftWorked = 5;
+  const howManyShootingDays = 10;
+  const startDate = new Date();
+  const howManyReports = 5;
 
   try {
     // Start the transaction
@@ -68,8 +72,8 @@ async function main() {
           const shootingDays = await seedShootingDays(
             trx,
             projectId,
-            30,
-            new Date(),
+            howManyShootingDays,
+            startDate,
           );
           await seedStatements(trx, projectUsersList, shootingDays);
           await seedShiftOverview(
@@ -77,8 +81,9 @@ async function main() {
             projectId,
             shootingDays,
             projectUsersList,
+            howManyShftWorked,
           );
-          await seedDailyReports(trx, projectId, shootingDays);
+          await seedDailyReports(trx, projectId, shootingDays, howManyReports);
         }
 
         console.log('Transaction completed successfully');
