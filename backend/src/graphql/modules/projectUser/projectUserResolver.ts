@@ -244,7 +244,10 @@ export class ProjectUserResolver {
   ): Promise<boolean> {
     const validatedData = deleteProjectUserSchema.parse({ projectUserId });
     const projectUserService = new ProjectUserService(db);
-    return projectUserService.deleteProjectUser(validatedData.projectUserId);
+    return projectUserService.deleteProjectUser(
+      validatedData.projectUserId,
+      db,
+    );
   }
   @Mutation(() => Boolean)
   async activateProjectUser(

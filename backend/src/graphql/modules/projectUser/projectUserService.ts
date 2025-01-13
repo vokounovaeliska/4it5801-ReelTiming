@@ -15,6 +15,7 @@ import { promises as fs } from 'fs';
 import { sendMail } from '@backend/mailer/mailer';
 import { ProjectService } from '../project/projectService';
 import { getUserRepository } from '../user/userRepository';
+import { RateService } from '../rate/rateService';
 
 const ADMIN = 'ADMIN';
 
@@ -95,8 +96,16 @@ export class ProjectUserService {
     return this.getProjectUserById(id);
   }
 
-  async deleteProjectUser(id: string): Promise<boolean> {
-    await this.projectUserRepository.deleteProjectUser(id);
+  async deleteProjectUser(id: string, db: Db): Promise<boolean> {
+    const projectUser = await this.projectUserRepository.getProjectUserById(id);
+    if (!projectUser) {
+      throw new Error('Project user not found');
+    }
+    const rateService = new RateService(db);
+    if (projectUser.rate_id) {
+      rateService.deleteRate(projectUser.rate_id);
+    }
+    await this.projectUserRepository.deleteProjectUser(projectUser.id);
     return true;
   }
 
@@ -230,16 +239,6 @@ export class ProjectUserService {
       throw new GraphQLError('Failed to send invtiation email.');
     }
 
-    return true;
-  }
-
-  async deleteProjectUserById(projectUserId: string): Promise<boolean> {
-    const projectUser =
-      await this.projectUserRepository.getProjectUserById(projectUserId);
-    if (!projectUser) {
-      throw new Error('Project user not found');
-    }
-    await this.projectUserRepository.deleteProjectUser(projectUser.id);
     return true;
   }
   async activateProjectUserByToken(

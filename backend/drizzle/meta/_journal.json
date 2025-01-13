@@ -85,6 +85,13 @@
       "when": 1736711771438,
       "tag": "0011_freezing_meltdown",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1736802266843,
+      "tag": "0012_lonely_jean_grey",
+      "breakpoints": true
     }
   ]
 }
