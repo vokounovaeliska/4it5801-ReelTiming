@@ -48,10 +48,16 @@ export function MyProjectsPage() {
 
   const projects =
     data?.userProjects?.map(
-      (project: { id: string; name: string; description: string }) => ({
+      (project: {
+        id: string;
+        name: string;
+        description: string;
+        logo?: string | null;
+      }) => ({
         id: project.id,
         name: project.name,
         description: project.description,
+        logo: project.logo,
       }),
     ) || [];
 

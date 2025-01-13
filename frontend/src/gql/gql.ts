@@ -104,7 +104,7 @@ const documents = {
     types.CarStatementsByProjectIdDocument,
   '\n  query GetUserProfileSettingsInfo($userId: String!) {\n    user(id: $userId) {\n      id\n      name\n      surname\n      email\n      phone_number\n      last_update_date\n      create_date\n    }\n  }\n':
     types.GetUserProfileSettingsInfoDocument,
-  '\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n    }\n  }\n\n':
+  '\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n      logo\n    }\n  }\n\n':
     types.GetUserProjectsDocument,
   '\n  query GetUserRoleInProject($userId: String!, $projectId: String!) {\n    userRoleInProject(userId: $userId, projectId: $projectId)\n  }\n':
     types.GetUserRoleInProjectDocument,
@@ -414,8 +414,8 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n    }\n  }\n\n',
-): (typeof documents)['\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n    }\n  }\n\n'];
+  source: '\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n      logo\n    }\n  }\n\n',
+): (typeof documents)['\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n      logo\n    }\n  }\n\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

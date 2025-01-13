@@ -1757,6 +1757,7 @@ export type GetUserProjectsQuery = {
     id: string;
     name: string;
     description: string;
+    logo?: string | null;
   }>;
 };
 
@@ -6828,6 +6829,7 @@ export const GetUserProjectsDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'logo' } },
               ],
             },
           },
