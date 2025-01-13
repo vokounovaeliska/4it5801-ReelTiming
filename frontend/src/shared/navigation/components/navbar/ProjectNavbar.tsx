@@ -10,16 +10,18 @@ import Navbar from './Navbar';
 interface ProjectNavbarProps {
   projectId?: string;
   userRole?: string | null;
+  projectLogo?: string;
 }
 
 const CustomNavbar: React.FC<ProjectNavbarProps> = ({
   projectId,
   userRole,
+  projectLogo,
 }) => {
   const location = useLocation();
 
   return (
-    <Navbar>
+    <Navbar projectLogo={projectLogo}>
       <Button
         as={ReactRouterLink}
         to={route.myprojects()}

@@ -42,10 +42,19 @@ export async function timesheetPdfReport(
   doc.font('DejaVuSans');
 
   // Add logo
-  const logoWidth = 130;
-  doc.image(path.join(__dirname, '../../assets/logo.png'), 445, doc.y, {
-    fit: [logoWidth, logoWidth],
-  });
+  if (crewInfo.project.logo) {
+    const logoWidth = 200;
+    const base64Image = `data:image/png;base64,${crewInfo.project.logo}`;
+    doc.image(base64Image, 375, doc.y, {
+      fit: [logoWidth, logoWidth],
+      align: 'center',
+    });
+  } else {
+    const logoWidth = 130;
+    doc.image(path.join(__dirname, '../../assets/logo.png'), 445, doc.y, {
+      fit: [logoWidth, logoWidth],
+    });
+  }
 
   // Add header text
   doc

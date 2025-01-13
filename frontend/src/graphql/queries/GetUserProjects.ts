@@ -7,6 +7,7 @@ export const GET_USER_PROJECTS = gql(`
       name
       description
       is_active
+      logo
     }
   }
 

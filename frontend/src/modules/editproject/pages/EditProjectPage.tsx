@@ -67,4 +67,5 @@ export interface ProjectData {
   end_date?: string | null;
   currency: string;
   is_active: boolean;
+  logo?: string | null;
 }
