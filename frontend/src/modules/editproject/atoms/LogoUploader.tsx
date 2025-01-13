@@ -23,7 +23,6 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({
   onLogoChange,
 }) => {
   const [displayLogo, setDisplayLogo] = useState<string>(initialLogo);
-  const [logoFile, setLogoFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,8 +32,15 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({
       img.src = URL.createObjectURL(file);
       img.onload = () => {
         if (img.width <= 800 && img.height <= 200) {
-          setLogoFile(file);
-          setDisplayLogo(img.src);
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64String = reader.result?.toString().split(',')[1];
+            if (base64String) {
+              setDisplayLogo(`data:image/png;base64,${base64String}`);
+              onLogoChange(base64String); // Notify parent of the new logo
+            }
+          };
+          reader.readAsDataURL(file);
         } else {
           showErrorToast(
             'Image dimensions should be 800x200 pixels or smaller.',
@@ -48,29 +54,13 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({
 
   const handleRemoveLogo = () => {
     setDisplayLogo('');
-    setLogoFile(null);
+    onLogoChange(null); // Notify parent that the logo has been removed
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = ''; // Reset the file input
     }
-    onLogoChange(null);
     showSuccessToast('Logo successfully removed');
   };
 
-  const handleSaveLogo = async () => {
-    if (logoFile) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result?.toString().split(',')[1];
-        if (base64String) {
-          setDisplayLogo(`data:image/png;base64,${base64String}`);
-          onLogoChange(base64String);
-        }
-      };
-      reader.readAsDataURL(logoFile);
-    }
-  };
-
-  const newLocal = 'center';
   return (
     <Box>
       <ChakraImage
@@ -91,7 +81,6 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({
           accept=".png, .jpeg"
           onChange={handleFileChange}
           w="auto"
-          alignContent={newLocal}
         />
         {displayLogo && (
           <Button
@@ -105,11 +94,6 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({
           </Button>
         )}
       </SimpleGrid>
-      {logoFile && (
-        <Button mt={4} colorScheme="orange" onClick={handleSaveLogo}>
-          Save Logo
-        </Button>
-      )}
     </Box>
   );
 };
