@@ -36,7 +36,11 @@ export const ShootingDaysInputForm: React.FC<ShootingDaysInputFormProps> = ({
         spacing={4}
         alignItems="flex-end"
         justifyContent="space-between"
-        gridTemplateColumns={{ base: '1.5fr', md: '0.5fr 1fr 0.7fr auto' }}
+        gridTemplateColumns={{
+          base: '1.5fr',
+          md: 'repeat(4, auto)',
+          lg: '0.5fr 1fr 0.7fr auto',
+        }}
       >
         <FormControl>
           <FormLabel>Shooting Day Number</FormLabel>
@@ -96,13 +100,26 @@ export const ShootingDaysInputForm: React.FC<ShootingDaysInputFormProps> = ({
               </Button>
             </>
           ) : (
-            <Button
-              variant="outline"
-              colorScheme="orange"
-              onClick={handleAddOrUpdateShootingDay}
-            >
-              Add Shooting Day
-            </Button>
+            <Box>
+              <Box display={{ base: 'block', lg: 'none' }}>
+                <Button
+                  variant="outline"
+                  colorScheme="orange"
+                  onClick={handleAddOrUpdateShootingDay}
+                >
+                  Add
+                </Button>
+              </Box>
+              <Box display={{ base: 'none', lg: 'block' }}>
+                <Button
+                  variant="outline"
+                  colorScheme="orange"
+                  onClick={handleAddOrUpdateShootingDay}
+                >
+                  Add Shooting Day
+                </Button>
+              </Box>
+            </Box>
           )}
         </Box>
       </SimpleGrid>
