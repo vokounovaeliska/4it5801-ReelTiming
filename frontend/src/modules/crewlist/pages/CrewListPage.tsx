@@ -101,8 +101,8 @@ export function CrewListPage() {
       ) {
         const departmentName = user.department?.name || 'No Department';
         const department = crewList.departments.find(
-          (dept) => dept.name === departmentName
-        )
+          (dept) => dept.name === departmentName,
+        );
 
         if (departmentName === 'No Department' || department?.is_visible) {
           if (!acc[departmentName]) {
@@ -116,7 +116,7 @@ export function CrewListPage() {
     {} as Record<string, ProjectUser[]>,
   );
 
-  console.log(crewList?.project?.id)
+  console.log(crewList?.project?.id);
   console.log(crewList?.departments);
 
   const sortedDepartments = Object.keys(groupedByDepartment!).sort();
@@ -196,9 +196,9 @@ export function CrewListPage() {
           cars={
             selectedCrewMember
               ? getAvailableCarsForProjectUserId(
-                selectedCrewMember?.id,
-                allCarsOnProjectData!,
-              )
+                  selectedCrewMember?.id,
+                  allCarsOnProjectData!,
+                )
               : []
           }
           carStatements={projectCarStatements?.carStatementsByProjectId ?? []}

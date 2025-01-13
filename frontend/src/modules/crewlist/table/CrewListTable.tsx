@@ -1,12 +1,16 @@
 import React, { useCallback, useState } from 'react';
 import { Box, Table, TableContainer, Tbody, Thead, Tr } from '@chakra-ui/react';
-import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import { CrewMemberData, DepartmentProps, ProjectUser } from '../interfaces/interfaces';
-import { DraggableRow } from './DraggableRow';
+import {
+  CrewMemberData,
+  DepartmentProps,
+  ProjectUser,
+} from '../interfaces/interfaces';
 
 import { CrewlistTableHeader } from './CrewlistTableHeader';
+import { DraggableRow } from './DraggableRow';
 
 interface CrewListTableProps {
   sortedDepartments: string[];
@@ -62,13 +66,13 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
 
       // Update local state
       setDepartments(updatedDepartments);
-      console.log('Local update')
+      console.log('Local update');
     },
-    [departments]
+    [departments],
   );
 
   const handleDragEnd = useCallback(async () => {
-    console.log('Calling DB')
+    console.log('Calling DB');
     try {
       await Promise.all(
         departments.map((department, index) =>
@@ -76,8 +80,8 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
             name: department,
             project_id: projectId,
             order_index: index,
-          })
-        )
+          }),
+        ),
       );
     } catch (err) {
       console.error('Failed to update department order:', err);
@@ -177,7 +181,7 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
           </Box>
         </TableContainer>
       </DndProvider>
-    </Box >
+    </Box>
   );
 };
 

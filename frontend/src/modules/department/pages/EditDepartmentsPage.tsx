@@ -8,7 +8,6 @@ import { UPDATE_DEPARTMENT_ORDER } from '@frontend/graphql/mutations/UpdateDepar
 import { GET_DEPARTMENTS } from '@frontend/graphql/queries/GetDepartments';
 import { useAuth } from '@frontend/modules/auth';
 import { CreateDepartmentForm } from '@frontend/modules/crewlist/forms/DepartmentForm';
-import { DepartmentTable } from '@frontend/modules/crewlist/table/DepartmentTable';
 import {
   useProjectDetails,
   useUserRoleInProject,
@@ -19,8 +18,9 @@ import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 import { createDepartmentFormValues } from '@frontend/zod/schemas';
 
-import { AddCrewMemberButton } from '../atoms/AddDepartmentButton';
-import { DepartmentProps } from '../interfaces/interfaces';
+import { AddCrewMemberButton } from '../../crewlist/atoms/AddDepartmentButton';
+import { DepartmentProps } from '../../crewlist/interfaces/interfaces';
+import { DepartmentTable } from '../../crewlist/table/DepartmentTable';
 
 export function EditDepartmentsPage() {
   const auth = useAuth();
@@ -45,8 +45,8 @@ export function EditDepartmentsPage() {
   };
 
   const { roleData, roleLoading, roleError } = useUserRoleInProject(
-    auth.user?.id ?? '',
-    projectId ?? '',
+    auth.user?.id,
+    projectId,
   );
 
   const { projectData, projectLoading, projectError } = useProjectDetails(
@@ -78,7 +78,7 @@ export function EditDepartmentsPage() {
   }, [departmentsData]);
 
   const moveDepartment = useCallback(
-    async (dragIndex: number, hoverIndex: number, isDragging: boolean) => {
+    async (dragIndex: number, hoverIndex: number) => {
       const updatedDepartments = [...departments];
       const [removed] = updatedDepartments.splice(dragIndex, 1);
       updatedDepartments.splice(hoverIndex, 0, removed);
@@ -99,14 +99,14 @@ export function EditDepartmentsPage() {
     );
   }
 
-  if (roleError || projectError || departmentsError || !auth.user) {
+  if (roleError || !auth.user || projectError || departmentsError) {
     return (
       <Center minHeight="100vh">
         <Text color="red.500">
           Error loading project details:{' '}
-          {roleError?.message ??
-            projectError.message ??
-            departmentsError?.message}
+          {departmentsError?.message ??
+            roleError?.message ??
+            projectError?.message}
         </Text>
       </Center>
     );
@@ -160,7 +160,7 @@ export function EditDepartmentsPage() {
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <ProjectNavbar
         projectId={projectId!}
-        userRole={roleData.userRoleInProject}
+        userRole={roleData?.userRoleInProject}
       />
       <Box mb={4} p={0} width="100%">
         <Heading mb={4} mt={2} textAlign="center">
