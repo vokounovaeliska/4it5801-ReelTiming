@@ -27,4 +27,6 @@ export const route = {
       : `/projects/${projectId}/daily-reports`,
   editDepartments: (projectId: string = ':projectId') =>
     `/projects/${projectId}/edit-departments`,
+  shiftOverview: (projectId: string = ':projectId') =>
+    `/projects/${projectId}/shift-overview`,
 };
