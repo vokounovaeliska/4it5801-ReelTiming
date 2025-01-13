@@ -7,13 +7,13 @@ import { useParams } from 'react-router-dom';
 import {
   CrewMemberData,
   ProjectUserLightVersion,
-  ProjectUser,
 } from '../interfaces/interfaces';
 import {
   showErrorToast,
   showSuccessToast,
 } from '@frontend/shared/design-system/molecules/toastUtils';
 import { Car } from '@frontend/modules/timesheets/interfaces';
+import { GetCrewListInfoQuery } from '@frontend/gql/graphql';
 
 export const useCrewListPageUtils = () => {
   const auth = useAuth();
@@ -25,8 +25,6 @@ export const useCrewListPageUtils = () => {
   const [selectedCrewMember, setSelectedCrewMember] =
     useState<CrewMemberData | null>(null);
   const { projectId } = useParams<{ projectId: string }>();
-  //const [updateDepartment] = useMutation(UPDATE_DEPARTMENT_ORDER);
-
   const sanitizeCrewMemberData = (data: CrewMemberData): CrewMemberData => ({
     ...data,
     standard_rate: data.standard_rate || 0,
@@ -201,12 +199,14 @@ export const useCrewListPageUtils = () => {
   const handleRemoveUser = async (projectUserId: string) => {
     try {
       await deleteCrewMember(projectUserId);
-      const data = client.readQuery({
+      const data = client.readQuery<GetCrewListInfoQuery>({
         query: GET_CREWLIST_INFO,
         variables: { projectId: projectId!, userId: auth.user?.id! },
       });
-      const updatedUsers = data?.projectUsers.filter(
-        (user: ProjectUser) => user.id !== projectUserId,
+
+      if (!data) throw new Error('Data not found in cache');
+      const updatedUsers = data.projectUsers.filter(
+        (user) => user.id !== projectUserId,
       );
       client.writeQuery({
         query: GET_CREWLIST_INFO,
@@ -216,6 +216,7 @@ export const useCrewListPageUtils = () => {
           projectUsers: updatedUsers,
         },
       });
+
       showSuccessToast('Crew member removed successfully');
     } catch (error) {
       console.error('Error removing user from project:', error);
@@ -274,7 +275,10 @@ export const useCrewListPageUtils = () => {
 
   const departmentNameToId = (
     name: string,
-    departments: { name: string; id: string }[],
+    departments: {
+      name: string;
+      id: string;
+    }[],
   ): string | null => {
     const department = departments.find((dept) => dept.name === name);
     return department ? department.id : null;

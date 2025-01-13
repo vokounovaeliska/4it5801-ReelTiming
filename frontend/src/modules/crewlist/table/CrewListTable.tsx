@@ -1,11 +1,11 @@
 import React from 'react';
 import { Box, Table, TableContainer, Tbody, Thead, Tr } from '@chakra-ui/react';
 
-import { DepartmentRow } from '../../departments/atoms/DepartmentRow';
 import { CrewMemberData, Project, ProjectUser } from '../interfaces/interfaces';
 
 import { CrewlistTableHeader } from './CrewlistTableHeader';
 import { CrewMemberRow } from './CrewMemberRow';
+import { DepartmentRow } from './DepartmentRow';
 
 interface CrewListTableProps {
   sortedDepartments: string[];

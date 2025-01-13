@@ -7,7 +7,6 @@ import { Department } from '@frontend/gql/graphql';
 import { UPDATE_DEPARTMENT_ORDER } from '@frontend/graphql/mutations/UpdateDepartmentOrder';
 import { GET_DEPARTMENTS } from '@frontend/graphql/queries/GetDepartments';
 import { useAuth } from '@frontend/modules/auth';
-import { CreateDepartmentForm } from '@frontend/modules/crewlist/forms/DepartmentForm';
 import {
   useProjectDetails,
   useUserRoleInProject,
@@ -18,9 +17,10 @@ import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 import { createDepartmentFormValues } from '@frontend/zod/schemas';
 
-import { AddCrewMemberButton } from '../../crewlist/atoms/AddDepartmentButton';
 import { DepartmentProps } from '../../crewlist/interfaces/interfaces';
+import { AddDepartmentButton } from '../atoms/AddDepartmentButton';
 import { DepartmentTable } from '../atoms/DepartmentTable';
+import { CreateDepartmentForm } from '../forms/DepartmentForm';
 
 export function EditDepartmentsPage() {
   const auth = useAuth();
@@ -162,7 +162,7 @@ export function EditDepartmentsPage() {
         projectId={projectId!}
         userRole={roleData?.userRoleInProject}
       />
-      <Box mb={4} p={0} width="100%">
+      <Box mb={4} p={0}>
         <Heading mb={4} mt={2} textAlign="center">
           Edit departments for Project {projectData?.project?.name}
         </Heading>
@@ -176,7 +176,7 @@ export function EditDepartmentsPage() {
               mb={4}
               px={10}
             >
-              <AddCrewMemberButton
+              <AddDepartmentButton
                 handleAddDepartmentClick={() => setIsModalOpen(true)}
               />
             </Box>
@@ -186,7 +186,6 @@ export function EditDepartmentsPage() {
         departments={departments ?? []}
         projectId={projectId ?? ''}
         handleMoveDepartment={moveDepartment}
-        handleUpdateDepartmentOrder={handleUpdateDepartmentOrder}
         handleDragEnd={handleDragEnd}
       />
       <CustomModal

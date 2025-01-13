@@ -11,7 +11,6 @@ import {
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import { DepartmentProps } from '@frontend/modules/crewlist/interfaces/interfaces';
 import { Department } from '@frontend/modules/dailyreport/interfaces/interface';
 
 import { EditableDepartmentTableRow } from './EditableDepartmentTableRow';
@@ -24,11 +23,11 @@ interface DepartmentTableProps {
     hoverIndex: number,
     isDragging: boolean,
   ) => void;
-  handleUpdateDepartmentOrder: (id: string, data: DepartmentProps) => void;
   handleDragEnd: () => void;
 }
 
 const tableHeaders = [
+  { label: '' },
   { label: 'Department', tooltip: 'Department name' },
   { label: 'Visible', tooltip: 'Department visible in project' },
   { label: 'Actions' },
@@ -41,13 +40,12 @@ export const DepartmentTable: React.FC<DepartmentTableProps> = ({
   handleDragEnd,
 }) => {
   return (
-    <Box maxWidth="100%">
+    <Box>
       <DndProvider backend={HTML5Backend}>
         <TableContainer className="custom-scrollbar">
           <Box
             overflowX="auto"
             overflowY="auto"
-            maxHeight={'67vh'}
             sx={{
               '::-webkit-scrollbar': {
                 height: '12px',
@@ -66,7 +64,7 @@ export const DepartmentTable: React.FC<DepartmentTableProps> = ({
               scrollbarColor: '#2D3748 white',
             }}
           >
-            <Table variant="simple" size="sm">
+            <Table variant="simple" size="sm" w="max-content">
               <Thead position="sticky" top={0} zIndex="docked">
                 <Tr>
                   {tableHeaders.map((header) => (

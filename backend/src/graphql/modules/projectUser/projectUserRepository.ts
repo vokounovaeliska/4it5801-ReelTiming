@@ -1,5 +1,11 @@
 import { and, eq } from 'drizzle-orm';
-import { car, project, project_user, user } from '@backend/db/schema';
+import {
+  car,
+  department,
+  project,
+  project_user,
+  user,
+} from '@backend/db/schema';
 import { type Db } from '@backend/types/types';
 
 export function getProjectUserRepository(db: Db) {
@@ -11,7 +17,14 @@ export function getProjectUserRepository(db: Db) {
       return db
         .select()
         .from(project_user)
-        .where(eq(project_user.project_id, projectId));
+        .innerJoin(department, eq(department.id, project_user.department_id))
+        .where(
+          and(
+            eq(project_user.project_id, projectId),
+            eq(department.is_visible, true),
+          ),
+        )
+        .orderBy(department.order_index);
     },
     async getProjectUserById(id: string) {
       const projectUserRecord = await db

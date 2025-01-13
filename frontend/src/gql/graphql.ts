@@ -951,6 +951,15 @@ export type AddDepartmentMutation = {
   };
 };
 
+export type DeleteDailyReportMutationVariables = Exact<{
+  dailyReportId: Scalars['String']['input'];
+}>;
+
+export type DeleteDailyReportMutation = {
+  __typename?: 'Mutation';
+  deleteDailyReport: boolean;
+};
+
 export type DeleteInvitationMutationVariables = Exact<{
   projectUserId: Scalars['String']['input'];
 }>;
@@ -1295,6 +1304,7 @@ export type GetCrewListInfoQuery = {
     id: string;
     name: string;
     is_visible?: boolean | null;
+    order_index?: number | null;
   }>;
   projectUsers: Array<{
     __typename?: 'ProjectUser';
@@ -1322,7 +1332,13 @@ export type GetCrewListInfoQuery = {
       overtime_hour4?: number | null;
       standard_rate?: number | null;
     } | null;
-    department?: { __typename?: 'Department'; name: string; id: string } | null;
+    department?: {
+      __typename?: 'Department';
+      name: string;
+      id: string;
+      is_visible?: boolean | null;
+      order_index?: number | null;
+    } | null;
   }>;
 };
 
@@ -3514,6 +3530,54 @@ export const AddDepartmentDocument = {
   AddDepartmentMutation,
   AddDepartmentMutationVariables
 >;
+export const DeleteDailyReportDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'DeleteDailyReport' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'dailyReportId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'deleteDailyReport' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'dailyReportId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'dailyReportId' },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  DeleteDailyReportMutation,
+  DeleteDailyReportMutationVariables
+>;
 export const DeleteInvitationDocument = {
   kind: 'Document',
   definitions: [
@@ -5131,6 +5195,7 @@ export const GetCrewListInfoDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'is_visible' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'order_index' } },
               ],
             },
           },
@@ -5227,6 +5292,14 @@ export const GetCrewListInfoDocument = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'is_visible' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'order_index' },
+                      },
                     ],
                   },
                 },

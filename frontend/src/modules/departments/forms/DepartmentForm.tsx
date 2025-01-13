@@ -11,6 +11,7 @@ import {
 
 import { Department } from '@frontend/gql/graphql';
 import { CREATE_DEPARTMENT } from '@frontend/graphql/mutations/CreateDepartment';
+import { showErrorToast } from '@frontend/shared/design-system/molecules/toastUtils';
 import { createDepartmentFormValues } from '@frontend/zod/schemas';
 
 interface CreateDepartmentFormProps {
@@ -58,7 +59,7 @@ export const CreateDepartmentForm = ({
       onSave(newDepartment);
     } catch (error) {
       console.error('Failed to create department:', error);
-      alert('Failed to create department.');
+      showErrorToast('Failed to create department.');
     } finally {
       setLoading(false);
     }

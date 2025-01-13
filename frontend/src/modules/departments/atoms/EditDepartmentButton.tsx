@@ -19,7 +19,7 @@ export const EditDepartmentButton = ({
       label={label}
       aria-label={label}
       placement="top"
-      bg="gray.500"
+      bg="orange.500"
       rounded={'lg'}
     >
       <IconButton
@@ -27,10 +27,9 @@ export const EditDepartmentButton = ({
         aria-label={label}
         ariant="outline"
         borderWidth={1}
-        borderColor="gray.300"
-        bg={'white'}
+        colorScheme="orange"
         size="xs"
-        icon={<EditIcon color="gray.500" />}
+        icon={<EditIcon />}
         onClick={() => {
           handleEdit(department);
         }}

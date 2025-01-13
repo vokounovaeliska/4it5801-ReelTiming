@@ -6,7 +6,7 @@ type AddDepartmentButtonProps = {
   handleAddDepartmentClick: () => void;
 };
 
-export const AddCrewMemberButton: React.FC<AddDepartmentButtonProps> = ({
+export const AddDepartmentButton: React.FC<AddDepartmentButtonProps> = ({
   handleAddDepartmentClick,
 }) => {
   const label = useBreakpointValue({

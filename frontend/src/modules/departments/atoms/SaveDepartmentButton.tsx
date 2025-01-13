@@ -13,22 +13,15 @@ export const SaveDepartmentButton = ({
 }: SaveDepartmentButtonProps) => {
   const label = 'Save';
   return (
-    <Tooltip
-      label={label}
-      aria-label={label}
-      placement="top"
-      bg="gray.500"
-      rounded={'lg'}
-    >
+    <Tooltip label={label} aria-label={label} placement="top" rounded={'lg'}>
       <IconButton
         {...buttonProps}
         aria-label={label}
         ariant="outline"
         borderWidth={1}
-        borderColor="gray.300"
-        bg={'white'}
+        colorScheme="orange"
         size="xs"
-        icon={<CheckIcon color="gray.500" />}
+        icon={<CheckIcon />}
         onClick={() => {
           handleSave(departmentId);
         }}

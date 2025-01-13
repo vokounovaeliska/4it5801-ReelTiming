@@ -31,7 +31,10 @@ export interface ProjectUser {
   user?: {
     id: string;
   } | null;
-  department?: { name: string; id: string } | null;
+  department?: {
+    name: string;
+    id: string;
+  } | null;
   role?: string | null;
   position?: string | null;
   phone_number?: string | null;

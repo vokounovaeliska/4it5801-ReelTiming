@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
+import { DragHandleIcon } from '@chakra-ui/icons'; // Import DragHandleIcon
 import { Td, Tr } from '@chakra-ui/react';
 import { useDrag, useDrop } from 'react-dnd';
 
 import { UPDATE_DEPARTMENT_ORDER } from '@frontend/graphql/mutations/UpdateDepartmentOrder';
 import { Department } from '@frontend/modules/dailyreport/interfaces/interface';
+import {
+  showErrorToast,
+  showSuccessToast,
+} from '@frontend/shared/design-system/molecules/toastUtils';
 
-import { CancelDepartmentButton } from '../../crewlist/atoms/CancelDepartmentButton';
-import { EditDepartmentButton } from '../../crewlist/atoms/EditDepartmentButton';
-import { SaveDepartmentButton } from '../../crewlist/atoms/SaveDepartmentButton';
+import { CancelDepartmentButton } from './CancelDepartmentButton';
+import { EditDepartmentButton } from './EditDepartmentButton';
+import { SaveDepartmentButton } from './SaveDepartmentButton';
 
 interface EditableDepartmentTableRowProps {
   department: Department;
@@ -22,9 +27,13 @@ interface EditableDepartmentTableRowProps {
   handleDragEnd: () => void;
 }
 
-export const EditableDepartmentTableRow: React.FC<
-  EditableDepartmentTableRowProps
-> = ({ department, projectId, index, handleMoveDepartment, handleDragEnd }) => {
+export const EditableDepartmentTableRow = ({
+  department,
+  projectId,
+  index,
+  handleMoveDepartment,
+  handleDragEnd,
+}: EditableDepartmentTableRowProps) => {
   const [editRowId, setEditRowId] = useState<string | null>(null);
   const [formState, setFormState] = useState({
     name: '',
@@ -56,11 +65,11 @@ export const EditableDepartmentTableRow: React.FC<
           },
         },
       });
-      alert('Department updated successfully!');
+      showSuccessToast('Department updated successfully!');
       setEditRowId(null); // Exit edit mode
     } catch (err) {
       console.error(err);
-      alert('Failed to update department.');
+      showErrorToast('Failed to update department.');
     }
   };
 
@@ -68,7 +77,7 @@ export const EditableDepartmentTableRow: React.FC<
     setEditRowId(null);
   };
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormState((prevState) => ({
       ...prevState,
@@ -110,6 +119,10 @@ export const EditableDepartmentTableRow: React.FC<
         cursor: 'move',
       }}
     >
+      <Td width="40px">
+        <DragHandleIcon style={{ cursor: 'grab' }} />
+      </Td>
+
       <Td>
         {editRowId === department.id ? (
           <input
@@ -122,6 +135,7 @@ export const EditableDepartmentTableRow: React.FC<
           department.name
         )}
       </Td>
+
       <Td>
         <input
           type="checkbox"
@@ -135,6 +149,7 @@ export const EditableDepartmentTableRow: React.FC<
           disabled={editRowId !== department.id}
         />
       </Td>
+
       <Td>
         {editRowId === department.id ? (
           <>
