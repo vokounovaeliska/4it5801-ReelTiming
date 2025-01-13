@@ -42,6 +42,7 @@ export const useCrewListPageUtils = () => {
     data: crewListData,
     loading: crewListLoading,
     error: crewListError,
+    refetch: refetchCrew,
   } = useQuery(GET_CREWLIST_INFO, {
     variables: { projectId: projectId!, userId: auth.user?.id! },
     skip: !projectId || !auth.user?.id,
@@ -321,5 +322,6 @@ export const useCrewListPageUtils = () => {
     sendInvitation,
     isEditDepartmentsModalOpen,
     setIsEditDepartmentsModalOpen,
+    refetchCrew,
   };
 };

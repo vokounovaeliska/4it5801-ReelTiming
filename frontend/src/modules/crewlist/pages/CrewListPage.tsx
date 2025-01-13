@@ -65,6 +65,7 @@ export function CrewListPage() {
     sendInvitation,
     isEditDepartmentsModalOpen,
     setIsEditDepartmentsModalOpen,
+    refetchCrew,
   } = useCrewListPageUtils();
 
   const isDataAvailable = !!crewList && Object.keys(crewList).length > 0;
@@ -145,7 +146,10 @@ export function CrewListPage() {
             </Button>
             <EditDepartmentsModal
               isOpen={isEditDepartmentsModalOpen}
-              onClose={() => setIsEditDepartmentsModalOpen(false)}
+              onClose={() => {
+                setIsEditDepartmentsModalOpen(false);
+                refetchCrew();
+              }}
               projectId={projectId}
               userRole={crewList.userRoleInProject}
               projectName={crewList.project?.name}
