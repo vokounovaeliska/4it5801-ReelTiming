@@ -1,7 +1,3 @@
-export interface RoleData {
-  userRoleInProject: string;
-}
-
 export interface Project {
   id: string;
   name: string;

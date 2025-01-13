@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
+import { Center, Spinner, Text } from '@chakra-ui/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { ADD_CAR } from '@frontend/graphql/mutations/AddCar';
@@ -37,7 +38,7 @@ export function AcceptInvitationPage() {
   const [addCar] = useMutation(ADD_CAR);
 
   useEffect(() => {
-    if (!token) {
+    if (!token || (!loading && !data)) {
       navigate('/');
       return;
     }
@@ -46,7 +47,7 @@ export function AcceptInvitationPage() {
       navigate(`${route.login()}${`?token=${token}`}`);
       return;
     }
-  }, [isAuthenticated, token, navigate]);
+  }, [isAuthenticated, token, navigate, data, loading]);
 
   const {
     data: departmentsData,
@@ -131,7 +132,15 @@ export function AcceptInvitationPage() {
     console.log('Updated car collection in parent:', cars);
   };
 
-  if (loading || departmentsLoading) return <p>Loading...</p>;
+  if (loading || departmentsLoading) {
+    return (
+      <Center minHeight="100vh">
+        <Spinner size="xl" color="orange.500" />
+        <Text ml={4}>Loading...</Text>
+      </Center>
+    );
+  }
+
   if (error || departmentsError)
     return <p>Error: {error?.message ?? departmentsError?.message}</p>;
 

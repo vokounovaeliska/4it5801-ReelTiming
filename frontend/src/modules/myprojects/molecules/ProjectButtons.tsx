@@ -1,5 +1,5 @@
 import React from 'react';
-import { AttachmentIcon } from '@chakra-ui/icons';
+import { AttachmentIcon, RepeatClockIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -46,6 +46,8 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
   const myProjectSettings = `/projects/${projectId}/myProjectSettings`;
   const editPath = `/projects/${projectId}/edit`;
   const dailyReport = `/projects/${projectId}/daily-reports`;
+  const shiftsOverview = `/projects/${projectId}/shift-overview`;
+
   const handleNavigation = (path: string) => {
     navigate(path);
   };
@@ -102,10 +104,14 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
             >
               Daily report
             </Button>
-          </>
-        )}
-        {userRole === 'ADMIN' && (
-          <>
+            <Button
+              {...buttonStyle}
+              leftIcon={<RepeatClockIcon />}
+              bg={activePath === shiftsOverview ? 'orange.600' : 'transparent'}
+              onClick={() => handleNavigation(shiftsOverview)}
+            >
+              Shifts overview
+            </Button>
             <Button
               {...buttonStyle}
               leftIcon={<MdBuild />}
