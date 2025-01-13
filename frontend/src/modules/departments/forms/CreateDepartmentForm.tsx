@@ -65,7 +65,7 @@ export const CreateDepartmentForm = ({
   );
 
   return (
-    <Box maxW="md" mx="auto" bg="white" p={6} borderRadius="md" boxShadow="md">
+    <Box maxW="md" mx="auto" bg="white" p={3}>
       <VStack spacing={6} align="stretch">
         <Heading as="h3" size="lg" textAlign="center" mb={4}>
           Create Department
