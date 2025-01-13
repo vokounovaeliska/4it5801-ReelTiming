@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { CREATE_DEPARTMENT } from '@frontend/graphql/mutations/CreateDepartment';
-import { Box, Checkbox, FormControl, FormLabel, Input } from '@chakra-ui/react';
+import { Box, Button, Checkbox, FormControl, FormLabel, Input } from '@chakra-ui/react';
 import { createDepartmentFormValues } from '@frontend/zod/schemas';
 
 interface CreateDepartmentFormProps {
@@ -81,12 +81,27 @@ export const CreateDepartmentForm = ({ projectId, onSave, onCancel, formData, on
                </FormControl>
             </Box>
             <div>
-               <button type="submit" disabled={loading}>
-                  {loading ? 'Saving...' : 'Save'}
-               </button>
-               <button type="button" onClick={onCancel} disabled={loading}>
+               <Button
+                  type="submit"
+                  colorScheme="orange"
+                  width="100%"
+                  mt={4}
+                  size="lg"
+                  disabled={loading}
+               >
+                  Save
+               </Button>
+               <Button
+                  type="button"
+                  colorScheme="gray"
+                  width="100%"
+                  mt={4}
+                  size="lg"
+                  disabled={loading}
+                  onClick={onCancel}
+               >
                   Cancel
-               </button>
+               </Button>
             </div>
          </form>
       </div>
