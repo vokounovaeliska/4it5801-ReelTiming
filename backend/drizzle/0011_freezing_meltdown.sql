@@ -1,0 +1,1 @@
+ALTER TABLE `project` MODIFY COLUMN `logo` text;

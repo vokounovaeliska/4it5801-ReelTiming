@@ -1048,6 +1048,7 @@ export type EditProjectMutation = {
     is_active: boolean;
     last_update_user_id: string;
     currency: string;
+    logo?: string | null;
   };
 };
 
@@ -1491,6 +1492,7 @@ export type DailyReportPreviewInfoQuery = {
     name: string;
     production_company: string;
     currency: string;
+    logo?: string | null;
     shootingDays?: Array<{ __typename?: 'ShootingDay'; id: string }> | null;
   } | null;
   shootingDay?: {
@@ -1590,6 +1592,7 @@ export type GetProjectDetailQuery = {
     last_update_date: string;
     last_update_user_id: string;
     currency: string;
+    logo?: string | null;
     projectUsers?: Array<{ __typename?: 'ProjectUser'; id: string }> | null;
   } | null;
 };
@@ -1929,6 +1932,7 @@ export type GetUserProjectsQuery = {
     name: string;
     description: string;
     is_active: boolean;
+    logo?: string | null;
   }>;
 };
 
@@ -4138,6 +4142,7 @@ export const EditProjectDocument = {
                   name: { kind: 'Name', value: 'last_update_user_id' },
                 },
                 { kind: 'Field', name: { kind: 'Name', value: 'currency' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'logo' } },
               ],
             },
           },
@@ -6209,6 +6214,7 @@ export const DailyReportPreviewInfoDocument = {
                   name: { kind: 'Name', value: 'production_company' },
                 },
                 { kind: 'Field', name: { kind: 'Name', value: 'currency' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'logo' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'shootingDays' },
@@ -6613,6 +6619,7 @@ export const GetProjectDetailDocument = {
                     ],
                   },
                 },
+                { kind: 'Field', name: { kind: 'Name', value: 'logo' } },
               ],
             },
           },
@@ -7804,6 +7811,7 @@ export const GetUserProjectsDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'description' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'is_active' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'logo' } },
               ],
             },
           },

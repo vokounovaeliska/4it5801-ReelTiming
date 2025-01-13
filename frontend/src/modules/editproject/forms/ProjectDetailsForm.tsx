@@ -106,7 +106,7 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         <Text fontSize="md" fontWeight="semibold" mt={6} mb={2}>
           Project Dates
         </Text>
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4} mb={6}>
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
           <FormControl isRequired>
             <FormLabel>Start Date</FormLabel>
             <Input
@@ -139,7 +139,7 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
           </FormControl>
         </SimpleGrid>
 
-        <FormControl isRequired>
+        <FormControl isRequired mt={4}>
           <FormLabel>Project Status</FormLabel>
           <HStack align="center">
             <Switch
