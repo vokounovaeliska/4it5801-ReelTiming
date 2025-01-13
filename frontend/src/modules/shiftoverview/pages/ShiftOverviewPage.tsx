@@ -36,7 +36,7 @@ export function ShiftOverviewPage() {
     return (
       <Center minHeight="100vh">
         <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading daily reports...</Text>
+        <Text ml={4}>Loading shift overview...</Text>
       </Center>
     );
   }

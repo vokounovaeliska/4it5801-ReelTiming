@@ -25,4 +25,8 @@ export const route = {
     shootingDayId
       ? `/projects/${projectId}/daily-reports/${shootingDayId}`
       : `/projects/${projectId}/daily-reports`,
+  editDepartments: (projectId: string = ':projectId') =>
+    `/projects/${projectId}/edit-departments`,
+  shiftOverview: (projectId: string = ':projectId') =>
+    `/projects/${projectId}/shift-overview`,
 };

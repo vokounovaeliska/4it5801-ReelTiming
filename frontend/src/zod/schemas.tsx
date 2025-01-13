@@ -187,3 +187,12 @@ export const loginFormSchema = zod.object({
 });
 
 export type loginFormValues = zod.infer<typeof loginFormSchema>;
+
+export const createDepartmentFormSchema = zod.object({
+  name: z.string().min(1, { message: 'Name is required' }),
+  isVisible: zod.boolean(),
+});
+
+export type createDepartmentFormValues = zod.infer<
+  typeof createDepartmentFormSchema
+>;

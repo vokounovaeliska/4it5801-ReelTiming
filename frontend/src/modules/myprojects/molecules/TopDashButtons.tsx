@@ -43,6 +43,13 @@ const TopDashButtons: React.FC<TopDashButtonsProps> = ({
           ariaLabel="Shifts"
           to={route.timesheets(projectId)}
         />
+
+        <TopDashButton
+          text="Edit departments"
+          icon={<FaClock />}
+          ariaLabel="Edit departments"
+          to={route.editDepartments(projectId)}
+        />
       </SimpleGrid>
     </Box>
   );

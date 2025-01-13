@@ -959,6 +959,33 @@ export type AddStatementMutation = {
   };
 };
 
+export type AddDepartmentMutationVariables = Exact<{
+  name: Scalars['String']['input'];
+  isVisible?: InputMaybe<Scalars['Boolean']['input']>;
+  orderIndex?: InputMaybe<Scalars['Float']['input']>;
+  projectId: Scalars['String']['input'];
+}>;
+
+export type AddDepartmentMutation = {
+  __typename?: 'Mutation';
+  addDepartment: {
+    __typename?: 'Department';
+    id: string;
+    is_visible?: boolean | null;
+    name: string;
+    order_index?: number | null;
+  };
+};
+
+export type DeleteDailyReportMutationVariables = Exact<{
+  dailyReportId: Scalars['String']['input'];
+}>;
+
+export type DeleteDailyReportMutation = {
+  __typename?: 'Mutation';
+  deleteDailyReport: boolean;
+};
+
 export type DeleteInvitationMutationVariables = Exact<{
   projectUserId: Scalars['String']['input'];
 }>;
@@ -1186,6 +1213,22 @@ export type UpdateAndActivateProjectUserMutation = {
   };
 };
 
+export type UpdateDepartmentOrderMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+  data: DepartmentInput;
+}>;
+
+export type UpdateDepartmentOrderMutation = {
+  __typename?: 'Mutation';
+  updateDepartment: {
+    __typename?: 'Department';
+    id: string;
+    name: string;
+    order_index?: number | null;
+    is_visible?: boolean | null;
+  };
+};
+
 export type UpdateUserMutationVariables = Exact<{
   data: UserInput;
   userId: Scalars['String']['input'];
@@ -1320,7 +1363,13 @@ export type GetCrewListInfoQuery = {
     last_update_user_id: string;
     currency: string;
   } | null;
-  departments: Array<{ __typename?: 'Department'; id: string; name: string }>;
+  departments: Array<{
+    __typename?: 'Department';
+    id: string;
+    name: string;
+    is_visible?: boolean | null;
+    order_index?: number | null;
+  }>;
   projectUsers: Array<{
     __typename?: 'ProjectUser';
     id: string;
@@ -1347,7 +1396,13 @@ export type GetCrewListInfoQuery = {
       overtime_hour4?: number | null;
       standard_rate?: number | null;
     } | null;
-    department?: { __typename?: 'Department'; name: string; id: string } | null;
+    department?: {
+      __typename?: 'Department';
+      name: string;
+      id: string;
+      is_visible?: boolean | null;
+      order_index?: number | null;
+    } | null;
   }>;
 };
 
@@ -1467,7 +1522,13 @@ export type DepartmentsQueryVariables = Exact<{
 
 export type DepartmentsQuery = {
   __typename?: 'Query';
-  departments: Array<{ __typename?: 'Department'; id: string; name: string }>;
+  departments: Array<{
+    __typename?: 'Department';
+    id: string;
+    name: string;
+    is_visible?: boolean | null;
+    order_index?: number | null;
+  }>;
 };
 
 export type LastDailyReportByProjectIdQueryVariables = Exact<{
@@ -3585,6 +3646,162 @@ export const AddStatementDocument = {
   AddStatementMutation,
   AddStatementMutationVariables
 >;
+export const AddDepartmentDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'AddDepartment' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'isVisible' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'orderIndex' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Float' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'addDepartment' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'name' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'name' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'isVisible' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'isVisible' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderIndex' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'orderIndex' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_visible' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'order_index' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AddDepartmentMutation,
+  AddDepartmentMutationVariables
+>;
+export const DeleteDailyReportDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'DeleteDailyReport' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'dailyReportId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'deleteDailyReport' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'dailyReportId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'dailyReportId' },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  DeleteDailyReportMutation,
+  DeleteDailyReportMutationVariables
+>;
 export const DeleteInvitationDocument = {
   kind: 'Document',
   definitions: [
@@ -4867,6 +5084,79 @@ export const UpdateAndActivateProjectUserDocument = {
   UpdateAndActivateProjectUserMutation,
   UpdateAndActivateProjectUserMutationVariables
 >;
+export const UpdateDepartmentOrderDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'UpdateDepartmentOrder' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'DepartmentInput' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateDepartment' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'departmentId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'id' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'data' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'data' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'order_index' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_visible' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UpdateDepartmentOrderMutation,
+  UpdateDepartmentOrderMutationVariables
+>;
 export const UpdateUserDocument = {
   kind: 'Document',
   definitions: [
@@ -5409,6 +5699,8 @@ export const GetCrewListInfoDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_visible' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'order_index' } },
               ],
             },
           },
@@ -5505,6 +5797,14 @@ export const GetCrewListInfoDocument = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'is_visible' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'order_index' },
+                      },
                     ],
                   },
                 },
@@ -6060,6 +6360,8 @@ export const DepartmentsDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_visible' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'order_index' } },
               ],
             },
           },

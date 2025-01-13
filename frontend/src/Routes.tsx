@@ -15,9 +15,11 @@ import { AcceptInvitationPage } from './modules/crewlist/pages/AcceptInvitationP
 import { CrewListPage } from './modules/crewlist/pages/CrewListPage';
 import { MyProjectSettingPage } from './modules/crewlist/pages/MyProjectSettingsPage';
 import { DailyReportPage } from './modules/dailyreport/pages/DailyReportPage';
+import { EditDepartmentsPage } from './modules/departments/pages/EditDepartmentsPage';
 import { EditProjectPage } from './modules/editproject/pages/EditProjectPage';
 import { CreateProjectPage } from './modules/myprojects/pages/CreateProjectPage';
 import ProfileSettingsPage from './modules/profilesettings/pages/ProfileSettingsPage';
+import { ShiftOverviewPage } from './modules/shiftoverview/pages/ShiftOverviewPage';
 import { TimesheetPage } from './modules/timesheets/pages/TimesheetsPage';
 import { ToCPage } from './modules/toc/TocPage';
 import { route } from './route';
@@ -57,7 +59,6 @@ function Routes() {
         path={route.acceptInvitation()}
         element={<AcceptInvitationPage />}
       />
-      {/* <Route path={route.dailyReports()} element={<DailyReportPage />} /> */}
       <Route
         path={route.dailyReports(':projectId')}
         element={<DailyReportPage />}
@@ -67,6 +68,14 @@ function Routes() {
         element={<DailyReportPage />}
       />
       <Route path={route.profileSettings()} element={<ProfileSettingsPage />} />
+      <Route
+        path={route.editDepartments(':projectId')}
+        element={<EditDepartmentsPage />}
+      />
+      <Route
+        path={route.shiftOverview(':projectId')}
+        element={<ShiftOverviewPage />}
+      />
     </RouterRoutes>
   );
 }
