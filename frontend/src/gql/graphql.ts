@@ -1372,6 +1372,7 @@ export type DailyReportPreviewInfoQuery = {
     name: string;
     production_company: string;
     currency: string;
+    logo?: string | null;
     shootingDays?: Array<{ __typename?: 'ShootingDay'; id: string }> | null;
   } | null;
   shootingDay?: {
@@ -5401,6 +5402,7 @@ export const DailyReportPreviewInfoDocument = {
                   name: { kind: 'Name', value: 'production_company' },
                 },
                 { kind: 'Field', name: { kind: 'Name', value: 'currency' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'logo' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'shootingDays' },
