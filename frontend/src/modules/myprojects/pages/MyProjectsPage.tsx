@@ -52,11 +52,13 @@ export function MyProjectsPage() {
         id: string;
         name: string;
         description: string;
+        is_active: boolean;
         logo?: string | null;
       }) => ({
         id: project.id,
         name: project.name,
         description: project.description,
+        isActive: project.is_active,
         logo: project.logo,
       }),
     ) || [];

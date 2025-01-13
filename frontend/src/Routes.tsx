@@ -15,7 +15,6 @@ import { AcceptInvitationPage } from './modules/crewlist/pages/AcceptInvitationP
 import { CrewListPage } from './modules/crewlist/pages/CrewListPage';
 import { MyProjectSettingPage } from './modules/crewlist/pages/MyProjectSettingsPage';
 import { DailyReportPage } from './modules/dailyreport/pages/DailyReportPage';
-// import { CrewListPage2 } from './modules/crewlist/pages/CrewListPage2';
 import { EditProjectPage } from './modules/editproject/pages/EditProjectPage';
 import { CreateProjectPage } from './modules/myprojects/pages/CreateProjectPage';
 import ProfileSettingsPage from './modules/profilesettings/pages/ProfileSettingsPage';
@@ -58,8 +57,16 @@ function Routes() {
         path={route.acceptInvitation()}
         element={<AcceptInvitationPage />}
       />
-      <Route path={route.dailyReports()} element={<DailyReportPage />} />
-      <Route path={route.profileSettings} element={<ProfileSettingsPage />} />
+      {/* <Route path={route.dailyReports()} element={<DailyReportPage />} /> */}
+      <Route
+        path={route.dailyReports(':projectId')}
+        element={<DailyReportPage />}
+      />
+      <Route
+        path={route.dailyReports(':projectId', ':shootingDayId')}
+        element={<DailyReportPage />}
+      />
+      <Route path={route.profileSettings()} element={<ProfileSettingsPage />} />
     </RouterRoutes>
   );
 }

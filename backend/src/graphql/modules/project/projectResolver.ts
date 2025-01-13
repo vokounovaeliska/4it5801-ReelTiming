@@ -35,6 +35,7 @@ const projectInputSchema = z.object({
   create_user_id: z.string().uuid().optional(),
   last_update_user_id: z.string().uuid().optional(),
   logo: z.string().nullable().optional(),
+  is_active: z.boolean().optional(),
 });
 
 const deleteProjectSchema = z.object({

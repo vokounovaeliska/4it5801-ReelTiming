@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Table, TableContainer, Tbody, Thead, Tr } from '@chakra-ui/react';
 
-import { CrewMemberData, ProjectUser } from '../interfaces/interfaces';
+import { CrewMemberData, Project, ProjectUser } from '../interfaces/interfaces';
 
 import { CrewlistTableHeader } from './CrewlistTableHeader';
 import { CrewMemberRow } from './CrewMemberRow';
@@ -20,7 +20,7 @@ interface CrewListTableProps {
   ) => void;
   userRoleInProject: string;
   authUserId: string | undefined;
-  projectCurrency?: string;
+  project: Project;
 }
 
 const tableHeaders = [
@@ -45,7 +45,7 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
   sendInvitation,
   userRoleInProject,
   authUserId,
-  projectCurrency,
+  project,
 }) => {
   return (
     <Box overflowX="auto" m={1}>
@@ -128,7 +128,7 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                     <CrewMemberRow
                       key={user.id}
                       user={user}
-                      projectCurrency={projectCurrency!}
+                      project={project}
                       handleEditMemberClick={handleEditMemberClick}
                       sendInvitation={sendInvitation}
                       handleRemoveButtonClick={handleRemoveButtonClick}

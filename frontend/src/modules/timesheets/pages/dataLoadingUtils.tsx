@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 
+import { useUserRoleInProject } from '@frontend/shared/design-system/hooks/queryHooks';
+
 import { DataLoadingUtilsProps, DataLoadingUtilsResult } from '../interfaces';
 
 import {
@@ -9,7 +11,6 @@ import {
   useCarsByProjectUserId,
   useCrewStatements,
   useCrewUserInfoTimesheets,
-  useUserRoleInProject,
 } from './queryHooks';
 
 export const DataLoadingUtils = ({

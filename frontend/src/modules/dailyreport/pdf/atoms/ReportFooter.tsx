@@ -35,7 +35,7 @@ const ReportFooter = ({ data }: { data?: DailyReportPreviewInfoQuery }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>DENNÍ ZPRÁVU SCHVÁLILY</Text>
+      <Text style={styles.title}>REPORT APPROVED BY</Text>
       {footerItems.map((item, index) => (
         <View key={index} style={styles.itemContainer}>
           <Text style={styles.itemValue}>{item.value}</Text>

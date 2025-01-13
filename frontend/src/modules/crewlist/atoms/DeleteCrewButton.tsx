@@ -6,12 +6,14 @@ interface DeleteCrewButtonProps {
   userRoleInProject: string;
   authUserId: string | undefined;
   handleRemoveButtonClick: (userId: string) => void;
+  isDisabled: boolean;
 }
 
 export const DeleteCrewButton = ({
   userId,
   userRoleInProject,
   authUserId,
+  isDisabled,
   handleRemoveButtonClick,
 }: DeleteCrewButtonProps) => {
   if (userRoleInProject !== 'ADMIN' || userId === authUserId) {
@@ -29,6 +31,7 @@ export const DeleteCrewButton = ({
       rounded={'lg'}
     >
       <IconButton
+        isDisabled={isDisabled}
         aria-label={label}
         icon={<DeleteIcon />}
         colorScheme="red"
