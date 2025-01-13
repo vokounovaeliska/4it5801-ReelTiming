@@ -16,6 +16,7 @@ import { UPDATE_DEPARTMENT_ORDER } from '@frontend/graphql/mutations/UpdateDepar
 import { DepartmentProps } from '../interfaces/interfaces';
 import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 import { CreateDepartmentForm } from '@frontend/modules/crewlist/forms/DepartmentForm';
+import { AddCrewMemberButton } from '../atoms/AddDepartmentButton';
 
 export function EditDepartmentsPage() {
    const auth = useAuth();
@@ -143,8 +144,19 @@ export function EditDepartmentsPage() {
             <Heading mb={4} mt={2} textAlign="center">
                Edit departments for Project {projectData?.project?.name}
             </Heading>
+            {roleData?.userRoleInProject && roleData.userRoleInProject === 'ADMIN' && (
+               <Box
+                  display={{ base: 'grid', md: 'flex' }}
+                  justifyContent={{ base: 'center', md: 'space-between' }}
+                  textAlign="center"
+                  alignItems="flex-end"
+                  mb={4}
+                  px={10}
+               >
+                  <AddCrewMemberButton handleAddDepartmentClick={() => setIsModalOpen(true)} />
+               </Box>
+            )}
          </Box>
-         <button onClick={() => setIsModalOpen(true)}>Add Department</button>
          <DepartmentTable
             departments={departments ?? []}
             projectId={projectId ?? ''}
