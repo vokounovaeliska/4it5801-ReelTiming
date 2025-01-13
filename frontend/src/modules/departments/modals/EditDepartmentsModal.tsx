@@ -7,7 +7,7 @@ import {
   ModalOverlay,
 } from '@chakra-ui/react';
 
-import { EditDepartmentsTemplate } from './EditDepartmentsTemplate';
+import { EditDepartmentsTemplate } from '../templates/EditDepartmentsTemplate';
 
 interface EditDepartmentsModalProps {
   isOpen: boolean;

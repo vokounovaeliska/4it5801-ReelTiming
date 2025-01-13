@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { DragHandleIcon } from '@chakra-ui/icons'; // Import DragHandleIcon
-import { Td, Tr } from '@chakra-ui/react';
+import { DragHandleIcon } from '@chakra-ui/icons';
+import { Checkbox, IconButton, Input, Td, Tr } from '@chakra-ui/react';
 import { useDrag, useDrop } from 'react-dnd';
 
 import { UPDATE_DEPARTMENT_ORDER } from '@frontend/graphql/mutations/UpdateDepartmentOrder';
@@ -36,14 +36,14 @@ export const EditableDepartmentTableRow = ({
 }: EditableDepartmentTableRowProps) => {
   const [editRowId, setEditRowId] = useState<string | null>(null);
   const [formState, setFormState] = useState({
-    name: '',
-    is_visible: false,
-    order_index: 0,
+    name: department.name,
+    is_visible: department.is_visible ?? false,
+    order_index: department.order_index ?? 0,
   });
 
-  const [updateDepartment] = useMutation(UPDATE_DEPARTMENT_ORDER);
+  const [updateDepartment, { loading }] = useMutation(UPDATE_DEPARTMENT_ORDER);
 
-  const handleEdit = (department: Department) => {
+  const handleEdit = () => {
     setEditRowId(department.id);
     setFormState({
       name: department.name,
@@ -52,11 +52,11 @@ export const EditableDepartmentTableRow = ({
     });
   };
 
-  const handleSave = async (departmentId: string) => {
+  const handleSave = async () => {
     try {
       await updateDepartment({
         variables: {
-          id: departmentId,
+          id: department.id,
           data: {
             project_id: projectId,
             name: formState.name,
@@ -66,9 +66,9 @@ export const EditableDepartmentTableRow = ({
         },
       });
       showSuccessToast('Department updated successfully!');
-      setEditRowId(null); // Exit edit mode
+      setEditRowId(null);
     } catch (err) {
-      console.error(err);
+      console.error('Failed to update department:', err);
       showErrorToast('Failed to update department.');
     }
   };
@@ -79,8 +79,8 @@ export const EditableDepartmentTableRow = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormState((prevState) => ({
-      ...prevState,
+    setFormState((prev) => ({
+      ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
   };
@@ -93,9 +93,7 @@ export const EditableDepartmentTableRow = ({
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
-    end: () => {
-      handleDragEnd();
-    },
+    end: () => handleDragEnd(),
   });
 
   const [, drop] = useDrop({
@@ -112,65 +110,82 @@ export const EditableDepartmentTableRow = ({
 
   return (
     <Tr
-      key={department.id}
       ref={ref}
       style={{
         opacity: isDragging ? 0.5 : 1,
         cursor: 'move',
       }}
     >
-      <Td width="40px">
-        <DragHandleIcon style={{ cursor: 'grab' }} />
+      <Td width="40px" py={1} px={2}>
+        <DragHandleIcon cursor="grab" />
       </Td>
 
-      <Td>
+      <Td py={1} px={2}>
         {editRowId === department.id ? (
-          <input
-            type="text"
+          <Input
+            size="sm"
+            rounded="md"
             name="name"
             value={formState.name}
             onChange={handleChange}
+            placeholder="Department Name"
           />
         ) : (
           department.name
         )}
       </Td>
 
-      <Td>
-        <input
-          type="checkbox"
-          name="is_visible"
-          checked={
-            editRowId === department.id
-              ? formState.is_visible
-              : (department.is_visible ?? false)
-          }
-          onChange={editRowId === department.id ? handleChange : undefined}
-          disabled={editRowId !== department.id}
-        />
+      <Td py={1} px={2}>
+        {editRowId === department.id ? (
+          <Checkbox
+            size="sm"
+            colorScheme="orange"
+            name="is_visible"
+            isChecked={formState.is_visible}
+            onChange={handleChange}
+          >
+            Visible
+          </Checkbox>
+        ) : (
+          <Checkbox
+            size="sm"
+            isChecked={department.is_visible ?? false}
+            isDisabled
+          >
+            Visible
+          </Checkbox>
+        )}
       </Td>
 
-      <Td>
+      <Td py={1} px={2} textAlign="center">
         {editRowId === department.id ? (
           <>
             <SaveDepartmentButton
               departmentId={department.id}
               handleSave={handleSave}
-              aria-label={'Edit department'}
+              isLoading={loading}
               mr={2}
+              aria-label={'Save'}
             />
             <CancelDepartmentButton
               handleCancel={handleCancel}
-              aria-label={'Edit department'}
               mr={2}
+              aria-label={'Cancel'}
             />
           </>
         ) : (
-          <EditDepartmentButton
-            handleEdit={handleEdit}
-            department={department}
-            aria-label={'Edit department'}
-            mr={2}
+          <IconButton
+            aria-label="Edit Department"
+            icon={
+              <EditDepartmentButton
+                department={department}
+                handleEdit={handleEdit}
+                aria-label={'Edit'}
+              />
+            }
+            onClick={handleEdit}
+            variant="ghost"
+            size="sm"
           />
         )}
       </Td>

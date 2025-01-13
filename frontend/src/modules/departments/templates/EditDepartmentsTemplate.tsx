@@ -11,11 +11,10 @@ import { DepartmentProps } from '@frontend/modules/crewlist/interfaces/interface
 import { route } from '@frontend/route';
 import { useUserRoleInProject } from '@frontend/shared/design-system/hooks/queryHooks';
 import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
-import { createDepartmentFormValues } from '@frontend/zod/schemas';
 
 import { AddDepartmentButton } from '../atoms/AddDepartmentButton';
 import { DepartmentTable } from '../atoms/DepartmentTable';
-import { CreateDepartmentForm } from '../forms/DepartmentForm';
+import { CreateDepartmentForm } from '../forms/CreateDepartmentForm';
 
 interface EditDepartmentsTemplateProps {
   projectId?: string;
@@ -32,18 +31,6 @@ export function EditDepartmentsTemplate({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [updateDepartment] = useMutation(UPDATE_DEPARTMENT_ORDER);
-  const initialValues: createDepartmentFormValues = {
-    name: '',
-    isVisible: true,
-  };
-
-  const [formData, setFormData] = useState(initialValues);
-  const handleInputChange = (
-    name: keyof createDepartmentFormValues,
-    value: unknown,
-  ) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
 
   const { roleData, roleLoading, roleError } = useUserRoleInProject(
     auth.user?.id ?? '',
@@ -150,7 +137,6 @@ export function EditDepartmentsTemplate({
   const handleAddDepartment = (newDepartment: Department) => {
     console.log(newDepartment);
     setDepartments((prev) => [...prev, newDepartment]);
-    setFormData(initialValues);
     setIsModalOpen(false);
   };
 
@@ -193,14 +179,12 @@ export function EditDepartmentsTemplate({
         isOpen={isModalOpen}
         onClose={handleModalClose}
         title={'Add new department'}
-        size="6xl"
+        size="md"
       >
         <CreateDepartmentForm
           projectId={projectId ?? ''}
           onSave={handleAddDepartment}
           onCancel={handleModalClose}
-          formData={formData}
-          onInputChange={handleInputChange}
         />
       </CustomModal>
 
@@ -209,8 +193,6 @@ export function EditDepartmentsTemplate({
           projectId={projectId}
           onSave={handleAddDepartment}
           onCancel={() => setIsModalOpen(false)}
-          formData={formData}
-          onInputChange={handleInputChange}
         />
       )}
     </Box>

@@ -1,6 +1,6 @@
 import { Box, Button, Center, Spinner, Text } from '@chakra-ui/react';
 
-import { EditDepartmentsModal } from '@frontend/modules/departments/templates/EditDepartmentsModal';
+import { EditDepartmentsModal } from '@frontend/modules/departments/modals/EditDepartmentsModal';
 import {
   AllCarsOnProjectData,
   Car,
