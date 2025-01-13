@@ -11,6 +11,7 @@ import {
   Flex,
   HStack,
   IconButton,
+  // Image,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
@@ -23,7 +24,8 @@ import UserMenuMobile from './UserMenuMobile';
 
 const Navbar: React.FC<{
   children: React.ReactNode;
-}> = ({ children }) => {
+  projectLogo?: string;
+}> = ({ children, projectLogo }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const buttonStyle = {
@@ -46,7 +48,7 @@ const Navbar: React.FC<{
     <Box pb={0} bg="#2D3748" color="white">
       <HStack spacing={4} align="center" px={4} py={2}>
         <Flex align="center" flexShrink={0}>
-          <Logo />
+          <Logo size="50px" projectLogo={projectLogo} />
           <AppHeading />
         </Flex>
         <HStack

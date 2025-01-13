@@ -9,6 +9,7 @@ import {
   timestamp,
   uniqueIndex,
   varchar,
+  text,
 } from 'drizzle-orm/mysql-core';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -52,7 +53,8 @@ export const project = mysqlTable('project', {
   is_active: boolean('is_active').default(true),
   description: varchar('description', { length: 500 }),
   currency: varchar('currency', { length: 3 }).default('CZK').notNull(),
-  logo: varchar('logo', { length: 19845 }), // Equivalent to MEDIUMBLOB in size
+  // logo: varchar('logo', { length: 19845 }), // Equivalent to MEDIUMBLOB in size
+  logo: text('logo'),
 });
 
 export const project_user = mysqlTable(

@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Box, Center, Spinner, Text } from '@chakra-ui/react';
+import { Box, Center, Image, Spinner, Text } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 
 import { GET_PROJECT_DETAILS } from '@frontend/graphql/queries/GetProjectDetails';
@@ -115,6 +115,17 @@ export function MyProjectDetailPage() {
           >
             {project.name}
           </Heading>
+          <Image
+            display={project.logo ? 'block' : 'none'}
+            src={project.logo ? `data:image/png;base64,${project.logo}` : ''}
+            alt="Uploaded Logo"
+            w="400px"
+            h="100px"
+            objectFit="contain"
+            objectPosition={{ base: 'center', md: 'left' }}
+            ml={1}
+            mb={4}
+          />
           <Box
             display="flex"
             flexDirection={{ base: 'column', md: 'row' }}

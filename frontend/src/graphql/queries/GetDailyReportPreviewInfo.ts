@@ -25,6 +25,7 @@ export const GET_DAILY_REPORT_PREVIEW_INFO = gql(`
     name
     production_company
     currency
+    logo
     shootingDays {
       id
     }

@@ -158,6 +158,7 @@ export const useProjectConfigOperations = (
             last_update_user_id: userId,
             currency: data.currency,
             is_active: data.isActive,
+            logo: data.logo,
           },
         },
       });
