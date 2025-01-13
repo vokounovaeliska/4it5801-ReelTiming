@@ -31,8 +31,8 @@ export const CreateDepartmentForm = ({ projectId, onSave, onCancel, formData, on
 
          const newDepartment = {
             id: data.addDepartment.id,
-            name: data.name,
-            is_visible: data.isVisible,
+            name: data.addDepartment.name,
+            is_visible: data.addDepartment.isVisible,
             order_index: 0,
             project_id: projectId,
          };
