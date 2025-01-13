@@ -74,7 +74,7 @@ const documents = {
     types.GetProjectUserDetailsDocument,
   '\n  query GetDailyReportByShootingDay($shootingDayId: String!) {\n    shootingDay(id: $shootingDayId) {\n      id\n      dailyReport {\n        id\n        intro {\n          title\n          value\n        }\n        shooting_progress {\n          title\n          value       \n        }\n        footer {\n          title\n          value\n        }\n      }\n    }\n  }\n':
     types.GetDailyReportByShootingDayDocument,
-  '\n  query DailyReportPreviewInfo($date: DateTimeISO!, $projectId: String!, $shootingDayId: String!) {\n  statementsByProjectIdAndDate(date: $date, projectId: $projectId) {\n    id\n    start_date\n    from\n    to\n    claimed_overtime\n    projectUser {\n      name\n      surname\n      position\n      department {\n        id\n        name\n        order_index\n        is_visible\n      }\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    production_company\n    currency\n    shootingDays {\n      id\n    }\n  }\n  shootingDay(id: $shootingDayId) {\n    id\n    shooting_day_number\n    date\n    dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value\n      }\n      footer {\n        title\n        value\n      }\n    }\n  }\n}\n':
+  '\n  query DailyReportPreviewInfo($date: DateTimeISO!, $projectId: String!, $shootingDayId: String!) {\n  statementsByProjectIdAndDate(date: $date, projectId: $projectId) {\n    id\n    start_date\n    from\n    to\n    claimed_overtime\n    projectUser {\n      name\n      surname\n      position\n      department {\n        id\n        name\n        order_index\n        is_visible\n      }\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    production_company\n    currency\n    logo\n    shootingDays {\n      id\n    }\n  }\n  shootingDay(id: $shootingDayId) {\n    id\n    shooting_day_number\n    date\n    dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value\n      }\n      footer {\n        title\n        value\n      }\n    }\n  }\n}\n':
     types.DailyReportPreviewInfoDocument,
   '\n  query Departments($projectId: String!) {\n    departments(projectId: $projectId) {\n      id\n      name\n    }\n  }\n':
     types.DepartmentsDocument,
@@ -104,7 +104,7 @@ const documents = {
     types.CarStatementsByProjectIdDocument,
   '\n  query GetUserProfileSettingsInfo($userId: String!) {\n    user(id: $userId) {\n      id\n      name\n      surname\n      email\n      phone_number\n      last_update_date\n      create_date\n    }\n  }\n':
     types.GetUserProfileSettingsInfoDocument,
-  '\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n    }\n  }\n\n':
+  '\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n      logo\n    }\n  }\n\n':
     types.GetUserProjectsDocument,
   '\n  query GetUserRoleInProject($userId: String!, $projectId: String!) {\n    userRoleInProject(userId: $userId, projectId: $projectId)\n  }\n':
     types.GetUserRoleInProjectDocument,
@@ -324,8 +324,8 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n  query DailyReportPreviewInfo($date: DateTimeISO!, $projectId: String!, $shootingDayId: String!) {\n  statementsByProjectIdAndDate(date: $date, projectId: $projectId) {\n    id\n    start_date\n    from\n    to\n    claimed_overtime\n    projectUser {\n      name\n      surname\n      position\n      department {\n        id\n        name\n        order_index\n        is_visible\n      }\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    production_company\n    currency\n    shootingDays {\n      id\n    }\n  }\n  shootingDay(id: $shootingDayId) {\n    id\n    shooting_day_number\n    date\n    dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value\n      }\n      footer {\n        title\n        value\n      }\n    }\n  }\n}\n',
-): (typeof documents)['\n  query DailyReportPreviewInfo($date: DateTimeISO!, $projectId: String!, $shootingDayId: String!) {\n  statementsByProjectIdAndDate(date: $date, projectId: $projectId) {\n    id\n    start_date\n    from\n    to\n    claimed_overtime\n    projectUser {\n      name\n      surname\n      position\n      department {\n        id\n        name\n        order_index\n        is_visible\n      }\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    production_company\n    currency\n    shootingDays {\n      id\n    }\n  }\n  shootingDay(id: $shootingDayId) {\n    id\n    shooting_day_number\n    date\n    dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value\n      }\n      footer {\n        title\n        value\n      }\n    }\n  }\n}\n'];
+  source: '\n  query DailyReportPreviewInfo($date: DateTimeISO!, $projectId: String!, $shootingDayId: String!) {\n  statementsByProjectIdAndDate(date: $date, projectId: $projectId) {\n    id\n    start_date\n    from\n    to\n    claimed_overtime\n    projectUser {\n      name\n      surname\n      position\n      department {\n        id\n        name\n        order_index\n        is_visible\n      }\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    production_company\n    currency\n    logo\n    shootingDays {\n      id\n    }\n  }\n  shootingDay(id: $shootingDayId) {\n    id\n    shooting_day_number\n    date\n    dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value\n      }\n      footer {\n        title\n        value\n      }\n    }\n  }\n}\n',
+): (typeof documents)['\n  query DailyReportPreviewInfo($date: DateTimeISO!, $projectId: String!, $shootingDayId: String!) {\n  statementsByProjectIdAndDate(date: $date, projectId: $projectId) {\n    id\n    start_date\n    from\n    to\n    claimed_overtime\n    projectUser {\n      name\n      surname\n      position\n      department {\n        id\n        name\n        order_index\n        is_visible\n      }\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    production_company\n    currency\n    logo\n    shootingDays {\n      id\n    }\n  }\n  shootingDay(id: $shootingDayId) {\n    id\n    shooting_day_number\n    date\n    dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value\n      }\n      footer {\n        title\n        value\n      }\n    }\n  }\n}\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -414,8 +414,8 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n    }\n  }\n\n',
-): (typeof documents)['\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n    }\n  }\n\n'];
+  source: '\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n      logo\n    }\n  }\n\n',
+): (typeof documents)['\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n      logo\n    }\n  }\n\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

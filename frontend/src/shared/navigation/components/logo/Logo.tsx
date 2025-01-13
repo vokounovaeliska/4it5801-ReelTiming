@@ -37,7 +37,7 @@ const Logo: React.FC<LogoProps> = ({ size = '50px', projectLogo }) => {
           decodedLogo ? `data:image/jpeg;base64,${decodedLogo}` : defaultLogo
         }
         alt="Logo"
-        boxSize={size}
+        boxSize={projectLogo ? 'auto' : size}
         mr={2}
       />
     </ReactRouterLink>

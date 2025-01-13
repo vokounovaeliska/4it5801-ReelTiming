@@ -1372,6 +1372,7 @@ export type DailyReportPreviewInfoQuery = {
     name: string;
     production_company: string;
     currency: string;
+    logo?: string | null;
     shootingDays?: Array<{ __typename?: 'ShootingDay'; id: string }> | null;
   } | null;
   shootingDay?: {
@@ -1756,6 +1757,7 @@ export type GetUserProjectsQuery = {
     id: string;
     name: string;
     description: string;
+    logo?: string | null;
   }>;
 };
 
@@ -5401,6 +5403,7 @@ export const DailyReportPreviewInfoDocument = {
                   name: { kind: 'Name', value: 'production_company' },
                 },
                 { kind: 'Field', name: { kind: 'Name', value: 'currency' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'logo' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'shootingDays' },
@@ -6826,6 +6829,7 @@ export const GetUserProjectsDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'logo' } },
               ],
             },
           },

@@ -12,6 +12,7 @@ export interface Project {
   is_active: boolean;
   currency: string;
   shootingDays?: ShootingDay[] | null;
+  logo?: string | null;
 }
 
 export type ShootingDaysByProject = {

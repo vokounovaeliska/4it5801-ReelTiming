@@ -6,6 +6,7 @@ export const GET_USER_PROJECTS = gql(`
       id
       name
       description
+      logo
     }
   }
 
