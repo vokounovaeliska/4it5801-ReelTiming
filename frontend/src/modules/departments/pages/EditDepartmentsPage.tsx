@@ -7,12 +7,10 @@ import { Department } from '@frontend/gql/graphql';
 import { UPDATE_DEPARTMENT_ORDER } from '@frontend/graphql/mutations/UpdateDepartmentOrder';
 import { GET_DEPARTMENTS } from '@frontend/graphql/queries/GetDepartments';
 import { useAuth } from '@frontend/modules/auth';
-import {
-  useProjectDetails,
-  useUserRoleInProject,
-} from '@frontend/modules/timesheets/pages/queryHooks';
+import { useProjectDetails } from '@frontend/modules/timesheets/pages/queryHooks';
 import { route } from '@frontend/route';
 import { Heading } from '@frontend/shared/design-system';
+import { useUserRoleInProject } from '@frontend/shared/design-system/hooks/queryHooks';
 import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 import { createDepartmentFormValues } from '@frontend/zod/schemas';
@@ -78,7 +76,7 @@ export function EditDepartmentsPage() {
   }, [departmentsData]);
 
   const moveDepartment = useCallback(
-    async (dragIndex: number, hoverIndex: number, isDragging: boolean) => {
+    async (dragIndex: number, hoverIndex: number) => {
       const updatedDepartments = [...departments];
       const [removed] = updatedDepartments.splice(dragIndex, 1);
       updatedDepartments.splice(hoverIndex, 0, removed);
