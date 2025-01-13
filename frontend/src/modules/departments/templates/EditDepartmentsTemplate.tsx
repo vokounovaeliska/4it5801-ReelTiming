@@ -163,10 +163,12 @@ export function EditDepartmentsTemplate({
   return (
     <Box>
       {userRole === 'ADMIN' && (
-        <Box mb={4}>
-          <AddDepartmentButton
-            handleAddDepartmentClick={() => setIsModalOpen(true)}
-          />
+        <Box pr={5}>
+          <Box display="flex" justifyContent="flex-end" alignItems="center">
+            <AddDepartmentButton
+              handleAddDepartmentClick={() => setIsModalOpen(true)}
+            />
+          </Box>
         </Box>
       )}
       <DepartmentTable

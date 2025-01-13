@@ -40,15 +40,17 @@ export const DepartmentTable: React.FC<DepartmentTableProps> = ({
   handleDragEnd,
 }) => {
   return (
-    <Box>
+    <Box p={5}>
       <DndProvider backend={HTML5Backend}>
         <TableContainer className="custom-scrollbar">
           <Box
             overflowX="auto"
             overflowY="auto"
+            maxHeight={{ base: '430px', sm: '530px' }}
             sx={{
               '::-webkit-scrollbar': {
                 height: '12px',
+                width: '8px', // Optional: Add width for vertical scrollbar
               },
               '::-webkit-scrollbar-track': {
                 background: '#2D3748',
@@ -69,9 +71,8 @@ export const DepartmentTable: React.FC<DepartmentTableProps> = ({
                 <Tr>
                   {tableHeaders.map((header) => (
                     <Td
-                      bg="gray.50"
-                      borderTop="solid"
-                      borderColor="gray.300"
+                      key={header.label}
+                      bg="gray.100"
                       style={{ fontWeight: 'bold', textAlign: 'left' }}
                     >
                       {header.label}
@@ -82,6 +83,7 @@ export const DepartmentTable: React.FC<DepartmentTableProps> = ({
               <Tbody>
                 {departments.map((department, index) => (
                   <EditableDepartmentTableRow
+                    key={department.id || index}
                     department={department}
                     projectId={projectId}
                     index={department.order_index ?? index}
