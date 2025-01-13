@@ -35,13 +35,13 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   wideCellPosition: {
-    flex: 2.9,
+    flex: 3.2,
   },
   wideCell: {
-    flex: 1.8,
+    flex: 2.2,
   },
   shortCell: {
-    flex: 0.8,
+    flex: 1,
   },
   shootingProgressWrapper: {
     width: '20%',
@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   alignLeft: {
-    paddingLeft: 10,
     textAlign: 'left',
   },
 });
@@ -90,13 +89,29 @@ const ReportCrewStatementsTable = ({
             >
               NAME
             </Text>
-            <Text style={[styles.tableCellHeader, styles.shortCell]}>CALL</Text>
-            <Text style={[styles.tableCellHeader, styles.shortCell]}>WRAP</Text>
+            <Text
+              style={[
+                styles.tableCellHeader,
+                styles.shortCell,
+                styles.alignLeft,
+              ]}
+            >
+              CALL
+            </Text>
+            <Text
+              style={[
+                styles.tableCellHeader,
+                styles.shortCell,
+                styles.alignLeft,
+              ]}
+            >
+              WRAP
+            </Text>
             <Text style={[styles.tableCellHeader, styles.shortCell]}>OT</Text>
             <Text style={[styles.tableCellHeader, styles.wideCell]}>
               TURN AROUND
             </Text>
-            <Text style={[styles.tableCellHeader, styles.shortCell]}>NOTE</Text>
+            <Text style={[styles.tableCellHeader, styles.wideCell]}>NOTE</Text>
           </View>
           {/* Table Rows */}
           {sortedStatements.map((statement, index) => (
