@@ -1,5 +1,6 @@
-import { Box, Center, Spinner, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Spinner, Text } from '@chakra-ui/react';
 
+import { EditDepartmentsModal } from '@frontend/modules/departments/templates/EditDepartmentsModal';
 import {
   AllCarsOnProjectData,
   Car,
@@ -62,6 +63,8 @@ export function CrewListPage() {
     handleRemoveButtonClick,
     handleRemoveUser,
     sendInvitation,
+    isEditDepartmentsModalOpen,
+    setIsEditDepartmentsModalOpen,
   } = useCrewListPageUtils();
 
   const isDataAvailable = !!crewList && Object.keys(crewList).length > 0;
@@ -109,7 +112,7 @@ export function CrewListPage() {
     {} as Record<string, ProjectUser[]>,
   );
 
-  const sortedDepartments = Object.keys(groupedByDepartment!).sort();
+  const sortedDepartments = Object.keys(groupedByDepartment);
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
@@ -133,6 +136,19 @@ export function CrewListPage() {
             <AddCrewMemberButton
               handleAddMemberClick={handleAddMemberClick}
               isShown={crewList.project?.is_active}
+            />
+            <Button
+              onClick={() => setIsEditDepartmentsModalOpen(true)}
+              colorScheme="orange"
+            >
+              Edit Departments
+            </Button>
+            <EditDepartmentsModal
+              isOpen={isEditDepartmentsModalOpen}
+              onClose={() => setIsEditDepartmentsModalOpen(false)}
+              projectId={projectId}
+              userRole={crewList.userRoleInProject}
+              projectName={crewList.project?.name}
             />
           </Box>
         )}

@@ -51,11 +51,10 @@ export const CreateDepartmentForm = ({
       const newDepartment = {
         id: data.addDepartment.id,
         name: data.addDepartment.name,
-        is_visible: data.addDepartment.isVisible,
+        is_visible: data.addDepartment.is_visible,
         order_index: 0,
         project_id: projectId,
       };
-
       onSave(newDepartment);
     } catch (error) {
       console.error('Failed to create department:', error);

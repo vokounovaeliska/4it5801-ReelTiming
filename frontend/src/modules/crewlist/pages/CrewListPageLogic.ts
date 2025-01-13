@@ -24,6 +24,8 @@ export const useCrewListPageUtils = () => {
   const [userIdToRemove, setUserIdToRemove] = useState<string | null>(null);
   const [selectedCrewMember, setSelectedCrewMember] =
     useState<CrewMemberData | null>(null);
+  const [isEditDepartmentsModalOpen, setIsEditDepartmentsModalOpen] =
+    useState(false);
   const { projectId } = useParams<{ projectId: string }>();
   const sanitizeCrewMemberData = (data: CrewMemberData): CrewMemberData => ({
     ...data,
@@ -317,5 +319,7 @@ export const useCrewListPageUtils = () => {
     handleRemoveUser,
     departmentNameToId,
     sendInvitation,
+    isEditDepartmentsModalOpen,
+    setIsEditDepartmentsModalOpen,
   };
 };
