@@ -17,8 +17,7 @@ export function MyProjectsPage() {
   const { data, loading, error, refetch } = useQuery(GET_USER_PROJECTS, {
     variables: { userId: auth.user?.id! },
     skip: !auth.user?.id,
-    fetchPolicy: 'cache-first',
-    nextFetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {
@@ -49,10 +48,16 @@ export function MyProjectsPage() {
 
   const projects =
     data?.userProjects?.map(
-      (project: { id: string; name: string; description: string }) => ({
+      (project: {
+        id: string;
+        name: string;
+        description: string;
+        is_active: boolean;
+      }) => ({
         id: project.id,
         name: project.name,
         description: project.description,
+        isActive: project.is_active,
       }),
     ) || [];
 

@@ -62,7 +62,6 @@ export function CrewListPage() {
     handleRemoveButtonClick,
     handleRemoveUser,
     sendInvitation,
-    handleUpdateDepartmentOrder,
   } = useCrewListPageUtils();
 
   const isDataAvailable = !!crewList && Object.keys(crewList).length > 0;
@@ -83,7 +82,7 @@ export function CrewListPage() {
     );
   }
 
-  if (crewListError || !auth.user) {
+  if (crewListError || !auth.user || !crewList?.project) {
     return (
       <Center minHeight="100vh">
         <Text color="red.500">
@@ -100,24 +99,15 @@ export function CrewListPage() {
         (user.user && user.user.id === auth.user?.id)
       ) {
         const departmentName = user.department?.name || 'No Department';
-        const department = crewList.departments.find(
-          (dept) => dept.name === departmentName,
-        );
-
-        if (departmentName === 'No Department' || department?.is_visible) {
-          if (!acc[departmentName]) {
-            acc[departmentName] = [];
-          }
-          acc[departmentName].push(user);
+        if (!acc[departmentName]) {
+          acc[departmentName] = [];
         }
+        acc[departmentName].push(user);
       }
       return acc;
     },
     {} as Record<string, ProjectUser[]>,
   );
-
-  console.log(crewList?.project?.id);
-  console.log(crewList?.departments);
 
   const sortedDepartments = Object.keys(groupedByDepartment!).sort();
 
@@ -140,7 +130,10 @@ export function CrewListPage() {
             mb={4}
             px={10}
           >
-            <AddCrewMemberButton handleAddMemberClick={handleAddMemberClick} />
+            <AddCrewMemberButton
+              handleAddMemberClick={handleAddMemberClick}
+              isShown={crewList.project?.is_active}
+            />
           </Box>
         )}
         <CrewListTable
@@ -151,9 +144,7 @@ export function CrewListPage() {
           sendInvitation={sendInvitation}
           userRoleInProject={crewList?.userRoleInProject!}
           authUserId={auth.user?.id}
-          projectCurrency={crewList?.project?.currency}
-          handleUpdateDepartmentOrder={handleUpdateDepartmentOrder}
-          projectId={projectId!}
+          project={crewList?.project!}
         ></CrewListTable>
       </Box>
       <Footer />

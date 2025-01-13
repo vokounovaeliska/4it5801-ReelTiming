@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { useMutation } from '@apollo/client';
+import React from 'react';
 import {
   Box,
   Table,
@@ -12,11 +11,10 @@ import {
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import { UPDATE_DEPARTMENT_ORDER } from '@frontend/graphql/mutations/UpdateDepartmentOrder';
-import { EditableDepartmentTableRow } from '@frontend/modules/crewlist/table/EditableDepartmentTableRow';
+import { DepartmentProps } from '@frontend/modules/crewlist/interfaces/interfaces';
 import { Department } from '@frontend/modules/dailyreport/interfaces/interface';
 
-import { DepartmentProps } from '../interfaces/interfaces';
+import { EditableDepartmentTableRow } from './EditableDepartmentTableRow';
 
 interface DepartmentTableProps {
   departments: Department[];
@@ -42,9 +40,6 @@ export const DepartmentTable: React.FC<DepartmentTableProps> = ({
   handleMoveDepartment,
   handleDragEnd,
 }) => {
-
-
-
   return (
     <Box maxWidth="100%">
       <DndProvider backend={HTML5Backend}>

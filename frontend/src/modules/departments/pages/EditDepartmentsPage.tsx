@@ -8,7 +8,6 @@ import { UPDATE_DEPARTMENT_ORDER } from '@frontend/graphql/mutations/UpdateDepar
 import { GET_DEPARTMENTS } from '@frontend/graphql/queries/GetDepartments';
 import { useAuth } from '@frontend/modules/auth';
 import { CreateDepartmentForm } from '@frontend/modules/crewlist/forms/DepartmentForm';
-import { DepartmentTable } from '@frontend/modules/crewlist/table/DepartmentTable';
 import {
   useProjectDetails,
   useUserRoleInProject,
@@ -19,8 +18,9 @@ import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 import { createDepartmentFormValues } from '@frontend/zod/schemas';
 
-import { AddCrewMemberButton } from '../atoms/AddDepartmentButton';
-import { DepartmentProps } from '../interfaces/interfaces';
+import { AddCrewMemberButton } from '../../crewlist/atoms/AddDepartmentButton';
+import { DepartmentProps } from '../../crewlist/interfaces/interfaces';
+import { DepartmentTable } from '../atoms/DepartmentTable';
 
 export function EditDepartmentsPage() {
   const auth = useAuth();
@@ -105,7 +105,7 @@ export function EditDepartmentsPage() {
         <Text color="red.500">
           Error loading project details:{' '}
           {roleError?.message ??
-            projectError.message ??
+            projectError?.message ??
             departmentsError?.message}
         </Text>
       </Center>
@@ -160,7 +160,7 @@ export function EditDepartmentsPage() {
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <ProjectNavbar
         projectId={projectId!}
-        userRole={roleData.userRoleInProject}
+        userRole={roleData?.userRoleInProject}
       />
       <Box mb={4} p={0} width="100%">
         <Heading mb={4} mt={2} textAlign="center">

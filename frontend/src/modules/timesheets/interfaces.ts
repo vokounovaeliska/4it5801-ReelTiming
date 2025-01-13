@@ -96,13 +96,16 @@ export interface TimesheetsTemplateProps {
   sortedTimesheets: Timesheet[];
   handleRowClick: (timesheet: Timesheet) => void;
   onDeleteClick: (id: string) => void;
-  projectId: string;
   userRole: string;
-  projectName: string;
-  projectCurrency: string;
   projectUserId: string;
   authUser: UserAuth;
   selectedUsers: UserOption[];
+  project: {
+    id: string;
+    name?: string;
+    currency?: string;
+    is_active?: boolean;
+  };
 }
 
 export interface TimesheetsFormProps {
@@ -241,8 +244,10 @@ export interface UserInfoData {
     name: string;
     surname: string;
     project: {
+      id: string;
       name: string;
       currency: string;
+      is_active?: boolean;
     };
   };
 }

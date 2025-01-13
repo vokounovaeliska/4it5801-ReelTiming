@@ -1,7 +1,6 @@
 import { CheckIcon } from '@chakra-ui/icons';
 import { IconButton, IconButtonProps, Tooltip } from '@chakra-ui/react';
 
-
 interface SaveDepartmentButtonProps extends IconButtonProps {
   departmentId: string;
   handleSave: (id: string) => void;

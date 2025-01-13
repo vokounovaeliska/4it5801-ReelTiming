@@ -46,6 +46,7 @@ export const useCrewListPageUtils = () => {
     variables: { projectId: projectId!, userId: auth.user?.id! },
     skip: !projectId || !auth.user?.id,
     fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
 
   const crewList = crewListData;

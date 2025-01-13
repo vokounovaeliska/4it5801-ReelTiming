@@ -9,12 +9,13 @@ import {
   Input,
 } from '@chakra-ui/react';
 
+import { Department } from '@frontend/gql/graphql';
 import { CREATE_DEPARTMENT } from '@frontend/graphql/mutations/CreateDepartment';
 import { createDepartmentFormValues } from '@frontend/zod/schemas';
 
 interface CreateDepartmentFormProps {
   projectId: string;
-  onSave: (department: any) => void;
+  onSave: (department: Department) => void;
   onCancel: () => void;
   formData: createDepartmentFormValues;
   onInputChange: (

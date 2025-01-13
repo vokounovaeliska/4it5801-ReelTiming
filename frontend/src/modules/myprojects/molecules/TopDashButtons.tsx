@@ -37,7 +37,6 @@ const TopDashButtons: React.FC<TopDashButtonsProps> = ({
               : 'View Crew List'
           }
         />
-
         <TopDashButton
           text="Shifts"
           icon={<FaClock />}

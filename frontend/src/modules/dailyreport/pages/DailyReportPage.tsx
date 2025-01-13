@@ -31,7 +31,7 @@ export function DailyReportPage() {
     }
   }, [roleData]);
 
-  if (roleLoading || !auth.user || projectLoading) {
+  if (roleLoading || projectLoading) {
     return (
       <Center minHeight="100vh">
         <Spinner size="xl" color="orange.500" />
@@ -42,8 +42,10 @@ export function DailyReportPage() {
 
   if (
     roleError ||
+    !auth.user?.id ||
     !roleData ||
     projectError ||
+    !projectData?.project ||
     roleData.userRoleInProject !== 'ADMIN'
   ) {
     navigate(route.myprojects());
@@ -53,10 +55,7 @@ export function DailyReportPage() {
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <ProjectNavbar projectId={projectId!} userRole={userRole} />
-      <DailyReportTemplate
-        projectId={projectId!}
-        projectData={projectData?.project}
-      />
+      <DailyReportTemplate projectData={projectData?.project} />
       <Footer />
     </Box>
   );

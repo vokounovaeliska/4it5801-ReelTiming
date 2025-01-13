@@ -1,16 +1,11 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { Box, Table, TableContainer, Tbody, Thead, Tr } from '@chakra-ui/react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import {
-  CrewMemberData,
-  DepartmentProps,
-  ProjectUser,
-} from '../interfaces/interfaces';
+import { DepartmentRow } from '../../departments/atoms/DepartmentRow';
+import { CrewMemberData, Project, ProjectUser } from '../interfaces/interfaces';
 
 import { CrewlistTableHeader } from './CrewlistTableHeader';
-import { DraggableRow } from './DraggableRow';
+import { CrewMemberRow } from './CrewMemberRow';
 
 interface CrewListTableProps {
   sortedDepartments: string[];
@@ -25,9 +20,7 @@ interface CrewListTableProps {
   ) => void;
   userRoleInProject: string;
   authUserId: string | undefined;
-  projectCurrency?: string;
-  handleUpdateDepartmentOrder: (data: DepartmentProps) => void;
-  projectId: string;
+  project: Project;
 }
 
 const tableHeaders = [
@@ -52,135 +45,103 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
   sendInvitation,
   userRoleInProject,
   authUserId,
-  projectCurrency,
-  handleUpdateDepartmentOrder,
-  projectId,
+  project,
 }) => {
-  const [departments, setDepartments] = useState(sortedDepartments);
-
-  const moveDepartment = useCallback(
-    async (dragIndex: number, hoverIndex: number, isDragging: boolean) => {
-      const updatedDepartments = [...departments];
-      const [removed] = updatedDepartments.splice(dragIndex, 1);
-      updatedDepartments.splice(hoverIndex, 0, removed);
-
-      // Update local state
-      setDepartments(updatedDepartments);
-      console.log('Local update');
-    },
-    [departments],
-  );
-
-  const handleDragEnd = useCallback(async () => {
-    console.log('Calling DB');
-    try {
-      await Promise.all(
-        departments.map((department, index) =>
-          handleUpdateDepartmentOrder({
-            name: department,
-            project_id: projectId,
-            order_index: index,
-          }),
-        ),
-      );
-    } catch (err) {
-      console.error('Failed to update department order:', err);
-    }
-  }, [departments, handleUpdateDepartmentOrder]);
-
   return (
     <Box overflowX="auto" m={1}>
-      <DndProvider backend={HTML5Backend}>
-        <TableContainer className="custom-scrollbar">
-          <Box
-            overflowX="auto"
-            overflowY="auto"
-            maxHeight={'76vh'}
+      <TableContainer className="custom-scrollbar">
+        <Box
+          overflowX="auto"
+          overflowY="auto"
+          maxHeight={'76vh'}
+          sx={{
+            '::-webkit-scrollbar': {
+              height: '12px',
+            },
+            '::-webkit-scrollbar-track': {
+              background: '#2D3748',
+            },
+            '::-webkit-scrollbar-thumb': {
+              background: '#888',
+              borderRadius: '6px',
+            },
+            '::-webkit-scrollbar-thumb:hover': {
+              background: '#555',
+            },
+            scrollbarWidth: 'thin',
+            scrollbarColor: '#2D3748 white',
+          }}
+        >
+          <Table
+            variant="simple"
+            size="sm"
+            mb={2}
             sx={{
-              '::-webkit-scrollbar': {
-                height: '12px',
+              'tr:hover td': {
+                backgroundColor: 'gray.200',
               },
-              '::-webkit-scrollbar-track': {
-                background: '#2D3748',
-              },
-              '::-webkit-scrollbar-thumb': {
-                background: '#888',
-                borderRadius: '6px',
-              },
-              '::-webkit-scrollbar-thumb:hover': {
-                background: '#555',
-              },
-              scrollbarWidth: 'thin',
-              scrollbarColor: '#2D3748 white',
             }}
           >
-            <Table
-              variant="simple"
-              size="sm"
-              mb={2}
-              sx={{
-                'tr:hover td': {
-                  backgroundColor: 'gray.200',
-                },
-              }}
-            >
-              <Thead position="sticky" top={0} zIndex="docked">
-                <Tr>
-                  <CrewlistTableHeader
-                    position={'sticky'}
-                    left={0}
-                    zIndex={10}
-                    textAlign="left"
-                  >
-                    Surname
-                  </CrewlistTableHeader>
-                  <CrewlistTableHeader
-                    position={'sticky'}
-                    left={{ base: '100px', md: '120px', lg: '150px' }}
-                    zIndex={9}
-                    textAlign="left"
-                  >
-                    Name
-                  </CrewlistTableHeader>
+            <Thead position="sticky" top={0} zIndex="docked">
+              <Tr>
+                <CrewlistTableHeader
+                  position={'sticky'}
+                  left={0}
+                  zIndex={10}
+                  textAlign="left"
+                >
+                  Surname
+                </CrewlistTableHeader>
+                <CrewlistTableHeader
+                  position={'sticky'}
+                  left={{ base: '100px', md: '120px', lg: '150px' }}
+                  zIndex={9}
+                  textAlign="left"
+                >
+                  Name
+                </CrewlistTableHeader>
 
-                  <CrewlistTableHeader
-                    position={'sticky'}
-                    left={{ base: '0', md: '220px', lg: '260px' }}
-                    zIndex={8}
-                    minWidth="90px"
-                    textAlign="left"
-                  >
-                    Position
+                <CrewlistTableHeader
+                  position={'sticky'}
+                  left={{ base: '0', md: '220px', lg: '260px' }}
+                  zIndex={8}
+                  minWidth="90px"
+                  textAlign="left"
+                >
+                  Position
+                </CrewlistTableHeader>
+                {tableHeaders.map((header, index) => (
+                  <CrewlistTableHeader key={index} tooltip={header.tooltip}>
+                    {header.label}
                   </CrewlistTableHeader>
-                  {tableHeaders.map((header, index) => (
-                    <CrewlistTableHeader key={index} tooltip={header.tooltip}>
-                      {header.label}
-                    </CrewlistTableHeader>
-                  ))}
-                </Tr>
-              </Thead>
-              <Tbody>
-                {departments.map((departmentName, index) => (
-                  <DraggableRow
-                    key={departmentName}
-                    index={index}
-                    departmentName={departmentName}
-                    groupedByDepartment={groupedByDepartment}
-                    moveDepartment={moveDepartment}
-                    projectCurrency={projectCurrency}
-                    handleEditMemberClick={handleEditMemberClick}
-                    sendInvitation={sendInvitation}
-                    handleRemoveButtonClick={handleRemoveButtonClick}
-                    userRoleInProject={userRoleInProject}
-                    authUserId={authUserId}
-                    handleDragEnd={handleDragEnd}
-                  />
                 ))}
-              </Tbody>
-            </Table>
-          </Box>
-        </TableContainer>
-      </DndProvider>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {sortedDepartments.map((departmentName) => (
+                <>
+                  <DepartmentRow
+                    key={departmentName}
+                    departmentName={departmentName}
+                  />
+                  {groupedByDepartment[departmentName]?.map((user) => (
+                    <CrewMemberRow
+                      key={user.id}
+                      user={user}
+                      project={project}
+                      handleEditMemberClick={handleEditMemberClick}
+                      sendInvitation={sendInvitation}
+                      handleRemoveButtonClick={handleRemoveButtonClick}
+                      userRoleInProject={userRoleInProject}
+                      authUserId={authUserId}
+                    />
+                  ))}
+                </>
+              ))}
+            </Tbody>
+          </Table>
+        </Box>
+      </TableContainer>
     </Box>
   );
 };

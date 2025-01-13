@@ -13,10 +13,9 @@ import { NewPasswordPage } from './modules/auth/pages/NewPasswordPage';
 import AboutUsPage from './modules/contact/AboutUsPage';
 import { AcceptInvitationPage } from './modules/crewlist/pages/AcceptInvitationPage';
 import { CrewListPage } from './modules/crewlist/pages/CrewListPage';
-import { EditDepartmentsPage } from './modules/crewlist/pages/EditDepartmentsPage';
 import { MyProjectSettingPage } from './modules/crewlist/pages/MyProjectSettingsPage';
 import { DailyReportPage } from './modules/dailyreport/pages/DailyReportPage';
-// import { CrewListPage2 } from './modules/crewlist/pages/CrewListPage2';
+import { EditDepartmentsPage } from './modules/departments/pages/EditDepartmentsPage';
 import { EditProjectPage } from './modules/editproject/pages/EditProjectPage';
 import { CreateProjectPage } from './modules/myprojects/pages/CreateProjectPage';
 import ProfileSettingsPage from './modules/profilesettings/pages/ProfileSettingsPage';
@@ -59,8 +58,16 @@ function Routes() {
         path={route.acceptInvitation()}
         element={<AcceptInvitationPage />}
       />
-      <Route path={route.dailyReports()} element={<DailyReportPage />} />
-      <Route path={route.profileSettings} element={<ProfileSettingsPage />} />
+      {/* <Route path={route.dailyReports()} element={<DailyReportPage />} /> */}
+      <Route
+        path={route.dailyReports(':projectId')}
+        element={<DailyReportPage />}
+      />
+      <Route
+        path={route.dailyReports(':projectId', ':shootingDayId')}
+        element={<DailyReportPage />}
+      />
+      <Route path={route.profileSettings()} element={<ProfileSettingsPage />} />
       <Route
         path={route.editDepartments(':projectId')}
         element={<EditDepartmentsPage />}

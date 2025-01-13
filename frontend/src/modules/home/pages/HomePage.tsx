@@ -1,60 +1,74 @@
-import { useEffect } from 'react';
-import { Button, Grid, HStack, Input, Text } from '@chakra-ui/react';
-import { FaUsers } from 'react-icons/fa';
-import { IoIosPhonePortrait } from 'react-icons/io';
+import { useEffect, useRef } from 'react';
+import { Box, Button, Heading, Image, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
-import { Box, Heading } from '@frontend/shared/design-system';
 import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 
-import HomePageNavbar from './HomePageNavbar';
-
-// const EMPTY_QUERY = gql(/* GraphQL */ `
-//   query Quacks {
-//     _empty
-//   }
-// `);
+import BigSignUpButton from '../atoms/BigSignUpButton';
+import LandingBox from '../atoms/LandingBox';
+import LandingHeader from '../molecules/LandingHeader';
+import AppBenefits from '../organisms/AppBenefits';
+import AppFeatures from '../organisms/AppFeatures';
 
 export function HomePage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  const featuresSectionRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (user) {
       navigate(route.myprojects());
     }
   }, [user, navigate]);
+
+  const handleScrollToFeatures = () => {
+    if (featuresSectionRef.current) {
+      window.scrollTo({
+        top: featuresSectionRef.current.offsetTop,
+        behavior: 'smooth',
+      });
+    }
+  };
+
   if (user) return null;
+
   return (
     <Box
-      //bg="gray.50"
-      bgGradient="linear(to-l, #fadbc3 0%, transparent 47%)"
+      bgGradient="linear(to-b, #2D3748, orange.800)"
+      color="white"
+      position="relative"
     >
-      <HomePageNavbar />
+      <LandingHeader />
+
       <Box
-        //bgGradient="linear(to-l, rgba(251,146,60,1) 0%, transparent 40%)"
-        minHeight="60vh"
         display="flex"
-        flexDirection={{ base: 'column', md: 'row' }}
+        flexDirection={{ base: 'column', lg: 'row' }}
         justifyContent="center"
         alignItems="center"
         textAlign="center"
         flex="1"
-        px={8}
+        px={{ base: 4, md: 8 }}
+        minHeight="100vh"
+        bgGradient="linear(to-b, gray.800, #2D3748)"
+        overflow="hidden"
+        pt={{ base: '70px', lg: '0px' }}
       >
         <Box
-          flex="0 0 60%"
+          flex="0 0 50%"
           justifyContent="center"
           alignItems="center"
-          textAlign="center"
+          textAlign="left"
           display="flex"
           flexDirection="column"
+          p={4}
         >
           <Heading
             as="h1"
-            fontSize={{ base: '5xl', md: '6xl' }}
+            fontSize={{ base: '5xl', md: '7xl' }}
             mb={4}
             fontWeight="extrabold"
           >
@@ -68,216 +82,104 @@ export function HomePage() {
               Production Workflow
             </Text>
           </Heading>
-          <Text
-            fontSize={{ base: 'md', md: 'xl' }}
-            maxW="600px"
-            mb={6}
-            color="gray.700"
-          >
-            <Text as={'span'} fontWeight="bold">
-              ReelTiming
-            </Text>{' '}
-            — the ultimate tool for film professionals to track work hours,
-            manage crews, and streamline the production process. Focus on the
-            art while we handle the logistics.
+          <Text fontSize="xl" maxW="100%" mb={6} color="gray.300">
+            Reeltiming — the ultimate tool for film professionals to track work
+            hours, manage crews, and streamline the production process.
           </Text>
-
-          <Grid>
-            <HStack spacing={4}>
-              <Button
-                as={ReactRouterLink}
-                to={route.register()}
-                colorScheme="orange"
-                bg="orange.500"
-                size="lg"
-                _hover={{ bg: 'orange.600', transform: 'scale(1.1)' }}
-              >
-                Sign Up for Free
-              </Button>
-            </HStack>
+          <BigSignUpButton />
+          <Box width="100%" display="flex" justifyContent="flex-start">
             <Button
-              as={ReactRouterLink}
-              to={route.login()}
+              onClick={handleScrollToFeatures}
               variant="link"
               color="orange.400"
-              p="4"
+              fontSize="md"
+              fontWeight={500}
+              _hover={{
+                textDecoration: 'none',
+                color: 'orange.500',
+              }}
             >
-              Sign In
+              Check out the app features
             </Button>
-          </Grid>
+          </Box>
         </Box>
-        <Box flex="0 0 40%" p={10}>
-          <video
-            width="100%"
-            height="auto"
-            autoPlay
-            muted
-            loop
-            style={{
-              maxWidth: '600px',
-              boxShadow: '29px 28px 9px -1px rgba(255,255,255,1)',
-            }}
-          >
-            <source src="/homepagevideo.mp4" type="video/mp4" />
-          </video>
-        </Box>
-      </Box>
-      <Box
-        minHeight="30vh"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        textAlign="center"
-        flex="1"
-        px={8}
-      >
-        <Heading as={'h2'} id="features" pb={3}>
-          Features
-        </Heading>
+
         <Box
-          display="flex"
-          flexDirection="row"
+          flex="1"
           justifyContent="center"
-          flexWrap="wrap"
           alignItems="center"
+          textAlign="center"
+          display="flex"
+          flexDirection="column"
+          p={4}
         >
-          <Box
-            display="flex"
-            flexDirection="column"
-            flex="0 0 25%"
-            mx={5}
-            justifyContent="center"
-            alignItems="center"
-          >
-            <FaUsers />
-            <Text fontSize="2xl">First claim</Text>
-            <Text fontSize={{ base: 'md', md: 'xl' }} color="gray.700">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Adipisci
-              sed praesentium molestias, fugiat laudantium incidunt quos
-              explicabo similique ducimus animi?
-            </Text>
-          </Box>
-          <Box
-            display="flex"
-            flexDirection="column"
-            flex="0 0 25%"
-            mx={5}
-            justifyContent="center"
-            alignItems="center"
-          >
-            <IoIosPhonePortrait />
-            <Text fontSize="2xl">Second claim</Text>
-            <Text fontSize={{ base: 'md', md: 'xl' }} color="gray.700">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Adipisci
-              sed praesentium molestias, fugiat laudantium incidunt quos
-              explicabo similique ducimus animi?
-            </Text>
-          </Box>
-          <Box
-            display="flex"
-            flexDirection="column"
-            flex="0 0 25%"
-            mx={5}
-            justifyContent="center"
-            alignItems="center"
-          >
-            <FaUsers />
-            <Text fontSize="2xl">Third claim</Text>
-            <Text fontSize={{ base: 'md', md: 'xl' }} color="gray.700">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Adipisci
-              sed praesentium molestias, fugiat laudantium incidunt quos
-              explicabo similique ducimus animi?
-            </Text>
-          </Box>
-          <Box
-            display="flex"
-            flexDirection="column"
-            flex="0 0 25%"
-            mx={5}
-            justifyContent="center"
-            alignItems="center"
-          >
-            <FaUsers />
-            <Text fontSize="2xl">Fourth claim</Text>
-            <Text fontSize={{ base: 'md', md: 'xl' }} color="gray.700">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Adipisci
-              sed praesentium molestias, fugiat laudantium incidunt quos
-              explicabo similique ducimus animi?
-            </Text>
-          </Box>
+          <Image
+            src="/homePage2.png"
+            width="100%"
+            alt="Movie set"
+            style={{
+              borderRadius: '16px',
+              boxShadow: '0px 4px 15px rgba(0,0,0,0.6)',
+              zIndex: 2,
+            }}
+            height="auto"
+            maxWidth={{ base: '600px', lg: '900px' }}
+            mb={8}
+          />
         </Box>
       </Box>
-      <Box
-        minHeight="30vh"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        textAlign="center"
-        flex="1"
-        px={8}
+
+      <LandingBox
+        bgGradient="linear(to-b, #2D3748, #b05e2a)"
+        pt={16}
+        pb={{ base: 10, lg: 16 }}
+        px={{ base: '2', mb: '8' }}
+        ref={featuresSectionRef}
       >
-        <Heading as={'h2'} id="description" pb={3}>
-          Description
-        </Heading>
-        <Text
-          fontSize={{ base: 'md', md: 'xl' }}
-          pb={6}
-          color="gray.700"
-          maxWidth="70rem"
-        >
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum
-          veritatis doloremque tenetur molestiae. Corporis molestiae neque
-          dolore voluptates commodi tenetur doloribus officiis, deserunt
-          veritatis ex ad iste impedit, maiores nemo assumenda repellendus quod
-          numquam dolorem debitis, minus nulla architecto porro aspernatur.
-          Voluptas impedit repudiandae excepturi quia porro obcaecati vero
-          minima!
-        </Text>
-      </Box>
-      <Box
-        minHeight="30vh"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        textAlign="center"
-        flex="1"
-        px={8}
+        <AppFeatures />
+      </LandingBox>
+
+      <LandingBox
+        bgGradient="linear(to-b, #b05e2a, orange.50, white)"
+        pt={{ base: 8, lg: 12 }}
+        pb={5}
+        color="gray.800"
+        minHeight="40vh"
+        textAlign={'center'}
       >
-        <Heading as={'h2'} id="get-in-touch" pb={3}>
-          Get in Touch
-        </Heading>
-        <Text
-          fontSize={{ base: 'md', md: 'xl' }}
-          pb={6}
-          color="gray.700"
-          maxWidth="70rem"
+        <Heading
+          as="h2"
+          fontSize="5xl"
+          mb={6}
+          fontWeight="bold"
+          bgGradient="linear(to-r, orange.700, orange.800)"
+          bgClip="text"
+          pb={3}
         >
-          Whether you're working on a student project or a large-scale
-          production, we tailor our solutions to fit your unique needs. Share
-          your email with us, and we'll get in touch with a personalized pricing
-          proposal that works for you.{' '}
+          Ready to Simplify Your Workflow?
+        </Heading>
+        <Text fontSize="xl" pb={6} color="gray.700" maxWidth="70rem" mx="5px">
+          Whether you're working on a student film or managing a large-scale
+          production, our app is designed to simplify the process for projects
+          of any size, offering intuitive features that fit your unique needs.{' '}
           <Text as={'span'} display={'block'}>
-            Enter your email below, and let's start optimizing your workflow!
+            Focus on the art while we handle the logistics!
           </Text>
         </Text>
-        <Box display="flex" flex-direcion="row">
-          <Input
-            name="email"
-            type="email"
-            placeholder="Enter your email"
-            autoFocus
-            autoComplete="on"
-            autoCorrect="off"
-            autoCapitalize="off"
-            mb={2}
-            mx={3}
-            size="lg"
-          />
-          <Button colorScheme="orange" size="lg" px={10}>
-            Get Started
-          </Button>
-        </Box>
-      </Box>
+
+        <Button
+          as={ReactRouterLink}
+          to={route.register()}
+          bg="orange.600"
+          color="white"
+          size="lg"
+          _hover={{ transform: 'scale(1.1)', bg: 'orange.700' }}
+          mb={7}
+        >
+          Get Started Now
+        </Button>
+        <AppBenefits />
+      </LandingBox>
 
       <Footer />
     </Box>

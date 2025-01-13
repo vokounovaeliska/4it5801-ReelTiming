@@ -161,7 +161,7 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
 
   return (
     <>
-      <Text fontSize="lg">Total earnings</Text>
+      <Text fontSize="lg">Total overtime earnings</Text>
       <HStack spacing={2} align="center" mb={4}>
         <FaCoins size="64px" />
         <Text fontSize={{ base: '6xl', md: '4xl', lg: '6xl' }}>
@@ -209,7 +209,7 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
           borderRadius="md"
           textAlign="center"
         >
-          <Text>Transportation earnings</Text>
+          <Text>Transportation overtime earnings</Text>
           <HStack spacing={2} align="center" justify="center">
             <Text fontSize="2xl">{totalTransportationCostsText}</Text>
           </HStack>

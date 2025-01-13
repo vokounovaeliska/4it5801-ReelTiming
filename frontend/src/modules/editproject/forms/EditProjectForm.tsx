@@ -27,12 +27,13 @@ export function EditProjectForm({
   shootingDays,
 }: EditProjectFormProps) {
   const initialValues: projectFormValues = {
-    name: project.name,
-    description: project.description,
-    productionCompany: project.production_company,
+    name: project?.name,
+    description: project?.description,
+    productionCompany: project?.production_company,
     startDate: project?.start_date ? new Date(project.start_date) : new Date(),
     endDate: project?.end_date ? new Date(project.end_date) : null,
     currency: project.currency!,
+    isActive: project.is_active,
   };
 
   const [formData, setFormData] = useState(initialValues);
@@ -78,6 +79,7 @@ export function EditProjectForm({
         <ShootingDaysConfigForm
           shootingDays={shootingDaysCollection}
           handleShootingDaysChange={handleShootingDaysChange}
+          projectData={project}
         />
       </SimpleGrid>
       <Button

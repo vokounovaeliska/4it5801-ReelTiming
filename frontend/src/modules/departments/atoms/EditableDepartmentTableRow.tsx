@@ -6,9 +6,9 @@ import { useDrag, useDrop } from 'react-dnd';
 import { UPDATE_DEPARTMENT_ORDER } from '@frontend/graphql/mutations/UpdateDepartmentOrder';
 import { Department } from '@frontend/modules/dailyreport/interfaces/interface';
 
-import { CancelDepartmentButton } from '../atoms/CancelDepartmentButton';
-import { EditDepartmentButton } from '../atoms/EditDepartmentButton';
-import { SaveDepartmentButton } from '../atoms/SaveDepartmentButton';
+import { CancelDepartmentButton } from '../../crewlist/atoms/CancelDepartmentButton';
+import { EditDepartmentButton } from '../../crewlist/atoms/EditDepartmentButton';
+import { SaveDepartmentButton } from '../../crewlist/atoms/SaveDepartmentButton';
 
 interface EditableDepartmentTableRowProps {
   department: Department;
@@ -32,7 +32,7 @@ export const EditableDepartmentTableRow: React.FC<
     order_index: 0,
   });
 
-  const [updateDepartment, { loading }] = useMutation(UPDATE_DEPARTMENT_ORDER);
+  const [updateDepartment] = useMutation(UPDATE_DEPARTMENT_ORDER);
 
   const handleEdit = (department: Department) => {
     setEditRowId(department.id);
@@ -45,7 +45,7 @@ export const EditableDepartmentTableRow: React.FC<
 
   const handleSave = async (departmentId: string) => {
     try {
-      const { data } = await updateDepartment({
+      await updateDepartment({
         variables: {
           id: departmentId,
           data: {
@@ -68,7 +68,7 @@ export const EditableDepartmentTableRow: React.FC<
     setEditRowId(null);
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     const { name, value, type, checked } = e.target;
     setFormState((prevState) => ({
       ...prevState,

@@ -23,7 +23,8 @@ export const useProjectConfigOperations = (
     GET_PROJECT_DETAILS,
     {
       variables: { id: projectId || '' },
-      fetchPolicy: 'cache-and-network',
+      fetchPolicy: 'cache-first',
+      nextFetchPolicy: 'cache-and-network',
     },
   );
 
@@ -107,7 +108,7 @@ export const useProjectConfigOperations = (
               variables: {
                 data: {
                   shooting_day_number: newShootingDay.shooting_day_number,
-                  date: newShootingDay.date,
+                  date: formatISO(parseISO(newShootingDay.date)),
                   event_type: newShootingDay.event_type,
                   project_id: projectId,
                 },
@@ -156,6 +157,7 @@ export const useProjectConfigOperations = (
             end_date: data.endDate ?? null,
             last_update_user_id: userId,
             currency: data.currency,
+            is_active: data.isActive,
           },
         },
       });
