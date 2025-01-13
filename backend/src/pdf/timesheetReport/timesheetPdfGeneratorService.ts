@@ -113,6 +113,7 @@ export class timesheetPdfGeneratorService {
           name: project?.name || '',
           description: project?.description || '',
           currency: project?.currency || 'CZK',
+          logo: project?.logo,
         },
         rate: {
           standard_rate: rate.standard_rate ?? 0,

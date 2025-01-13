@@ -1,6 +1,7 @@
 import {
   Box,
   Center,
+  Image,
   SimpleGrid,
   Text,
   useColorModeValue,
@@ -20,6 +21,7 @@ export type MyProjectsTemplateProps = {
     name: string;
     description: string;
     isActive: boolean;
+    logo?: string | null;
   }[];
   onAddProject: () => void;
   user?: AuthUser | null;
@@ -85,6 +87,15 @@ export function MyProjectsTemplate({
                   }}
                   transition="all 0.3s ease"
                 >
+                  <Image
+                    display={project.logo ? 'block' : 'none'}
+                    src={`data:image/png;base64,${project.logo}`}
+                    alt="Uploaded Logo"
+                    w="300px"
+                    h="75px"
+                    justifySelf="center"
+                    mb={4}
+                  />
                   <Text
                     fontWeight="bold"
                     fontSize="lg"
@@ -136,6 +147,15 @@ export function MyProjectsTemplate({
                     }}
                     transition="all 0.3s ease"
                   >
+                    <Image
+                      display={project.logo ? 'block' : 'none'}
+                      src={`data:image/png;base64,${project.logo}`}
+                      alt="Uploaded Logo"
+                      w="300px"
+                      h="75px"
+                      justifySelf="center"
+                      mb={4}
+                    />
                     <Text
                       fontWeight="bold"
                       fontSize="lg"

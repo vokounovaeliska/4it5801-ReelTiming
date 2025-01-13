@@ -124,6 +124,7 @@ export const projectFormSchema = z
     isActive: zod.boolean({
       message: 'isActive must be either true or false',
     }),
+    logo: z.string().optional().nullable(),
   })
   .superRefine((data, ctx) => {
     const startDate = data.startDate.setHours(0, 0, 0, 0);

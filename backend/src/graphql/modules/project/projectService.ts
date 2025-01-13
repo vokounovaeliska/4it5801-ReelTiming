@@ -50,7 +50,7 @@ export class ProjectService {
       create_user_id: data.create_user_id ?? '',
       last_update_user_id: data.create_user_id ?? '',
       currency: data.currency,
-      logo: data.logo ?? undefined,
+      logo: data.logo ?? null,
     });
     const project = await this.getProjectById(projectId);
     if (!project) {
@@ -66,7 +66,7 @@ export class ProjectService {
       start_date: data.start_date ?? undefined,
       end_date: data.end_date ?? undefined,
       last_update_date: new Date(),
-      logo: data.logo ?? undefined,
+      logo: data.logo ?? null,
     };
     await this.projectRepository.updateProject(id, updateData);
     return this.getProjectById(id);
