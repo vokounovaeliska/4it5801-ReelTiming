@@ -18,10 +18,7 @@ const ReportHeader = ({ data }: ReportHeaderProps) => (
       px={4}
       py={4}
     >
-      {/* Left Column: Empty or additional content */}
       <Box flex="1" />
-
-      {/* Middle Column: Centered text */}
       <Flex
         flex="1"
         direction="column"
