@@ -18,7 +18,6 @@ import { UPDATE_DEPARTMENT_ORDER } from "@frontend/graphql/mutations/UpdateDepar
 import { Department } from '@frontend/modules/dailyreport/interfaces/interface';
 import { EditableDepartmentTableRow } from '@frontend/modules/crewlist/table/EditableDepartmentTableRow';
 import { DepartmentProps } from '../interfaces/interfaces';
-import { id } from 'date-fns/locale';
 
 
 interface DepartmentTableProps {
