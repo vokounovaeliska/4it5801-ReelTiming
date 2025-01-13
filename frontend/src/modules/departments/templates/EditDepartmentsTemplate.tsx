@@ -161,22 +161,34 @@ export function EditDepartmentsTemplate({
   }
 
   return (
-    <Box>
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+      pb={'20px'}
+    >
       {userRole === 'ADMIN' && (
-        <Box pr={5}>
-          <Box display="flex" justifyContent="flex-end" alignItems="center">
-            <AddDepartmentButton
-              handleAddDepartmentClick={() => setIsModalOpen(true)}
-            />
-          </Box>
+        <Box
+          pr={5}
+          mb={4}
+          // display="flex"
+          // justifyContent="center"
+          alignItems="flex-end"
+        >
+          <AddDepartmentButton
+            handleAddDepartmentClick={() => setIsModalOpen(true)}
+          />
         </Box>
       )}
+
       <DepartmentTable
         departments={departments}
         projectId={projectId}
         handleMoveDepartment={moveDepartment}
         handleDragEnd={handleDragEnd}
       />
+
       <CustomModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
