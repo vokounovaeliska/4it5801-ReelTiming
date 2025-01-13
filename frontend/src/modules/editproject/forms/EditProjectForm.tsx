@@ -1,18 +1,10 @@
-import React, { useState } from 'react';
-import { DeleteIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  Button,
-  IconButton,
-  Input,
-  SimpleGrid,
-  Tooltip,
-} from '@chakra-ui/react';
+import { useState } from 'react';
+import { Box, Button, SimpleGrid } from '@chakra-ui/react';
 
 import { ShootingDay } from '@frontend/gql/graphql';
-import { showSuccessToast } from '@frontend/shared/design-system/molecules/toastUtils';
 import { projectFormValues } from '@frontend/zod/schemas';
 
+import LogoUploader from '../atoms/LogoUploader';
 import { ProjectData } from '../pages/EditProjectPage';
 
 import { ProjectDetailsForm } from './ProjectDetailsForm';
@@ -46,49 +38,17 @@ export function EditProjectForm({
   };
 
   const [formData, setFormData] = useState(initialValues);
-  const [logoFile, setLogoFile] = useState<File | null>(null);
+
+  const handleLogoChange = (newLogo: string | null) => {
+    setFormData((prev) => ({ ...prev, logo: newLogo }));
+  };
 
   const handleInputChange = (name: keyof projectFormValues, value: unknown) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-      img.onload = () => {
-        if (img.width <= 400 && img.height <= 100) {
-          setLogoFile(file);
-        } else {
-          alert('Image dimensions should be 400x100 pixels or smaller.');
-        }
-      };
-    } else {
-      alert('Please upload a valid .png or .jpg file');
-    }
-  };
-
-  const handleRemoveLogo = () => {
-    setFormData((prev) => ({ ...prev, logo: null }));
-    setLogoFile(null);
-    showSuccessToast('Logo successfully removed');
-  };
-
-  const handleSaveChanges = async () => {
-    if (logoFile) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result?.toString().split(',')[1];
-        if (base64String) {
-          const updatedFormData = { ...formData, logo: base64String };
-          onSubmit(updatedFormData, shootingDays, shootingDaysCollection);
-        }
-      };
-      reader.readAsDataURL(logoFile);
-    } else {
-      onSubmit(formData, shootingDays, shootingDaysCollection);
-    }
+  const handleSaveChanges = () => {
+    onSubmit(formData, shootingDays, shootingDays);
   };
 
   const [shootingDaysCollection, setShootingDaysCollection] = useState<
@@ -126,38 +86,17 @@ export function EditProjectForm({
           shootingDays={shootingDaysCollection}
           handleShootingDaysChange={handleShootingDaysChange}
         />
-        <Box pl={5}>
-          <Input
-            alignContent={'center'}
-            w={'max-content'}
-            type="file"
-            accept=".png, .jpeg"
-            onChange={handleFileChange}
-          />
-          <Tooltip
-            label="Remove logo"
-            aria-label="Remove logo"
-            placement="top"
-            bg="red.600"
-            rounded={'lg'}
-          >
-            <IconButton
-              ml={5}
-              aria-label="Remove logo"
-              icon={<DeleteIcon />}
-              colorScheme="red"
-              size="sm"
-              w={10}
-              h={10}
-              onClick={() => handleRemoveLogo()}
-            />
-          </Tooltip>
-        </Box>
+        <LogoUploader
+          initialLogo={
+            formData.logo ? `data:image/png;base64,${formData.logo}` : ''
+          }
+          onLogoChange={handleLogoChange}
+        />
       </SimpleGrid>
+
       <Button
         colorScheme="orange"
         width="100%"
-        mt={4}
         size="lg"
         onClick={handleSaveChanges}
       >
