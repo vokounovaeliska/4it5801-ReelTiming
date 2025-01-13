@@ -135,7 +135,7 @@ export const useProjectDetails = (projectId: string) => {
   const {
     data: projectData,
     loading: projectLoading,
-    error: prjectError,
+    error: projectError,
   } = useQuery(GET_PROJECT_DETAILS, {
     skip: !projectId,
     variables: { id: projectId },
@@ -143,5 +143,5 @@ export const useProjectDetails = (projectId: string) => {
     nextFetchPolicy: 'cache-and-network',
   });
 
-  return { projectData, projectLoading, prjectError };
+  return { projectData, projectLoading, projectError };
 };

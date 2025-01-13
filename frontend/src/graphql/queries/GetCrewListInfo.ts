@@ -18,6 +18,8 @@ export const GET_CREWLIST_INFO = gql(`
     departments(projectId: $projectId) {
       id
       name
+      is_visible
+      order_index
     }
     projectUsers(projectId: $projectId) {
       id
@@ -45,6 +47,8 @@ export const GET_CREWLIST_INFO = gql(`
       department {
         name
         id
+        is_visible
+        order_index
       }
       email
       name

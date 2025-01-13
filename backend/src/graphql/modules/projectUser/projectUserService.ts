@@ -36,7 +36,11 @@ export class ProjectUserService {
   }
 
   async getProjectUsersByProjectId(projectId: string) {
-    return this.projectUserRepository.getProjectUsersByProjectId(projectId);
+    const projectUsers =
+      this.projectUserRepository.getProjectUsersByProjectId(projectId);
+    return (await projectUsers).map((record) => ({
+      ...record.project_user,
+    }));
   }
 
   async getProjectUserById(id: string): Promise<ProjectUser | null> {
