@@ -1,4 +1,4 @@
-import { Box, Button, Center, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Text } from '@chakra-ui/react';
 
 import { EditDepartmentsModal } from '@frontend/modules/departments/modals/EditDepartmentsModal';
 import {
@@ -124,16 +124,23 @@ export function CrewListPage() {
             mb={4}
             px={10}
           >
-            <AddCrewMemberButton
-              handleAddMemberClick={handleAddMemberClick}
-              isShown={crewList.project?.is_active}
-            />
-            <Button
-              onClick={() => setIsEditDepartmentsModalOpen(true)}
-              colorScheme="orange"
+            <Flex
+              direction={{ base: 'column', md: 'row' }}
+              justify="space-between"
+              gap={4}
+              w={'100%'}
             >
-              Edit Departments
-            </Button>
+              <AddCrewMemberButton
+                handleAddMemberClick={handleAddMemberClick}
+                isShown={crewList.project?.is_active}
+              />
+              <Button
+                onClick={() => setIsEditDepartmentsModalOpen(true)}
+                colorScheme="orange"
+              >
+                Edit Departments
+              </Button>
+            </Flex>
             <EditDepartmentsModal
               isOpen={isEditDepartmentsModalOpen}
               onClose={() => {

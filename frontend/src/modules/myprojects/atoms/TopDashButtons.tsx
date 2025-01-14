@@ -30,7 +30,11 @@ const TopDashButtons: React.FC<TopDashButtonsProps> = ({
         <TopDashButton
           text={userRole === 'CREW' ? 'My project settings' : 'Crew List'}
           icon={<FaUsers />}
-          to={route.myProjectSettings(projectId)}
+          to={
+            userRole === 'CREW'
+              ? route.myProjectSettings(projectId)
+              : route.crewList(projectId)
+          }
           ariaLabel={
             userRole === 'CREW'
               ? 'View and edit My project settings'
