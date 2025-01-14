@@ -151,9 +151,8 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
 
   const superTotalEarnings = totalOvertimeEarnings + totalTransportationCosts;
 
-  // Get currency symbol
   const currencySymbol = currencyUtil.getCurrencySymbol(currency);
-  const totalMileageText = `${totalMileage} km`;
+  const totalMileageText = `${totalMileage.toLocaleString()} km`;
   const totalLaborEarningsText = `${totalOvertimeEarnings.toLocaleString()} ${currencySymbol}`;
   const totalOvertimeHoursText = `${totalOvertimeHours.toLocaleString()} hours`;
   const totalTransportationCostsText = `${totalTransportationCosts.toLocaleString()} ${currencySymbol}`;

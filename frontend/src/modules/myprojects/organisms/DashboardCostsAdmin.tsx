@@ -103,7 +103,7 @@ const DashboardCostsAdmin: React.FC<DashboardCostsProps> = ({
     totalOvertimeCosts + totalTransportationOvertimeCosts;
 
   const currencySymbol = currencyUtil.getCurrencySymbol(currency);
-  const totalMileageText = `${totalMileage} km`;
+  const totalMileageText = `${totalMileage.toLocaleString()} km`;
   const totalLaborCostsText = `${totalOvertimeCosts.toLocaleString()} ${currencySymbol}`;
   const totalOvertimeHoursText = `${totalOvertimeHours.toLocaleString()} hours`;
   const totalTransportationCostsText = `${totalTransportationOvertimeCosts.toLocaleString()} ${currencySymbol}`;

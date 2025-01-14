@@ -164,7 +164,7 @@ export const statement = mysqlTable('statement', {
     .defaultNow()
     .onUpdateNow(),
   car_id: varchar('car_id', { length: 36 }).references(() => car.id, {
-    onDelete: 'restrict',
+    onDelete: 'set null',
   }),
   kilometers: int('kilometers'),
 });

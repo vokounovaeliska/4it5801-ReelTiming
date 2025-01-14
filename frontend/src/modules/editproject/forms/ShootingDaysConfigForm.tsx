@@ -99,7 +99,7 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
 
     const isDuplicateDayDate = shootingDaysCollection.some(
       (day) =>
-        day.date === shootingDay.date &&
+        new Date(day.date).getTime() === new Date(shootingDay.date).getTime() &&
         (!isEditing || day.id !== shootingDay.id),
     );
 
@@ -137,9 +137,7 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
           : day,
       );
       setIsEditing(false);
-      showSuccessToast(
-        `Day ${shootingDay.shooting_day_number} has been updated.`,
-      );
+      showSuccessToast(`Day ${shootingDay.date} has been updated.`);
     } else {
       const newShootingDay: ShootingDay = {
         id: Date.now().toString(),
@@ -147,14 +145,16 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
         date: shootingDay.date,
       };
       updatedDaysCollection = [...shootingDaysCollection, newShootingDay];
-      showSuccessToast(
-        `Day ${shootingDay.shooting_day_number} has been added.`,
-      );
+      showSuccessToast(`Day ${shootingDay.date} has been added.`);
     }
 
     updatedDaysCollection = updatedDaysCollection.sort(
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
     );
+    updatedDaysCollection = updatedDaysCollection.map((day, index) => ({
+      ...day,
+      shooting_day_number: index + 1,
+    }));
 
     setShootingDaysCollection(updatedDaysCollection);
 

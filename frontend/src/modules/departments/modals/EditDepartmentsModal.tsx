@@ -27,7 +27,7 @@ export function EditDepartmentsModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent m={4} textAlign="center">
+      <ModalContent m={4} textAlign="center" maxWidth="80%" width="60%">
         <ModalHeader mt={8}>Edit departments for {projectName}</ModalHeader>
         <ModalCloseButton />
         <Box placeItems="center">

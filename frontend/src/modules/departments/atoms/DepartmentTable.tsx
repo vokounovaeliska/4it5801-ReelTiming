@@ -46,9 +46,11 @@ export const DepartmentTable: React.FC<DepartmentTableProps> = ({
           <Box
             overflowX="auto"
             overflowY="auto"
+            maxHeight={{ base: '430px', sm: '530px' }}
             sx={{
               '::-webkit-scrollbar': {
                 height: '12px',
+                width: '8px',
               },
               '::-webkit-scrollbar-track': {
                 background: '#2D3748',
@@ -64,14 +66,18 @@ export const DepartmentTable: React.FC<DepartmentTableProps> = ({
               scrollbarColor: '#2D3748 white',
             }}
           >
-            <Table variant="simple" size="sm" w="max-content">
+            <Table
+              variant="simple"
+              size="sm"
+              w="max-content"
+              width={{ base: '100vh', sm: '100vh' }}
+            >
               <Thead position="sticky" top={0} zIndex="docked">
                 <Tr>
                   {tableHeaders.map((header) => (
                     <Td
-                      bg="gray.50"
-                      borderTop="solid"
-                      borderColor="gray.300"
+                      key={header.label}
+                      bg="gray.100"
                       style={{ fontWeight: 'bold', textAlign: 'left' }}
                     >
                       {header.label}
@@ -82,6 +88,7 @@ export const DepartmentTable: React.FC<DepartmentTableProps> = ({
               <Tbody>
                 {departments.map((department, index) => (
                   <EditableDepartmentTableRow
+                    key={department.id || index}
                     department={department}
                     projectId={projectId}
                     index={department.order_index ?? index}

@@ -13,13 +13,11 @@ export async function seedDailyReports(
   db: MySql2Database<typeof import('../../src/db/schema')>,
   projectId: string,
   shootingDays: { id: string; date: Date }[],
+  howManyReports: number
 ) {
   console.log(`Seeding daily reports for project ${projectId}...`);
 
-  // Randomly select 20 shooting days from the list of shooting days
-  const selectedShootingDays = shootingDays
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 20);
+  const selectedShootingDays = shootingDays.slice(0, howManyReports);
 
   const dailyReports = selectedShootingDays.map((day) => {
     const getRandomName = (isFemale: boolean) => {
@@ -79,7 +77,7 @@ export async function seedDailyReports(
         },
         {
           title: 'Note',
-          value: `Obraz natočen v rámci sekvence ${Math.random()}`,
+          value: `Obraz natočen v rámci sekvence ${Math.round(Math.random() * 100)}`,
         },
       ],
       footer: [

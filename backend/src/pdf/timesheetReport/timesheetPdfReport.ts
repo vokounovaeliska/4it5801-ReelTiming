@@ -75,7 +75,7 @@ export async function timesheetPdfReport(
 
     .fontSize(9)
 
-    .moveDown(1.5)
+    .moveDown(3)
     .text(
       `Date Range: ${formatDate(new Date(dateRange.start_date))} - ${formatDate(
         new Date(dateRange.end_date),

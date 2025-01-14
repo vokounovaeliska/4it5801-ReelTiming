@@ -34,7 +34,7 @@ const ReportFooter = ({ data }: { data?: DailyReportPreviewInfoQuery }) => {
     dailyReport && dailyReport.length > 0 ? dailyReport[0].footer : [];
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} wrap={false}>
       <Text style={styles.title}>REPORT APPROVED BY</Text>
       {footerItems.map((item, index) => (
         <View key={index} style={styles.itemContainer}>
