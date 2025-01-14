@@ -164,7 +164,7 @@ export const CrewMemberRow = ({
         <DeleteCrewButton
           userId={user.id}
           userRoleInProject={userRoleInProject}
-          authUserId={authUserId}
+          // authUserId={authUserId}
           handleRemoveButtonClick={handleRemoveButtonClick}
           isDisabled={!project.is_active}
         />

@@ -4,7 +4,7 @@ import { IconButton, Tooltip } from '@chakra-ui/react';
 interface DeleteCrewButtonProps {
   userId: string;
   userRoleInProject: string;
-  authUserId: string | undefined;
+  // authUserId: string | undefined;
   handleRemoveButtonClick: (userId: string) => void;
   isDisabled: boolean;
 }
@@ -12,11 +12,11 @@ interface DeleteCrewButtonProps {
 export const DeleteCrewButton = ({
   userId,
   userRoleInProject,
-  authUserId,
+  // authUserId,
   isDisabled,
   handleRemoveButtonClick,
 }: DeleteCrewButtonProps) => {
-  if (userRoleInProject !== 'ADMIN' || userId === authUserId) {
+  if (userRoleInProject === 'CREW') {
     return null;
   }
 
@@ -31,7 +31,7 @@ export const DeleteCrewButton = ({
       rounded={'lg'}
     >
       <IconButton
-        isDisabled={isDisabled}
+        isDisabled={userRoleInProject === 'ADMIN' || isDisabled}
         aria-label={label}
         icon={<DeleteIcon />}
         colorScheme="red"
