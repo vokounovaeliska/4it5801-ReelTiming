@@ -32,7 +32,7 @@ input CarInput {
 }
 
 type CarStatement {
-  car_id: String!
+  car_id: String
   kilometers: Float
 }
 
@@ -204,6 +204,7 @@ type Query {
   _empty: String!
   car(id: String!): Car
   carStatementsByProjectId(projectId: String!): [CarStatement!]!
+  carStatementsByProjectUserId(projectUserId: String!): [CarStatement!]!
   cars: [Car!]!
   carsByProjectUserId(projectUserId: String!): [Car!]!
   dailyReport(id: String!): DailyReport
@@ -214,6 +215,7 @@ type Query {
   lastDailyReportByProjectId(projectId: String!): [DailyReport!]
   project(id: String!): Project
   projectUser(id: String!): ProjectUser
+  projectUserByUserIdAndProjectId(projectId: String!, userId: String!): ProjectUser
   projectUserDetails(projectId: String!, userId: String!): ProjectUser
   projectUsers(projectId: String!): [ProjectUser!]!
   projectUsersByToken(token: String!): ProjectUser!

@@ -37,7 +37,6 @@ export class PasswordService {
 
     const resetLink = APP_LINK + `/auth/new-password?token=${token}`;
     try {
-      // Read the HTML template
       const templatePath = path.join(
         __dirname,
         '..',

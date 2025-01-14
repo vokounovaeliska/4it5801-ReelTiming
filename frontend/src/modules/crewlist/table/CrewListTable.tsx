@@ -43,7 +43,6 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
   handleRemoveButtonClick,
   sendInvitation,
   userRoleInProject,
-  // authUserId,
   project,
 }) => {
   return (

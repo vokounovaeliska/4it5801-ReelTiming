@@ -4,8 +4,8 @@ import { FormField, FormFieldBaseProps } from './FormField';
 
 export type SwitchFieldProps = FormFieldBaseProps<SwitchProps> & {
   label?: string;
-  onLabel?: string; // Optional label when the switch is ON
-  offLabel?: string; // Optional label when the switch is OFF
+  onLabel?: string;
+  offLabel?: string;
 };
 
 export function SwitchField({

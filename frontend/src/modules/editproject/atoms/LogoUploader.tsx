@@ -37,7 +37,7 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({
             const base64String = reader.result?.toString().split(',')[1];
             if (base64String) {
               setDisplayLogo(`data:image/png;base64,${base64String}`);
-              onLogoChange(base64String); // Notify parent of the new logo
+              onLogoChange(base64String);
             }
           };
           reader.readAsDataURL(file);
@@ -54,9 +54,9 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({
 
   const handleRemoveLogo = () => {
     setDisplayLogo('');
-    onLogoChange(null); // Notify parent that the logo has been removed
+    onLogoChange(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = ''; // Reset the file input
+      fileInputRef.current.value = '';
     }
     showSuccessToast('Logo successfully removed');
   };

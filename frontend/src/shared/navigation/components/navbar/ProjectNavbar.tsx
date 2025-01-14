@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@chakra-ui/react';
 import { Link as ReactRouterLink, useLocation } from 'react-router-dom';
 
-import ProjectButtons from '@frontend/modules/myprojects/atoms/ProjectButtons';
+import ProjectButtons from '@frontend/modules/myprojects/atoms/buttons/ProjectButtons';
 import { route } from '@frontend/route';
 
 import Navbar from './Navbar';

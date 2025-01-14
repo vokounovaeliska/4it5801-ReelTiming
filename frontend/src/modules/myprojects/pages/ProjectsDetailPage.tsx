@@ -1,27 +1,28 @@
 import { useQuery } from '@apollo/client';
-import { Box, Center, Image, Spinner, Text } from '@chakra-ui/react';
+import { Box, Image, Text } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 
 import { GET_PROJECT_DETAILS } from '@frontend/graphql/queries/GetProjectDetails';
 import { GET_USER_ROLE_IN_PROJECT } from '@frontend/graphql/queries/GetUserRoleInProject';
 import { useAuth } from '@frontend/modules/auth';
-import { HomePage } from '@frontend/modules/home/pages/HomePage';
+import { HomePage } from '@frontend/modules/landingPage/pages/HomePage';
 import { Heading } from '@frontend/shared/design-system';
+import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 import { currencyUtil } from '@shared/currencyUtil';
 
 import BoxDashboard from '../atoms/BoxDashboard';
+import CrewInfo from '../atoms/CrewInfo';
+import DashboardCostsAdmin from '../atoms/DashboardCostsAdmin';
+import DashboardEarningsCrew from '../atoms/DashboardEarningsCrew';
 import PillButtonsTop from '../atoms/PillButtonsTop';
 import ProjectOrigin from '../atoms/ProjectOrigin';
 import ProjectStatus from '../atoms/ProjectStatus';
 import ProjectTimeline from '../atoms/ProjectTimeline';
+import ShiftInfo from '../atoms/ShiftInfo';
 import TopDashButtons from '../atoms/TopDashButtons';
-import CrewInfo from '../organisms/CrewInfo';
-import DashboardCostsAdmin from '../organisms/DashboardCostsAdmin';
-import DashboardEarningsCrew from '../organisms/DashboardEarningsCrew';
-import ShiftInfo from '../organisms/ShiftInfo';
 
 export function MyProjectDetailPage() {
   const auth = useAuth();
@@ -61,12 +62,7 @@ export function MyProjectDetailPage() {
   }
 
   if (!isDataAvailable) {
-    return (
-      <Center minHeight="100vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading project details...</Text>
-      </Center>
-    );
+    return <LoadingSpinner title="project details" />;
   }
 
   if (error || !data?.project) {

@@ -84,6 +84,8 @@ export interface Rate {
 export interface Department {
   id: string;
   name: string;
+  order_index?: number | null;
+  is_visible?: boolean | null;
 }
 
 export interface Project {

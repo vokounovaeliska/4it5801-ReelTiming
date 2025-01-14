@@ -49,7 +49,6 @@ const ProjectTimeline: React.FC<ProjectTimelineProps> = ({
     return `${realElapsed} / ${length} days`;
   };
 
-  // Determine the message to display
   const today = new Date();
   const startDateObj = new Date(startDate);
   const endDateObj = new Date(endDate);

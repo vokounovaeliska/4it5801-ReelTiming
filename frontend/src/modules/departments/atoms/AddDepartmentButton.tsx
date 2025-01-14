@@ -18,7 +18,6 @@ export const AddDepartmentButton: React.FC<AddDepartmentButtonProps> = ({
     <Button
       aria-label="Add New Department"
       colorScheme="orange"
-      // bgColor="orange.500"
       onClick={handleAddDepartmentClick}
       size="sm"
       leftIcon={<AiOutlineUsergroupAdd />}
@@ -27,9 +26,7 @@ export const AddDepartmentButton: React.FC<AddDepartmentButtonProps> = ({
       _hover={{
         bg: 'orange.500',
         color: 'white',
-        // transform: 'scale(1.2)',
       }}
-      // transition="all 0.3s ease"
       variant="outline"
     >
       {label}

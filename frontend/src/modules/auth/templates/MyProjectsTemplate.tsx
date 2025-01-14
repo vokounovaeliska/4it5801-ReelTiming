@@ -9,8 +9,8 @@ import {
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
-import { AddProjectButton } from '@frontend/modules/myprojects/organisms/AddProjectButton';
-import InactiveProjectsSection from '@frontend/modules/myprojects/organisms/InactiveProjectsSection';
+import { AddProjectButton } from '@frontend/modules/myprojects/atoms/buttons/AddProjectButton';
+import InactiveProjectsSection from '@frontend/modules/myprojects/atoms/InactiveProjectsSection';
 import { Heading } from '@frontend/shared/design-system';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';

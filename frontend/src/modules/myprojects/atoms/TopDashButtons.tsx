@@ -5,7 +5,7 @@ import { FaCirclePlus } from 'react-icons/fa6';
 
 import { route } from '@frontend/route';
 
-import TopDashButton from './TopDashButton';
+import TopDashButton from './buttons/TopDashButton';
 
 interface TopDashButtonsProps {
   userRole: string;
@@ -28,12 +28,16 @@ const TopDashButtons: React.FC<TopDashButtonsProps> = ({
           />
         )}
         <TopDashButton
-          text={userRole === 'CREW' ? 'Personal Pay Rates' : 'Crew List'}
+          text={userRole === 'CREW' ? 'My project settings' : 'Crew List'}
           icon={<FaUsers />}
-          to={route.crewList(projectId)}
+          to={
+            userRole === 'CREW'
+              ? route.myProjectSettings(projectId)
+              : route.crewList(projectId)
+          }
           ariaLabel={
             userRole === 'CREW'
-              ? 'View and edit Personal Pay Rates'
+              ? 'View and edit My project settings'
               : 'View Crew List'
           }
         />
@@ -44,12 +48,14 @@ const TopDashButtons: React.FC<TopDashButtonsProps> = ({
           to={route.timesheets(projectId)}
         />
 
-        <TopDashButton
-          text="Edit departments"
-          icon={<FaClock />}
-          ariaLabel="Edit departments"
-          to={route.editDepartments(projectId)}
-        />
+        {userRole === 'ADMIN' && (
+          <TopDashButton
+            text="Edit departments"
+            icon={<FaClock />}
+            ariaLabel="Edit departments"
+            to={route.editDepartments(projectId)}
+          />
+        )}
       </SimpleGrid>
     </Box>
   );

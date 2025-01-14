@@ -40,7 +40,6 @@ export async function timesheetPdfReport(
   doc.registerFont('DejaVuSans-Bold', boldFontPath);
   doc.font('DejaVuSans');
 
-  // Add logo
   if (crewInfo.project.logo) {
     const logoWidth = 200;
     const base64Image = `data:image/png;base64,${crewInfo.project.logo}`;
@@ -55,7 +54,6 @@ export async function timesheetPdfReport(
     });
   }
 
-  // Add header text
   doc
     .moveDown(1)
     .fontSize(13)
@@ -124,7 +122,6 @@ export async function timesheetPdfReport(
   } else {
     await vehicleTimesheetTable({ doc, statements, crewInfo });
   }
-  // Only finalize the document once everything is written
   doc.end();
 
   return stream;

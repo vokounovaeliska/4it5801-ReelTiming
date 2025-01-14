@@ -5,6 +5,7 @@ import { Box, Center, Spinner, Text } from '@chakra-ui/react';
 import { GetShiftOverviewPageDataQuery, Project } from '@frontend/gql/graphql';
 import { GET_SHIFT_OVERVIEW_PAGE_DATA } from '@frontend/graphql/queries/GetShiftOverviewPageData';
 import { Heading } from '@frontend/shared/design-system';
+import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 
 import { ShiftOverviewTable } from '../tables/ShiftOverviewTable';
 import { getAllDatesBetween } from '../utils/shiftOverviewUtils';
@@ -33,13 +34,7 @@ export const ShiftOverviewTemplate: React.FC<ShiftOverviewTemplateProps> = ({
     Map<number, Set<GetShiftOverviewPageDataQuery['projectUsers'][number]>>
   >(() => new Map(days.map((date) => [date.getTime(), new Set()])));
 
-  if (loading)
-    return (
-      <Center minHeight="100vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading shooting days...</Text>
-      </Center>
-    );
+  if (loading) return <LoadingSpinner title="shift overview" />;
 
   if (!projectData) {
     return (

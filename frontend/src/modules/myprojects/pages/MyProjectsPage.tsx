@@ -68,6 +68,10 @@ export function MyProjectsPage() {
   };
 
   return (
-    <MyProjectsTemplate projects={projects} onAddProject={handleAddProject} />
+    <MyProjectsTemplate
+      projects={projects}
+      onAddProject={handleAddProject}
+      user={auth.user}
+    />
   );
 }

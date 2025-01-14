@@ -85,10 +85,11 @@ export const EditableDepartmentTableRow = ({
     }));
   };
 
-  const ref = React.useRef<HTMLTableRowElement>(null);
+  const dropRef = React.useRef<HTMLTableRowElement>(null);
+  const dragRef = React.useRef(null);
 
-  const [{ isDragging }, drag] = useDrag({
-    type: 'DEPARTMENT',
+  const [{ isDragging }, drag, preview] = useDrag({
+    type: 'row',
     item: { index },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
@@ -97,26 +98,52 @@ export const EditableDepartmentTableRow = ({
   });
 
   const [, drop] = useDrop({
-    accept: 'DEPARTMENT',
-    hover: (item: { index: number }) => {
-      if (item.index !== index) {
-        handleMoveDepartment(item.index, index, isDragging);
-        item.index = index;
+    accept: 'row',
+    hover: (item: { index: number }, monitor) => {
+      if (!dropRef.current) {
+        return;
       }
+
+      const dragIndex = item.index;
+      const hoverIndex = index;
+
+      if (dragIndex === hoverIndex) {
+        return;
+      }
+      const hoverBoundingRect = dropRef.current.getBoundingClientRect();
+      const hoverMiddleY =
+        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      const clientOffset = monitor.getClientOffset();
+      if (!clientOffset) {
+        return;
+      }
+      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+        return;
+      }
+
+      handleMoveDepartment(item.index, index, isDragging);
+      item.index = index;
     },
   });
 
-  drag(drop(ref));
+  preview(drop(dropRef));
+  drag(dragRef);
 
   return (
     <Tr
-      ref={ref}
+      ref={dropRef}
       style={{
         opacity: isDragging ? 0.5 : 1,
         cursor: 'move',
       }}
     >
-      <Td width="40px" py={1} px={2}>
+      <Td width="40px" py={1} px={2} ref={dragRef}>
         <DragHandleIcon cursor="grab" />
       </Td>
 

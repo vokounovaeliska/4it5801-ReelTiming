@@ -26,7 +26,6 @@ export async function basicTimesheetTable({
   statements,
   crewInfo,
 }: TableConfig): Promise<void> {
-  // Define table structure
   const table = {
     title: 'Shifts Report',
     subtitle: 'Details of overtime',
