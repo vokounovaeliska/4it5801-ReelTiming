@@ -9,6 +9,7 @@ import {
   timestamp,
   uniqueIndex,
   varchar,
+  text,
 } from 'drizzle-orm/mysql-core';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -52,7 +53,7 @@ export const project = mysqlTable('project', {
   is_active: boolean('is_active').default(true),
   description: varchar('description', { length: 500 }),
   currency: varchar('currency', { length: 3 }).default('CZK').notNull(),
-  logo: varchar('logo', { length: 19845 }), // Equivalent to MEDIUMBLOB in size
+  logo: text('logo'),
 });
 
 export const project_user = mysqlTable(
@@ -111,11 +112,12 @@ export const department = mysqlTable('department', {
     .$defaultFn(() => uuidv4())
     .primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
-  project_id: varchar('project_id', { length: 36 })
-    //.notNull()
-    .references(() => project.id, {
+  project_id: varchar('project_id', { length: 36 }).references(
+    () => project.id,
+    {
       onDelete: 'cascade',
-    }),
+    },
+  ),
   order_index: int('order_index'),
   is_visible: boolean('is_visible').default(true),
 });
@@ -162,7 +164,7 @@ export const statement = mysqlTable('statement', {
     .defaultNow()
     .onUpdateNow(),
   car_id: varchar('car_id', { length: 36 }).references(() => car.id, {
-    onDelete: 'restrict',
+    onDelete: 'set null',
   }),
   kilometers: int('kilometers'),
 });

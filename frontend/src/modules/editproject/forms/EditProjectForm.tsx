@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, Button, SimpleGrid } from '@chakra-ui/react';
 
 import { ShootingDay } from '@frontend/gql/graphql';
 import { projectFormValues } from '@frontend/zod/schemas';
 
+import LogoUploader from '../atoms/LogoUploader';
 import { ProjectData } from '../pages/EditProjectPage';
 
 import { ProjectDetailsForm } from './ProjectDetailsForm';
@@ -24,29 +25,36 @@ export function EditProjectForm({
   projectId: _projectId,
   project,
   onSubmit,
-  shootingDays,
+  shootingDays: loadedShootingDays,
 }: EditProjectFormProps) {
   const initialValues: projectFormValues = {
-    name: project.name,
-    description: project.description,
-    productionCompany: project.production_company,
-    startDate: project?.start_date ? new Date(project.start_date) : new Date(),
-    endDate: project?.end_date ? new Date(project.end_date) : null,
-    currency: project.currency!,
+    name: project?.name,
+    description: project?.description,
+    productionCompany: project?.production_company,
+    startDate: project?.start_date ? new Date(project?.start_date) : new Date(),
+    endDate: project?.end_date ? new Date(project?.end_date) : null,
+    currency: project?.currency!,
+    logo: project?.logo ?? undefined,
+    isActive: project?.is_active,
   };
 
   const [formData, setFormData] = useState(initialValues);
+
+  const handleLogoChange = (newLogo: string | null) => {
+    setFormData((prev) => ({ ...prev, logo: newLogo }));
+  };
+
   const handleInputChange = (name: keyof projectFormValues, value: unknown) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSaveChanges = () => {
-    onSubmit(formData, shootingDays, shootingDaysCollection);
+    onSubmit(formData, loadedShootingDays, updatedShootingDays);
   };
 
-  const [shootingDaysCollection, setShootingDaysCollection] = useState<
+  const [updatedShootingDays, setShootingDaysCollection] = useState<
     ShootingDay[]
-  >(shootingDays || []);
+  >(loadedShootingDays || []);
 
   const handleShootingDaysChange = (days: ShootingDay[]) => {
     setShootingDaysCollection(days);
@@ -76,14 +84,21 @@ export function EditProjectForm({
           onInputChange={handleInputChange}
         />
         <ShootingDaysConfigForm
-          shootingDays={shootingDaysCollection}
+          shootingDays={updatedShootingDays}
           handleShootingDaysChange={handleShootingDaysChange}
+          projectData={project}
+        />
+        <LogoUploader
+          initialLogo={
+            formData.logo ? `data:image/png;base64,${formData.logo}` : ''
+          }
+          onLogoChange={handleLogoChange}
         />
       </SimpleGrid>
+
       <Button
         colorScheme="orange"
         width="100%"
-        mt={4}
         size="lg"
         onClick={handleSaveChanges}
       >

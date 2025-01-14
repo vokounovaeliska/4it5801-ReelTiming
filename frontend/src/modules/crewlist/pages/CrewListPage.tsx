@@ -1,49 +1,28 @@
-import { Box, Center, Spinner, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Text } from '@chakra-ui/react';
 
-import {
-  AllCarsOnProjectData,
-  Car,
-} from '@frontend/modules/timesheets/interfaces';
+import { EditDepartmentsModal } from '@frontend/modules/departments/modals/EditDepartmentsModal';
 import {
   useAllCarsOnProjectByProjectUserId,
   useCarStatementsByProjectId,
 } from '@frontend/modules/timesheets/pages/queryHooks';
+import { route } from '@frontend/route';
 import { Heading } from '@frontend/shared/design-system';
-import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
+import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
 import { AddCrewMemberButton } from '../atoms/AddCrewMemberButton';
-import { CrewListForm } from '../forms/CrewListForm';
+import CrewListModal from '../atoms/CrewListModal';
 import { ProjectUser } from '../interfaces/interfaces';
 import CrewListTable from '../table/CrewListTable';
 
 import CrewAlertDialog from './CrewAlertDialog';
 import { useCrewListPageUtils } from './CrewListPageLogic';
 
-function getAvailableCarsForProjectUserId(
-  givenUser: string,
-  allCarsOnProjectData: AllCarsOnProjectData,
-): Car[] {
-  const filteredCarsOnProject = allCarsOnProjectData?.projectUsers.filter(
-    (projectUser) => projectUser.id === givenUser,
-  );
-
-  const carDetails = filteredCarsOnProject?.flatMap((projectUser) =>
-    projectUser.car?.map((car: Car) => ({
-      id: car.id,
-      name: car.name,
-      kilometer_allow: car.kilometer_allow,
-      kilometer_rate: car.kilometer_rate,
-    })),
-  );
-  console.log(carDetails?.filter((car): car is Car => car !== undefined) || []);
-  return carDetails?.filter((car): car is Car => car !== undefined) || [];
-}
-
 export function CrewListPage() {
   const {
     auth,
+    navigate,
     isSubmitting,
     isModalOpen,
     isAlertOpen,
@@ -62,6 +41,9 @@ export function CrewListPage() {
     handleRemoveButtonClick,
     handleRemoveUser,
     sendInvitation,
+    isEditDepartmentsModalOpen,
+    setIsEditDepartmentsModalOpen,
+    refetchCrew,
   } = useCrewListPageUtils();
 
   const isDataAvailable = !!crewList && Object.keys(crewList).length > 0;
@@ -73,16 +55,28 @@ export function CrewListPage() {
 
   const { projectCarStatements } = useCarStatementsByProjectId(projectId ?? '');
 
+  const cleanedStatements =
+    projectCarStatements?.carStatementsByProjectId
+      ?.filter(
+        (
+          statement,
+        ): statement is { car_id: string; kilometers?: number | null } =>
+          statement.car_id !== null && statement.car_id !== undefined,
+      )
+      .map(({ car_id, kilometers }) => ({
+        car_id,
+        kilometers: kilometers ?? null,
+      })) || [];
+  const wrappedStatements = { carStatementsByProjectId: cleanedStatements };
+
   if ((!isDataAvailable && crewListLoading) || allCarsOnProjectLoading) {
-    return (
-      <Center minHeight="100vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading project details...</Text>
-      </Center>
-    );
+    return <LoadingSpinner title="crew list" />;
+  }
+  if (crewList?.userRoleInProject !== 'ADMIN') {
+    navigate(route.projectDetail(projectId));
   }
 
-  if (crewListError || !auth.user) {
+  if (crewListError || !auth.user || !crewList?.project) {
     return (
       <Center minHeight="100vh">
         <Text color="red.500">
@@ -109,7 +103,7 @@ export function CrewListPage() {
     {} as Record<string, ProjectUser[]>,
   );
 
-  const sortedDepartments = Object.keys(groupedByDepartment!).sort();
+  const sortedDepartments = Object.keys(groupedByDepartment);
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
@@ -130,7 +124,33 @@ export function CrewListPage() {
             mb={4}
             px={10}
           >
-            <AddCrewMemberButton handleAddMemberClick={handleAddMemberClick} />
+            <Flex
+              direction={{ base: 'column', md: 'row' }}
+              justify="space-between"
+              gap={4}
+              w={'100%'}
+            >
+              <AddCrewMemberButton
+                handleAddMemberClick={handleAddMemberClick}
+                isShown={crewList.project?.is_active}
+              />
+              <Button
+                onClick={() => setIsEditDepartmentsModalOpen(true)}
+                colorScheme="orange"
+              >
+                Edit Departments
+              </Button>
+            </Flex>
+            <EditDepartmentsModal
+              isOpen={isEditDepartmentsModalOpen}
+              onClose={() => {
+                setIsEditDepartmentsModalOpen(false);
+                refetchCrew();
+              }}
+              projectId={projectId}
+              userRole={crewList.userRoleInProject}
+              projectName={crewList.project?.name}
+            />
           </Box>
         )}
         <CrewListTable
@@ -140,58 +160,28 @@ export function CrewListPage() {
           handleRemoveButtonClick={handleRemoveButtonClick}
           sendInvitation={sendInvitation}
           userRoleInProject={crewList?.userRoleInProject!}
-          authUserId={auth.user?.id}
-          projectCurrency={crewList?.project?.currency}
+          project={crewList?.project!}
         ></CrewListTable>
       </Box>
       <Footer />
-      <CustomModal
+      <CrewListModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        title={selectedCrewMember ? 'Edit Crew Member' : 'Add Crew Member'}
-        size="6xl"
-      >
-        <CrewListForm
-          projectId={projectId!}
-          onSubmit={async (data, sendInvite, cars, oldCars) => {
-            if (selectedCrewMember) {
-              await handleUpdateCrewMember(
-                {
-                  ...data,
-                  id: selectedCrewMember.id,
-                  user_id: selectedCrewMember.user_id,
-                  rate_id: selectedCrewMember.rate_id,
-                  cars: cars,
-                },
-                oldCars,
-              );
-            } else {
-              await handleAddNewCrewMember(
-                { ...data, id: '', user_id: null, rate_id: null, cars: null },
-                sendInvite,
-                data.name,
-                data.email,
-              );
-            }
-            refetchAllCarsOnProjectData();
-          }}
-          isLoading={isSubmitting || allCarsOnProjectLoading}
-          departments={crewList!.departments!}
-          initialValues={selectedCrewMember ?? undefined}
-          mode={selectedCrewMember ? 'edit' : 'add'}
-          userRole={crewList!.userRoleInProject!}
-          projectCurrency={crewList?.project?.currency!}
-          cars={
-            selectedCrewMember
-              ? getAvailableCarsForProjectUserId(
-                  selectedCrewMember?.id,
-                  allCarsOnProjectData!,
-                )
-              : []
-          }
-          carStatements={projectCarStatements?.carStatementsByProjectId ?? []}
-        />
-      </CustomModal>
+        isSubmitting={isSubmitting}
+        allCarsOnProjectLoading={allCarsOnProjectLoading}
+        selectedCrewMember={selectedCrewMember}
+        projectId={projectId!}
+        crewList={{
+          ...crewList,
+          userRoleInProject: crewList?.userRoleInProject ?? '',
+          project: crewList?.project ?? { currency: '' },
+        }}
+        allCarsOnProjectData={allCarsOnProjectData!}
+        projectCarStatements={wrappedStatements}
+        handleUpdateCrewMember={handleUpdateCrewMember}
+        handleAddNewCrewMember={handleAddNewCrewMember}
+        refetchAllCarsOnProjectData={refetchAllCarsOnProjectData}
+      />
       <CrewAlertDialog
         isOpen={isAlertOpen}
         onClose={() => setIsAlertOpen(false)}

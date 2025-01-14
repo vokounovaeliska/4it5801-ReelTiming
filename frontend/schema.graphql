@@ -27,7 +27,7 @@ input CarInput {
 }
 
 type CarStatement {
-  car_id: String!
+  car_id: String
   kilometers: Float
 }
 
@@ -166,6 +166,14 @@ type Mutation {
   deleteUser(userId: String!): Boolean!
   forgotPassword(email: String!): Boolean!
   inviteUser(email: String!, name: String!, projectUserId: String!): Boolean!
+  notifyUser(
+    dates: String!
+    email: String!
+    link: String!
+    message: String!
+    name: String!
+    projectName: String!
+  ): Boolean!
   resetPassword(newPassword: String!, token: String!): AuthInfo!
   signIn(email: String!, password: String!): AuthInfo!
   signUp(
@@ -277,6 +285,7 @@ type Query {
   _empty: String!
   car(id: String!): Car
   carStatementsByProjectId(projectId: String!): [CarStatement!]!
+  carStatementsByProjectUserId(projectUserId: String!): [CarStatement!]!
   cars: [Car!]!
   carsByProjectUserId(projectUserId: String!): [Car!]!
   dailyReport(id: String!): DailyReport
@@ -291,6 +300,10 @@ type Query {
   lastDailyReportByProjectId(projectId: String!): [DailyReport!]
   project(id: String!): Project
   projectUser(id: String!): ProjectUser
+  projectUserByUserIdAndProjectId(
+    projectId: String!
+    userId: String!
+  ): ProjectUser
   projectUserDetails(projectId: String!, userId: String!): ProjectUser
   projectUsers(projectId: String!): [ProjectUser!]!
   projectUsersByToken(token: String!): ProjectUser!

@@ -5,18 +5,24 @@ import { Link as ReactRouterLink } from 'react-router-dom';
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
 
-import logo from './logopng.png';
+import defaultLogo from './logopng.png';
 
 interface LogoProps {
-  size?: string; // Optional size prop
+  size?: string;
+  projectLogo?: string;
 }
 
-const Logo: React.FC<LogoProps> = ({ size = '50px' }) => {
+const Logo: React.FC<LogoProps> = ({ size = '50px', projectLogo }) => {
   const { user } = useAuth();
 
   return (
     <ReactRouterLink to={user ? route.myprojects() : route.landingPage()}>
-      <Image src={logo} alt="Logo" boxSize={size} mr={2} />
+      <Image
+        src={projectLogo ? `data:image/png;base64,${projectLogo}` : defaultLogo}
+        alt="Logo"
+        boxSize={projectLogo ? 'auto' : size}
+        mr={2}
+      />
     </ReactRouterLink>
   );
 };

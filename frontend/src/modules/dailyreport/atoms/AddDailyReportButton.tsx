@@ -11,7 +11,7 @@ import { BsPersonAdd } from 'react-icons/bs';
 
 interface AddDailyReportButtonProps extends ButtonProps {
   onClick: () => void;
-  isDisabled: boolean; // Ensure this prop is passed to the button
+  isDisabled: boolean;
 }
 
 export const AddDailyReportButton: React.FC<AddDailyReportButtonProps> = ({

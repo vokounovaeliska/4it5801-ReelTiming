@@ -5,6 +5,8 @@ export const GET_DEPARTMENTS = gql(`
     departments(projectId: $projectId) {
       id
       name
+      is_visible
+      order_index
     }
   }
 `);

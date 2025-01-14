@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     textAlign: 'center',
-    backgroundColor: '#E06666',
+    backgroundColor: '#dd6b20',
   },
   itemTitle: {
     fontWeight: 'bold',

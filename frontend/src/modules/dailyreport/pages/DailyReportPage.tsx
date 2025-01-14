@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Box, Center, Spinner, Text } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
+import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
+import { useUserRoleInProject } from '@frontend/shared/design-system/hooks/queryHooks';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
-import { useProjectDetails, useUserRoleInProject } from '../hooks/queryHooks';
+import { useProjectDetails } from '../hooks/queryHooks';
 import DailyReportTemplate from '../templates/DailyReportTemplate';
 
 export function DailyReportPage() {
@@ -31,19 +33,16 @@ export function DailyReportPage() {
     }
   }, [roleData]);
 
-  if (roleLoading || !auth.user || projectLoading) {
-    return (
-      <Center minHeight="100vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading daily reports...</Text>
-      </Center>
-    );
+  if (roleLoading || projectLoading) {
+    return <LoadingSpinner title="daily reports" />;
   }
 
   if (
     roleError ||
+    !auth.user?.id ||
     !roleData ||
     projectError ||
+    !projectData?.project ||
     roleData.userRoleInProject !== 'ADMIN'
   ) {
     navigate(route.myprojects());
@@ -53,10 +52,7 @@ export function DailyReportPage() {
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <ProjectNavbar projectId={projectId!} userRole={userRole} />
-      <DailyReportTemplate
-        projectId={projectId!}
-        projectData={projectData?.project}
-      />
+      <DailyReportTemplate projectData={projectData?.project} />
       <Footer />
     </Box>
   );

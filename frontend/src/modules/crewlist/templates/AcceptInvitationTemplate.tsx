@@ -1,4 +1,3 @@
-// AcceptInvitationTemplate.tsx
 import { Box } from '@chakra-ui/react';
 
 import { Car, CarStatement } from '@frontend/modules/timesheets/interfaces';

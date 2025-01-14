@@ -103,6 +103,15 @@ export class StatementResolver {
     return statementService.getCarStatementsByProjectId(projectId);
   }
 
+  @Query(() => [CarStatement])
+  async carStatementsByProjectUserId(
+    @Arg('projectUserId') projectUserId: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<CarStatement[]> {
+    const statementService = new StatementService(db);
+    return statementService.getStatementsByProjectUserId(projectUserId);
+  }
+
   @Query(() => [Statement])
   async statementsByUserId(
     @Arg('userId') userId: string,
@@ -144,7 +153,6 @@ export class StatementResolver {
     car_id: string,
     @Ctx() { db }: CustomContext,
   ): Promise<Statement> {
-    // const statementService = new StatementService(db);
     const data: StatementInput = {
       project_user_id,
       start_date: convertToLocalTime(start_date),

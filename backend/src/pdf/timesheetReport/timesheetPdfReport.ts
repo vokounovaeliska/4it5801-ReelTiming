@@ -28,7 +28,6 @@ export async function timesheetPdfReport(
   statements: StatementPdf[],
 ): Promise<Stream> {
   const doc = new PDFDocument({ size: 'A4', margin: 20 });
-  // Prepare a stream to return
   const stream = new Stream.PassThrough();
   doc.pipe(stream);
 
@@ -41,13 +40,20 @@ export async function timesheetPdfReport(
   doc.registerFont('DejaVuSans-Bold', boldFontPath);
   doc.font('DejaVuSans');
 
-  // Add logo
-  const logoWidth = 130;
-  doc.image(path.join(__dirname, '../../assets/logo.png'), 445, doc.y, {
-    fit: [logoWidth, logoWidth],
-  });
+  if (crewInfo.project.logo) {
+    const logoWidth = 200;
+    const base64Image = `data:image/png;base64,${crewInfo.project.logo}`;
+    doc.image(base64Image, 375, doc.y, {
+      fit: [logoWidth, logoWidth],
+      align: 'center',
+    });
+  } else {
+    const logoWidth = 130;
+    doc.image(path.join(__dirname, '../../assets/logo.png'), 445, doc.y, {
+      fit: [logoWidth, logoWidth],
+    });
+  }
 
-  // Add header text
   doc
     .moveDown(1)
     .fontSize(13)
@@ -67,7 +73,7 @@ export async function timesheetPdfReport(
 
     .fontSize(9)
 
-    .moveDown(1.5)
+    .moveDown(3)
     .text(
       `Date Range: ${formatDate(new Date(dateRange.start_date))} - ${formatDate(
         new Date(dateRange.end_date),
@@ -110,14 +116,12 @@ export async function timesheetPdfReport(
     .moveDown(1);
 
   const hasCar = statements.some((statement) => statement.car_name !== null);
-  console.log(hasCar);
 
   if (!hasCar) {
     await basicTimesheetTable({ doc, statements, crewInfo });
   } else {
     await vehicleTimesheetTable({ doc, statements, crewInfo });
   }
-  // Only finalize the document once everything is written
   doc.end();
 
   return stream;
