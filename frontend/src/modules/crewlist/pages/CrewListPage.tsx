@@ -1,4 +1,5 @@
 import { Box, Button, Center, Flex, Text } from '@chakra-ui/react';
+import { IoIosSettings } from 'react-icons/io';
 
 import { EditDepartmentsModal } from '@frontend/modules/departments/modals/EditDepartmentsModal';
 import {
@@ -135,8 +136,20 @@ export function CrewListPage() {
                 isShown={crewList.project?.is_active}
               />
               <Button
-                onClick={() => setIsEditDepartmentsModalOpen(true)}
+                aria-label="Edit Departments"
                 colorScheme="orange"
+                bgColor="orange.500"
+                onClick={() => setIsEditDepartmentsModalOpen(true)}
+                size="md"
+                leftIcon={<IoIosSettings />}
+                borderRadius="full"
+                boxShadow="md"
+                _hover={{
+                  bg: 'orange.500',
+                  color: 'white',
+                  transform: 'scale(1.2)',
+                }}
+                transition="all 0.3s ease"
               >
                 Edit Departments
               </Button>
