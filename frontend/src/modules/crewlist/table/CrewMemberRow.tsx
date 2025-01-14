@@ -17,6 +17,7 @@ export const CrewMemberRow = ({
   sendInvitation,
   handleRemoveButtonClick,
   userRoleInProject,
+  columnVisibility,
 }: {
   user: ProjectUser;
   project: Project;
@@ -29,6 +30,7 @@ export const CrewMemberRow = ({
   ) => void;
   handleRemoveButtonClick: (userId: string) => void;
   userRoleInProject: string;
+  columnVisibility: Record<string, boolean>;
 }) => {
   const userData: CrewMemberData = {
     id: user.id,
@@ -62,85 +64,109 @@ export const CrewMemberRow = ({
           : { cursor: 'default', backgroundColor: 'gray.200' }
       }
     >
-      <Td
-        position="sticky"
-        left="0"
-        bg="gray.50"
-        zIndex={7}
-        textOverflow="ellipsis"
-        overflow="hidden"
-        maxW={{ base: '100px', md: '120px', lg: '150px' }}
-        minW={{ md: '120px', lg: '150px' }}
-      >
-        {user?.surname}
-      </Td>
-      <Td
-        position="sticky"
-        zIndex={6}
-        left={{ base: '100px', md: '120px', lg: '150px' }}
-        bg="gray.50"
-        textOverflow="ellipsis"
-        overflow="hidden"
-        maxW={{ base: '90px', md: '100px', lg: '110px' }}
-        minW={{ md: '100px', lg: '110px' }}
-      >
-        {user?.name}
-      </Td>
-      <Td
-        position={{ base: 'relative', md: 'sticky' }}
-        bg={{ md: 'gray.50' }}
-        zIndex={5}
-        textOverflow="ellipsis"
-        overflow="hidden"
-        left={{ base: '0', md: '220px', lg: '260px' }}
-      >
-        {user.position}
-      </Td>
-      <Td textColor={user.role === 'ADMIN' ? 'orange.500' : 'black'}>
-        {user.role}
-      </Td>
-      <Td>
-        <Link
-          href={`mailto:${user?.email}`}
-          color="blue.500"
-          onClick={(e) => e.stopPropagation()}
+      {columnVisibility.surname && (
+        <Td
+          position="sticky"
+          left="0"
+          bg="gray.50"
+          zIndex={7}
+          textOverflow="ellipsis"
+          overflow="hidden"
+          maxW={{ base: '100px', md: '120px', lg: '150px' }}
+          minW={{ md: '120px', lg: '150px' }}
         >
-          {user?.email}
-        </Link>
-      </Td>
-      <Td>
-        <Link
-          href={`tel:${user.phone_number}`}
-          color="blue.500"
-          onClick={(e) => e.stopPropagation()}
+          {user?.surname}
+        </Td>
+      )}
+      {columnVisibility.name && (
+        <Td
+          position="sticky"
+          zIndex={6}
+          left={{ base: '100px', md: '120px', lg: '150px' }}
+          bg="gray.50"
+          textOverflow="ellipsis"
+          overflow="hidden"
+          maxW={{ base: '90px', md: '100px', lg: '110px' }}
+          minW={{ md: '100px', lg: '110px' }}
         >
-          {formatPhoneNumber(user.phone_number)}
-        </Link>
-      </Td>
-      <CrewlistTableRateCell
-        value={user.rate?.standard_rate}
-        currency={project.currency}
-      />
-      <CrewlistTableRateCell
-        value={user.rate?.compensation_rate}
-        currency={project.currency}
-      />
-      <CrewlistTableRateCell
-        value={user.rate?.overtime_hour1}
-        currency={project.currency}
-      />
-      <CrewlistTableRateCell
-        value={user.rate?.overtime_hour2}
-        currency={project.currency}
-      />
-      <CrewlistTableRateCell
-        value={user.rate?.overtime_hour3}
-        currency={project.currency}
-      />
-      <CrewlistTableRateCell
-        value={user.rate?.overtime_hour4}
-        currency={project.currency}
-      />
+          {user?.name}
+        </Td>
+      )}
+      {columnVisibility.position && (
+        <Td
+          position={{ base: 'relative', md: 'sticky' }}
+          bg={{ md: 'gray.50' }}
+          zIndex={5}
+          textOverflow="ellipsis"
+          overflow="hidden"
+          left={{ base: '0', md: '220px', lg: '260px' }}
+        >
+          {user.position}
+        </Td>
+      )}
+      {columnVisibility.role && (
+        <Td textColor={user.role === 'ADMIN' ? 'orange.500' : 'black'}>
+          {user.role}
+        </Td>
+      )}
+      {columnVisibility.email && (
+        <Td>
+          <Link
+            href={`mailto:${user?.email}`}
+            color="blue.500"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {user?.email}
+          </Link>
+        </Td>
+      )}
+      {columnVisibility.phone_number && (
+        <Td>
+          <Link
+            href={`tel:${user.phone_number}`}
+            color="blue.500"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {formatPhoneNumber(user.phone_number)}
+          </Link>
+        </Td>
+      )}
+      {columnVisibility.standard_rate && (
+        <CrewlistTableRateCell
+          value={user.rate?.standard_rate}
+          currency={project.currency}
+        />
+      )}
+      {columnVisibility.compensation_rate && (
+        <CrewlistTableRateCell
+          value={user.rate?.compensation_rate}
+          currency={project.currency}
+        />
+      )}
+      {columnVisibility.overtime_hour1 && (
+        <CrewlistTableRateCell
+          value={user.rate?.overtime_hour1}
+          currency={project.currency}
+        />
+      )}
+      {columnVisibility.overtime_hour2 && (
+        <CrewlistTableRateCell
+          value={user.rate?.overtime_hour2}
+          currency={project.currency}
+        />
+      )}
+      {columnVisibility.overtime_hour3 && (
+        <CrewlistTableRateCell
+          value={user.rate?.overtime_hour3}
+          currency={project.currency}
+        />
+      )}
+      {columnVisibility.overtime_hour4 && (
+        <CrewlistTableRateCell
+          value={user.rate?.overtime_hour4}
+          currency={project.currency}
+        />
+      )}
       <Td textAlign="center">
         <CrewInvitationStatus user={user}></CrewInvitationStatus>
       </Td>
