@@ -85,7 +85,7 @@ export const EditableDepartmentTableRow = ({
     }));
   };
 
-  const dropRef = React.useRef(null);
+  const dropRef = React.useRef<HTMLTableRowElement>(null);
   const dragRef = React.useRef(null);
 
   const [{ isDragging }, drag, preview] = useDrag({
@@ -114,6 +114,9 @@ export const EditableDepartmentTableRow = ({
       const hoverMiddleY =
         (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
       const clientOffset = monitor.getClientOffset();
+      if (!clientOffset) {
+        return;
+      }
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
 
       if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
