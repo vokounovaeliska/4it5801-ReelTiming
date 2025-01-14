@@ -28,7 +28,6 @@ export async function vehicleTimesheetTable({
   statements,
   crewInfo,
 }: TableConfig): Promise<void> {
-  // Define table structure
   const table = {
     title: 'Shifts Report',
     subtitle: 'Details of overtime',
@@ -157,7 +156,6 @@ export async function vehicleTimesheetTable({
     rows: [] as string[][],
   };
 
-  // Initialize totals
   let totalOvertime = 0;
   let totalOvertimeAmount = 0;
   let totalKilometersOver = 0;

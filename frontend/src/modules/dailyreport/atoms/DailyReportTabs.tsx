@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
-  Center,
-  Spinner,
   Tab,
   TabList,
   TabPanel,
@@ -16,6 +14,7 @@ import {
 
 import { GET_DAILY_REPORT_PREVIEW_INFO } from '@frontend/graphql/queries/GetDailyReportPreviewInfo';
 import PDFGenerator from '@frontend/modules/dailyreport/pdf/PdfGenerator';
+import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 
 import { Divider } from '../../../shared/design-system/atoms/Divider';
 import {
@@ -65,12 +64,7 @@ const DailyReportTabs = ({
   }
 
   if (loading)
-    return (
-      <Center minHeight="30vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading data...</Text>
-      </Center>
-    );
+    return <LoadingSpinner centerProps={{ minHeight: '30vh' }} title="data" />;
 
   if (error) return <Text color="red.500">Error: {error.message}</Text>;
 

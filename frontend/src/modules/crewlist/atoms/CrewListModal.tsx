@@ -8,7 +8,11 @@ import {
 import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 
 import { CrewListForm } from '../forms/CrewListForm';
-import { CrewMemberData, ProjectUser } from '../interfaces/interfaces';
+import {
+  CrewMemberData,
+  Department,
+  ProjectUser,
+} from '../interfaces/interfaces';
 
 interface CrewListModalProps {
   isOpen: boolean;
@@ -18,7 +22,7 @@ interface CrewListModalProps {
   selectedCrewMember: CrewMemberData | null;
   projectId: string;
   crewList: {
-    departments: { id: string; name: string }[];
+    departments: Department[];
     userRoleInProject: string;
     project: { currency: string };
   };

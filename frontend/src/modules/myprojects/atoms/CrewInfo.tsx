@@ -5,8 +5,8 @@ import { IoPerson } from 'react-icons/io5';
 
 import { route } from '@frontend/route';
 
-import DashButton from '../atoms/DashButton';
-import RecentCrewMembers from '../atoms/RecentCrewMembers';
+import DashButton from './buttons/DashButton';
+import RecentCrewMembers from './RecentCrewMembers';
 
 interface CrewInfoProps {
   projectId: string;
@@ -32,7 +32,7 @@ const CrewInfo: React.FC<CrewInfoProps> = ({
       <RecentCrewMembers projectId={projectId} userId={userId} />
       <Box
         display="flex"
-        justifyContent={{ base: 'center', 'dash-break1': 'flex-start' }} //PŮVODNĚ TU BYLO md
+        justifyContent={{ base: 'center', 'dash-break1': 'flex-start' }}
         mt={4}
       >
         <DashButton

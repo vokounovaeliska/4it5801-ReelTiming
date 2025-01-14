@@ -5,6 +5,7 @@ import {
   GET_CREW_STATEMENTS,
   GET_ADMIN_STATEMENTS,
   GET_CARS_STATEMENTS,
+  GET_CARS_STATEMENTS_BY_CREW,
 } from '@frontend/graphql/queries/GetStatements';
 import { GET_ALL_CARS_ON_PROJECT_BY_PROJECTUSER_ID } from '@frontend/graphql/queries/GetAllCarsOnProjectByProjectUserId';
 import { GET_CARS_BY_PROJECT_USER_ID } from '@frontend/graphql/queries/GetCarsByProjectUserId';
@@ -129,6 +130,26 @@ export const useCarStatementsByProjectId = (projectId: string) => {
     fetchPolicy: 'cache-and-network',
   });
   return { projectCarStatements, projectCarLoading, projectCarError, refetch };
+};
+
+export const useCarStatementsByProjectUserId = (projectUserId: string) => {
+  const {
+    data: projectStatementsCrew,
+    loading: projectCrewLoading,
+    error: projectCrewError,
+    refetch,
+  } = useQuery(GET_CARS_STATEMENTS_BY_CREW, {
+    variables: { projectUserId },
+    skip: !projectUserId,
+    fetchPolicy: 'cache-and-network',
+  });
+
+  return {
+    projectStatementsCrew,
+    projectCrewLoading,
+    projectCrewError,
+    refetch,
+  };
 };
 
 export const useProjectDetails = (projectId: string) => {

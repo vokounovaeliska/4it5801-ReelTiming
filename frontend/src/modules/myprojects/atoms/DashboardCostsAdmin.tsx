@@ -6,8 +6,9 @@ import { FaCoins } from 'react-icons/fa';
 import { GET_ADMIN_STATEMENTS } from '@frontend/graphql/queries/GetStatements';
 import { currencyUtil } from '@shared/currencyUtil';
 
-import ShiftsButton from '../atoms/ShiftsButton';
 import { Statement } from '../interface';
+
+import ShiftsButton from './buttons/ShiftsButton';
 
 interface DashboardCostsProps {
   projectId: string;
@@ -42,7 +43,6 @@ const DashboardCostsAdmin: React.FC<DashboardCostsProps> = ({
     0,
   );
 
-  // Calculate total overtime costs
   const totalOvertimeCosts = statements.reduce(
     (total: number, statement: Statement) => {
       const { claimed_overtime } = statement;
@@ -82,7 +82,6 @@ const DashboardCostsAdmin: React.FC<DashboardCostsProps> = ({
     0,
   );
 
-  // Calculate transportation costs
   const totalTransportationOvertimeCosts = statements.reduce(
     (totalCost: number, statement: Statement) => {
       const kilometers = statement.kilometers || 0;

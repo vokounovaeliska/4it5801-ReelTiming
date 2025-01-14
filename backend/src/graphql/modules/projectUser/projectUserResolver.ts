@@ -314,6 +314,18 @@ export class ProjectUserResolver {
       is_active: true,
     };
   }
+  @Query(() => ProjectUser, { nullable: true })
+  async projectUserByUserIdAndProjectId(
+    @Arg('userId') userId: string,
+    @Arg('projectId') projectId: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<ProjectUser | null> {
+    const projectUserService = new ProjectUserService(db);
+    return projectUserService.getProjectUserByUserIdAndProjectId(
+      userId,
+      projectId,
+    );
+  }
   @FieldResolver(() => [Statement])
   async statement(
     @Root() projectUser: ProjectUser,

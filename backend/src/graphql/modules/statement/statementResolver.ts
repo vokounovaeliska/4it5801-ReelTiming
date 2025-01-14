@@ -103,6 +103,15 @@ export class StatementResolver {
     return statementService.getCarStatementsByProjectId(projectId);
   }
 
+  @Query(() => [CarStatement])
+  async carStatementsByProjectUserId(
+    @Arg('projectUserId') projectUserId: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<CarStatement[]> {
+    const statementService = new StatementService(db);
+    return statementService.getStatementsByProjectUserId(projectUserId);
+  }
+
   @Query(() => [Statement])
   async statementsByUserId(
     @Arg('userId') userId: string,

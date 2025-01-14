@@ -63,7 +63,7 @@ export function MyProjectSettingsForm({
       resolver={zodResolver(crewListFormSchema)}
       noValidate
     >
-      <Stack justify="center" spacing="5" p="50">
+      <Stack justify="center" spacing="5" p={{ base: '5', md: '50' }}>
         {errorMessage && <ErrorBanner title={errorMessage} />}
 
         <PersonalInformationSection />
@@ -84,7 +84,8 @@ export function MyProjectSettingsForm({
         <Button
           type="submit"
           colorScheme="orange"
-          width="100%"
+          width={{ base: '100%', md: 'md' }}
+          placeSelf={{ md: 'end' }}
           isLoading={isLoading}
         >
           Save Changes

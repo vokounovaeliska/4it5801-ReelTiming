@@ -1,132 +1,94 @@
-import { Box, Center, Spinner, Text } from '@chakra-ui/react';
+import { Box, Center, Text } from '@chakra-ui/react';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  AllCarsOnProjectData,
-  Car,
-} from '@frontend/modules/timesheets/interfaces';
-import {
-  useAllCarsOnProjectByProjectUserId,
-  useCarStatementsByProjectId,
-} from '@frontend/modules/timesheets/pages/queryHooks';
+import { GetPersonalProjectInfoQuery } from '@frontend/gql/graphql';
+import { useAuth } from '@frontend/modules/auth';
+import { CarStatement } from '@frontend/modules/timesheets/interfaces';
+import { useCarStatementsByProjectUserId } from '@frontend/modules/timesheets/pages/queryHooks';
+import { route } from '@frontend/route';
 import { Heading } from '@frontend/shared/design-system';
+import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
 import { MyProjectSettingsForm } from '../forms/MyProjectSettingsForm';
-import { CrewMemberData, ProjectUser } from '../interfaces/interfaces';
-
-import { useCrewListPageUtils } from './CrewListPageLogic';
-
-function getAvailableCarsForProjectUserId(
-  givenUser: string,
-  allCarsOnProjectData: AllCarsOnProjectData,
-): Car[] {
-  const filteredCarsOnProject = allCarsOnProjectData?.projectUsers.filter(
-    (projectUser) => projectUser.id === givenUser,
-  );
-
-  const carDetails = filteredCarsOnProject?.flatMap((projectUser) =>
-    projectUser.car?.map((car: Car) => ({
-      id: car.id,
-      name: car.name,
-      kilometer_allow: car.kilometer_allow,
-      kilometer_rate: car.kilometer_rate,
-    })),
-  );
-  console.log(carDetails?.filter((car): car is Car => car !== undefined) || []);
-  return carDetails?.filter((car): car is Car => car !== undefined) || [];
-}
-
-function getCurrentUserDetails(
-  projectUsers: ProjectUser[],
-  currentUserId: string,
-): ProjectUser | null {
-  const projectUser = projectUsers.find(
-    (user: ProjectUser) => user.user?.id === currentUserId,
-  );
-  return projectUser || null;
-}
+import { CrewMemberData } from '../interfaces/interfaces';
+import { usePersonalProjectDataUtils } from '../utils/PersonalProjectDataUtils';
 
 export function MyProjectSettingPage() {
+  const auth = useAuth();
+  const navigate = useNavigate();
+  const { projectId } = useParams<{ projectId: string }>();
+
   const {
-    auth,
-    isSubmitting,
-    projectId,
-    crewListLoading,
-    crewListError,
-    crewList,
+    error,
+    loading,
+    roleData,
+    personalProjectData,
     handleUpdateCrewMember,
-  } = useCrewListPageUtils();
+    isSubmitting,
+  } = usePersonalProjectDataUtils({ auth: auth?.user, projectId: projectId });
 
-  const isDataAvailable = !!crewList && Object.keys(crewList).length > 0;
-  const {
-    allCarsOnProjectData,
-    refetch: refetchAllCarsOnProjectData,
-    allCarsOnProjectLoading,
-  } = useAllCarsOnProjectByProjectUserId(projectId ?? '');
+  const { projectStatementsCrew, projectCrewLoading } =
+    useCarStatementsByProjectUserId(
+      personalProjectData?.projectUserByUserIdAndProjectId?.id!,
+    );
 
-  const { projectCarStatements } = useCarStatementsByProjectId(projectId ?? '');
+  const cleanedStatements: CarStatement[] =
+    projectStatementsCrew?.carStatementsByProjectUserId
+      ?.filter(
+        (statement): statement is { car_id: string; kilometers: number } =>
+          statement.car_id !== null &&
+          statement.car_id !== undefined &&
+          statement.kilometers !== null &&
+          statement.kilometers !== undefined,
+      )
+      .map(({ car_id, kilometers }) => ({
+        car_id,
+        kilometers,
+      })) || [];
 
-  if (!isDataAvailable && crewListLoading) {
+  const currentUser = auth?.user;
+
+  if (!auth.user) {
+    navigate(route.landingPage());
+  }
+
+  if (loading || projectCrewLoading) {
+    return <LoadingSpinner title="personal project setting" />;
+  }
+
+  if (error) {
     return (
       <Center minHeight="100vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading project details...</Text>
+        <Text color="red.500">{error}</Text>
       </Center>
     );
   }
 
-  if (allCarsOnProjectLoading) {
-    return (
-      <Center minHeight="100vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading project details...</Text>
-      </Center>
-    );
-  }
-
-  if (crewListError || !auth.user) {
-    return (
-      <Center minHeight="100vh">
-        <Text color="red.500">
-          Error loading project details: {crewListError?.message}
-        </Text>
-      </Center>
-    );
-  }
-
-  const currentUser = getCurrentUserDetails(
-    crewList?.projectUsers!,
-    auth.user.id,
-  );
-  if (currentUser === null) {
-    return (
-      <Center minHeight="100vh">
-        <Text color="red.500">Error loading current user details</Text>
-      </Center>
-    );
-  }
-
-  const castProjectUserIntoCrewMemberData = (projectUser: ProjectUser) => {
+  const castProjectUserIntoCrewMemberData = (
+    personalProjectData?: GetPersonalProjectInfoQuery,
+  ) => {
+    const projectUser = personalProjectData?.projectUserByUserIdAndProjectId;
     return {
-      id: projectUser.id,
+      id: projectUser?.id,
       user_id: projectUser?.user!.id!,
-      name: projectUser.name,
-      surname: projectUser.surname,
-      email: projectUser.email || '',
-      phone_number: projectUser.phone_number,
-      department: projectUser.department ? projectUser.department.id : '',
-      position: projectUser.position ?? '',
-      role: projectUser.role,
-      is_active: projectUser.is_active || false,
-      rate_id: projectUser.rate ? projectUser.rate.id : '',
-      standard_rate: projectUser.rate?.standard_rate || 0,
-      compensation_rate: projectUser.rate?.compensation_rate || 0,
-      overtime_hour1: projectUser.rate?.overtime_hour1 || 0,
-      overtime_hour2: projectUser.rate?.overtime_hour2 || 0,
-      overtime_hour3: projectUser.rate?.overtime_hour3 || 0,
-      overtime_hour4: projectUser.rate?.overtime_hour4 || 0,
-      cars: projectUser.car ? projectUser.car : [],
+      name: projectUser?.name,
+      surname: projectUser?.surname,
+      email: projectUser?.email || '',
+      phone_number: projectUser?.phone_number,
+      department: projectUser?.department?.id ?? '',
+      position: projectUser?.position ?? '',
+      role: projectUser?.role,
+      is_active: projectUser?.is_active || false,
+      rate_id: projectUser?.rate?.id ?? '',
+      standard_rate: projectUser?.rate?.standard_rate || 0,
+      compensation_rate: projectUser?.rate?.compensation_rate || 0,
+      overtime_hour1: projectUser?.rate?.overtime_hour1 || 0,
+      overtime_hour2: projectUser?.rate?.overtime_hour2 || 0,
+      overtime_hour3: projectUser?.rate?.overtime_hour3 || 0,
+      overtime_hour4: projectUser?.rate?.overtime_hour4 || 0,
+      cars: projectUser?.car ? projectUser.car : [],
     } as CrewMemberData;
   };
 
@@ -134,11 +96,11 @@ export function MyProjectSettingPage() {
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <ProjectNavbar
         projectId={projectId!}
-        userRole={crewList?.userRoleInProject}
+        userRole={roleData?.userRoleInProject}
       />
       <Box flex="1" p={0} width="100%">
         <Heading mb={4} mt={2} textAlign="center">
-          Crew List for Project {crewList?.project?.name}
+          My project settings for {personalProjectData?.project?.name}
         </Heading>
       </Box>
       <MyProjectSettingsForm
@@ -146,31 +108,28 @@ export function MyProjectSettingPage() {
           await handleUpdateCrewMember(
             {
               ...data,
-              id: currentUser.id,
-              user_id: currentUser?.user?.id!,
-              rate_id: currentUser.rate ? currentUser.rate.id : '',
+              id: personalProjectData?.projectUserByUserIdAndProjectId?.id!,
+              user_id: currentUser?.id!,
+              rate_id:
+                personalProjectData?.projectUserByUserIdAndProjectId?.rate
+                  ?.id ?? '',
               cars: cars,
+              department:
+                personalProjectData?.projectUserByUserIdAndProjectId?.department
+                  ?.name ?? '',
             },
             oldCars,
           );
-          refetchAllCarsOnProjectData();
         }}
         isLoading={isSubmitting}
-        departments={crewList?.departments!}
+        departments={personalProjectData?.project?.departments!}
         initialValues={
-          castProjectUserIntoCrewMemberData(currentUser) || undefined
+          castProjectUserIntoCrewMemberData(personalProjectData) || undefined
         }
-        userRole={crewList?.userRoleInProject ?? 'CREW'}
-        projectCurrency={crewList?.project?.currency}
-        cars={
-          currentUser
-            ? getAvailableCarsForProjectUserId(
-                currentUser.id,
-                allCarsOnProjectData!,
-              )
-            : []
-        }
-        carStatements={projectCarStatements?.carStatementsByProjectId ?? []}
+        userRole={roleData?.userRoleInProject ?? 'CREW'}
+        projectCurrency={personalProjectData?.project?.currency}
+        cars={personalProjectData?.projectUserByUserIdAndProjectId?.car ?? []}
+        carStatements={cleanedStatements ?? []}
       />
       <Footer />
     </Box>

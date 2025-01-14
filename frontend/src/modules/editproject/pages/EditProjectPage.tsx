@@ -1,10 +1,11 @@
-import { Center, Spinner, Text } from '@chakra-ui/react';
+import { Center, Text } from '@chakra-ui/react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { ShootingDay } from '@frontend/gql/graphql';
 import { useProjectConfigOperations } from '@frontend/graphql/mutations/editProjects';
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
+import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 
 import { EditProjectTemplate } from '../templates/EditProjectTemplate';
 
@@ -16,31 +17,24 @@ export function EditProjectPage() {
     projectData,
     shootingDaysData,
     roleData,
-    roleLoading,
-    roleError,
+    loading,
+    errorMessage,
     handleEditProject,
   } = useProjectConfigOperations(projectId!, auth.user?.id!);
 
-  if (roleLoading) {
+  const project = projectData?.project;
+
+  if (loading || !project) {
+    return <LoadingSpinner title="project details" />;
+  }
+
+  if (errorMessage || !auth.user) {
     return (
       <Center minHeight="100vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading project details...</Text>
+        <Text color="red.500">{errorMessage}</Text>
       </Center>
     );
   }
-
-  if (roleError || !auth.user) {
-    return (
-      <Center minHeight="100vh">
-        <Text color="red.500">
-          Error loading project details: {roleError?.message}
-        </Text>
-      </Center>
-    );
-  }
-
-  const project = projectData?.project!;
 
   const shootingDays: ShootingDay[] = shootingDaysData?.shootingDaysByProject!;
 
@@ -51,7 +45,7 @@ export function EditProjectPage() {
 
   return (
     <EditProjectTemplate
-      project={project!}
+      project={project}
       projectId={String(projectId).trim()}
       onSubmit={handleEditProject}
       shootingDays={shootingDays}

@@ -42,7 +42,6 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
     nextFetchPolicy: 'cache-and-network',
   });
 
-  // Check if the required data is available before rendering
   if (loadingUserInfo || loadingTimesheets) {
     return <Text>Loading...</Text>;
   }
@@ -51,7 +50,6 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
     return <Text>Error loading data!</Text>;
   }
 
-  // Handle if data is not available
   const userProjectInfo: UserProjectInfo | undefined =
     dataUserInfo?.projectUserDetails || undefined;
 

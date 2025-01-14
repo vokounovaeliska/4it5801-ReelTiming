@@ -1,11 +1,13 @@
-import { Box, Button, Center, Spinner, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Text } from '@chakra-ui/react';
 
 import { EditDepartmentsModal } from '@frontend/modules/departments/modals/EditDepartmentsModal';
 import {
   useAllCarsOnProjectByProjectUserId,
   useCarStatementsByProjectId,
 } from '@frontend/modules/timesheets/pages/queryHooks';
+import { route } from '@frontend/route';
 import { Heading } from '@frontend/shared/design-system';
+import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
@@ -20,6 +22,7 @@ import { useCrewListPageUtils } from './CrewListPageLogic';
 export function CrewListPage() {
   const {
     auth,
+    navigate,
     isSubmitting,
     isModalOpen,
     isAlertOpen,
@@ -52,13 +55,25 @@ export function CrewListPage() {
 
   const { projectCarStatements } = useCarStatementsByProjectId(projectId ?? '');
 
+  const cleanedStatements =
+    projectCarStatements?.carStatementsByProjectId
+      ?.filter(
+        (
+          statement,
+        ): statement is { car_id: string; kilometers?: number | null } =>
+          statement.car_id !== null && statement.car_id !== undefined,
+      )
+      .map(({ car_id, kilometers }) => ({
+        car_id,
+        kilometers: kilometers ?? null,
+      })) || [];
+  const wrappedStatements = { carStatementsByProjectId: cleanedStatements };
+
   if ((!isDataAvailable && crewListLoading) || allCarsOnProjectLoading) {
-    return (
-      <Center minHeight="100vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading project details...</Text>
-      </Center>
-    );
+    return <LoadingSpinner title="crew list" />;
+  }
+  if (crewList?.userRoleInProject !== 'ADMIN') {
+    navigate(route.projectDetail(projectId));
   }
 
   if (crewListError || !auth.user || !crewList?.project) {
@@ -109,16 +124,23 @@ export function CrewListPage() {
             mb={4}
             px={10}
           >
-            <AddCrewMemberButton
-              handleAddMemberClick={handleAddMemberClick}
-              isShown={crewList.project?.is_active}
-            />
-            <Button
-              onClick={() => setIsEditDepartmentsModalOpen(true)}
-              colorScheme="orange"
+            <Flex
+              direction={{ base: 'column', md: 'row' }}
+              justify="space-between"
+              gap={4}
+              w={'100%'}
             >
-              Edit Departments
-            </Button>
+              <AddCrewMemberButton
+                handleAddMemberClick={handleAddMemberClick}
+                isShown={crewList.project?.is_active}
+              />
+              <Button
+                onClick={() => setIsEditDepartmentsModalOpen(true)}
+                colorScheme="orange"
+              >
+                Edit Departments
+              </Button>
+            </Flex>
             <EditDepartmentsModal
               isOpen={isEditDepartmentsModalOpen}
               onClose={() => {
@@ -155,7 +177,7 @@ export function CrewListPage() {
           project: crewList?.project ?? { currency: '' },
         }}
         allCarsOnProjectData={allCarsOnProjectData!}
-        projectCarStatements={projectCarStatements!}
+        projectCarStatements={wrappedStatements}
         handleUpdateCrewMember={handleUpdateCrewMember}
         handleAddNewCrewMember={handleAddNewCrewMember}
         refetchAllCarsOnProjectData={refetchAllCarsOnProjectData}

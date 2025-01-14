@@ -112,7 +112,7 @@ export function getStatementRepository(db: Db) {
     },
 
     async getStatementsByProjectIdAndDate(projectId: string, date: Date) {
-      const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD
+      const formattedDate = date.toISOString().split('T')[0];
 
       const statements = await db
         .select()

@@ -17,6 +17,7 @@ const SIGNIN_MUTATION = gql(`
         name
         email
         surname
+        can_create_project
       }
       token
     }
