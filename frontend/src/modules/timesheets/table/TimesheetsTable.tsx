@@ -74,7 +74,7 @@ const TimesheetTable = ({
         <Box
           overflowX="auto"
           overflowY="auto"
-          maxHeight={'67vh'}
+          //maxHeight={'67vh'} TODO vyzkouset na produkci
           sx={{
             '::-webkit-scrollbar': {
               height: '12px',

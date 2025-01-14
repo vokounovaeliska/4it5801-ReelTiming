@@ -19,6 +19,7 @@ import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpin
 import { Divider } from '../../../shared/design-system/atoms/Divider';
 import {
   DailyReportPreviewInfoQuery,
+  Project,
   ShootingDayByProject,
 } from '../interfaces/interface';
 
@@ -29,14 +30,14 @@ import ReportIntro from './preview/ReportIntro';
 
 type DailyReportTabsProps = {
   shootingDay?: ShootingDayByProject;
-  projectId: string;
+  project: Project;
   onEdit: () => void;
   onDelete: () => void;
 };
 
 const DailyReportTabs = ({
   shootingDay,
-  projectId,
+  project,
   onEdit,
   onDelete,
 }: DailyReportTabsProps) => {
@@ -46,11 +47,11 @@ const DailyReportTabs = ({
     GET_DAILY_REPORT_PREVIEW_INFO,
     {
       variables: {
-        projectId,
+        projectId: project.id,
         date: shootingDay?.date,
         shootingDayId: shootingDay?.id,
       },
-      skip: !projectId || !shootingDay?.date || !shootingDay?.id,
+      skip: !project.id || !shootingDay?.date || !shootingDay?.id,
       fetchPolicy: 'cache-and-network',
     },
   );
@@ -92,6 +93,7 @@ const DailyReportTabs = ({
                   colorScheme="gray"
                   borderWidth={3}
                   onClick={onEdit}
+                  isDisabled={!project.is_active}
                 >
                   Edit Daily Report
                 </Button>
@@ -100,6 +102,7 @@ const DailyReportTabs = ({
                   leftIcon={<DeleteIcon />}
                   colorScheme="red"
                   onClick={onDelete}
+                  isDisabled={!project.is_active}
                 >
                   Delete
                 </Button>

@@ -24,7 +24,6 @@ const DashboardCostsAdmin: React.FC<DashboardCostsProps> = ({
     fetchPolicy: 'cache-first',
     nextFetchPolicy: 'cache-and-network',
   });
-  console.log('data', data);
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error loading data!</Text>;

@@ -7,6 +7,7 @@ interface TopDashButtonProps {
   icon: ReactElement;
   ariaLabel: string;
   to: string;
+  isDisabled?: boolean;
 }
 
 const TopDashButton: React.FC<TopDashButtonProps> = ({
@@ -14,11 +15,12 @@ const TopDashButton: React.FC<TopDashButtonProps> = ({
   icon,
   ariaLabel,
   to,
+  isDisabled = false,
 }) => {
   return (
     <Button
       as={ReactRouterLink}
-      to={to}
+      to={isDisabled ? '' : to}
       leftIcon={icon}
       aria-label={ariaLabel}
       colorScheme="orange"
@@ -27,6 +29,7 @@ const TopDashButton: React.FC<TopDashButtonProps> = ({
       size={{ base: 'xl', md: 'md' }}
       fontSize={{ base: '2xl', md: 'md' }}
       padding="16px 32px"
+      isDisabled={isDisabled}
     >
       {text}
     </Button>
