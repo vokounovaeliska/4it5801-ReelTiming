@@ -1,7 +1,3 @@
-export interface RoleData {
-  userRoleInProject: string;
-}
-
 export interface Project {
   id: string;
   name: string;
@@ -12,6 +8,7 @@ export interface Project {
   is_active: boolean;
   currency: string;
   shootingDays?: ShootingDay[] | null;
+  logo?: string | null;
 }
 
 export type ShootingDaysByProject = {
@@ -90,4 +87,6 @@ export interface DailyReportFormProps {
   isOpen: boolean;
   onClose: () => void;
   shootingDay?: ShootingDayByProject | null;
+  lastDailyReport?: LastDailyReportByProjectIdQuery;
+  lastDailyReportRefetch: () => void;
 }

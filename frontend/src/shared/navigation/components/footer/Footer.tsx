@@ -9,7 +9,7 @@ const Footer = () => {
       as="footer"
       width="100%"
       textAlign="center"
-      py={1}
+      py={2}
       bg="#2D3748"
       color="white"
       position="relative"

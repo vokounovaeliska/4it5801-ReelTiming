@@ -43,8 +43,6 @@ export function ForgotPasswordForm({
       p={4}
     >
       <Box
-        // width={{ base: '100%' }}
-        // p={6}
         width={{ base: '100%', sm: '110%', md: '500px', lg: '500px' }}
         maxWidth={'600px'}
         pt={6}

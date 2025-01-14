@@ -29,7 +29,7 @@ export class CarService {
 
   async createCar(data: CarInput): Promise<Car> {
     const createdAt = new Date();
-    const userId = 'user-id'; // actual user id
+    const userId = 'user-id';
     const carId = await this.carRepository.createCar({
       ...data,
       create_date: createdAt,

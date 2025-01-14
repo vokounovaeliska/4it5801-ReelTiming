@@ -63,7 +63,7 @@ export type CarInput = {
 
 export type CarStatement = {
   __typename?: 'CarStatement';
-  car_id: Scalars['String']['output'];
+  car_id?: Maybe<Scalars['String']['output']>;
   kilometers?: Maybe<Scalars['Float']['output']>;
 };
 
@@ -137,6 +137,7 @@ export type Mutation = {
   deleteUser: Scalars['Boolean']['output'];
   forgotPassword: Scalars['Boolean']['output'];
   inviteUser: Scalars['Boolean']['output'];
+  notifyUser: Scalars['Boolean']['output'];
   resetPassword: AuthInfo;
   signIn: AuthInfo;
   signUp: AuthInfo;
@@ -293,6 +294,15 @@ export type MutationInviteUserArgs = {
   projectUserId: Scalars['String']['input'];
 };
 
+export type MutationNotifyUserArgs = {
+  dates: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  link: Scalars['String']['input'];
+  message: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  projectName: Scalars['String']['input'];
+};
+
 export type MutationResetPasswordArgs = {
   newPassword: Scalars['String']['input'];
   token: Scalars['String']['input'];
@@ -445,6 +455,7 @@ export type Query = {
   _empty: Scalars['String']['output'];
   car?: Maybe<Car>;
   carStatementsByProjectId: Array<CarStatement>;
+  carStatementsByProjectUserId: Array<CarStatement>;
   cars: Array<Car>;
   carsByProjectUserId: Array<Car>;
   dailyReport?: Maybe<DailyReport>;
@@ -455,6 +466,7 @@ export type Query = {
   lastDailyReportByProjectId?: Maybe<Array<DailyReport>>;
   project?: Maybe<Project>;
   projectUser?: Maybe<ProjectUser>;
+  projectUserByUserIdAndProjectId?: Maybe<ProjectUser>;
   projectUserDetails?: Maybe<ProjectUser>;
   projectUsers: Array<ProjectUser>;
   projectUsersByToken: ProjectUser;
@@ -484,6 +496,10 @@ export type QueryCarArgs = {
 
 export type QueryCarStatementsByProjectIdArgs = {
   projectId: Scalars['String']['input'];
+};
+
+export type QueryCarStatementsByProjectUserIdArgs = {
+  projectUserId: Scalars['String']['input'];
 };
 
 export type QueryCarsByProjectUserIdArgs = {
@@ -522,6 +538,11 @@ export type QueryProjectArgs = {
 
 export type QueryProjectUserArgs = {
   id: Scalars['String']['input'];
+};
+
+export type QueryProjectUserByUserIdAndProjectIdArgs = {
+  projectId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
 };
 
 export type QueryProjectUserDetailsArgs = {
@@ -881,6 +902,22 @@ export type AddRateMutation = {
   addRate: { __typename?: 'Rate'; id: string };
 };
 
+export type AddShiftOverviewMutationVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  date: Scalars['DateTimeISO']['input'];
+  crewWorking: Array<CrewInput> | CrewInput;
+}>;
+
+export type AddShiftOverviewMutation = {
+  __typename?: 'Mutation';
+  addShiftOverview: {
+    __typename?: 'ShiftOverview';
+    id: string;
+    date: string;
+    crew_working: Array<{ __typename?: 'Crew'; id: string }>;
+  };
+};
+
 export type AddShootingDayMutationVariables = Exact<{
   projectId: Scalars['String']['input'];
   date: Scalars['DateTimeISO']['input'];
@@ -933,6 +970,33 @@ export type AddStatementMutation = {
   };
 };
 
+export type AddDepartmentMutationVariables = Exact<{
+  name: Scalars['String']['input'];
+  isVisible?: InputMaybe<Scalars['Boolean']['input']>;
+  orderIndex?: InputMaybe<Scalars['Float']['input']>;
+  projectId: Scalars['String']['input'];
+}>;
+
+export type AddDepartmentMutation = {
+  __typename?: 'Mutation';
+  addDepartment: {
+    __typename?: 'Department';
+    id: string;
+    is_visible?: boolean | null;
+    name: string;
+    order_index?: number | null;
+  };
+};
+
+export type DeleteDailyReportMutationVariables = Exact<{
+  dailyReportId: Scalars['String']['input'];
+}>;
+
+export type DeleteDailyReportMutation = {
+  __typename?: 'Mutation';
+  deleteDailyReport: boolean;
+};
+
 export type DeleteInvitationMutationVariables = Exact<{
   projectUserId: Scalars['String']['input'];
 }>;
@@ -940,6 +1004,15 @@ export type DeleteInvitationMutationVariables = Exact<{
 export type DeleteInvitationMutation = {
   __typename?: 'Mutation';
   deleteInvitation: boolean;
+};
+
+export type DeleteShiftOverviewMutationVariables = Exact<{
+  shiftOverviewId: Scalars['String']['input'];
+}>;
+
+export type DeleteShiftOverviewMutation = {
+  __typename?: 'Mutation';
+  deleteShiftOverview: boolean;
 };
 
 export type DeleteShootingDayMutationVariables = Exact<{
@@ -986,6 +1059,7 @@ export type EditProjectMutation = {
     is_active: boolean;
     last_update_user_id: string;
     currency: string;
+    logo?: string | null;
   };
 };
 
@@ -1015,6 +1089,21 @@ export type EditRateMutation = {
     overtime_hour3?: number | null;
     overtime_hour4?: number | null;
     compensation_rate?: number | null;
+  };
+};
+
+export type EditShiftOverviewMutationVariables = Exact<{
+  shiftOverviewId: Scalars['String']['input'];
+  data: ShiftOverviewInput;
+}>;
+
+export type EditShiftOverviewMutation = {
+  __typename?: 'Mutation';
+  updateShiftOverview: {
+    __typename?: 'ShiftOverview';
+    id: string;
+    date: string;
+    crew_working: Array<{ __typename?: 'Crew'; id: string }>;
   };
 };
 
@@ -1084,6 +1173,20 @@ export type InviteUserToProjectMutation = {
   inviteUser: boolean;
 };
 
+export type NotifyUserMutationVariables = Exact<{
+  dates: Scalars['String']['input'];
+  message: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  projectName: Scalars['String']['input'];
+  link: Scalars['String']['input'];
+}>;
+
+export type NotifyUserMutation = {
+  __typename?: 'Mutation';
+  notifyUser: boolean;
+};
+
 export type UpdateAndActivateProjectUserMutationVariables = Exact<{
   data: ProjectUserInput;
   updateProjectUserId: Scalars['String']['input'];
@@ -1119,6 +1222,22 @@ export type UpdateAndActivateProjectUserMutation = {
     role?: string | null;
     invitation?: string | null;
     phone_number?: string | null;
+  };
+};
+
+export type UpdateDepartmentOrderMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+  data: DepartmentInput;
+}>;
+
+export type UpdateDepartmentOrderMutation = {
+  __typename?: 'Mutation';
+  updateDepartment: {
+    __typename?: 'Department';
+    id: string;
+    name: string;
+    order_index?: number | null;
+    is_visible?: boolean | null;
   };
 };
 
@@ -1256,7 +1375,13 @@ export type GetCrewListInfoQuery = {
     last_update_user_id: string;
     currency: string;
   } | null;
-  departments: Array<{ __typename?: 'Department'; id: string; name: string }>;
+  departments: Array<{
+    __typename?: 'Department';
+    id: string;
+    name: string;
+    is_visible?: boolean | null;
+    order_index?: number | null;
+  }>;
   projectUsers: Array<{
     __typename?: 'ProjectUser';
     id: string;
@@ -1283,7 +1408,13 @@ export type GetCrewListInfoQuery = {
       overtime_hour4?: number | null;
       standard_rate?: number | null;
     } | null;
-    department?: { __typename?: 'Department'; name: string; id: string } | null;
+    department?: {
+      __typename?: 'Department';
+      name: string;
+      id: string;
+      is_visible?: boolean | null;
+      order_index?: number | null;
+    } | null;
   }>;
 };
 
@@ -1305,6 +1436,7 @@ export type GetProjectUserDetailsQuery = {
       id: string;
       name: string;
       currency: string;
+      is_active: boolean;
     };
   } | null;
 };
@@ -1371,6 +1503,7 @@ export type DailyReportPreviewInfoQuery = {
     name: string;
     production_company: string;
     currency: string;
+    logo?: string | null;
     shootingDays?: Array<{ __typename?: 'ShootingDay'; id: string }> | null;
   } | null;
   shootingDay?: {
@@ -1402,7 +1535,13 @@ export type DepartmentsQueryVariables = Exact<{
 
 export type DepartmentsQuery = {
   __typename?: 'Query';
-  departments: Array<{ __typename?: 'Department'; id: string; name: string }>;
+  departments: Array<{
+    __typename?: 'Department';
+    id: string;
+    name: string;
+    is_visible?: boolean | null;
+    order_index?: number | null;
+  }>;
 };
 
 export type LastDailyReportByProjectIdQueryVariables = Exact<{
@@ -1430,6 +1569,70 @@ export type LastDailyReportByProjectIdQuery = {
       date: string;
     } | null;
   }> | null;
+};
+
+export type GetPersonalProjectInfoQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+}>;
+
+export type GetPersonalProjectInfoQuery = {
+  __typename?: 'Query';
+  projectUserByUserIdAndProjectId?: {
+    __typename?: 'ProjectUser';
+    id: string;
+    is_active: boolean;
+    position?: string | null;
+    email: string;
+    name: string;
+    surname: string;
+    invitation?: string | null;
+    role?: string | null;
+    phone_number?: string | null;
+    user?: { __typename?: 'User'; id: string } | null;
+    rate?: {
+      __typename?: 'Rate';
+      id: string;
+      compensation_rate?: number | null;
+      create_date: string;
+      create_user_id: string;
+      last_update_date: string;
+      last_update_user_id: string;
+      overtime_hour1?: number | null;
+      overtime_hour2?: number | null;
+      overtime_hour3?: number | null;
+      overtime_hour4?: number | null;
+      standard_rate?: number | null;
+    } | null;
+    department?: {
+      __typename?: 'Department';
+      name: string;
+      id: string;
+      is_visible?: boolean | null;
+      order_index?: number | null;
+    } | null;
+    car?: Array<{
+      __typename?: 'Car';
+      id: string;
+      name: string;
+      kilometer_allow: number;
+      kilometer_rate: number;
+    }> | null;
+  } | null;
+  project?: {
+    __typename?: 'Project';
+    id: string;
+    name: string;
+    currency: string;
+    is_active: boolean;
+    departments?: Array<{
+      __typename?: 'Department';
+      id: string;
+      name: string;
+      order_index?: number | null;
+      is_visible?: boolean | null;
+    }> | null;
+  } | null;
 };
 
 export type GetProjectByProjectUserTokenQueryVariables = Exact<{
@@ -1464,6 +1667,7 @@ export type GetProjectDetailQuery = {
     last_update_date: string;
     last_update_user_id: string;
     currency: string;
+    logo?: string | null;
     projectUsers?: Array<{ __typename?: 'ProjectUser'; id: string }> | null;
   } | null;
 };
@@ -1579,6 +1783,54 @@ export type GetProjectsQuery = {
     name: string;
     description: string;
   }>;
+};
+
+export type GetShiftOverviewPageDataQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+}>;
+
+export type GetShiftOverviewPageDataQuery = {
+  __typename?: 'Query';
+  projectUsers: Array<{
+    __typename?: 'ProjectUser';
+    id: string;
+    name: string;
+    surname: string;
+    email: string;
+    position?: string | null;
+    department?: {
+      __typename?: 'Department';
+      id: string;
+      name: string;
+      order_index?: number | null;
+    } | null;
+    statement: Array<{
+      __typename?: 'Statement';
+      id: string;
+      start_date: string;
+      from: string;
+      to: string;
+    }>;
+  }>;
+  shootingDaysByProject: Array<{
+    __typename?: 'ShootingDay';
+    id: string;
+    shooting_day_number: number;
+    date: string;
+  }>;
+  shiftOverviewsByProjectId: Array<{
+    __typename?: 'ShiftOverview';
+    id: string;
+    date: string;
+    crew_working: Array<{ __typename?: 'Crew'; id: string }>;
+  }>;
+  project?: {
+    __typename?: 'Project';
+    id: string;
+    name: string;
+    start_date?: string | null;
+    end_date?: string | null;
+  } | null;
 };
 
 export type ShootingDaysByProjectQueryVariables = Exact<{
@@ -1720,7 +1972,20 @@ export type CarStatementsByProjectIdQuery = {
   __typename?: 'Query';
   carStatementsByProjectId: Array<{
     __typename?: 'CarStatement';
-    car_id: string;
+    car_id?: string | null;
+    kilometers?: number | null;
+  }>;
+};
+
+export type CarStatementsByProjectUserIdQueryVariables = Exact<{
+  projectUserId: Scalars['String']['input'];
+}>;
+
+export type CarStatementsByProjectUserIdQuery = {
+  __typename?: 'Query';
+  carStatementsByProjectUserId: Array<{
+    __typename?: 'CarStatement';
+    car_id?: string | null;
     kilometers?: number | null;
   }>;
 };
@@ -1754,6 +2019,8 @@ export type GetUserProjectsQuery = {
     id: string;
     name: string;
     description: string;
+    is_active: boolean;
+    logo?: string | null;
   }>;
 };
 
@@ -1799,6 +2066,7 @@ export type SignInMutation = {
       name: string;
       email: string;
       surname: string;
+      can_create_project?: boolean | null;
     };
   };
 };
@@ -2998,6 +3266,118 @@ export const AddRateDocument = {
     },
   ],
 } as unknown as DocumentNode<AddRateMutation, AddRateMutationVariables>;
+export const AddShiftOverviewDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'AddShiftOverview' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'DateTimeISO' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'crewWorking' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: {
+                  kind: 'NamedType',
+                  name: { kind: 'Name', value: 'CrewInput' },
+                },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'addShiftOverview' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'date' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'date' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'crew_working' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'crewWorking' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'crew_working' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AddShiftOverviewMutation,
+  AddShiftOverviewMutationVariables
+>;
 export const AddShootingDayDocument = {
   kind: 'Document',
   definitions: [
@@ -3359,6 +3739,162 @@ export const AddStatementDocument = {
   AddStatementMutation,
   AddStatementMutationVariables
 >;
+export const AddDepartmentDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'AddDepartment' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'isVisible' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'orderIndex' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Float' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'addDepartment' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'name' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'name' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'isVisible' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'isVisible' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderIndex' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'orderIndex' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_visible' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'order_index' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AddDepartmentMutation,
+  AddDepartmentMutationVariables
+>;
+export const DeleteDailyReportDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'DeleteDailyReport' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'dailyReportId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'deleteDailyReport' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'dailyReportId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'dailyReportId' },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  DeleteDailyReportMutation,
+  DeleteDailyReportMutationVariables
+>;
 export const DeleteInvitationDocument = {
   kind: 'Document',
   definitions: [
@@ -3406,6 +3942,54 @@ export const DeleteInvitationDocument = {
 } as unknown as DocumentNode<
   DeleteInvitationMutation,
   DeleteInvitationMutationVariables
+>;
+export const DeleteShiftOverviewDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'DeleteShiftOverview' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'shiftOverviewId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'deleteShiftOverview' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'shiftOverviewId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'shiftOverviewId' },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  DeleteShiftOverviewMutation,
+  DeleteShiftOverviewMutationVariables
 >;
 export const DeleteShootingDayDocument = {
   kind: 'Document',
@@ -3647,6 +4231,7 @@ export const EditProjectDocument = {
                   name: { kind: 'Name', value: 'last_update_user_id' },
                 },
                 { kind: 'Field', name: { kind: 'Name', value: 'currency' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'logo' } },
               ],
             },
           },
@@ -3822,6 +4407,90 @@ export const EditRateDocument = {
     },
   ],
 } as unknown as DocumentNode<EditRateMutation, EditRateMutationVariables>;
+export const EditShiftOverviewDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'EditShiftOverview' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'shiftOverviewId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'ShiftOverviewInput' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateShiftOverview' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'shiftOverviewId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'shiftOverviewId' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'data' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'data' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'crew_working' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  EditShiftOverviewMutation,
+  EditShiftOverviewMutationVariables
+>;
 export const UpdateShootingDayDocument = {
   kind: 'Document',
   definitions: [
@@ -4176,6 +4845,155 @@ export const InviteUserToProjectDocument = {
   InviteUserToProjectMutation,
   InviteUserToProjectMutationVariables
 >;
+export const NotifyUserDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'NotifyUser' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'dates' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'message' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'email' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectName' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'link' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'notifyUser' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'dates' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'dates' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'message' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'message' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'email' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'email' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'name' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'name' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectName' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectName' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'link' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'link' },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<NotifyUserMutation, NotifyUserMutationVariables>;
 export const UpdateAndActivateProjectUserDocument = {
   kind: 'Document',
   definitions: [
@@ -4359,6 +5177,79 @@ export const UpdateAndActivateProjectUserDocument = {
 } as unknown as DocumentNode<
   UpdateAndActivateProjectUserMutation,
   UpdateAndActivateProjectUserMutationVariables
+>;
+export const UpdateDepartmentOrderDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'UpdateDepartmentOrder' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'DepartmentInput' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateDepartment' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'departmentId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'id' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'data' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'data' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'order_index' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_visible' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UpdateDepartmentOrderMutation,
+  UpdateDepartmentOrderMutationVariables
 >;
 export const UpdateUserDocument = {
   kind: 'Document',
@@ -4902,6 +5793,8 @@ export const GetCrewListInfoDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_visible' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'order_index' } },
               ],
             },
           },
@@ -4998,6 +5891,14 @@ export const GetCrewListInfoDocument = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'is_visible' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'order_index' },
+                      },
                     ],
                   },
                 },
@@ -5112,6 +6013,10 @@ export const GetProjectUserDetailsDocument = {
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'currency' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'is_active' },
                       },
                     ],
                   },
@@ -5398,6 +6303,7 @@ export const DailyReportPreviewInfoDocument = {
                   name: { kind: 'Name', value: 'production_company' },
                 },
                 { kind: 'Field', name: { kind: 'Name', value: 'currency' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'logo' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'shootingDays' },
@@ -5549,6 +6455,8 @@ export const DepartmentsDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_visible' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'order_index' } },
               ],
             },
           },
@@ -5663,6 +6571,233 @@ export const LastDailyReportByProjectIdDocument = {
 } as unknown as DocumentNode<
   LastDailyReportByProjectIdQuery,
   LastDailyReportByProjectIdQueryVariables
+>;
+export const GetPersonalProjectInfoDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetPersonalProjectInfo' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'userId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectUserByUserIdAndProjectId' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'userId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_active' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'position' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'surname' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'invitation' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'role' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'phone_number' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'rate' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'compensation_rate' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'create_date' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'create_user_id' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'last_update_date' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'last_update_user_id' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'overtime_hour1' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'overtime_hour2' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'overtime_hour3' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'overtime_hour4' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'standard_rate' },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'department' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'is_visible' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'order_index' },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'car' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'kilometer_allow' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'kilometer_rate' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'currency' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_active' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'departments' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'order_index' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'is_visible' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetPersonalProjectInfoQuery,
+  GetPersonalProjectInfoQueryVariables
 >;
 export const GetProjectByProjectUserTokenDocument = {
   kind: 'Document',
@@ -5800,6 +6935,7 @@ export const GetProjectDetailDocument = {
                     ],
                   },
                 },
+                { kind: 'Field', name: { kind: 'Name', value: 'logo' } },
               ],
             },
           },
@@ -6191,6 +7327,174 @@ export const GetProjectsDocument = {
     },
   ],
 } as unknown as DocumentNode<GetProjectsQuery, GetProjectsQueryVariables>;
+export const GetShiftOverviewPageDataDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetShiftOverviewPageData' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectUsers' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'surname' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'position' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'department' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'order_index' },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'statement' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'start_date' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'from' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'to' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'shootingDaysByProject' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'shooting_day_number' },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'shiftOverviewsByProjectId' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'crew_working' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'start_date' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'end_date' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetShiftOverviewPageDataQuery,
+  GetShiftOverviewPageDataQueryVariables
+>;
 export const ShootingDaysByProjectDocument = {
   kind: 'Document',
   definitions: [
@@ -6711,6 +8015,61 @@ export const CarStatementsByProjectIdDocument = {
   CarStatementsByProjectIdQuery,
   CarStatementsByProjectIdQueryVariables
 >;
+export const CarStatementsByProjectUserIdDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'CarStatementsByProjectUserId' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectUserId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'carStatementsByProjectUserId' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectUserId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectUserId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'car_id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'kilometers' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  CarStatementsByProjectUserIdQuery,
+  CarStatementsByProjectUserIdQueryVariables
+>;
 export const GetUserProfileSettingsInfoDocument = {
   kind: 'Document',
   definitions: [
@@ -6822,6 +8181,8 @@ export const GetUserProjectsDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'is_active' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'logo' } },
               ],
             },
           },
@@ -7027,6 +8388,10 @@ export const SignInDocument = {
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'surname' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'can_create_project' },
                       },
                     ],
                   },

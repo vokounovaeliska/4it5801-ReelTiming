@@ -27,6 +27,7 @@ export interface CrewInfoPdf {
     name: string;
     description: string;
     currency: string;
+    logo?: string | null;
   };
   rate: {
     standard_rate: number;

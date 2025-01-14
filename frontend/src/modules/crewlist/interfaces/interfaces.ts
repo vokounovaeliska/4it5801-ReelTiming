@@ -31,7 +31,10 @@ export interface ProjectUser {
   user?: {
     id: string;
   } | null;
-  department?: { name: string; id: string } | null;
+  department?: {
+    name: string;
+    id: string;
+  } | null;
   role?: string | null;
   position?: string | null;
   phone_number?: string | null;
@@ -81,6 +84,29 @@ export interface Rate {
 export interface Department {
   id: string;
   name: string;
+  order_index?: number | null;
+  is_visible?: boolean | null;
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  is_active: boolean;
+  currency: string;
+}
+
+export interface DepartmentProps {
+  name: string;
+  project_id: string;
+  order_index?: number | undefined;
+  is_visible?: boolean | undefined;
+}
+
+export interface DepartmentInput {
+  id: string;
+  name: string;
+  order_index?: number | undefined;
+  is_visible?: boolean | undefined;
 }
 
 export interface ProjectUserLightVersion {

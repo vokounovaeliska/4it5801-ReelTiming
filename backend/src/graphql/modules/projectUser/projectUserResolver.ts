@@ -170,7 +170,6 @@ export class ProjectUserResolver {
     @Arg('email') email: string,
     @Ctx() { db }: CustomContext,
   ): Promise<ProjectUser> {
-    // const projectUserService = new ProjectUserService(db);
     const data: CreateProjectUserInput = {
       project_id: projectId,
       user_id: userId,
@@ -244,7 +243,10 @@ export class ProjectUserResolver {
   ): Promise<boolean> {
     const validatedData = deleteProjectUserSchema.parse({ projectUserId });
     const projectUserService = new ProjectUserService(db);
-    return projectUserService.deleteProjectUser(validatedData.projectUserId);
+    return projectUserService.deleteProjectUser(
+      validatedData.projectUserId,
+      db,
+    );
   }
   @Mutation(() => Boolean)
   async activateProjectUser(
@@ -302,7 +304,6 @@ export class ProjectUserResolver {
       is_team_leader: false,
       rate_id: null,
       department_id: null,
-      // role: projectUserDetails.role,
       invitation: null,
       phone_number: null,
       position: null,
@@ -312,6 +313,18 @@ export class ProjectUserResolver {
       last_update_date: new Date(),
       is_active: true,
     };
+  }
+  @Query(() => ProjectUser, { nullable: true })
+  async projectUserByUserIdAndProjectId(
+    @Arg('userId') userId: string,
+    @Arg('projectId') projectId: string,
+    @Ctx() { db }: CustomContext,
+  ): Promise<ProjectUser | null> {
+    const projectUserService = new ProjectUserService(db);
+    return projectUserService.getProjectUserByUserIdAndProjectId(
+      userId,
+      projectId,
+    );
   }
   @FieldResolver(() => [Statement])
   async statement(

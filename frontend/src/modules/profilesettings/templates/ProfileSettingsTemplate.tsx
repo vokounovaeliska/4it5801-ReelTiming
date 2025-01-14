@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box } from '@chakra-ui/react';
 
+import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
@@ -23,7 +24,7 @@ interface ProfileSettingsTemplateProps {
 export const ProfileSettingsTemplate: React.FC<
   ProfileSettingsTemplateProps
 > = ({ loading, error, userData, handleChange, handleSubmit }) => {
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingSpinner title="departments" />;
   if (error) return <p>Error: {error.message}</p>;
 
   return (

@@ -15,6 +15,7 @@ import { promises as fs } from 'fs';
 import { sendMail } from '@backend/mailer/mailer';
 import { ProjectService } from '../project/projectService';
 import { getUserRepository } from '../user/userRepository';
+import { RateService } from '../rate/rateService';
 
 const ADMIN = 'ADMIN';
 
@@ -36,7 +37,11 @@ export class ProjectUserService {
   }
 
   async getProjectUsersByProjectId(projectId: string) {
-    return this.projectUserRepository.getProjectUsersByProjectId(projectId);
+    const projectUsers =
+      this.projectUserRepository.getProjectUsersByProjectId(projectId);
+    return (await projectUsers).map((record) => ({
+      ...record.project_user,
+    }));
   }
 
   async getProjectUserById(id: string): Promise<ProjectUser | null> {
@@ -49,7 +54,7 @@ export class ProjectUserService {
 
   async createProjectUser(data: CreateProjectUserInput): Promise<ProjectUser> {
     const createdAt = new Date();
-    const userId = 'user-id'; // actual user id
+    const userId = 'user-id';
     const projectUserId = await this.projectUserRepository.createProjectUser({
       ...data,
       project_id: data.project_id,
@@ -91,8 +96,16 @@ export class ProjectUserService {
     return this.getProjectUserById(id);
   }
 
-  async deleteProjectUser(id: string): Promise<boolean> {
-    await this.projectUserRepository.deleteProjectUser(id);
+  async deleteProjectUser(id: string, db: Db): Promise<boolean> {
+    const projectUser = await this.projectUserRepository.getProjectUserById(id);
+    if (!projectUser) {
+      throw new Error('Project user not found');
+    }
+    const rateService = new RateService(db);
+    if (projectUser.rate_id) {
+      rateService.deleteRate(projectUser.rate_id);
+    }
+    await this.projectUserRepository.deleteProjectUser(projectUser.id);
     return true;
   }
 
@@ -163,13 +176,13 @@ export class ProjectUserService {
     const projectUser = await projectUserService.getProjectUserByToken(token);
 
     if (projectUser) {
-      // user is already registered, join the project
+      //user is already registered, join the project
       console.log('User is already registered, joining the project...');
-      // Implement logic to join the project
+      //logic to join the project
     } else {
-      // user is not registered, allow registration
+      //user is not registered, allow registration
       console.log('User is not registered, allow registration...');
-      // implement logic to register the user and join the project
+      //logic to register the user and join the project
     }
   }
 
@@ -226,16 +239,6 @@ export class ProjectUserService {
       throw new GraphQLError('Failed to send invtiation email.');
     }
 
-    return true;
-  }
-
-  async deleteProjectUserById(projectUserId: string): Promise<boolean> {
-    const projectUser =
-      await this.projectUserRepository.getProjectUserById(projectUserId);
-    if (!projectUser) {
-      throw new Error('Project user not found');
-    }
-    await this.projectUserRepository.deleteProjectUser(projectUser.id);
     return true;
   }
   async activateProjectUserByToken(

@@ -9,6 +9,13 @@ import {
 } from '@frontend/shared/design-system/molecules/toastUtils';
 
 import { DeleteConfirmationDialog } from '../atoms/ShootingDaysDialog';
+import { ProjectData } from '../pages/EditProjectPage';
+import {
+  calculateNewDate,
+  calculateNewDayNumber,
+  isDateWithinProjectDays,
+  validateShootingDay,
+} from '../util/shootingDaysUtil';
 
 import { ShootingDaysInputForm } from './ShootingDaysInputForm';
 import { ShootingDaysTable } from './ShootingDaysTable';
@@ -16,18 +23,28 @@ import { ShootingDaysTable } from './ShootingDaysTable';
 interface ShootingDaysConfigFormProps {
   shootingDays: ShootingDay[];
   handleShootingDaysChange: (cars: ShootingDay[]) => void;
+  projectData: ProjectData;
 }
 
-export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
+export const ShootingDaysConfigForm = ({
   shootingDays,
   handleShootingDaysChange,
-}) => {
+  projectData,
+}: ShootingDaysConfigFormProps) => {
+  const setNewShootingDay = (days: ShootingDay[]) => {
+    setShootingDay({
+      id: '',
+      shooting_day_number: calculateNewDayNumber(days),
+      date: calculateNewDate(days, projectData.start_date),
+    });
+  };
+
   const [shootingDay, setShootingDay] = useState<ShootingDay>({
     id: '',
-    shooting_day_number:
-      shootingDays !== undefined ? shootingDays.length + 1 : 1,
-    date: format(Date.now(), 'yyyy-MM-dd'),
+    shooting_day_number: calculateNewDayNumber(shootingDays),
+    date: calculateNewDate(shootingDays, projectData.start_date),
   });
+
   const [shootingDaysCollection, setShootingDaysCollection] =
     useState(shootingDays);
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -35,7 +52,6 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
   const [shootingDayToDeleteIndex, setShootingDayToDeleteIndex] = useState<
     number | null
   >(null);
-
   const {
     isOpen: isDeleteAlertOpen,
     onOpen: onDeleteAlertOpen,
@@ -48,30 +64,19 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
       return;
     }
 
-    // Check for duplicate dayNumber
-    const isDuplicateDayNumber = shootingDaysCollection.some(
-      (day) =>
-        day.shooting_day_number === shootingDay.shooting_day_number &&
-        (!isEditing || day.id !== shootingDay.id),
+    const { valid, message } = validateShootingDay(
+      shootingDay,
+      shootingDaysCollection,
+      isEditing,
     );
 
-    const isDuplicateDayDate = shootingDaysCollection.some(
-      (day) =>
-        day.date === shootingDay.date &&
-        (!isEditing || day.id !== shootingDay.id),
-    );
-
-    if (isDuplicateDayNumber) {
-      showErrorToast(
-        'A day with this number already exists. Please use a unique day number.',
-      );
+    if (!valid) {
+      showErrorToast(message);
       return;
     }
 
-    if (isDuplicateDayDate) {
-      showErrorToast(
-        'A shooting day with this date already exists. Please use a unique date.',
-      );
+    if (!isDateWithinProjectDays(shootingDay, projectData)) {
+      showErrorToast('Shooting day date is after the project deadline!');
       return;
     }
 
@@ -79,18 +84,10 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
 
     if (isEditing) {
       updatedDaysCollection = shootingDaysCollection.map((day) =>
-        day.id === shootingDay.id
-          ? {
-              ...day,
-              shooting_day_number: shootingDay.shooting_day_number,
-              date: shootingDay.date,
-            }
-          : day,
+        day.id === shootingDay.id ? { ...day, ...shootingDay } : day,
       );
       setIsEditing(false);
-      showSuccessToast(
-        `Day ${shootingDay.shooting_day_number} has been updated.`,
-      );
+      showSuccessToast(`Day ${shootingDay.date} has been updated.`);
     } else {
       const newShootingDay: ShootingDay = {
         id: Date.now().toString(),
@@ -98,60 +95,16 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
         date: shootingDay.date,
       };
       updatedDaysCollection = [...shootingDaysCollection, newShootingDay];
-      showSuccessToast(
-        `Day ${shootingDay.shooting_day_number} has been added.`,
-      );
+      showSuccessToast(`Day ${shootingDay.date} has been added.`);
     }
 
-    // Sort the collection by date
-    updatedDaysCollection = updatedDaysCollection.sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-    );
+    updatedDaysCollection = updatedDaysCollection
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .map((day, index) => ({ ...day, shooting_day_number: index + 1 }));
 
-    // Update the collection
     setShootingDaysCollection(updatedDaysCollection);
-
-    // Notify parent about changes
     handleShootingDaysChange(updatedDaysCollection);
-
-    // Reset the input fields
-    setShootingDay({
-      id: '',
-      shooting_day_number: updatedDaysCollection.length + 1,
-      date: '',
-    });
-  };
-
-  const handleEditShootingDay = (index: number) => {
-    const dayToEdit = shootingDaysCollection[index];
-    if (dayToEdit) {
-      setShootingDay({
-        ...dayToEdit,
-        date: format(parseISO(dayToEdit.date), 'yyyy-MM-dd'),
-      });
-      setIsEditing(true);
-    }
-  };
-
-  const handleDeleteShootingDay = (indexToRemove: number) => {
-    setShootingDaysCollection((prev) => {
-      const updatedCollection = prev.filter(
-        (_, index) => index !== indexToRemove,
-      );
-
-      handleShootingDaysChange(updatedCollection);
-
-      return updatedCollection;
-    });
-
-    setShootingDay(() => ({
-      id: '',
-      shooting_day_number:
-        shootingDaysCollection.length > 1 ? shootingDaysCollection.length : 1,
-      date: '',
-    }));
-
-    showSuccessToast('The shooting day has been removed.');
+    setNewShootingDay(updatedDaysCollection);
   };
 
   return (
@@ -166,14 +119,24 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
         isEditing={isEditing}
         setIsEditing={setIsEditing}
         handleAddOrUpdateShootingDay={handleAddOrUpdateShootingDay}
-        shootingDaysLenght={shootingDaysCollection.length}
+        shootingDays={shootingDaysCollection}
+        setNewShootingDay={setNewShootingDay}
       />
 
       {shootingDaysCollection.length > 0 && (
         <>
           <ShootingDaysTable
             shootingDaysCollection={shootingDaysCollection}
-            handleEditShootingDay={handleEditShootingDay}
+            handleEditShootingDay={(index) => {
+              const dayToEdit = shootingDaysCollection[index];
+              if (dayToEdit) {
+                setShootingDay({
+                  ...dayToEdit,
+                  date: format(parseISO(dayToEdit.date), 'yyyy-MM-dd'),
+                });
+                setIsEditing(true);
+              }
+            }}
             handleDeleteShootingDay={(index) => {
               setShootingDayToDeleteIndex(index);
               onDeleteAlertOpen();
@@ -185,7 +148,13 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
             cancelRef={cancelRef}
             handleRemoveShootingDay={() => {
               if (shootingDayToDeleteIndex !== null) {
-                handleDeleteShootingDay(shootingDayToDeleteIndex);
+                const updatedCollection = shootingDaysCollection.filter(
+                  (_, index) => index !== shootingDayToDeleteIndex,
+                );
+                setShootingDaysCollection(updatedCollection);
+                handleShootingDaysChange(updatedCollection);
+                setNewShootingDay(updatedCollection);
+                showSuccessToast('The shooting day has been removed.');
               }
               onDeleteAlertClose();
             }}

@@ -9,6 +9,7 @@ import { GET_PROJECT_USER_BY_TOKEN } from '@frontend/graphql/queries/GetProjectU
 import { useAuth } from '@frontend/modules/auth';
 import { Car, CarStatement } from '@frontend/modules/timesheets/interfaces';
 import { route } from '@frontend/route';
+import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 import { showErrorToast } from '@frontend/shared/design-system/molecules/toastUtils';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
@@ -37,7 +38,7 @@ export function AcceptInvitationPage() {
   const [addCar] = useMutation(ADD_CAR);
 
   useEffect(() => {
-    if (!token) {
+    if (!token || (!loading && !data)) {
       navigate('/');
       return;
     }
@@ -46,7 +47,7 @@ export function AcceptInvitationPage() {
       navigate(`${route.login()}${`?token=${token}`}`);
       return;
     }
-  }, [isAuthenticated, token, navigate]);
+  }, [isAuthenticated, token, navigate, data, loading]);
 
   const {
     data: departmentsData,
@@ -131,7 +132,10 @@ export function AcceptInvitationPage() {
     console.log('Updated car collection in parent:', cars);
   };
 
-  if (loading || departmentsLoading) return <p>Loading...</p>;
+  if (loading || departmentsLoading) {
+    return <LoadingSpinner />;
+  }
+
   if (error || departmentsError)
     return <p>Error: {error?.message ?? departmentsError?.message}</p>;
 

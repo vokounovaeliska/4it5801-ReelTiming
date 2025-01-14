@@ -94,7 +94,6 @@ export const crewListFormSchema = zod.object({
     .nullable()
     .optional(),
   role: zod.string().default('CREW').nullable().optional(),
-  // cars: zod.array(carSchema).default([]),
 });
 
 export type crewListFormValues = zod.infer<typeof crewListFormSchema>;
@@ -121,6 +120,10 @@ export const projectFormSchema = z
         message: 'End date must be a valid date or empty',
       }),
     currency: zod.string().length(3, { message: 'Currency must be selected.' }),
+    isActive: zod.boolean({
+      message: 'isActive must be either true or false',
+    }),
+    logo: z.string().optional().nullable(),
   })
   .superRefine((data, ctx) => {
     const startDate = data.startDate.setHours(0, 0, 0, 0);
@@ -184,3 +187,12 @@ export const loginFormSchema = zod.object({
 });
 
 export type loginFormValues = zod.infer<typeof loginFormSchema>;
+
+export const createDepartmentFormSchema = zod.object({
+  name: z.string().min(1, { message: 'Name is required' }),
+  isVisible: zod.boolean(),
+});
+
+export type createDepartmentFormValues = zod.infer<
+  typeof createDepartmentFormSchema
+>;
