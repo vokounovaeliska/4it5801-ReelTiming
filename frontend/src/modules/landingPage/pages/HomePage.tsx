@@ -131,6 +131,7 @@ export function HomePage() {
 
       <LandingBox
         bgGradient="linear(to-b, #2D3748, #b05e2a)"
+        //bgGradient="linear(to-b, #2D3748, orange.500)"
         pt={16}
         pb={{ base: 10, lg: 16 }}
         px={{ base: '2', mb: '8' }}
@@ -140,7 +141,9 @@ export function HomePage() {
       </LandingBox>
 
       <LandingBox
-        bgGradient="linear(to-b, #b05e2a, orange.50, white)"
+        // bgGradient="linear(to-b, #b05e2a, orange.50, white)"
+        //bgGradient="linear(to-b, #b05e2a, orange.100, , white)"
+        bgGradient="linear(to-b, #b05e2a, white)"
         pt={{ base: 8, lg: 12 }}
         pb={5}
         color="gray.800"
@@ -152,8 +155,9 @@ export function HomePage() {
           fontSize="5xl"
           mb={6}
           fontWeight="bold"
-          bgGradient="linear(to-r, orange.700, orange.800)"
-          bgClip="text"
+          //bgGradient="linear(to-l, gray.800, #2D3748)"
+          //bgClip="text"
+          color="#2D3748"
           pb={3}
         >
           Ready to Simplify Your Workflow?
