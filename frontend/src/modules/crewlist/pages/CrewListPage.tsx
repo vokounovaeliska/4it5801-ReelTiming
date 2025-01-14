@@ -2,45 +2,20 @@ import { Box, Button, Center, Spinner, Text } from '@chakra-ui/react';
 
 import { EditDepartmentsModal } from '@frontend/modules/departments/modals/EditDepartmentsModal';
 import {
-  AllCarsOnProjectData,
-  Car,
-} from '@frontend/modules/timesheets/interfaces';
-import {
   useAllCarsOnProjectByProjectUserId,
   useCarStatementsByProjectId,
 } from '@frontend/modules/timesheets/pages/queryHooks';
 import { Heading } from '@frontend/shared/design-system';
-import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
 import { AddCrewMemberButton } from '../atoms/AddCrewMemberButton';
-import { CrewListForm } from '../forms/CrewListForm';
+import CrewListModal from '../atoms/CrewListModal';
 import { ProjectUser } from '../interfaces/interfaces';
 import CrewListTable from '../table/CrewListTable';
 
 import CrewAlertDialog from './CrewAlertDialog';
 import { useCrewListPageUtils } from './CrewListPageLogic';
-
-function getAvailableCarsForProjectUserId(
-  givenUser: string,
-  allCarsOnProjectData: AllCarsOnProjectData,
-): Car[] {
-  const filteredCarsOnProject = allCarsOnProjectData?.projectUsers.filter(
-    (projectUser) => projectUser.id === givenUser,
-  );
-
-  const carDetails = filteredCarsOnProject?.flatMap((projectUser) =>
-    projectUser.car?.map((car: Car) => ({
-      id: car.id,
-      name: car.name,
-      kilometer_allow: car.kilometer_allow,
-      kilometer_rate: car.kilometer_rate,
-    })),
-  );
-  console.log(carDetails?.filter((car): car is Car => car !== undefined) || []);
-  return carDetails?.filter((car): car is Car => car !== undefined) || [];
-}
 
 export function CrewListPage() {
   const {
@@ -167,53 +142,24 @@ export function CrewListPage() {
         ></CrewListTable>
       </Box>
       <Footer />
-      <CustomModal
+      <CrewListModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        title={selectedCrewMember ? 'Edit Crew Member' : 'Add Crew Member'}
-        size="6xl"
-      >
-        <CrewListForm
-          projectId={projectId!}
-          onSubmit={async (data, sendInvite, cars, oldCars) => {
-            if (selectedCrewMember) {
-              await handleUpdateCrewMember(
-                {
-                  ...data,
-                  id: selectedCrewMember.id,
-                  user_id: selectedCrewMember.user_id,
-                  rate_id: selectedCrewMember.rate_id,
-                  cars: cars,
-                },
-                oldCars,
-              );
-            } else {
-              await handleAddNewCrewMember(
-                { ...data, id: '', user_id: null, rate_id: null, cars: null },
-                sendInvite,
-                data.name,
-                data.email,
-              );
-            }
-            refetchAllCarsOnProjectData();
-          }}
-          isLoading={isSubmitting || allCarsOnProjectLoading}
-          departments={crewList!.departments!}
-          initialValues={selectedCrewMember ?? undefined}
-          mode={selectedCrewMember ? 'edit' : 'add'}
-          userRole={crewList!.userRoleInProject!}
-          projectCurrency={crewList?.project?.currency!}
-          cars={
-            selectedCrewMember
-              ? getAvailableCarsForProjectUserId(
-                  selectedCrewMember?.id,
-                  allCarsOnProjectData!,
-                )
-              : []
-          }
-          carStatements={projectCarStatements?.carStatementsByProjectId ?? []}
-        />
-      </CustomModal>
+        isSubmitting={isSubmitting}
+        allCarsOnProjectLoading={allCarsOnProjectLoading}
+        selectedCrewMember={selectedCrewMember}
+        projectId={projectId!}
+        crewList={{
+          ...crewList,
+          userRoleInProject: crewList?.userRoleInProject ?? '',
+          project: crewList?.project ?? { currency: '' },
+        }}
+        allCarsOnProjectData={allCarsOnProjectData!}
+        projectCarStatements={projectCarStatements!}
+        handleUpdateCrewMember={handleUpdateCrewMember}
+        handleAddNewCrewMember={handleAddNewCrewMember}
+        refetchAllCarsOnProjectData={refetchAllCarsOnProjectData}
+      />
       <CrewAlertDialog
         isOpen={isAlertOpen}
         onClose={() => setIsAlertOpen(false)}
