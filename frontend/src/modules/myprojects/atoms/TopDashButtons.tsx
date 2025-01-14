@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, SimpleGrid } from '@chakra-ui/react';
 import { FaClock, FaUsers } from 'react-icons/fa';
 import { FaCirclePlus } from 'react-icons/fa6';
+import { IoIosSettings } from 'react-icons/io';
 
 import { route } from '@frontend/route';
 
@@ -51,7 +52,7 @@ const TopDashButtons: React.FC<TopDashButtonsProps> = ({
         {userRole === 'ADMIN' && (
           <TopDashButton
             text="Edit departments"
-            icon={<FaClock />}
+            icon={<IoIosSettings />}
             ariaLabel="Edit departments"
             to={route.editDepartments(projectId)}
           />
