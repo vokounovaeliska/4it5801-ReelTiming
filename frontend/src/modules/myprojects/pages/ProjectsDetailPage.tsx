@@ -13,11 +13,11 @@ import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 import { currencyUtil } from '@shared/currencyUtil';
 
 import BoxDashboard from '../atoms/BoxDashboard';
-import PillButtonsTop from '../molecules/PillButtonsTop';
-import ProjectOrigin from '../molecules/ProjectOrigin';
-import ProjectStatus from '../molecules/ProjectStatus';
-import ProjectTimeline from '../molecules/ProjectTimeline';
-import TopDashButtons from '../molecules/TopDashButtons';
+import PillButtonsTop from '../atoms/PillButtonsTop';
+import ProjectOrigin from '../atoms/ProjectOrigin';
+import ProjectStatus from '../atoms/ProjectStatus';
+import ProjectTimeline from '../atoms/ProjectTimeline';
+import TopDashButtons from '../atoms/TopDashButtons';
 import CrewInfo from '../organisms/CrewInfo';
 import DashboardCostsAdmin from '../organisms/DashboardCostsAdmin';
 import DashboardEarningsCrew from '../organisms/DashboardEarningsCrew';

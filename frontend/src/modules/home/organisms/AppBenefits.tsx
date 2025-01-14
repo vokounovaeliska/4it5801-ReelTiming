@@ -3,7 +3,7 @@ import { Box } from '@chakra-ui/react';
 import { FaClock, FaUsers } from 'react-icons/fa';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
 
-import Benefit from '../molecules/Benefit';
+import Benefit from '../atoms/Benefit';
 
 const AppBenefits = () => (
   <Box

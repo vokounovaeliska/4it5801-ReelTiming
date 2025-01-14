@@ -5,7 +5,7 @@ import { FaCirclePlus } from 'react-icons/fa6';
 import { route } from '@frontend/route';
 
 import DashButton from '../atoms/DashButton';
-import RecentTimesheets from '../molecules/RecentTimesheets';
+import RecentTimesheets from '../atoms/RecentTimesheets';
 
 interface ShiftInfoProps {
   projectId: string;
@@ -18,7 +18,7 @@ const ShiftInfo: React.FC<ShiftInfoProps> = ({ projectId, userId }) => {
       <RecentTimesheets projectId={projectId} userId={userId} />
       <Box
         display="flex"
-        justifyContent={{ base: 'center', 'dash-break1': 'flex-start' }} //PŮVODNĚ TU BYLO md
+        justifyContent={{ base: 'center', 'dash-break1': 'flex-start' }}
         mt={4}
       >
         <DashButton

@@ -11,6 +11,10 @@ import { GET_PROJECT_DETAILS } from '@frontend/graphql/queries/GetProjectDetails
 import { GET_SHOOTING_DAYS } from '@frontend/graphql/queries/GetShootingDays';
 import { GET_USER_ROLE_IN_PROJECT } from '@frontend/graphql/queries/GetUserRoleInProject';
 import { projectFormValues } from '@frontend/zod/schemas';
+import {
+  showErrorToast,
+  showSuccessToast,
+} from '@frontend/shared/design-system/molecules/toastUtils';
 
 export const useProjectConfigOperations = (
   projectId: string,
@@ -18,7 +22,6 @@ export const useProjectConfigOperations = (
 ) => {
   const navigate = useNavigate();
 
-  // Queries
   const { data: projectData, refetch: refetchProject } = useQuery(
     GET_PROJECT_DETAILS,
     {
@@ -46,7 +49,6 @@ export const useProjectConfigOperations = (
     fetchPolicy: 'cache-and-network',
   });
 
-  // Mutations
   const [editProject] = useMutation(EDIT_PROJECT, {
     onCompleted: async () => {
       await refetchProject();
@@ -87,7 +89,16 @@ export const useProjectConfigOperations = (
         deletePromises.push(
           deleteShootingDay({
             variables: { shootingDayId: stored.id },
-          }),
+          })
+            .then(() => {
+              showSuccessToast('Shooting day deleted successfully.');
+            })
+            .catch((error) => {
+              console.error('Error deleting shooting day:', error);
+              showErrorToast(
+                'Failed to delete shooting day. Please try again.',
+              );
+            }),
         );
       }
     }
@@ -114,7 +125,16 @@ export const useProjectConfigOperations = (
                 },
                 shootingDayId: newShootingDay.id,
               },
-            }),
+            })
+              .then(() => {
+                showSuccessToast('Shooting day updated successfully.');
+              })
+              .catch((error) => {
+                console.error('Error updating shooting day:', error);
+                showErrorToast(
+                  'Failed to update shooting day. Please try again.',
+                );
+              }),
           );
         }
       } else {
@@ -126,7 +146,14 @@ export const useProjectConfigOperations = (
               date: formatISO(parseISO(newShootingDay.date)),
               shootingDayNumber: newShootingDay.shooting_day_number,
             },
-          }),
+          })
+            .then(() => {
+              showSuccessToast('Shooting day added successfully.');
+            })
+            .catch((error) => {
+              console.error('Error adding shooting day:', error);
+              showErrorToast('Failed to add shooting day. Please try again.');
+            }),
         );
       }
     }

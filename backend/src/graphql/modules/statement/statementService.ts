@@ -73,7 +73,7 @@ export class StatementService {
 
   async createStatement(data: StatementInput): Promise<Statement> {
     const createdAt = new Date();
-    const userId = 'user-id'; // actual user id
+    const userId = 'user-id';
     const statementId = await this.statementRepository.createStatement({
       ...data,
       create_date: createdAt,

@@ -39,7 +39,6 @@ export const currencyUtil = {
       : currency;
   },
 
-  // Nová funkce pro získání symbolu měny (např. Kč)
   getCurrencySymbol(currency: CurrencyCode): string {
     const formatter = new Intl.NumberFormat('cs-CZ', {
       style: 'currency',

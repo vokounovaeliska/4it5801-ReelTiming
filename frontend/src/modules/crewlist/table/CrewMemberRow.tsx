@@ -17,7 +17,6 @@ export const CrewMemberRow = ({
   sendInvitation,
   handleRemoveButtonClick,
   userRoleInProject,
-  authUserId,
 }: {
   user: ProjectUser;
   project: Project;
@@ -30,7 +29,6 @@ export const CrewMemberRow = ({
   ) => void;
   handleRemoveButtonClick: (userId: string) => void;
   userRoleInProject: string;
-  authUserId: string | undefined;
 }) => {
   const userData: CrewMemberData = {
     id: user.id,
@@ -164,7 +162,6 @@ export const CrewMemberRow = ({
         <DeleteCrewButton
           userId={user.id}
           userRoleInProject={userRoleInProject}
-          authUserId={authUserId}
           handleRemoveButtonClick={handleRemoveButtonClick}
           isDisabled={!project.is_active}
         />

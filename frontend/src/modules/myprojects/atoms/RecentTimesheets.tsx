@@ -53,7 +53,7 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
 
   // Handle if data is not available
   const userProjectInfo: UserProjectInfo | undefined =
-    dataUserInfo?.projectUserDetails || undefined; // Convert null to undefined
+    dataUserInfo?.projectUserDetails || undefined;
 
   if (!userProjectInfo) {
     return <Text>No user project info available!</Text>;

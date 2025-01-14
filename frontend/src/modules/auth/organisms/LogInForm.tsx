@@ -68,12 +68,7 @@ export function LogInForm({
           resolver={zodResolver(loginFormSchema)}
           noValidate
         >
-          <Stack
-            py="0"
-            // width={{ base: '200px', sm: '300px', md: '400px' }}
-            width="full"
-            justify="center"
-          >
+          <Stack py="0" width="full" justify="center">
             {errorMessage && <ErrorBanner title={errorMessage} />}
             <InputField
               name="email"
