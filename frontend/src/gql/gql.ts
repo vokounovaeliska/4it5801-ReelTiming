@@ -29,24 +29,34 @@ const documents = {
     types.AddProjectUserDocument,
   '\n  mutation AddRate(\n    $standardRate: Float!\n    $compensationRate: Float!\n    $overtimeHour1: Float!\n    $overtimeHour2: Float!\n    $overtimeHour3: Float!\n    $overtimeHour4: Float!\n  ) {\n    addRate(\n      standard_rate: $standardRate\n      compensation_rate: $compensationRate\n      overtime_hour1: $overtimeHour1\n      overtime_hour2: $overtimeHour2\n      overtime_hour3: $overtimeHour3\n      overtime_hour4: $overtimeHour4\n    ) {\n      id\n    }\n  }\n':
     types.AddRateDocument,
+  '\n  mutation AddShiftOverview($projectId: String!, $date: DateTimeISO!, $crewWorking: [CrewInput!]!) {\n  addShiftOverview(projectId: $projectId, date: $date, crew_working: $crewWorking) {\n    id\n    date\n    crew_working {\n      id\n    }\n  }\n}\n':
+    types.AddShiftOverviewDocument,
   '\n    mutation AddShootingDay(\n        $projectId: String!, \n        $date: DateTimeISO!, \n        $shootingDayNumber: Float!, \n        $eventType: String\n    ) {\n        addShootingDay(\n            projectId: $projectId,\n            date: $date,\n            shootingDayNumber: $shootingDayNumber,\n            eventType: $eventType\n        ) {\n            project{\n                id\n            }\n        }\n    }\n':
     types.AddShootingDayDocument,
   '\n  mutation AddStatement(\n    $project_user_id: String!\n    $start_date: DateTimeISO!\n    $from: DateTimeISO!\n    $to: DateTimeISO!\n    $shift_lenght: Float!\n    $calculated_overtime: Float\n    $claimed_overtime: Float\n    $car_id: String\n    $kilometers: Float\n  ) {\n    addStatement(\n      project_user_id: $project_user_id\n      start_date: $start_date\n      from: $from\n      to: $to\n      shift_lenght: $shift_lenght\n      calculated_overtime: $calculated_overtime\n      claimed_overtime: $claimed_overtime\n      car_id: $car_id\n      kilometers: $kilometers\n    ) {\n      id\n      projectUser {\n        id\n        user {\n          id\n          name\n          surname\n        }\n      }\n      start_date\n      from\n      to\n      shift_lenght\n      calculated_overtime\n      claimed_overtime\n      create_date\n    }\n  }\n':
     types.AddStatementDocument,
+  '\n mutation AddDepartment($name: String!, $isVisible: Boolean, $orderIndex: Float, $projectId: String!) {\n    addDepartment(name: $name, isVisible: $isVisible, orderIndex: $orderIndex, projectId: $projectId) {\n      id\n      is_visible\n      name\n      order_index\n    }\n  }\n':
+    types.AddDepartmentDocument,
+  '\nmutation DeleteDailyReport($dailyReportId: String!) {\n    deleteDailyReport(dailyReportId: $dailyReportId)\n  }\n':
+    types.DeleteDailyReportDocument,
   '\n  mutation DeleteInvitation($projectUserId: String!) {\n    deleteInvitation(projectUserId: $projectUserId)\n  }\n':
     types.DeleteInvitationDocument,
+  '\nmutation DeleteShiftOverview($shiftOverviewId: String!) {\n    deleteShiftOverview(shiftOverviewId: $shiftOverviewId)\n  }\n':
+    types.DeleteShiftOverviewDocument,
   '\n    mutation DeleteShootingDay($shootingDayId: String!) {\n        deleteShootingDay(shootingDayId: $shootingDayId)\n    }\n':
     types.DeleteShootingDayDocument,
   '\n  mutation DeleteStatement($id: String!) {\n    deleteStatement(id: $id)\n  }\n':
     types.DeleteStatementDocument,
   '\nmutation EditDailyReport($data: DailyReportInput!, $dailyReportId: String!) {\n    updateDailyReport(data: $data, dailyReportId: $dailyReportId) {\n      id\n      \n    }\n  }\n':
     types.EditDailyReportDocument,
-  '\n    mutation EditProject($data: ProjectInput!, $projectId: String!){\n        updateProject(data: $data, projectId: $projectId){\n            description,\n            name,\n            production_company,\n            end_date,\n            is_active,\n            last_update_user_id,\n            currency,\n            # start_date\n        }\n    } \n':
+  '\n    mutation EditProject($data: ProjectInput!, $projectId: String!){\n        updateProject(data: $data, projectId: $projectId){\n            description,\n            name,\n            production_company,\n            end_date,\n            is_active,\n            last_update_user_id,\n            currency,\n            logo,\n            # start_date\n        }\n    } \n':
     types.EditProjectDocument,
   '\n  mutation EditProjectUser($data: ProjectUserInput!, $updateProjectUserId: String!) {\n    updateProjectUser(data: $data, id: $updateProjectUserId) {\n      id\n    }\n  }\n':
     types.EditProjectUserDocument,
   '\n  mutation EditRate($data: RateInput!, $rateId: String!) {\n    updateRate(data: $data, rateId: $rateId) {\n      id\n      standard_rate\n      overtime_hour1\n      overtime_hour2\n      overtime_hour3\n      overtime_hour4\n      compensation_rate\n    }\n  }\n':
     types.EditRateDocument,
+  '\nmutation EditShiftOverview($shiftOverviewId: String!, $data: ShiftOverviewInput!) {\n  updateShiftOverview(shiftOverviewId: $shiftOverviewId, data: $data) {\n    id\n    date\n    crew_working {\n      id\n    }\n  }\n}\n':
+    types.EditShiftOverviewDocument,
   '\n    mutation UpdateShootingDay(\n        $data: ShootingDayInput!,\n        $shootingDayId: String!\n    ) {\n        updateShootingDay(\n            data: $data,\n            shootingDayId: $shootingDayId\n        ) {\n            project {\n                id\n            }\n        }\n}\n':
     types.UpdateShootingDayDocument,
   '\n  mutation UpdateStatement($id: String!, $data: StatementInput!) {\n    updatestatement(id: $id, data: $data) {\n      id\n      projectUser {\n        id\n      }\n      start_date\n      from\n      to\n      shift_lenght\n      calculated_overtime\n      claimed_overtime\n      create_date\n      last_update_date\n      create_user_id\n      last_update_user_id\n      kilometers\n    }\n  }\n':
@@ -55,8 +65,12 @@ const documents = {
     types.EditUserDocument,
   '\n  mutation InviteUserToProject(\n    $email: String!\n    $name: String!\n    $projectUserId: String!\n  ) {\n    inviteUser(email: $email, name: $name, projectUserId: $projectUserId)\n  }\n':
     types.InviteUserToProjectDocument,
+  '\n  mutation NotifyUser(\n    $dates: String!,\n    $message: String!,\n    $email: String!,\n    $name: String!,\n    $projectName: String!,\n    $link: String!,\n) {\n    notifyUser(dates: $dates, message: $message, email: $email, name: $name, projectName: $projectName, link: $link)\n}\n':
+    types.NotifyUserDocument,
   '\n  mutation UpdateAndActivateProjectUser(\n    $data: ProjectUserInput!\n    $updateProjectUserId: String!\n    $updateRateData: RateInput!\n    $rateId: String!\n  ) {\n    updateRate(data: $updateRateData, rateId: $rateId) {\n      compensation_rate\n      overtime_hour1\n      overtime_hour2\n      overtime_hour3\n      overtime_hour4\n      standard_rate\n    }\n    updateProjectUser(data: $data, id: $updateProjectUserId) {\n      id\n      position\n      number_of_people\n      is_team_leader\n      name\n      surname\n      email\n      create_date\n      create_user_id\n      last_update_user_id\n      last_update_date\n      is_active\n      role\n      invitation\n      phone_number\n    }\n  }\n':
     types.UpdateAndActivateProjectUserDocument,
+  '\n  mutation UpdateDepartmentOrder($id: String!, $data: DepartmentInput!) {\n    updateDepartment(departmentId: $id, data: $data) {\n      id\n      name\n      order_index\n      is_visible\n    }\n  }\n':
+    types.UpdateDepartmentOrderDocument,
   '\n  mutation UpdateUser($data: UserInput!, $userId: String!) {\n    updateUser(data: $data, userId: $userId) {\n      name\n      surname\n      phone_number\n      email\n      last_update_date\n    }\n  }\n':
     types.UpdateUserDocument,
   '\n  mutation DeleteProjectUser($projectUserId: String!) {\n    deleteProjectUser(projectUserId: $projectUserId)\n  }\n':
@@ -68,21 +82,23 @@ const documents = {
     types.GetAllProjectUsersDocument,
   '\n  query GetCarsByProjectUserId($projectUserId: String!) {\n    carsByProjectUserId(projectUserId: $projectUserId) {\n      id\n      name\n      kilometer_allow\n      kilometer_rate\n      create_user_id\n      last_update_user_id\n      last_update_date\n      create_date\n    }\n  }\n':
     types.GetCarsByProjectUserIdDocument,
-  '\n  query GetCrewListInfo($projectId: String!, $userId: String!) {\n    project(id: $projectId) {\n      id\n      name\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n    }\n    departments(projectId: $projectId) {\n      id\n      name\n    }\n    projectUsers(projectId: $projectId) {\n      id\n      is_active\n      position\n      user {\n        id\n      }\n      rate {\n        id\n        compensation_rate\n        create_date\n        create_user_id\n        last_update_date\n        last_update_user_id\n        overtime_hour1\n        overtime_hour2\n        overtime_hour3\n        overtime_hour4\n        standard_rate\n      }\n      invitation\n      role\n      phone_number\n      department {\n        name\n        id\n      }\n      email\n      name\n      surname\n    }\n    userRoleInProject(projectId: $projectId, userId: $userId)\n  }\n':
+  '\n  query GetCrewListInfo($projectId: String!, $userId: String!) {\n    project(id: $projectId) {\n      id\n      name\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n    }\n    departments(projectId: $projectId) {\n      id\n      name\n      is_visible\n      order_index\n    }\n    projectUsers(projectId: $projectId) {\n      id\n      is_active\n      position\n      user {\n        id\n      }\n      rate {\n        id\n        compensation_rate\n        create_date\n        create_user_id\n        last_update_date\n        last_update_user_id\n        overtime_hour1\n        overtime_hour2\n        overtime_hour3\n        overtime_hour4\n        standard_rate\n      }\n      invitation\n      role\n      phone_number\n      department {\n        name\n        id\n        is_visible\n        order_index\n      }\n      email\n      name\n      surname\n    }\n    userRoleInProject(projectId: $projectId, userId: $userId)\n  }\n':
     types.GetCrewListInfoDocument,
-  '\n  query GetProjectUserDetails($userId: String!, $projectId: String!) {\n    projectUserDetails(userId: $userId, projectId: $projectId) {\n      project {\n        id\n        name\n        currency\n      }\n      id\n      name\n      surname\n      email\n    }\n  }\n':
+  '\n  query GetProjectUserDetails($userId: String!, $projectId: String!) {\n    projectUserDetails(userId: $userId, projectId: $projectId) {\n      project {\n        id\n        name\n        currency\n        is_active\n      }\n      id\n      name\n      surname\n      email\n    }\n  }\n':
     types.GetProjectUserDetailsDocument,
   '\n  query GetDailyReportByShootingDay($shootingDayId: String!) {\n    shootingDay(id: $shootingDayId) {\n      id\n      dailyReport {\n        id\n        intro {\n          title\n          value\n        }\n        shooting_progress {\n          title\n          value       \n        }\n        footer {\n          title\n          value\n        }\n      }\n    }\n  }\n':
     types.GetDailyReportByShootingDayDocument,
-  '\n  query DailyReportPreviewInfo($date: DateTimeISO!, $projectId: String!, $shootingDayId: String!) {\n  statementsByProjectIdAndDate(date: $date, projectId: $projectId) {\n    id\n    start_date\n    from\n    to\n    claimed_overtime\n    projectUser {\n      name\n      surname\n      position\n      department {\n        id\n        name\n        order_index\n        is_visible\n      }\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    production_company\n    currency\n    shootingDays {\n      id\n    }\n  }\n  shootingDay(id: $shootingDayId) {\n    id\n    shooting_day_number\n    date\n    dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value\n      }\n      footer {\n        title\n        value\n      }\n    }\n  }\n}\n':
+  '\n  query DailyReportPreviewInfo($date: DateTimeISO!, $projectId: String!, $shootingDayId: String!) {\n  statementsByProjectIdAndDate(date: $date, projectId: $projectId) {\n    id\n    start_date\n    from\n    to\n    claimed_overtime\n    projectUser {\n      name\n      surname\n      position\n      department {\n        id\n        name\n        order_index\n        is_visible\n      }\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    production_company\n    currency\n    logo\n    shootingDays {\n      id\n    }\n  }\n  shootingDay(id: $shootingDayId) {\n    id\n    shooting_day_number\n    date\n    dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value\n      }\n      footer {\n        title\n        value\n      }\n    }\n  }\n}\n':
     types.DailyReportPreviewInfoDocument,
-  '\n  query Departments($projectId: String!) {\n    departments(projectId: $projectId) {\n      id\n      name\n    }\n  }\n':
+  '\n  query Departments($projectId: String!) {\n    departments(projectId: $projectId) {\n      id\n      name\n      is_visible\n      order_index\n    }\n  }\n':
     types.DepartmentsDocument,
   '\nquery LastDailyReportByProjectId($projectId: String!) {\n  lastDailyReportByProjectId(projectId: $projectId) {\n    id\n    intro {\n      title\n      value\n    }\n    shooting_progress {\n      title\n      value\n    }\n    footer {\n      title\n      value\n    }\n    create_date\n    last_update_date\n    shootingDay {\n      id\n      shooting_day_number\n      date\n    }\n  }\n}\n':
     types.LastDailyReportByProjectIdDocument,
+  '\n  query GetPersonalProjectInfo($projectId: String!, $userId: String!) {\n    projectUserByUserIdAndProjectId(projectId: $projectId, userId: $userId) {\n    id\n      is_active\n      position\n      email\n      name\n      surname\n      invitation\n      role\n      phone_number\n      user {\n        id\n      }\n      rate {\n        id\n        compensation_rate\n        create_date\n        create_user_id\n        last_update_date\n        last_update_user_id\n        overtime_hour1\n        overtime_hour2\n        overtime_hour3\n        overtime_hour4\n        standard_rate\n      }\n      department {\n        name\n        id\n        is_visible\n        order_index\n      }\n    car {\n      id\n      name\n      kilometer_allow\n      kilometer_rate\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    currency\n    is_active\n    departments {\n      id\n      name\n      order_index\n      is_visible\n    }\n  }\n}\n':
+    types.GetPersonalProjectInfoDocument,
   '\n  query GetProjectByProjectUserToken($token: String!) {\n    projectUsersByToken(token: $token) {\n      project {\n        name\n      }\n    }\n  }\n':
     types.GetProjectByProjectUserTokenDocument,
-  '\n  query GetProjectDetail($id: String!) {\n    project(id: $id) {\n      id\n      name\n      description\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n      projectUsers {\n      id\n    }\n    }\n  }\n':
+  '\n  query GetProjectDetail($id: String!) {\n    project(id: $id) {\n      id\n      name\n      description\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n      projectUsers {\n      id\n    }\n      logo\n    }\n  }\n':
     types.GetProjectDetailDocument,
   '\n  query GetProjectUserByToken($token: String!) {\n    projectUsersByToken(token: $token) {\n      id\n      position\n      name\n      surname\n      email\n      is_active\n      role\n      invitation\n      phone_number\n      project {\n        id\n        name\n        description\n        currency\n      }\n      rate {\n        standard_rate\n        overtime_hour1\n        overtime_hour2\n        overtime_hour3\n        overtime_hour4\n        compensation_rate\n        id\n      }\n      department {\n        id\n        name\n      }\n    }\n  }\n':
     types.GetProjectUserByTokenDocument,
@@ -92,6 +108,8 @@ const documents = {
     types.ProjectUserDocument,
   '\n  query GetProjects {\n    projects {\n      id\n      name\n      description\n    }\n  }\n':
     types.GetProjectsDocument,
+  '\n    query GetShiftOverviewPageData($projectId: String!, ){\n  projectUsers(projectId: $projectId) {\n    id\n    name\n    surname\n    email\n    position\n    department {\n      id\n      name\n      order_index\n    }\n    statement {\n      id\n      start_date\n      from\n      to\n    }\n  }\n  shootingDaysByProject(projectId: $projectId) {\n    id\n    shooting_day_number\n    date\n  }\n  shiftOverviewsByProjectId(projectId: $projectId) {\n    id\n    date\n    crew_working {\n      id\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    start_date\n    end_date\n  }\n}\n':
+    types.GetShiftOverviewPageDataDocument,
   '\n    query ShootingDaysByProject($projectId: String!) {\n        shootingDaysByProject(projectId: $projectId) {\n            id\n            date\n            shooting_day_number\n            event_type\n        }\n    }\n':
     types.ShootingDaysByProjectDocument,
   '\n  query GetShootingDaysByProject($projectId: String!) {\n    shootingDaysByProject(projectId: $projectId) {\n      id\n      shooting_day_number\n      date\n      event_type\n      dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value       \n      }\n      footer {\n        title\n        value\n      }\n    }\n    }\n  }\n':
@@ -100,11 +118,13 @@ const documents = {
     types.GetCrewStatementsDocument,
   '\n  query GetAdminStatements($projectId: String!) {\n    statementsByProjectId(projectId: $projectId) {\n      id\n      projectUser {\n        id\n        name\n        surname\n        email\n        rate {\n          compensation_rate\n          standard_rate\n          overtime_hour1\n          overtime_hour2\n          overtime_hour3\n          overtime_hour4\n        }\n      }\n      start_date\n      from\n      to\n      shift_lenght\n      calculated_overtime\n      claimed_overtime\n      create_date\n      car {\n        id\n        kilometer_allow\n        kilometer_rate\n        name\n      }\n      kilometers\n    }\n  }\n  ':
     types.GetAdminStatementsDocument,
-  '\n  query CarStatementsByProjectId($projectId: String!) {\n    carStatementsByProjectId(projectId: $projectId) {\n      car_id\n      kilometers\n    }\n  }\n  ':
+  '\n  query CarStatementsByProjectId($projectId: String!) {\n    carStatementsByProjectId(projectId: $projectId) {\n      car_id\n      kilometers\n    }\n  }\n':
     types.CarStatementsByProjectIdDocument,
+  '\n    query CarStatementsByProjectUserId($projectUserId: String!) {\n      carStatementsByProjectUserId(projectUserId: $projectUserId) {\n      car_id\n     kilometers\n  }\n}\n  ':
+    types.CarStatementsByProjectUserIdDocument,
   '\n  query GetUserProfileSettingsInfo($userId: String!) {\n    user(id: $userId) {\n      id\n      name\n      surname\n      email\n      phone_number\n      last_update_date\n      create_date\n    }\n  }\n':
     types.GetUserProfileSettingsInfoDocument,
-  '\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n    }\n  }\n\n':
+  '\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n      is_active\n      logo\n    }\n  }\n\n':
     types.GetUserProjectsDocument,
   '\n  query GetUserRoleInProject($userId: String!, $projectId: String!) {\n    userRoleInProject(userId: $userId, projectId: $projectId)\n  }\n':
     types.GetUserRoleInProjectDocument,
@@ -112,7 +132,7 @@ const documents = {
     types.ProjectBasicInfoFragmentDoc,
   '\n  mutation ForgotPassword($email: String!) {\n    forgotPassword(email: $email)\n  }\n':
     types.ForgotPasswordDocument,
-  '\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      user {\n        id\n        name\n        email\n        surname\n      }\n      token\n    }\n  }\n':
+  '\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      user {\n        id\n        name\n        email\n        surname\n        can_create_project\n      }\n      token\n    }\n  }\n':
     types.SignInDocument,
   '\n  mutation ResetPassword($newPassword: String!, $token: String!) {\n    resetPassword(newPassword: $newPassword, token: $token) {\n      user {\n        id\n        name\n        surname\n        email\n      }\n      token\n    }\n  }\n':
     types.ResetPasswordDocument,
@@ -186,6 +206,12 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
+  source: '\n  mutation AddShiftOverview($projectId: String!, $date: DateTimeISO!, $crewWorking: [CrewInput!]!) {\n  addShiftOverview(projectId: $projectId, date: $date, crew_working: $crewWorking) {\n    id\n    date\n    crew_working {\n      id\n    }\n  }\n}\n',
+): (typeof documents)['\n  mutation AddShiftOverview($projectId: String!, $date: DateTimeISO!, $crewWorking: [CrewInput!]!) {\n  addShiftOverview(projectId: $projectId, date: $date, crew_working: $crewWorking) {\n    id\n    date\n    crew_working {\n      id\n    }\n  }\n}\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
   source: '\n    mutation AddShootingDay(\n        $projectId: String!, \n        $date: DateTimeISO!, \n        $shootingDayNumber: Float!, \n        $eventType: String\n    ) {\n        addShootingDay(\n            projectId: $projectId,\n            date: $date,\n            shootingDayNumber: $shootingDayNumber,\n            eventType: $eventType\n        ) {\n            project{\n                id\n            }\n        }\n    }\n',
 ): (typeof documents)['\n    mutation AddShootingDay(\n        $projectId: String!, \n        $date: DateTimeISO!, \n        $shootingDayNumber: Float!, \n        $eventType: String\n    ) {\n        addShootingDay(\n            projectId: $projectId,\n            date: $date,\n            shootingDayNumber: $shootingDayNumber,\n            eventType: $eventType\n        ) {\n            project{\n                id\n            }\n        }\n    }\n'];
 /**
@@ -198,8 +224,26 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
+  source: '\n mutation AddDepartment($name: String!, $isVisible: Boolean, $orderIndex: Float, $projectId: String!) {\n    addDepartment(name: $name, isVisible: $isVisible, orderIndex: $orderIndex, projectId: $projectId) {\n      id\n      is_visible\n      name\n      order_index\n    }\n  }\n',
+): (typeof documents)['\n mutation AddDepartment($name: String!, $isVisible: Boolean, $orderIndex: Float, $projectId: String!) {\n    addDepartment(name: $name, isVisible: $isVisible, orderIndex: $orderIndex, projectId: $projectId) {\n      id\n      is_visible\n      name\n      order_index\n    }\n  }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\nmutation DeleteDailyReport($dailyReportId: String!) {\n    deleteDailyReport(dailyReportId: $dailyReportId)\n  }\n',
+): (typeof documents)['\nmutation DeleteDailyReport($dailyReportId: String!) {\n    deleteDailyReport(dailyReportId: $dailyReportId)\n  }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
   source: '\n  mutation DeleteInvitation($projectUserId: String!) {\n    deleteInvitation(projectUserId: $projectUserId)\n  }\n',
 ): (typeof documents)['\n  mutation DeleteInvitation($projectUserId: String!) {\n    deleteInvitation(projectUserId: $projectUserId)\n  }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\nmutation DeleteShiftOverview($shiftOverviewId: String!) {\n    deleteShiftOverview(shiftOverviewId: $shiftOverviewId)\n  }\n',
+): (typeof documents)['\nmutation DeleteShiftOverview($shiftOverviewId: String!) {\n    deleteShiftOverview(shiftOverviewId: $shiftOverviewId)\n  }\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -222,8 +266,8 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n    mutation EditProject($data: ProjectInput!, $projectId: String!){\n        updateProject(data: $data, projectId: $projectId){\n            description,\n            name,\n            production_company,\n            end_date,\n            is_active,\n            last_update_user_id,\n            currency,\n            # start_date\n        }\n    } \n',
-): (typeof documents)['\n    mutation EditProject($data: ProjectInput!, $projectId: String!){\n        updateProject(data: $data, projectId: $projectId){\n            description,\n            name,\n            production_company,\n            end_date,\n            is_active,\n            last_update_user_id,\n            currency,\n            # start_date\n        }\n    } \n'];
+  source: '\n    mutation EditProject($data: ProjectInput!, $projectId: String!){\n        updateProject(data: $data, projectId: $projectId){\n            description,\n            name,\n            production_company,\n            end_date,\n            is_active,\n            last_update_user_id,\n            currency,\n            logo,\n            # start_date\n        }\n    } \n',
+): (typeof documents)['\n    mutation EditProject($data: ProjectInput!, $projectId: String!){\n        updateProject(data: $data, projectId: $projectId){\n            description,\n            name,\n            production_company,\n            end_date,\n            is_active,\n            last_update_user_id,\n            currency,\n            logo,\n            # start_date\n        }\n    } \n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -236,6 +280,12 @@ export function gql(
 export function gql(
   source: '\n  mutation EditRate($data: RateInput!, $rateId: String!) {\n    updateRate(data: $data, rateId: $rateId) {\n      id\n      standard_rate\n      overtime_hour1\n      overtime_hour2\n      overtime_hour3\n      overtime_hour4\n      compensation_rate\n    }\n  }\n',
 ): (typeof documents)['\n  mutation EditRate($data: RateInput!, $rateId: String!) {\n    updateRate(data: $data, rateId: $rateId) {\n      id\n      standard_rate\n      overtime_hour1\n      overtime_hour2\n      overtime_hour3\n      overtime_hour4\n      compensation_rate\n    }\n  }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\nmutation EditShiftOverview($shiftOverviewId: String!, $data: ShiftOverviewInput!) {\n  updateShiftOverview(shiftOverviewId: $shiftOverviewId, data: $data) {\n    id\n    date\n    crew_working {\n      id\n    }\n  }\n}\n',
+): (typeof documents)['\nmutation EditShiftOverview($shiftOverviewId: String!, $data: ShiftOverviewInput!) {\n  updateShiftOverview(shiftOverviewId: $shiftOverviewId, data: $data) {\n    id\n    date\n    crew_working {\n      id\n    }\n  }\n}\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -264,8 +314,20 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
+  source: '\n  mutation NotifyUser(\n    $dates: String!,\n    $message: String!,\n    $email: String!,\n    $name: String!,\n    $projectName: String!,\n    $link: String!,\n) {\n    notifyUser(dates: $dates, message: $message, email: $email, name: $name, projectName: $projectName, link: $link)\n}\n',
+): (typeof documents)['\n  mutation NotifyUser(\n    $dates: String!,\n    $message: String!,\n    $email: String!,\n    $name: String!,\n    $projectName: String!,\n    $link: String!,\n) {\n    notifyUser(dates: $dates, message: $message, email: $email, name: $name, projectName: $projectName, link: $link)\n}\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
   source: '\n  mutation UpdateAndActivateProjectUser(\n    $data: ProjectUserInput!\n    $updateProjectUserId: String!\n    $updateRateData: RateInput!\n    $rateId: String!\n  ) {\n    updateRate(data: $updateRateData, rateId: $rateId) {\n      compensation_rate\n      overtime_hour1\n      overtime_hour2\n      overtime_hour3\n      overtime_hour4\n      standard_rate\n    }\n    updateProjectUser(data: $data, id: $updateProjectUserId) {\n      id\n      position\n      number_of_people\n      is_team_leader\n      name\n      surname\n      email\n      create_date\n      create_user_id\n      last_update_user_id\n      last_update_date\n      is_active\n      role\n      invitation\n      phone_number\n    }\n  }\n',
 ): (typeof documents)['\n  mutation UpdateAndActivateProjectUser(\n    $data: ProjectUserInput!\n    $updateProjectUserId: String!\n    $updateRateData: RateInput!\n    $rateId: String!\n  ) {\n    updateRate(data: $updateRateData, rateId: $rateId) {\n      compensation_rate\n      overtime_hour1\n      overtime_hour2\n      overtime_hour3\n      overtime_hour4\n      standard_rate\n    }\n    updateProjectUser(data: $data, id: $updateProjectUserId) {\n      id\n      position\n      number_of_people\n      is_team_leader\n      name\n      surname\n      email\n      create_date\n      create_user_id\n      last_update_user_id\n      last_update_date\n      is_active\n      role\n      invitation\n      phone_number\n    }\n  }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\n  mutation UpdateDepartmentOrder($id: String!, $data: DepartmentInput!) {\n    updateDepartment(departmentId: $id, data: $data) {\n      id\n      name\n      order_index\n      is_visible\n    }\n  }\n',
+): (typeof documents)['\n  mutation UpdateDepartmentOrder($id: String!, $data: DepartmentInput!) {\n    updateDepartment(departmentId: $id, data: $data) {\n      id\n      name\n      order_index\n      is_visible\n    }\n  }\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -306,14 +368,14 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n  query GetCrewListInfo($projectId: String!, $userId: String!) {\n    project(id: $projectId) {\n      id\n      name\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n    }\n    departments(projectId: $projectId) {\n      id\n      name\n    }\n    projectUsers(projectId: $projectId) {\n      id\n      is_active\n      position\n      user {\n        id\n      }\n      rate {\n        id\n        compensation_rate\n        create_date\n        create_user_id\n        last_update_date\n        last_update_user_id\n        overtime_hour1\n        overtime_hour2\n        overtime_hour3\n        overtime_hour4\n        standard_rate\n      }\n      invitation\n      role\n      phone_number\n      department {\n        name\n        id\n      }\n      email\n      name\n      surname\n    }\n    userRoleInProject(projectId: $projectId, userId: $userId)\n  }\n',
-): (typeof documents)['\n  query GetCrewListInfo($projectId: String!, $userId: String!) {\n    project(id: $projectId) {\n      id\n      name\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n    }\n    departments(projectId: $projectId) {\n      id\n      name\n    }\n    projectUsers(projectId: $projectId) {\n      id\n      is_active\n      position\n      user {\n        id\n      }\n      rate {\n        id\n        compensation_rate\n        create_date\n        create_user_id\n        last_update_date\n        last_update_user_id\n        overtime_hour1\n        overtime_hour2\n        overtime_hour3\n        overtime_hour4\n        standard_rate\n      }\n      invitation\n      role\n      phone_number\n      department {\n        name\n        id\n      }\n      email\n      name\n      surname\n    }\n    userRoleInProject(projectId: $projectId, userId: $userId)\n  }\n'];
+  source: '\n  query GetCrewListInfo($projectId: String!, $userId: String!) {\n    project(id: $projectId) {\n      id\n      name\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n    }\n    departments(projectId: $projectId) {\n      id\n      name\n      is_visible\n      order_index\n    }\n    projectUsers(projectId: $projectId) {\n      id\n      is_active\n      position\n      user {\n        id\n      }\n      rate {\n        id\n        compensation_rate\n        create_date\n        create_user_id\n        last_update_date\n        last_update_user_id\n        overtime_hour1\n        overtime_hour2\n        overtime_hour3\n        overtime_hour4\n        standard_rate\n      }\n      invitation\n      role\n      phone_number\n      department {\n        name\n        id\n        is_visible\n        order_index\n      }\n      email\n      name\n      surname\n    }\n    userRoleInProject(projectId: $projectId, userId: $userId)\n  }\n',
+): (typeof documents)['\n  query GetCrewListInfo($projectId: String!, $userId: String!) {\n    project(id: $projectId) {\n      id\n      name\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n    }\n    departments(projectId: $projectId) {\n      id\n      name\n      is_visible\n      order_index\n    }\n    projectUsers(projectId: $projectId) {\n      id\n      is_active\n      position\n      user {\n        id\n      }\n      rate {\n        id\n        compensation_rate\n        create_date\n        create_user_id\n        last_update_date\n        last_update_user_id\n        overtime_hour1\n        overtime_hour2\n        overtime_hour3\n        overtime_hour4\n        standard_rate\n      }\n      invitation\n      role\n      phone_number\n      department {\n        name\n        id\n        is_visible\n        order_index\n      }\n      email\n      name\n      surname\n    }\n    userRoleInProject(projectId: $projectId, userId: $userId)\n  }\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n  query GetProjectUserDetails($userId: String!, $projectId: String!) {\n    projectUserDetails(userId: $userId, projectId: $projectId) {\n      project {\n        id\n        name\n        currency\n      }\n      id\n      name\n      surname\n      email\n    }\n  }\n',
-): (typeof documents)['\n  query GetProjectUserDetails($userId: String!, $projectId: String!) {\n    projectUserDetails(userId: $userId, projectId: $projectId) {\n      project {\n        id\n        name\n        currency\n      }\n      id\n      name\n      surname\n      email\n    }\n  }\n'];
+  source: '\n  query GetProjectUserDetails($userId: String!, $projectId: String!) {\n    projectUserDetails(userId: $userId, projectId: $projectId) {\n      project {\n        id\n        name\n        currency\n        is_active\n      }\n      id\n      name\n      surname\n      email\n    }\n  }\n',
+): (typeof documents)['\n  query GetProjectUserDetails($userId: String!, $projectId: String!) {\n    projectUserDetails(userId: $userId, projectId: $projectId) {\n      project {\n        id\n        name\n        currency\n        is_active\n      }\n      id\n      name\n      surname\n      email\n    }\n  }\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -324,14 +386,14 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n  query DailyReportPreviewInfo($date: DateTimeISO!, $projectId: String!, $shootingDayId: String!) {\n  statementsByProjectIdAndDate(date: $date, projectId: $projectId) {\n    id\n    start_date\n    from\n    to\n    claimed_overtime\n    projectUser {\n      name\n      surname\n      position\n      department {\n        id\n        name\n        order_index\n        is_visible\n      }\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    production_company\n    currency\n    shootingDays {\n      id\n    }\n  }\n  shootingDay(id: $shootingDayId) {\n    id\n    shooting_day_number\n    date\n    dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value\n      }\n      footer {\n        title\n        value\n      }\n    }\n  }\n}\n',
-): (typeof documents)['\n  query DailyReportPreviewInfo($date: DateTimeISO!, $projectId: String!, $shootingDayId: String!) {\n  statementsByProjectIdAndDate(date: $date, projectId: $projectId) {\n    id\n    start_date\n    from\n    to\n    claimed_overtime\n    projectUser {\n      name\n      surname\n      position\n      department {\n        id\n        name\n        order_index\n        is_visible\n      }\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    production_company\n    currency\n    shootingDays {\n      id\n    }\n  }\n  shootingDay(id: $shootingDayId) {\n    id\n    shooting_day_number\n    date\n    dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value\n      }\n      footer {\n        title\n        value\n      }\n    }\n  }\n}\n'];
+  source: '\n  query DailyReportPreviewInfo($date: DateTimeISO!, $projectId: String!, $shootingDayId: String!) {\n  statementsByProjectIdAndDate(date: $date, projectId: $projectId) {\n    id\n    start_date\n    from\n    to\n    claimed_overtime\n    projectUser {\n      name\n      surname\n      position\n      department {\n        id\n        name\n        order_index\n        is_visible\n      }\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    production_company\n    currency\n    logo\n    shootingDays {\n      id\n    }\n  }\n  shootingDay(id: $shootingDayId) {\n    id\n    shooting_day_number\n    date\n    dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value\n      }\n      footer {\n        title\n        value\n      }\n    }\n  }\n}\n',
+): (typeof documents)['\n  query DailyReportPreviewInfo($date: DateTimeISO!, $projectId: String!, $shootingDayId: String!) {\n  statementsByProjectIdAndDate(date: $date, projectId: $projectId) {\n    id\n    start_date\n    from\n    to\n    claimed_overtime\n    projectUser {\n      name\n      surname\n      position\n      department {\n        id\n        name\n        order_index\n        is_visible\n      }\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    production_company\n    currency\n    logo\n    shootingDays {\n      id\n    }\n  }\n  shootingDay(id: $shootingDayId) {\n    id\n    shooting_day_number\n    date\n    dailyReport {\n      id\n      intro {\n        title\n        value\n      }\n      shooting_progress {\n        title\n        value\n      }\n      footer {\n        title\n        value\n      }\n    }\n  }\n}\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n  query Departments($projectId: String!) {\n    departments(projectId: $projectId) {\n      id\n      name\n    }\n  }\n',
-): (typeof documents)['\n  query Departments($projectId: String!) {\n    departments(projectId: $projectId) {\n      id\n      name\n    }\n  }\n'];
+  source: '\n  query Departments($projectId: String!) {\n    departments(projectId: $projectId) {\n      id\n      name\n      is_visible\n      order_index\n    }\n  }\n',
+): (typeof documents)['\n  query Departments($projectId: String!) {\n    departments(projectId: $projectId) {\n      id\n      name\n      is_visible\n      order_index\n    }\n  }\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -342,14 +404,20 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
+  source: '\n  query GetPersonalProjectInfo($projectId: String!, $userId: String!) {\n    projectUserByUserIdAndProjectId(projectId: $projectId, userId: $userId) {\n    id\n      is_active\n      position\n      email\n      name\n      surname\n      invitation\n      role\n      phone_number\n      user {\n        id\n      }\n      rate {\n        id\n        compensation_rate\n        create_date\n        create_user_id\n        last_update_date\n        last_update_user_id\n        overtime_hour1\n        overtime_hour2\n        overtime_hour3\n        overtime_hour4\n        standard_rate\n      }\n      department {\n        name\n        id\n        is_visible\n        order_index\n      }\n    car {\n      id\n      name\n      kilometer_allow\n      kilometer_rate\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    currency\n    is_active\n    departments {\n      id\n      name\n      order_index\n      is_visible\n    }\n  }\n}\n',
+): (typeof documents)['\n  query GetPersonalProjectInfo($projectId: String!, $userId: String!) {\n    projectUserByUserIdAndProjectId(projectId: $projectId, userId: $userId) {\n    id\n      is_active\n      position\n      email\n      name\n      surname\n      invitation\n      role\n      phone_number\n      user {\n        id\n      }\n      rate {\n        id\n        compensation_rate\n        create_date\n        create_user_id\n        last_update_date\n        last_update_user_id\n        overtime_hour1\n        overtime_hour2\n        overtime_hour3\n        overtime_hour4\n        standard_rate\n      }\n      department {\n        name\n        id\n        is_visible\n        order_index\n      }\n    car {\n      id\n      name\n      kilometer_allow\n      kilometer_rate\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    currency\n    is_active\n    departments {\n      id\n      name\n      order_index\n      is_visible\n    }\n  }\n}\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
   source: '\n  query GetProjectByProjectUserToken($token: String!) {\n    projectUsersByToken(token: $token) {\n      project {\n        name\n      }\n    }\n  }\n',
 ): (typeof documents)['\n  query GetProjectByProjectUserToken($token: String!) {\n    projectUsersByToken(token: $token) {\n      project {\n        name\n      }\n    }\n  }\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n  query GetProjectDetail($id: String!) {\n    project(id: $id) {\n      id\n      name\n      description\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n      projectUsers {\n      id\n    }\n    }\n  }\n',
-): (typeof documents)['\n  query GetProjectDetail($id: String!) {\n    project(id: $id) {\n      id\n      name\n      description\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n      projectUsers {\n      id\n    }\n    }\n  }\n'];
+  source: '\n  query GetProjectDetail($id: String!) {\n    project(id: $id) {\n      id\n      name\n      description\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n      projectUsers {\n      id\n    }\n      logo\n    }\n  }\n',
+): (typeof documents)['\n  query GetProjectDetail($id: String!) {\n    project(id: $id) {\n      id\n      name\n      description\n      start_date\n      end_date\n      production_company\n      is_active\n      create_date\n      create_user_id\n      last_update_date\n      last_update_user_id\n      currency\n      projectUsers {\n      id\n    }\n      logo\n    }\n  }\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -378,6 +446,12 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
+  source: '\n    query GetShiftOverviewPageData($projectId: String!, ){\n  projectUsers(projectId: $projectId) {\n    id\n    name\n    surname\n    email\n    position\n    department {\n      id\n      name\n      order_index\n    }\n    statement {\n      id\n      start_date\n      from\n      to\n    }\n  }\n  shootingDaysByProject(projectId: $projectId) {\n    id\n    shooting_day_number\n    date\n  }\n  shiftOverviewsByProjectId(projectId: $projectId) {\n    id\n    date\n    crew_working {\n      id\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    start_date\n    end_date\n  }\n}\n',
+): (typeof documents)['\n    query GetShiftOverviewPageData($projectId: String!, ){\n  projectUsers(projectId: $projectId) {\n    id\n    name\n    surname\n    email\n    position\n    department {\n      id\n      name\n      order_index\n    }\n    statement {\n      id\n      start_date\n      from\n      to\n    }\n  }\n  shootingDaysByProject(projectId: $projectId) {\n    id\n    shooting_day_number\n    date\n  }\n  shiftOverviewsByProjectId(projectId: $projectId) {\n    id\n    date\n    crew_working {\n      id\n    }\n  }\n  project(id: $projectId) {\n    id\n    name\n    start_date\n    end_date\n  }\n}\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
   source: '\n    query ShootingDaysByProject($projectId: String!) {\n        shootingDaysByProject(projectId: $projectId) {\n            id\n            date\n            shooting_day_number\n            event_type\n        }\n    }\n',
 ): (typeof documents)['\n    query ShootingDaysByProject($projectId: String!) {\n        shootingDaysByProject(projectId: $projectId) {\n            id\n            date\n            shooting_day_number\n            event_type\n        }\n    }\n'];
 /**
@@ -402,8 +476,14 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n  query CarStatementsByProjectId($projectId: String!) {\n    carStatementsByProjectId(projectId: $projectId) {\n      car_id\n      kilometers\n    }\n  }\n  ',
-): (typeof documents)['\n  query CarStatementsByProjectId($projectId: String!) {\n    carStatementsByProjectId(projectId: $projectId) {\n      car_id\n      kilometers\n    }\n  }\n  '];
+  source: '\n  query CarStatementsByProjectId($projectId: String!) {\n    carStatementsByProjectId(projectId: $projectId) {\n      car_id\n      kilometers\n    }\n  }\n',
+): (typeof documents)['\n  query CarStatementsByProjectId($projectId: String!) {\n    carStatementsByProjectId(projectId: $projectId) {\n      car_id\n      kilometers\n    }\n  }\n'];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\n    query CarStatementsByProjectUserId($projectUserId: String!) {\n      carStatementsByProjectUserId(projectUserId: $projectUserId) {\n      car_id\n     kilometers\n  }\n}\n  ',
+): (typeof documents)['\n    query CarStatementsByProjectUserId($projectUserId: String!) {\n      carStatementsByProjectUserId(projectUserId: $projectUserId) {\n      car_id\n     kilometers\n  }\n}\n  '];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -414,8 +494,8 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n    }\n  }\n\n',
-): (typeof documents)['\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n    }\n  }\n\n'];
+  source: '\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n      is_active\n      logo\n    }\n  }\n\n',
+): (typeof documents)['\n  query GetUserProjects($userId: String!) {\n    userProjects(userId: $userId) {\n      id\n      name\n      description\n      is_active\n      logo\n    }\n  }\n\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -438,8 +518,8 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      user {\n        id\n        name\n        email\n        surname\n      }\n      token\n    }\n  }\n',
-): (typeof documents)['\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      user {\n        id\n        name\n        email\n        surname\n      }\n      token\n    }\n  }\n'];
+  source: '\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      user {\n        id\n        name\n        email\n        surname\n        can_create_project\n      }\n      token\n    }\n  }\n',
+): (typeof documents)['\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      user {\n        id\n        name\n        email\n        surname\n        can_create_project\n      }\n      token\n    }\n  }\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

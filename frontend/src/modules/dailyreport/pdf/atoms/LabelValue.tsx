@@ -2,7 +2,6 @@ import { StyleSheet, Text, View } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
   labelValue: {
-    //fontSize: 8,
     fontFamily: 'DejaVu Sans',
   },
   label: {

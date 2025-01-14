@@ -1,9 +1,10 @@
-import { Box } from '@frontend/shared/design-system';
+import { Box } from '@chakra-ui/react';
+
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
 import { projectFormValues } from '@frontend/zod/schemas';
 
-import { CreateProjectForm } from '../organisms/CreateProjectForm';
+import { CreateProjectForm } from '../forms/CreateProjectForm';
 
 export type CreateProjectTemplateProps = {
   isLoading: boolean;

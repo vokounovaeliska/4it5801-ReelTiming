@@ -11,30 +11,38 @@ type PDFGeneratorProps = {
 
 const PDFGenerator = ({ data }: PDFGeneratorProps) => {
   return (
-    <div style={{ textAlign: 'center', margin: '20px 0' }}>
-      <PDFViewer style={{ width: '100%', height: '600px' }}>
-        <MyPDFDocument data={data} />
-      </PDFViewer>
+    <div style={{ textAlign: 'center', margin: '0 20px' }}>
       <PDFDownloadLink
         document={<MyPDFDocument data={data} />}
         fileName="DailyReport.pdf"
         style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          marginTop: '20px',
+          marginBottom: '20px',
+          textAlign: 'right',
           padding: '10px 20px',
           backgroundColor: '#DD6B20',
           color: 'white',
-          textDecoration: 'none',
           borderRadius: '5px',
           fontSize: '16px',
           fontWeight: 'bold',
-          transition: 'background-color 0.3s ease',
+          display: 'flex',
+          width: 'fit-content',
+          justifySelf: 'flex-end',
         }}
       >
         <FaDownload style={{ marginRight: '10px' }} />
         Download Report
       </PDFDownloadLink>
+      <PDFViewer
+        style={{
+          width: '100%',
+          height: '100vh',
+          overflow: 'hidden',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <MyPDFDocument data={data} />
+      </PDFViewer>
     </div>
   );
 };

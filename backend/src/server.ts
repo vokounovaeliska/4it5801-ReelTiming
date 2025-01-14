@@ -36,9 +36,9 @@ import { StatementResolver } from '@backend/graphql/modules/statement/statementR
 import { timesheetPdfGeneratorService } from '@backend/pdf/timesheetReport/timesheetPdfGeneratorService';
 import { z } from 'zod';
 import { CarResolver } from '@backend/graphql/modules/car/carResolver';
-import { ShootingDayResolver } from './graphql/modules/shootingDay/shootingDayResolver';
-import { DailyReportResolver } from './graphql/modules/dailyReport/dailyReportResolver';
-import { ShiftOverviewResolver } from './graphql/modules/shiftOverview/shiftOverviewResolver';
+import { ShootingDayResolver } from '@backend//graphql/modules/shootingDay/shootingDayResolver';
+import { DailyReportResolver } from '@backend//graphql/modules/dailyReport/dailyReportResolver';
+import { ShiftOverviewResolver } from '@backend//graphql/modules/shiftOverview/shiftOverviewResolver';
 
 const init = async () => {
   const app = express();

@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 
+import { useUserRoleInProject } from '@frontend/shared/design-system/hooks/queryHooks';
+
 import { DataLoadingUtilsProps, DataLoadingUtilsResult } from '../interfaces';
 
 import {
@@ -9,26 +11,23 @@ import {
   useCarsByProjectUserId,
   useCrewStatements,
   useCrewUserInfoTimesheets,
-  useUserRoleInProject,
 } from './queryHooks';
 
 export const DataLoadingUtils = ({
-  auth,
+  auth: authUser,
   projectId,
   setUserInfo,
 }: DataLoadingUtilsProps): DataLoadingUtilsResult => {
   const { userInfoData, userInfoLoading, userInfoError } =
-    useCrewUserInfoTimesheets(auth.user?.id ?? '', projectId ?? '');
+    useCrewUserInfoTimesheets(authUser?.id ?? '', projectId ?? '');
   const { roleData, roleLoading, roleError } = useUserRoleInProject(
-    auth.user?.id ?? '',
-    projectId ?? '',
+    authUser?.id,
+    projectId,
   );
   const { crewData, crewLoading, crewError } = useCrewStatements(
     userInfoData?.projectUserDetails?.id ?? '',
   );
-  const { adminData, adminLoading, adminError } = useAdminStatements(
-    projectId ?? '',
-  );
+  const { adminData, adminLoading, adminError } = useAdminStatements(projectId);
   const { allProjectUsersData, allProjectUsersLoading, allProjectUsersError } =
     useAllProjectUsers(projectId ?? '');
   const allProjectUsersDataForOptions = allProjectUsersData;
@@ -72,10 +71,10 @@ export const DataLoadingUtils = ({
     allProjectUsersError?.message ||
     allCarsOnProjectError?.message ||
     userCarsError?.message ||
-    (!auth.user && 'User not authenticated');
+    (!authUser && 'User not authenticated');
 
   return {
-    isDataAvailable: !!isDataAvailable, // Ensure it's always a boolean
+    isDataAvailable: !!isDataAvailable,
     loading,
     error,
     roleData,

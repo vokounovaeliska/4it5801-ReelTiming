@@ -3,20 +3,21 @@ import { useAuth } from '@frontend/modules/auth';
 import { useCrewMemberMutations } from '@frontend/graphql/mutations/addCrewMember';
 import { GET_CREWLIST_INFO } from '@frontend/graphql/queries/GetCrewListInfo';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   CrewMemberData,
   ProjectUserLightVersion,
-  ProjectUser,
 } from '../interfaces/interfaces';
 import {
   showErrorToast,
   showSuccessToast,
 } from '@frontend/shared/design-system/molecules/toastUtils';
 import { Car } from '@frontend/modules/timesheets/interfaces';
+import { GetCrewListInfoQuery } from '@frontend/gql/graphql';
 
 export const useCrewListPageUtils = () => {
   const auth = useAuth();
+  const navigate = useNavigate();
   const client = useApolloClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,8 +25,9 @@ export const useCrewListPageUtils = () => {
   const [userIdToRemove, setUserIdToRemove] = useState<string | null>(null);
   const [selectedCrewMember, setSelectedCrewMember] =
     useState<CrewMemberData | null>(null);
+  const [isEditDepartmentsModalOpen, setIsEditDepartmentsModalOpen] =
+    useState(false);
   const { projectId } = useParams<{ projectId: string }>();
-
   const sanitizeCrewMemberData = (data: CrewMemberData): CrewMemberData => ({
     ...data,
     standard_rate: data.standard_rate || 0,
@@ -41,10 +43,12 @@ export const useCrewListPageUtils = () => {
     data: crewListData,
     loading: crewListLoading,
     error: crewListError,
+    refetch: refetchCrew,
   } = useQuery(GET_CREWLIST_INFO, {
     variables: { projectId: projectId!, userId: auth.user?.id! },
     skip: !projectId || !auth.user?.id,
     fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
 
   const crewList = crewListData;
@@ -199,12 +203,14 @@ export const useCrewListPageUtils = () => {
   const handleRemoveUser = async (projectUserId: string) => {
     try {
       await deleteCrewMember(projectUserId);
-      const data = client.readQuery({
+      const data = client.readQuery<GetCrewListInfoQuery>({
         query: GET_CREWLIST_INFO,
         variables: { projectId: projectId!, userId: auth.user?.id! },
       });
-      const updatedUsers = data?.projectUsers.filter(
-        (user: ProjectUser) => user.id !== projectUserId,
+
+      if (!data) throw new Error('Data not found in cache');
+      const updatedUsers = data.projectUsers.filter(
+        (user) => user.id !== projectUserId,
       );
       client.writeQuery({
         query: GET_CREWLIST_INFO,
@@ -214,6 +220,7 @@ export const useCrewListPageUtils = () => {
           projectUsers: updatedUsers,
         },
       });
+
       showSuccessToast('Crew member removed successfully');
     } catch (error) {
       console.error('Error removing user from project:', error);
@@ -269,17 +276,9 @@ export const useCrewListPageUtils = () => {
       showErrorToast('Failed to send invitation email. Please try again.');
     }
   };
-
-  const departmentNameToId = (
-    name: string,
-    departments: { name: string; id: string }[],
-  ): string | null => {
-    const department = departments.find((dept) => dept.name === name);
-    return department ? department.id : null;
-  };
-
   return {
     auth,
+    navigate,
     client,
     isSubmitting,
     setIsSubmitting,
@@ -311,5 +310,19 @@ export const useCrewListPageUtils = () => {
     handleRemoveUser,
     departmentNameToId,
     sendInvitation,
+    isEditDepartmentsModalOpen,
+    setIsEditDepartmentsModalOpen,
+    refetchCrew,
   };
+};
+
+export const departmentNameToId = (
+  name: string,
+  departments: {
+    name: string;
+    id: string;
+  }[],
+): string | null => {
+  const department = departments.find((dept) => dept.name === name);
+  return department ? department.id : null;
 };

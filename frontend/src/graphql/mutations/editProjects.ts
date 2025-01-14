@@ -11,6 +11,10 @@ import { GET_PROJECT_DETAILS } from '@frontend/graphql/queries/GetProjectDetails
 import { GET_SHOOTING_DAYS } from '@frontend/graphql/queries/GetShootingDays';
 import { GET_USER_ROLE_IN_PROJECT } from '@frontend/graphql/queries/GetUserRoleInProject';
 import { projectFormValues } from '@frontend/zod/schemas';
+import {
+  showErrorToast,
+  showSuccessToast,
+} from '@frontend/shared/design-system/molecules/toastUtils';
 
 export const useProjectConfigOperations = (
   projectId: string,
@@ -18,23 +22,26 @@ export const useProjectConfigOperations = (
 ) => {
   const navigate = useNavigate();
 
-  // Queries
-  const { data: projectData, refetch: refetchProject } = useQuery(
-    GET_PROJECT_DETAILS,
-    {
-      variables: { id: projectId || '' },
-      fetchPolicy: 'cache-first',
-      nextFetchPolicy: 'cache-and-network',
-    },
-  );
+  const {
+    data: projectData,
+    refetch: refetchProject,
+    loading: projectLoading,
+    error: projectError,
+  } = useQuery(GET_PROJECT_DETAILS, {
+    variables: { id: projectId || '' },
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
+  });
 
-  const { data: shootingDaysData, refetch: refetchShootingDays } = useQuery(
-    GET_SHOOTING_DAYS,
-    {
-      variables: { projectId: projectId || '' },
-      fetchPolicy: 'cache-and-network',
-    },
-  );
+  const {
+    data: shootingDaysData,
+    refetch: refetchShootingDays,
+    loading: shootingDaysLoading,
+    error: shootingDaysError,
+  } = useQuery(GET_SHOOTING_DAYS, {
+    variables: { projectId: projectId || '' },
+    fetchPolicy: 'cache-and-network',
+  });
 
   const {
     data: roleData,
@@ -46,7 +53,6 @@ export const useProjectConfigOperations = (
     fetchPolicy: 'cache-and-network',
   });
 
-  // Mutations
   const [editProject] = useMutation(EDIT_PROJECT, {
     onCompleted: async () => {
       await refetchProject();
@@ -87,6 +93,9 @@ export const useProjectConfigOperations = (
         deletePromises.push(
           deleteShootingDay({
             variables: { shootingDayId: stored.id },
+          }).catch((error) => {
+            console.error('Error deleting shooting day:', error);
+            showErrorToast('Failed to delete shooting day. Please try again.');
           }),
         );
       }
@@ -114,6 +123,11 @@ export const useProjectConfigOperations = (
                 },
                 shootingDayId: newShootingDay.id,
               },
+            }).catch((error) => {
+              console.error('Error updating shooting day:', error);
+              showErrorToast(
+                'Failed to update shooting day. Please try again.',
+              );
             }),
           );
         }
@@ -126,6 +140,9 @@ export const useProjectConfigOperations = (
               date: formatISO(parseISO(newShootingDay.date)),
               shootingDayNumber: newShootingDay.shooting_day_number,
             },
+          }).catch((error) => {
+            console.error('Error adding shooting day:', error);
+            showErrorToast('Failed to add shooting day. Please try again.');
           }),
         );
       }
@@ -145,37 +162,51 @@ export const useProjectConfigOperations = (
     alreadyStoredShootingDays: ShootingDay[],
     shootingDays: ShootingDay[],
   ) => {
-    try {
-      await editProject({
-        variables: {
-          projectId,
-          data: {
-            description: data.description,
-            name: data.name,
-            production_company: data.productionCompany,
-            start_date: data.startDate,
-            end_date: data.endDate ?? null,
-            last_update_user_id: userId,
-            currency: data.currency,
-          },
+    editProject({
+      variables: {
+        projectId,
+        data: {
+          description: data.description,
+          name: data.name,
+          production_company: data.productionCompany,
+          start_date: data.startDate,
+          end_date: data.endDate ?? null,
+          last_update_user_id: userId,
+          currency: data.currency,
+          is_active: data.isActive,
+          logo: data.logo,
         },
+      },
+    })
+      .then(() => {
+        return handleUpdateShootingDays(
+          projectId!,
+          alreadyStoredShootingDays,
+          shootingDays,
+        );
+      })
+      .then(() => {
+        showSuccessToast('Project updated successfully.');
+      })
+      .catch((error) => {
+        showErrorToast(`Project update failed! Error: \n\t ${error.message}`);
+        console.error('Failed to update project:', error);
       });
-      handleUpdateShootingDays(
-        projectId!,
-        alreadyStoredShootingDays,
-        shootingDays,
-      );
-    } catch (error) {
-      console.error('Failed to update project:', error);
-    }
   };
+
+  const loading = projectLoading || shootingDaysLoading || roleLoading;
+  const error = projectError || shootingDaysError || roleError;
+
+  const errorMessage = error
+    ? error.message || 'An error occurred while fetching data.'
+    : null;
 
   return {
     projectData,
     shootingDaysData,
     roleData,
-    roleLoading,
-    roleError,
+    loading,
+    errorMessage,
     handleEditProject,
     handleUpdateShootingDays,
   };

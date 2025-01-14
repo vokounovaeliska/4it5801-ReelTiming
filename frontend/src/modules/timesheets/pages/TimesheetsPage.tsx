@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AlertDialog,
   AlertDialogBody,
@@ -42,6 +42,8 @@ export function TimesheetPage() {
   const [, setSelectedCar] = useState<string | null>(null);
   const cancelRef = React.useRef<HTMLButtonElement>(null);
 
+  const isAuthenticated = auth.user !== null;
+
   const {
     loading,
     error,
@@ -54,7 +56,7 @@ export function TimesheetPage() {
     userInfoData,
     userCarsData,
   } = DataLoadingUtils({
-    auth,
+    auth: auth.user,
     projectId: projectId ?? '',
     setUserInfo,
   });
@@ -90,6 +92,13 @@ export function TimesheetPage() {
     userInfo,
   );
 
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate(`${route.login()}${`?projectId=${projectId}`}`);
+      return;
+    }
+  }, [isAuthenticated, navigate, loading, projectId]);
+
   if (loading) {
     return (
       <Center minHeight="100vh">
@@ -99,7 +108,7 @@ export function TimesheetPage() {
     );
   }
 
-  if (error) {
+  if (error || !userInfoData?.projectUserDetails?.project) {
     return (
       <Center minHeight="100vh">
         <Text color="red.500">Error loading project details: {error}</Text>
@@ -170,14 +179,12 @@ export function TimesheetPage() {
         sortedTimesheets={sortedTimesheets}
         handleRowClick={handleRowClick}
         onDeleteClick={handleDeleteClick}
-        projectId={projectId!}
-        projectName={userInfoData?.projectUserDetails?.project?.name!}
-        projectCurrency={userInfoData?.projectUserDetails.project.currency!}
         userOptions={userOptionsForUserFilter}
         userRole={userRole ?? ''}
         projectUserId={userInfoData?.projectUserDetails.id!}
         authUser={authUser}
         selectedUsers={selectedUsers}
+        project={userInfoData?.projectUserDetails?.project}
       />
       <Footer />
       <CustomModal

@@ -13,13 +13,12 @@ export function ToCPage() {
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
-        //   height="100vh"
         bg="#F7FAFC"
         p={{ base: 0, sm: 4, md: 8, xl: 8 }}
       >
         <Box
           w="100%"
-          maxW={{ md: '650px', xl: '800px' }} // Responsive width
+          maxW={{ md: '650px', xl: '800px' }}
           p="6"
           borderRadius="md"
           borderWidth={1}

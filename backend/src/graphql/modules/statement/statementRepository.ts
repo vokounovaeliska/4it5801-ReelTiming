@@ -1,5 +1,5 @@
 import { eq, and, lte, gte, isNotNull, sql } from 'drizzle-orm';
-import { project_user, statement } from '@backend/db/schema';
+import { department, project_user, statement } from '@backend/db/schema';
 import { type Db } from '@backend/types/types';
 
 export function getStatementRepository(db: Db) {
@@ -112,19 +112,25 @@ export function getStatementRepository(db: Db) {
     },
 
     async getStatementsByProjectIdAndDate(projectId: string, date: Date) {
-      const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD
+      const formattedDate = date.toISOString().split('T')[0];
 
       const statements = await db
         .select()
         .from(statement)
         .innerJoin(project_user, eq(statement.project_user_id, project_user.id))
+        .innerJoin(department, eq(department.id, project_user.department_id))
         .where(
           and(
             eq(project_user.project_id, projectId),
             sql`DATE(${statement.start_date}) = ${formattedDate}`,
+            eq(department.is_visible, true),
           ),
         )
-        .orderBy(statement.start_date, statement.create_date);
+        .orderBy(
+          department.order_index,
+          statement.start_date,
+          statement.create_date,
+        );
 
       return statements;
     },
