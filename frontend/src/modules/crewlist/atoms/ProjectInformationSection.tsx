@@ -13,9 +13,11 @@ import { Controller } from 'react-hook-form';
 import { InputField } from '@frontend/shared/forms';
 import { FormSection } from '@frontend/shared/forms/molecules/FormSection';
 
+import { Department } from '../interfaces/interfaces';
+
 interface ProjectInformationSectionProps {
   userRole: string;
-  departments: { id: string; name: string }[];
+  departments: Department[];
 }
 
 export const ProjectInformationSection: React.FC<
@@ -50,11 +52,13 @@ export const ProjectInformationSection: React.FC<
                   borderWidth={1}
                   isDisabled={userRole !== 'ADMIN'}
                 >
-                  {departments.map((dept) => (
-                    <option key={dept.id} value={dept.id}>
-                      {dept.name}
-                    </option>
-                  ))}
+                  {departments
+                    .filter((dept) => dept.is_visible)
+                    .map((dept) => (
+                      <option key={dept.id} value={dept.id}>
+                        {dept.name}
+                      </option>
+                    ))}
                 </Select>
                 <FormErrorMessage>{fieldState.error?.message}</FormErrorMessage>
               </FormControl>

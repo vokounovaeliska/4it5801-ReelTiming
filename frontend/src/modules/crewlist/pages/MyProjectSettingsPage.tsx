@@ -1,4 +1,4 @@
-import { Box, Center, Spinner, Text } from '@chakra-ui/react';
+import { Box, Center, Text } from '@chakra-ui/react';
 
 import {
   AllCarsOnProjectData,
@@ -9,6 +9,7 @@ import {
   useCarStatementsByProjectId,
 } from '@frontend/modules/timesheets/pages/queryHooks';
 import { Heading } from '@frontend/shared/design-system';
+import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
@@ -67,22 +68,8 @@ export function MyProjectSettingPage() {
 
   const { projectCarStatements } = useCarStatementsByProjectId(projectId ?? '');
 
-  if (!isDataAvailable && crewListLoading) {
-    return (
-      <Center minHeight="100vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading project details...</Text>
-      </Center>
-    );
-  }
-
-  if (allCarsOnProjectLoading) {
-    return (
-      <Center minHeight="100vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading project details...</Text>
-      </Center>
-    );
+  if ((!isDataAvailable && crewListLoading) || allCarsOnProjectLoading) {
+    return <LoadingSpinner title="project details" />;
   }
 
   if (crewListError || !auth.user) {

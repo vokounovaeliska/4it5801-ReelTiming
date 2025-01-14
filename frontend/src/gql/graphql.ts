@@ -1978,6 +1978,7 @@ export type SignInMutation = {
       name: string;
       email: string;
       surname: string;
+      can_create_project?: boolean | null;
     };
   };
 };
@@ -8017,6 +8018,10 @@ export const SignInDocument = {
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'surname' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'can_create_project' },
                       },
                     ],
                   },

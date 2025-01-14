@@ -22,22 +22,26 @@ export const useProjectConfigOperations = (
 ) => {
   const navigate = useNavigate();
 
-  const { data: projectData, refetch: refetchProject } = useQuery(
-    GET_PROJECT_DETAILS,
-    {
-      variables: { id: projectId || '' },
-      fetchPolicy: 'cache-first',
-      nextFetchPolicy: 'cache-and-network',
-    },
-  );
+  const {
+    data: projectData,
+    refetch: refetchProject,
+    loading: projectLoading,
+    error: projectError,
+  } = useQuery(GET_PROJECT_DETAILS, {
+    variables: { id: projectId || '' },
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-and-network',
+  });
 
-  const { data: shootingDaysData, refetch: refetchShootingDays } = useQuery(
-    GET_SHOOTING_DAYS,
-    {
-      variables: { projectId: projectId || '' },
-      fetchPolicy: 'cache-and-network',
-    },
-  );
+  const {
+    data: shootingDaysData,
+    refetch: refetchShootingDays,
+    loading: shootingDaysLoading,
+    error: shootingDaysError,
+  } = useQuery(GET_SHOOTING_DAYS, {
+    variables: { projectId: projectId || '' },
+    fetchPolicy: 'cache-and-network',
+  });
 
   const {
     data: roleData,
@@ -199,12 +203,19 @@ export const useProjectConfigOperations = (
     }
   };
 
+  const loading = projectLoading || shootingDaysLoading || roleLoading;
+  const error = projectError || shootingDaysError || roleError;
+
+  const errorMessage = error
+    ? error.message || 'An error occurred while fetching data.'
+    : null;
+
   return {
     projectData,
     shootingDaysData,
     roleData,
-    roleLoading,
-    roleError,
+    loading,
+    errorMessage,
     handleEditProject,
     handleUpdateShootingDays,
   };

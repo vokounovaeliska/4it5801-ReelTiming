@@ -128,7 +128,7 @@ const documents = {
     types.ProjectBasicInfoFragmentDoc,
   '\n  mutation ForgotPassword($email: String!) {\n    forgotPassword(email: $email)\n  }\n':
     types.ForgotPasswordDocument,
-  '\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      user {\n        id\n        name\n        email\n        surname\n      }\n      token\n    }\n  }\n':
+  '\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      user {\n        id\n        name\n        email\n        surname\n        can_create_project\n      }\n      token\n    }\n  }\n':
     types.SignInDocument,
   '\n  mutation ResetPassword($newPassword: String!, $token: String!) {\n    resetPassword(newPassword: $newPassword, token: $token) {\n      user {\n        id\n        name\n        surname\n        email\n      }\n      token\n    }\n  }\n':
     types.ResetPasswordDocument,
@@ -502,8 +502,8 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      user {\n        id\n        name\n        email\n        surname\n      }\n      token\n    }\n  }\n',
-): (typeof documents)['\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      user {\n        id\n        name\n        email\n        surname\n      }\n      token\n    }\n  }\n'];
+  source: '\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      user {\n        id\n        name\n        email\n        surname\n        can_create_project\n      }\n      token\n    }\n  }\n',
+): (typeof documents)['\n  mutation SignIn($email: String!, $password: String!) {\n    signIn(email: $email, password: $password) {\n      user {\n        id\n        name\n        email\n        surname\n        can_create_project\n      }\n      token\n    }\n  }\n'];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

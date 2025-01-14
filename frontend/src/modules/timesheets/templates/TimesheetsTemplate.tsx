@@ -27,9 +27,6 @@ const TimesheetsTemplate: React.FC<TimesheetsTemplateProps> = ({
   const isGeneratePdfDisabled =
     (!startDate || !endDate || selectedUsers.length !== 1) &&
     userRole === 'ADMIN';
-
-  console.log('project', project);
-
   return (
     <Box flex="1" width="100%" p={1} alignSelf="center">
       <Box

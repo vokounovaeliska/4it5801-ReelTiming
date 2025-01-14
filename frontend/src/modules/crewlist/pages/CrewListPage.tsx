@@ -1,4 +1,4 @@
-import { Box, Button, Center, Spinner, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Text } from '@chakra-ui/react';
 
 import { EditDepartmentsModal } from '@frontend/modules/departments/modals/EditDepartmentsModal';
 import {
@@ -6,6 +6,7 @@ import {
   useCarStatementsByProjectId,
 } from '@frontend/modules/timesheets/pages/queryHooks';
 import { Heading } from '@frontend/shared/design-system';
+import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
 
@@ -53,12 +54,7 @@ export function CrewListPage() {
   const { projectCarStatements } = useCarStatementsByProjectId(projectId ?? '');
 
   if ((!isDataAvailable && crewListLoading) || allCarsOnProjectLoading) {
-    return (
-      <Center minHeight="100vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading project details...</Text>
-      </Center>
-    );
+    return <LoadingSpinner title="crew list" />;
   }
 
   if (crewListError || !auth.user || !crewList?.project) {

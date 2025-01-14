@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { Box, Center, Spinner, Text } from '@chakra-ui/react';
+import { Box, Center, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 import { Department } from '@frontend/gql/graphql';
@@ -9,6 +9,7 @@ import { GET_DEPARTMENTS } from '@frontend/graphql/queries/GetDepartments';
 import { useAuth } from '@frontend/modules/auth';
 import { DepartmentProps } from '@frontend/modules/crewlist/interfaces/interfaces';
 import { route } from '@frontend/route';
+import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 import { useUserRoleInProject } from '@frontend/shared/design-system/hooks/queryHooks';
 import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 
@@ -75,12 +76,7 @@ export function EditDepartmentsTemplate({
   );
 
   if (roleLoading || !auth.user || departmentsLoading) {
-    return (
-      <Center minHeight="100vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading departments...</Text>
-      </Center>
-    );
+    return <LoadingSpinner title="departments" />;
   }
 
   if (roleError || departmentsError || !auth.user) {
@@ -141,12 +137,7 @@ export function EditDepartmentsTemplate({
   };
 
   if (roleLoading || departmentsLoading) {
-    return (
-      <Center>
-        <Spinner />
-        <Text ml={4}>Loading departments...</Text>
-      </Center>
-    );
+    return <LoadingSpinner title="departments" />;
   }
 
   if (roleError || departmentsError || !projectId) {
@@ -169,13 +160,7 @@ export function EditDepartmentsTemplate({
       pb={'20px'}
     >
       {userRole === 'ADMIN' && (
-        <Box
-          pr={5}
-          mb={4}
-          // display="flex"
-          // justifyContent="center"
-          alignItems="flex-end"
-        >
+        <Box pr={5} mb={4} alignItems="flex-end">
           <AddDepartmentButton
             handleAddDepartmentClick={() => setIsModalOpen(true)}
           />
@@ -201,14 +186,6 @@ export function EditDepartmentsTemplate({
           onCancel={handleModalClose}
         />
       </CustomModal>
-
-      {isModalOpen && (
-        <CreateDepartmentForm
-          projectId={projectId}
-          onSave={handleAddDepartment}
-          onCancel={() => setIsModalOpen(false)}
-        />
-      )}
     </Box>
   );
 }

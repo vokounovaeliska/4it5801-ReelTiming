@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { Center, Spinner, Text } from '@chakra-ui/react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { ADD_CAR } from '@frontend/graphql/mutations/AddCar';
@@ -10,6 +9,7 @@ import { GET_PROJECT_USER_BY_TOKEN } from '@frontend/graphql/queries/GetProjectU
 import { useAuth } from '@frontend/modules/auth';
 import { Car, CarStatement } from '@frontend/modules/timesheets/interfaces';
 import { route } from '@frontend/route';
+import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 import { showErrorToast } from '@frontend/shared/design-system/molecules/toastUtils';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import Navbar from '@frontend/shared/navigation/components/navbar/Navbar';
@@ -133,12 +133,7 @@ export function AcceptInvitationPage() {
   };
 
   if (loading || departmentsLoading) {
-    return (
-      <Center minHeight="100vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading...</Text>
-      </Center>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error || departmentsError)

@@ -20,7 +20,7 @@ export const AddProjectButton: React.FC<AddProjectButtonProps> = ({
 
   return (
     <Button
-      display={user?.canCreateProject! ? 'block' : 'none'}
+      display={user?.can_create_project ? 'block' : 'none'}
       aria-label="Add New Project"
       colorScheme="orange"
       bgColor="orange.500"
