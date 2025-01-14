@@ -6,7 +6,7 @@ import { IoPerson } from 'react-icons/io5';
 import { route } from '@frontend/route';
 
 import DashButton from '../atoms/DashButton';
-import RecentCrewMembers from '../molecules/RecentCrewMembers';
+import RecentCrewMembers from '../atoms/RecentCrewMembers';
 
 interface CrewInfoProps {
   projectId: string;

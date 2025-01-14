@@ -16,7 +16,7 @@ export class ProjectService {
       ...proj,
       create_date: new Date(proj.create_date),
       start_date: proj.start_date ? new Date(proj.start_date) : new Date(0),
-      end_date: proj.end_date ? new Date(proj.end_date) : new Date(0), // default epoch
+      end_date: proj.end_date ? new Date(proj.end_date) : new Date(0),
       is_active: !!proj.is_active,
     }));
   }

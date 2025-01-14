@@ -28,7 +28,6 @@ export async function timesheetPdfReport(
   statements: StatementPdf[],
 ): Promise<Stream> {
   const doc = new PDFDocument({ size: 'A4', margin: 20 });
-  // Prepare a stream to return
   const stream = new Stream.PassThrough();
   doc.pipe(stream);
 

@@ -59,10 +59,6 @@ export const NotifyMembersModal = ({
     Set<GetShiftOverviewPageDataQuery['projectUsers'][number]>
   >(new Set());
 
-  // const [datesByMeberId] = useState<Map<string, Set<number>>>(
-  //   transformToMemberDateMap(membersByDate),
-  // );
-
   const getMembersToNotify = (selectedDate: Date) => {
     if (notificationDate?.getTime() === selectedDate.getTime()) {
       setNotificationDate(null);

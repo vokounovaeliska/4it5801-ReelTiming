@@ -9,7 +9,7 @@ import Footer from '@frontend/shared/navigation/components/footer/Footer';
 
 import BigSignUpButton from '../atoms/BigSignUpButton';
 import LandingBox from '../atoms/LandingBox';
-import LandingHeader from '../molecules/LandingHeader';
+import LandingHeader from '../atoms/LandingHeader';
 import AppBenefits from '../organisms/AppBenefits';
 import AppFeatures from '../organisms/AppFeatures';
 

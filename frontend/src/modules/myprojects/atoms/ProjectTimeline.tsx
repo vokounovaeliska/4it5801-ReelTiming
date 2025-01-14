@@ -85,7 +85,6 @@ const ProjectTimeline: React.FC<ProjectTimelineProps> = ({
       <Text>Project timeline</Text>
       <Tooltip
         label={`Today's date: ${new Date().toLocaleDateString()}`}
-        //hasArrow
         placement="top"
       >
         <Box position="relative" width="100%">

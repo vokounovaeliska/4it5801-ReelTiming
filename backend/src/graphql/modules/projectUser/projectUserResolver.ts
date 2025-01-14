@@ -170,7 +170,6 @@ export class ProjectUserResolver {
     @Arg('email') email: string,
     @Ctx() { db }: CustomContext,
   ): Promise<ProjectUser> {
-    // const projectUserService = new ProjectUserService(db);
     const data: CreateProjectUserInput = {
       project_id: projectId,
       user_id: userId,
@@ -305,7 +304,6 @@ export class ProjectUserResolver {
       is_team_leader: false,
       rate_id: null,
       department_id: null,
-      // role: projectUserDetails.role,
       invitation: null,
       phone_number: null,
       position: null,

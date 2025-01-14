@@ -11,7 +11,6 @@ import {
   Flex,
   HStack,
   IconButton,
-  // Image,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';

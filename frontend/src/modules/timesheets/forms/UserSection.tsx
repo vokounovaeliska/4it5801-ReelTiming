@@ -4,8 +4,6 @@ import { Control, Controller } from 'react-hook-form';
 
 import { TimesheetFormValues } from '../interfaces';
 
-// import { FormValues } from '../interfaces';
-
 interface UserSectionProps {
   userRole: string;
   mode: string;

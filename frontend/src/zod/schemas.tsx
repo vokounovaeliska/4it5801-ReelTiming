@@ -94,7 +94,6 @@ export const crewListFormSchema = zod.object({
     .nullable()
     .optional(),
   role: zod.string().default('CREW').nullable().optional(),
-  // cars: zod.array(carSchema).default([]),
 });
 
 export type crewListFormValues = zod.infer<typeof crewListFormSchema>;
