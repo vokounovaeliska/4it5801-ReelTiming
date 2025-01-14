@@ -131,7 +131,6 @@ export function HomePage() {
 
       <LandingBox
         bgGradient="linear(to-b, #2D3748, #b05e2a)"
-        //bgGradient="linear(to-b, #2D3748, orange.500)"
         pt={16}
         pb={{ base: 10, lg: 16 }}
         px={{ base: '2', mb: '8' }}
@@ -141,9 +140,125 @@ export function HomePage() {
       </LandingBox>
 
       <LandingBox
-        // bgGradient="linear(to-b, #b05e2a, orange.50, white)"
-        //bgGradient="linear(to-b, #b05e2a, orange.100, , white)"
         bgGradient="linear(to-b, #b05e2a, white)"
+        pt={{ base: 8, lg: 12 }}
+        pb={5}
+        color="gray.800"
+        minHeight="40vh"
+        textAlign="center"
+      >
+        <Heading
+          as="h2"
+          fontSize="5xl"
+          mb={6}
+          fontWeight="bold"
+          color="#2D3748"
+          pb={3}
+        >
+          Comprehensive Reporting Made Easy
+        </Heading>
+        <Text fontSize="xl" pb={6} color="gray.700" maxWidth="70rem" mx="5px">
+          Our reporting tools are designed to give you a complete overview of
+          your production, from budgets to crew hours, in a single dashboard.
+          Generate detailed reports that help you make informed decisions,
+          manage resources effectively, and stay on track.
+          <Text as="span" display="block">
+            Simplify data collection and analysis, so you can focus on creating
+            exceptional content.
+          </Text>
+        </Text>
+        <Box
+          display="flex"
+          flexDirection={{ base: 'column', lg: 'row' }}
+          justifyContent="center"
+          alignItems="center"
+          gap={20}
+          px={6}
+        >
+          <Box gap={50}>
+            <img
+              src="/dailyReport.png"
+              alt="Dashboard overview"
+              style={{ maxWidth: '400px', borderRadius: '8px' }}
+            />
+            <Text fontSize="md" color="gray.600" pt={2}>
+              Visualize project progress with interactive dashboards.
+            </Text>
+          </Box>
+          <Box>
+            <img
+              src="/overallReport.png"
+              alt="Detailed report"
+              style={{ maxWidth: '400px', borderRadius: '8px' }}
+            />
+            <Text fontSize="md" color="gray.600" pt={2}>
+              Generate detailed reports with a single click.
+            </Text>
+          </Box>
+        </Box>
+
+        <Heading
+          as="h2"
+          fontSize="4xl"
+          mt={12}
+          mb={6}
+          fontWeight="bold"
+          color="#2D3748"
+          pb={3}
+        >
+          Why Reporting Matters
+        </Heading>
+        <Text fontSize="xl" pb={6} color="gray.700" maxWidth="70rem" mx="5px">
+          Accurate and timely reports ensure transparency, accountability, and
+          efficiency in your production workflow. Use our tools to:
+          <ul
+            style={{
+              textAlign: 'left',
+              margin: '20px auto',
+              maxWidth: '60rem',
+            }}
+          >
+            <li>Track project timelines and budgets effortlessly.</li>
+            <li>
+              Generate insights on team performance and resource allocation.
+            </li>
+            <li>Identify bottlenecks and improve operational efficiency.</li>
+            <li>Share updates with stakeholders to maintain alignment.</li>
+          </ul>
+        </Text>
+        <Box
+          display="flex"
+          flexDirection={{ base: 'column', lg: 'row' }}
+          justifyContent="center"
+          alignItems="center"
+          gap={6}
+          px={6}
+        >
+          <Box>
+            <img
+              src="/dailyReport.png"
+              alt="Stakeholder report"
+              style={{ maxWidth: '300px', borderRadius: '8px' }}
+            />
+            <Text fontSize="md" color="gray.600" pt={2}>
+              Share key insights with your stakeholders.
+            </Text>
+          </Box>
+          <Box>
+            <img
+              src="/overallReport.png"
+              alt="Budget tracking"
+              style={{ maxWidth: '300px', borderRadius: '8px' }}
+            />
+            <Text fontSize="md" color="gray.600" pt={2}>
+              Stay on top of budgets and resources.
+            </Text>
+          </Box>
+        </Box>
+      </LandingBox>
+
+      <LandingBox
+        bgGradient="linear(to-b, white, white)"
         pt={{ base: 8, lg: 12 }}
         pb={5}
         color="gray.800"
@@ -155,8 +270,6 @@ export function HomePage() {
           fontSize="5xl"
           mb={6}
           fontWeight="bold"
-          //bgGradient="linear(to-l, gray.800, #2D3748)"
-          //bgClip="text"
           color="#2D3748"
           pb={3}
         >
