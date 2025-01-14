@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { DELETE_STATEMENT } from '@frontend/gql/mutations/DeleteStatement';
+import { DELETE_STATEMENT } from '@frontend/graphql/mutations/DeleteStatement';
 import {
   showErrorToast,
   showSuccessToast,
@@ -7,7 +7,7 @@ import {
 import {
   GET_ADMIN_STATEMENTS,
   GET_CREW_STATEMENTS,
-} from '@frontend/gql/queries/GetStatements';
+} from '@frontend/graphql/queries/GetStatements';
 import { useState } from 'react';
 import { UseDeleteTimesheetProps } from '../interfaces';
 

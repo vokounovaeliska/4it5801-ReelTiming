@@ -6,7 +6,6 @@ import {
   AccordionPanel,
   Box,
   Button,
-  Heading,
   Link,
   SimpleGrid,
   Text,
@@ -14,6 +13,7 @@ import {
 import { FaHome } from 'react-icons/fa';
 
 import { route } from '@frontend/route';
+import { Heading } from '@frontend/shared/design-system';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 
 import { ReactRouterLink } from '../atoms';

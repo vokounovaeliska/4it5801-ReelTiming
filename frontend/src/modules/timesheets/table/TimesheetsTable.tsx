@@ -14,8 +14,8 @@ interface TimesheetsTableProps {
 }
 
 const tableHeaders = [
+  'Call - wrap',
   'Shift type',
-  'Time (from - to)',
   'Calc OT',
   'Claim OT',
   'OT Amount',
@@ -69,7 +69,7 @@ const TimesheetTable = ({
         <Box
           overflowX="auto"
           overflowY="auto"
-          maxHeight={'62vh'}
+          maxHeight={'67vh'}
           sx={{
             '::-webkit-scrollbar': {
               height: '12px',

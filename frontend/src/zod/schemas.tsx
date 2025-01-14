@@ -47,34 +47,53 @@ export const crewListFormSchema = zod.object({
   name: zod.string().min(1),
   surname: zod.string().min(1),
   department: zod.string().min(1, { message: 'Department must be selected.' }),
-  position: zod.string().min(1),
+  position: zod.string().min(1).nullable().optional(),
   phone_number: zodPhoneNumber,
   email: zod.string().email().min(1),
-  standard_rate: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  compensation_rate: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  overtime_hour1: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  overtime_hour2: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  overtime_hour3: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  overtime_hour4: zod.preprocess(
-    (val) => (typeof val === 'string' ? parseFloat(val) : val),
-    zod.number().nonnegative({ message: 'Must be a non-negative number' }),
-  ),
-  role: zod.string().default('CREW'),
+  standard_rate: zod
+    .preprocess(
+      (val) => (typeof val === 'string' ? parseFloat(val) : val),
+      zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+    )
+    .nullable()
+    .optional(),
+  compensation_rate: zod
+    .preprocess(
+      (val) => (typeof val === 'string' ? parseFloat(val) : val),
+      zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+    )
+    .nullable()
+    .optional(),
+  overtime_hour1: zod
+    .preprocess(
+      (val) => (typeof val === 'string' ? parseFloat(val) : val),
+      zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+    )
+    .nullable()
+    .optional(),
+  overtime_hour2: zod
+    .preprocess(
+      (val) => (typeof val === 'string' ? parseFloat(val) : val),
+      zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+    )
+    .nullable()
+    .optional(),
+  overtime_hour3: zod
+    .preprocess(
+      (val) => (typeof val === 'string' ? parseFloat(val) : val),
+      zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+    )
+    .nullable()
+    .optional(),
+  overtime_hour4: zod
+    .preprocess(
+      (val) => (typeof val === 'string' ? parseFloat(val) : val),
+      zod.number().nonnegative({ message: 'Must be a non-negative number' }),
+    )
+    .nullable()
+    .nullable()
+    .optional(),
+  role: zod.string().default('CREW').nullable().optional(),
   // cars: zod.array(carSchema).default([]),
 });
 
@@ -131,7 +150,7 @@ export const newPasswordFormSchema = zod
     if (data.newPassword !== data.newPasswordConfirmation) {
       ctx.addIssue({
         code: zod.ZodIssueCode.custom,
-        path: ['passwordConfirmation'],
+        path: ['newPasswordConfirmation'],
         message: 'Passwords must match',
       });
     }
@@ -159,7 +178,9 @@ export type forgotPasswordFormaValues = zod.infer<
 
 export const loginFormSchema = zod.object({
   email: zod.string().email().min(1),
-  password: zod.string().min(1, { message: 'Password is required' }),
+  password: zod
+    .string()
+    .min(10, 'Password must be at least 10 characters long'),
 });
 
 export type loginFormValues = zod.infer<typeof loginFormSchema>;

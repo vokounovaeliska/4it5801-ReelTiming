@@ -19,5 +19,7 @@ const HEADING_SIZES = {
 export function Heading({ as = 'h1', ...rest }: HeadingProps) {
   const defaultStyles = HEADING_SIZES[as] ?? {};
 
-  return <ChakraHeading as={as} {...defaultStyles} {...rest} />;
+  return (
+    <ChakraHeading as={as} {...defaultStyles} color={'#2D3748'} {...rest} />
+  );
 }
