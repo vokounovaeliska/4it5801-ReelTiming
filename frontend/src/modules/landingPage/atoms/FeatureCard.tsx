@@ -48,7 +48,7 @@ const FeatureCard = ({ title, description, imageUrl }: FeatureCardProps) => (
         width="100%"
         alt={`${title} screenshot`}
         height="auto"
-        maxWidth={{ base: '650px', lg: '700px' }}
+        maxWidth={{ base: '650px', lg: '750px' }}
         style={{
           boxShadow: '-1px 42px 32px -40px rgba(255,255,255,0.49)',
         }}
