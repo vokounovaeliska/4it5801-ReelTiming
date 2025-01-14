@@ -1,6 +1,5 @@
 import { MultiValue, ActionMeta } from 'react-select';
 import React from 'react';
-// import { ProjectUser } from '../crewlist/interfaces/interfaces';
 import { Control } from 'react-hook-form';
 import { UseFormSetValue } from 'react-hook-form';
 import { ProjectUser } from '../crewlist/interfaces/interfaces';
@@ -119,9 +118,7 @@ export interface TimesheetsFormProps {
   userInfo: UserInfo | null;
   userCars?: { id: string; name: string }[];
   setSelectedCar: (carId: string) => void;
-  // carOptionsForLoggedInUserForSelect: { value: string; label: string }[];
   carOptionsForLoggedInUser: { value: string; label: string }[];
-  // carOptionsForLoggedInUser: Car[];
   allCarsOnProjectData: AllCarsOnProjectData;
   userInfoRates: TimesheetProjectUsers[];
   projectCurrency: string;
@@ -129,11 +126,9 @@ export interface TimesheetsFormProps {
 
 export interface AllCarsOnProjectData {
   projectUsers: ProjectUser[];
-  // cars: Car[];
 }
 
 export interface TimesheetProjectUsers {
-  // projectUserss?: ProjectUser[];
   projectUsers: {
     id: string;
     name: string;
@@ -173,12 +168,10 @@ export interface TimesheetProjectUsers {
 }
 
 export interface OvertimeSectionProps {
-  // control: Control<FormValues>;
   control: Control<TimesheetFormValues>;
 }
 
 export interface DateTimeSectionProps {
-  // control: Control<FormValues>;
   control: Control<TimesheetFormValues>;
   workedHours: number;
   shift: number;
@@ -215,7 +208,6 @@ export interface CarSectionProps {
     kilometer_rate: number;
   }[];
   projectCurrency: string;
-  // carOptionsForLoggedInUser: Car[];
   carOptionsForLoggedInUser: { value: string; label: string }[];
   setValue: UseFormSetValue<TimesheetFormValues>;
 }
@@ -330,7 +322,6 @@ export interface DataLoadingUtilsResult {
   adminData?: AdminData;
   allProjectUsersData?: AllProjectUsersData;
   allProjectUsersDataForOptions?: AllProjectUsersData;
-  // allProjectUsersData: TimesheetProjectUsers;
   allCarsOnProjectData?: AllCarsOnProjectData;
   userInfoData?: UserInfoData;
   userCarsData?: UserCarsData;

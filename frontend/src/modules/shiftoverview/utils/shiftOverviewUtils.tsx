@@ -93,8 +93,6 @@ export interface HandleSaveParams {
   ) => Promise<FetchResult<DeleteShiftOverviewMutation>>;
 }
 
-//když označím nově něco s has worked a on zároveň má už i vyplněný shift, tak se všem ostatním v tomto dni smaže "has worked"
-
 export const handleSave = async ({
   data,
   shiftStates,

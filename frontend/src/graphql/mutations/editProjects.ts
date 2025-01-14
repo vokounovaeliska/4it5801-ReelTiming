@@ -49,7 +49,6 @@ export const useProjectConfigOperations = (
     fetchPolicy: 'cache-and-network',
   });
 
-  // Mutations
   const [editProject] = useMutation(EDIT_PROJECT, {
     onCompleted: async () => {
       await refetchProject();

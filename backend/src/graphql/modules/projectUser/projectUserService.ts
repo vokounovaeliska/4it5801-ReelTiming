@@ -53,7 +53,7 @@ export class ProjectUserService {
 
   async createProjectUser(data: CreateProjectUserInput): Promise<ProjectUser> {
     const createdAt = new Date();
-    const userId = 'user-id'; // actual user id
+    const userId = 'user-id';
     const projectUserId = await this.projectUserRepository.createProjectUser({
       ...data,
       project_id: data.project_id,
@@ -167,13 +167,13 @@ export class ProjectUserService {
     const projectUser = await projectUserService.getProjectUserByToken(token);
 
     if (projectUser) {
-      // user is already registered, join the project
+      //user is already registered, join the project
       console.log('User is already registered, joining the project...');
-      // Implement logic to join the project
+      //logic to join the project
     } else {
-      // user is not registered, allow registration
+      //user is not registered, allow registration
       console.log('User is not registered, allow registration...');
-      // implement logic to register the user and join the project
+      //logic to register the user and join the project
     }
   }
 

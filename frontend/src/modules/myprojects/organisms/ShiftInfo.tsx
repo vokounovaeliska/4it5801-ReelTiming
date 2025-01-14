@@ -18,7 +18,7 @@ const ShiftInfo: React.FC<ShiftInfoProps> = ({ projectId, userId }) => {
       <RecentTimesheets projectId={projectId} userId={userId} />
       <Box
         display="flex"
-        justifyContent={{ base: 'center', 'dash-break1': 'flex-start' }} //PŮVODNĚ TU BYLO md
+        justifyContent={{ base: 'center', 'dash-break1': 'flex-start' }}
         mt={4}
       >
         <DashButton

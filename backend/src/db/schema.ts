@@ -53,7 +53,6 @@ export const project = mysqlTable('project', {
   is_active: boolean('is_active').default(true),
   description: varchar('description', { length: 500 }),
   currency: varchar('currency', { length: 3 }).default('CZK').notNull(),
-  // logo: varchar('logo', { length: 19845 }), // Equivalent to MEDIUMBLOB in size
   logo: text('logo'),
 });
 
@@ -113,11 +112,12 @@ export const department = mysqlTable('department', {
     .$defaultFn(() => uuidv4())
     .primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
-  project_id: varchar('project_id', { length: 36 })
-    //.notNull()
-    .references(() => project.id, {
+  project_id: varchar('project_id', { length: 36 }).references(
+    () => project.id,
+    {
       onDelete: 'cascade',
-    }),
+    },
+  ),
   order_index: int('order_index'),
   is_visible: boolean('is_visible').default(true),
 });

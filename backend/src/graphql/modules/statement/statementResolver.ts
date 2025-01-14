@@ -144,7 +144,6 @@ export class StatementResolver {
     car_id: string,
     @Ctx() { db }: CustomContext,
   ): Promise<Statement> {
-    // const statementService = new StatementService(db);
     const data: StatementInput = {
       project_user_id,
       start_date: convertToLocalTime(start_date),
