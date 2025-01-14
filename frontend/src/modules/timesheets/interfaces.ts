@@ -3,6 +3,7 @@ import React from 'react';
 import { Control } from 'react-hook-form';
 import { UseFormSetValue } from 'react-hook-form';
 import { ProjectUser } from '../crewlist/interfaces/interfaces';
+import { AuthUser } from '../auth/auth-core';
 
 export interface UserInfo {
   id: string;
@@ -266,8 +267,7 @@ export interface UseEditTimesheetProps {
 }
 
 export interface DataLoadingUtilsProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  auth: any;
+  auth: AuthUser | null;
   projectId: string;
   setUserInfo: React.Dispatch<React.SetStateAction<UserInfo | null>>;
 }

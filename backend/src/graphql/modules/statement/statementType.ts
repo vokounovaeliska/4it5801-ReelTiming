@@ -88,7 +88,7 @@ export class StatementInput {
 
 @ObjectType()
 export class CarStatement {
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   car_id?: string | null;
 
   @Field(() => Number, { nullable: true })

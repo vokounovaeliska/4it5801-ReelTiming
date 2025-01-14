@@ -79,4 +79,13 @@ export const GET_CARS_STATEMENTS = gql(`
       kilometers
     }
   }
+`);
+
+export const GET_CARS_STATEMENTS_BY_CREW = gql(`
+    query CarStatementsByProjectUserId($projectUserId: String!) {
+    statementsByProjectUserId(projectUserId: $projectUserId) {
+      car_id
+     kilometers
+  }
+}
   `);

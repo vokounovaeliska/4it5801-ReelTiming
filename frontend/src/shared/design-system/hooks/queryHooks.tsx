@@ -6,7 +6,7 @@ export interface RoleData {
   userRoleInProject: string;
 }
 
-export const useUserRoleInProject = (userId: string, projectId: string) => {
+export const useUserRoleInProject = (userId?: string, projectId?: string) => {
   const {
     data: roleData,
     loading: roleLoading,

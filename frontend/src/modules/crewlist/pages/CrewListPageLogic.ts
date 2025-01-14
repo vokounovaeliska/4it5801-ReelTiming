@@ -3,7 +3,7 @@ import { useAuth } from '@frontend/modules/auth';
 import { useCrewMemberMutations } from '@frontend/graphql/mutations/addCrewMember';
 import { GET_CREWLIST_INFO } from '@frontend/graphql/queries/GetCrewListInfo';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   CrewMemberData,
   ProjectUserLightVersion,
@@ -17,6 +17,7 @@ import { GetCrewListInfoQuery } from '@frontend/gql/graphql';
 
 export const useCrewListPageUtils = () => {
   const auth = useAuth();
+  const navigate = useNavigate();
   const client = useApolloClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -275,20 +276,9 @@ export const useCrewListPageUtils = () => {
       showErrorToast('Failed to send invitation email. Please try again.');
     }
   };
-
-  const departmentNameToId = (
-    name: string,
-    departments: {
-      name: string;
-      id: string;
-    }[],
-  ): string | null => {
-    const department = departments.find((dept) => dept.name === name);
-    return department ? department.id : null;
-  };
-
   return {
     auth,
+    navigate,
     client,
     isSubmitting,
     setIsSubmitting,
@@ -324,4 +314,15 @@ export const useCrewListPageUtils = () => {
     setIsEditDepartmentsModalOpen,
     refetchCrew,
   };
+};
+
+export const departmentNameToId = (
+  name: string,
+  departments: {
+    name: string;
+    id: string;
+  }[],
+): string | null => {
+  const department = departments.find((dept) => dept.name === name);
+  return department ? department.id : null;
 };

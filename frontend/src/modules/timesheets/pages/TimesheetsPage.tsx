@@ -56,7 +56,7 @@ export function TimesheetPage() {
     userInfoData,
     userCarsData,
   } = DataLoadingUtils({
-    auth,
+    auth: auth.user,
     projectId: projectId ?? '',
     setUserInfo,
   });

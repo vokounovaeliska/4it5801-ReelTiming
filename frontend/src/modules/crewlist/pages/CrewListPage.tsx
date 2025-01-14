@@ -5,6 +5,7 @@ import {
   useAllCarsOnProjectByProjectUserId,
   useCarStatementsByProjectId,
 } from '@frontend/modules/timesheets/pages/queryHooks';
+import { route } from '@frontend/route';
 import { Heading } from '@frontend/shared/design-system';
 import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
@@ -21,6 +22,7 @@ import { useCrewListPageUtils } from './CrewListPageLogic';
 export function CrewListPage() {
   const {
     auth,
+    navigate,
     isSubmitting,
     isModalOpen,
     isAlertOpen,
@@ -53,8 +55,25 @@ export function CrewListPage() {
 
   const { projectCarStatements } = useCarStatementsByProjectId(projectId ?? '');
 
+  const cleanedStatements =
+    projectCarStatements?.carStatementsByProjectId
+      ?.filter(
+        (
+          statement,
+        ): statement is { car_id: string; kilometers?: number | null } =>
+          statement.car_id !== null && statement.car_id !== undefined,
+      )
+      .map(({ car_id, kilometers }) => ({
+        car_id,
+        kilometers: kilometers ?? null, // Ensure kilometers is explicitly null if undefined
+      })) || [];
+  const wrappedStatements = { carStatementsByProjectId: cleanedStatements };
+
   if ((!isDataAvailable && crewListLoading) || allCarsOnProjectLoading) {
     return <LoadingSpinner title="crew list" />;
+  }
+  if (crewList?.userRoleInProject !== 'ADMIN') {
+    navigate(route.projectDetail(projectId));
   }
 
   if (crewListError || !auth.user || !crewList?.project) {
@@ -151,7 +170,7 @@ export function CrewListPage() {
           project: crewList?.project ?? { currency: '' },
         }}
         allCarsOnProjectData={allCarsOnProjectData!}
-        projectCarStatements={projectCarStatements!}
+        projectCarStatements={wrappedStatements}
         handleUpdateCrewMember={handleUpdateCrewMember}
         handleAddNewCrewMember={handleAddNewCrewMember}
         refetchAllCarsOnProjectData={refetchAllCarsOnProjectData}
