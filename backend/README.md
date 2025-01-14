@@ -49,12 +49,15 @@ yarn install
 ```
 
 ## Setup Environment Variables
+
 ```shell
 cp ./.env ./.env.local
 ```
+
 Edit .env.local file (DB user, password, ...)
 
 Example .env.local file
+
 ```shell
 DB_PORT=4242
 JWT_SECRET=somesuperlongsecret
@@ -103,5 +106,6 @@ yarn check-all
 ```shell
 yarn dev
 ```
+
 Runs the app in the development mode.
 Open http://localhost:4000 to view it in the browser.
