@@ -1,4 +1,17 @@
-import { Box, Button, Center, Spinner, Text } from '@chakra-ui/react';
+import { useState } from 'react';
+import { ChevronDownIcon } from '@chakra-ui/icons';
+import {
+  Box,
+  Button,
+  Center,
+  Checkbox,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Spinner,
+  Text,
+} from '@chakra-ui/react';
 
 import { EditDepartmentsModal } from '@frontend/modules/departments/modals/EditDepartmentsModal';
 import {
@@ -42,6 +55,21 @@ function getAvailableCarsForProjectUserId(
   return carDetails?.filter((car): car is Car => car !== undefined) || [];
 }
 
+const initialColumnVisibility = {
+  surname: true,
+  name: true,
+  position: true,
+  role: true,
+  email: true,
+  phone_number: true,
+  standard_rate: true,
+  compensation_rate: true,
+  overtime_hour1: true,
+  overtime_hour2: true,
+  overtime_hour3: true,
+  overtime_hour4: true,
+};
+
 export function CrewListPage() {
   const {
     auth,
@@ -67,6 +95,19 @@ export function CrewListPage() {
     setIsEditDepartmentsModalOpen,
     refetchCrew,
   } = useCrewListPageUtils();
+
+  const [columnVisibility, setColumnVisibility] = useState(
+    initialColumnVisibility,
+  );
+
+  const handleColumnVisibilityChange = (
+    column: keyof typeof initialColumnVisibility,
+  ) => {
+    setColumnVisibility((prev) => ({
+      ...prev,
+      [column]: !prev[column],
+    }));
+  };
 
   const isDataAvailable = !!crewList && Object.keys(crewList).length > 0;
   const {
@@ -134,6 +175,31 @@ export function CrewListPage() {
             mb={4}
             px={10}
           >
+            <Menu>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                Select Columns
+              </MenuButton>
+              <MenuList>
+                {Object.keys(initialColumnVisibility).map((column) => (
+                  <MenuItem key={column}>
+                    <Checkbox
+                      isChecked={
+                        columnVisibility[
+                          column as keyof typeof initialColumnVisibility
+                        ]
+                      }
+                      onChange={() =>
+                        handleColumnVisibilityChange(
+                          column as keyof typeof initialColumnVisibility,
+                        )
+                      }
+                    >
+                      {column.replace('_', ' ')}
+                    </Checkbox>
+                  </MenuItem>
+                ))}
+              </MenuList>
+            </Menu>
             <AddCrewMemberButton
               handleAddMemberClick={handleAddMemberClick}
               isShown={crewList.project?.is_active}
@@ -164,6 +230,7 @@ export function CrewListPage() {
           sendInvitation={sendInvitation}
           userRoleInProject={crewList?.userRoleInProject!}
           project={crewList?.project!}
+          columnVisibility={columnVisibility}
         ></CrewListTable>
       </Box>
       <Footer />

@@ -20,20 +20,22 @@ interface CrewListTableProps {
   ) => void;
   userRoleInProject: string;
   project: Project;
+  columnVisibility: Record<string, boolean>;
 }
 
 const tableHeaders = [
-  { label: 'Role', tooltip: 'Project role' },
-  { label: 'Email', tooltip: 'Email adress' },
-  { label: 'Phone number' },
-  { label: 'Rate', tooltip: 'Standard rate' },
-  { label: 'TA', tooltip: 'Turn around rate' },
-  { label: 'OT 1', tooltip: 'Overtime hour 1' },
-  { label: 'OT 2', tooltip: 'Overtime hour 2' },
-  { label: 'OT 3', tooltip: 'Overtime hour 3' },
-  { label: 'OT 4', tooltip: 'Overtime hour 4' },
-  { label: 'Status' },
-  { label: 'Actions' },
+  { label: 'Surname', key: 'surname' },
+  { label: 'Name', key: 'name' },
+  { label: 'Position', key: 'position' },
+  { label: 'Role', key: 'role' },
+  { label: 'Email', key: 'email' },
+  { label: 'Phone number', key: 'phone_number' },
+  { label: 'Rate', key: 'standard_rate' },
+  { label: 'TA', key: 'compensation_rate' },
+  { label: 'OT 1', key: 'overtime_hour1' },
+  { label: 'OT 2', key: 'overtime_hour2' },
+  { label: 'OT 3', key: 'overtime_hour3' },
+  { label: 'OT 4', key: 'overtime_hour4' },
 ];
 
 const CrewListTable: React.FC<CrewListTableProps> = ({
@@ -43,8 +45,8 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
   handleRemoveButtonClick,
   sendInvitation,
   userRoleInProject,
-  // authUserId,
   project,
+  columnVisibility,
 }) => {
   return (
     <Box overflowX="auto" m={1}>
@@ -83,37 +85,14 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
           >
             <Thead position="sticky" top={0} zIndex="docked">
               <Tr>
-                <CrewlistTableHeader
-                  position={'sticky'}
-                  left={0}
-                  zIndex={10}
-                  textAlign="left"
-                >
-                  Surname
-                </CrewlistTableHeader>
-                <CrewlistTableHeader
-                  position={'sticky'}
-                  left={{ base: '100px', md: '120px', lg: '150px' }}
-                  zIndex={9}
-                  textAlign="left"
-                >
-                  Name
-                </CrewlistTableHeader>
-
-                <CrewlistTableHeader
-                  position={'sticky'}
-                  left={{ base: '0', md: '220px', lg: '260px' }}
-                  zIndex={8}
-                  minWidth="90px"
-                  textAlign="left"
-                >
-                  Position
-                </CrewlistTableHeader>
-                {tableHeaders.map((header, index) => (
-                  <CrewlistTableHeader key={index} tooltip={header.tooltip}>
-                    {header.label}
-                  </CrewlistTableHeader>
-                ))}
+                {tableHeaders.map(
+                  (header) =>
+                    columnVisibility[header.key] && (
+                      <CrewlistTableHeader key={header.key}>
+                        {header.label}
+                      </CrewlistTableHeader>
+                    ),
+                )}
               </Tr>
             </Thead>
             <Tbody>
@@ -132,6 +111,7 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                       sendInvitation={sendInvitation}
                       handleRemoveButtonClick={handleRemoveButtonClick}
                       userRoleInProject={userRoleInProject}
+                      columnVisibility={columnVisibility}
                     />
                   ))}
                 </>
