@@ -13,7 +13,7 @@ export async function seedDailyReports(
   db: MySql2Database<typeof import('../../src/db/schema')>,
   projectId: string,
   shootingDays: { id: string; date: Date }[],
-  howManyReports: number
+  howManyReports: number,
 ) {
   console.log(`Seeding daily reports for project ${projectId}...`);
 
