@@ -4,7 +4,6 @@ import { Box, Button, SimpleGrid } from '@chakra-ui/react';
 import { ShootingDay } from '@frontend/gql/graphql';
 import { projectFormValues } from '@frontend/zod/schemas';
 
-import LogoUploader from '../atoms/LogoUploader';
 import { ProjectData } from '../pages/EditProjectPage';
 
 import { ProjectDetailsForm } from './ProjectDetailsForm';
@@ -67,7 +66,7 @@ export function EditProjectForm({
       width="100%"
       maxWidth="1600px"
       mx="auto"
-      p={4}
+      p={{ sm: '4'}}
       border="1px solid"
       borderColor="gray.200"
       borderRadius="md"
@@ -82,17 +81,12 @@ export function EditProjectForm({
         <ProjectDetailsForm
           formData={formData}
           onInputChange={handleInputChange}
+          onLogoChange={handleLogoChange}
         />
         <ShootingDaysConfigForm
           shootingDays={updatedShootingDays}
           handleShootingDaysChange={handleShootingDaysChange}
           projectData={project}
-        />
-        <LogoUploader
-          initialLogo={
-            formData.logo ? `data:image/png;base64,${formData.logo}` : ''
-          }
-          onLogoChange={handleLogoChange}
         />
       </SimpleGrid>
 

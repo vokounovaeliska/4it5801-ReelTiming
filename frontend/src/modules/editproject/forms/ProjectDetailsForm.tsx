@@ -16,14 +16,18 @@ import RequiredInfo from '@frontend/modules/auth/organisms/RequiredInfo';
 import { currencies } from '@frontend/shared/forms/molecules/fields/utils/currenciesUtils';
 import { projectFormValues } from '@frontend/zod/schemas';
 
+import LogoUploader from '../atoms/LogoUploader';
+
 type ProjectDetailsFormProps = {
   formData: projectFormValues;
   onInputChange: (name: keyof projectFormValues, value: unknown) => void;
+  onLogoChange: (newLogo: string | null) => void;
 };
 
 export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
   formData,
   onInputChange,
+  onLogoChange,
 }) => {
   const [isActive, setIsActive] = useState(false);
 
@@ -152,6 +156,13 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
           </HStack>
         </FormControl>
 
+        <LogoUploader
+
+          initialLogo={
+            formData.logo ? `data:image/png;base64,${formData.logo}` : ''
+          }
+          onLogoChange={onLogoChange}
+        />
         <Box textAlign="left" mt={4}>
           <RequiredInfo />
         </Box>

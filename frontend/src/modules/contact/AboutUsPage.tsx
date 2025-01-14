@@ -16,7 +16,7 @@ const AboutUsPage = () => {
         alignItems="center"
         justifyContent="center"
         bg="#F7FAFC"
-        p={{ base: 0, sm: 4, md: 8, xl: 8 }}
+        p={{ sm: 4, md: 8, xl: 8 }}
         flex="1"
       >
         <Box
@@ -28,6 +28,8 @@ const AboutUsPage = () => {
           boxShadow="md"
           bg="white"
           textAlign="center"
+          fontSize={{ base: 'md', md: 'lg' }}
+
         >
           <Box boxSize={{ base: '80px', md: '100px' }} mx="auto" py={8}>
             <Image src="/faviconlogo.png" alt="ReelTiming Logo" />
@@ -36,7 +38,7 @@ const AboutUsPage = () => {
           <Heading as="h1" size={{ base: 'xl', md: '2xl' }} mt={12} mb={4}>
             About Us
           </Heading>
-          <Text fontSize={{ base: 'md', md: 'lg' }} mb={4} textAlign="justify">
+          <Text mb={4} >
             At ReelTiming, we solve critical challenges for film producers by
             simplifying their attendance and production scheduling systems. Our
             platform is designed to streamline crew management, ensuring that
@@ -44,7 +46,7 @@ const AboutUsPage = () => {
             logistics.
           </Text>
 
-          <Text fontSize={{ base: 'md', md: 'lg' }} mb={8} textAlign="justify">
+          <Text mb={8} textAlign="justify">
             If you’re a film producer looking for innovative solutions to
             improve the efficiency of your productions, we’d love to hear from
             you. Let us know how we can assist with your attendance tracking and
