@@ -25,7 +25,7 @@ export function EditProjectForm({
   projectId: _projectId,
   project,
   onSubmit,
-  shootingDays,
+  shootingDays: loadedShootingDays,
 }: EditProjectFormProps) {
   const initialValues: projectFormValues = {
     name: project?.name,
@@ -49,12 +49,12 @@ export function EditProjectForm({
   };
 
   const handleSaveChanges = () => {
-    onSubmit(formData, shootingDays, shootingDaysCollection);
+    onSubmit(formData, loadedShootingDays, updatedShootingDays);
   };
 
-  const [shootingDaysCollection, setShootingDaysCollection] = useState<
+  const [updatedShootingDays, setShootingDaysCollection] = useState<
     ShootingDay[]
-  >(shootingDays || []);
+  >(loadedShootingDays || []);
 
   const handleShootingDaysChange = (days: ShootingDay[]) => {
     setShootingDaysCollection(days);
@@ -84,7 +84,7 @@ export function EditProjectForm({
           onInputChange={handleInputChange}
         />
         <ShootingDaysConfigForm
-          shootingDays={shootingDaysCollection}
+          shootingDays={updatedShootingDays}
           handleShootingDaysChange={handleShootingDaysChange}
           projectData={project}
         />

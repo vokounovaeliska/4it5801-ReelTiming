@@ -93,16 +93,10 @@ export const useProjectConfigOperations = (
         deletePromises.push(
           deleteShootingDay({
             variables: { shootingDayId: stored.id },
-          })
-            .then(() => {
-              showSuccessToast('Shooting day deleted successfully.');
-            })
-            .catch((error) => {
-              console.error('Error deleting shooting day:', error);
-              showErrorToast(
-                'Failed to delete shooting day. Please try again.',
-              );
-            }),
+          }).catch((error) => {
+            console.error('Error deleting shooting day:', error);
+            showErrorToast('Failed to delete shooting day. Please try again.');
+          }),
         );
       }
     }
@@ -129,16 +123,12 @@ export const useProjectConfigOperations = (
                 },
                 shootingDayId: newShootingDay.id,
               },
-            })
-              .then(() => {
-                showSuccessToast('Shooting day updated successfully.');
-              })
-              .catch((error) => {
-                console.error('Error updating shooting day:', error);
-                showErrorToast(
-                  'Failed to update shooting day. Please try again.',
-                );
-              }),
+            }).catch((error) => {
+              console.error('Error updating shooting day:', error);
+              showErrorToast(
+                'Failed to update shooting day. Please try again.',
+              );
+            }),
           );
         }
       } else {
@@ -150,14 +140,10 @@ export const useProjectConfigOperations = (
               date: formatISO(parseISO(newShootingDay.date)),
               shootingDayNumber: newShootingDay.shooting_day_number,
             },
-          })
-            .then(() => {
-              showSuccessToast('Shooting day added successfully.');
-            })
-            .catch((error) => {
-              console.error('Error adding shooting day:', error);
-              showErrorToast('Failed to add shooting day. Please try again.');
-            }),
+          }).catch((error) => {
+            console.error('Error adding shooting day:', error);
+            showErrorToast('Failed to add shooting day. Please try again.');
+          }),
         );
       }
     }
@@ -176,31 +162,36 @@ export const useProjectConfigOperations = (
     alreadyStoredShootingDays: ShootingDay[],
     shootingDays: ShootingDay[],
   ) => {
-    try {
-      await editProject({
-        variables: {
-          projectId,
-          data: {
-            description: data.description,
-            name: data.name,
-            production_company: data.productionCompany,
-            start_date: data.startDate,
-            end_date: data.endDate ?? null,
-            last_update_user_id: userId,
-            currency: data.currency,
-            is_active: data.isActive,
-            logo: data.logo,
-          },
+    editProject({
+      variables: {
+        projectId,
+        data: {
+          description: data.description,
+          name: data.name,
+          production_company: data.productionCompany,
+          start_date: data.startDate,
+          end_date: data.endDate ?? null,
+          last_update_user_id: userId,
+          currency: data.currency,
+          is_active: data.isActive,
+          logo: data.logo,
         },
+      },
+    })
+      .then(() => {
+        return handleUpdateShootingDays(
+          projectId!,
+          alreadyStoredShootingDays,
+          shootingDays,
+        );
+      })
+      .then(() => {
+        showSuccessToast('Project updated successfully.');
+      })
+      .catch((error) => {
+        showErrorToast(`Project update failed! Error: \n\t ${error.message}`);
+        console.error('Failed to update project:', error);
       });
-      handleUpdateShootingDays(
-        projectId!,
-        alreadyStoredShootingDays,
-        shootingDays,
-      );
-    } catch (error) {
-      console.error('Failed to update project:', error);
-    }
   };
 
   const loading = projectLoading || shootingDaysLoading || roleLoading;
