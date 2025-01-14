@@ -20,7 +20,6 @@ export const AddProjectButton: React.FC<AddProjectButtonProps> = ({
 
   return (
     <Button
-      //TODO remove "!" to make it work right
       display={!user?.canCreateProject! ? 'block' : 'none'}
       aria-label="Add New Project"
       colorScheme="orange"

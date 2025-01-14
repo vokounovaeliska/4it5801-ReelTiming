@@ -5,7 +5,7 @@ import { FaCirclePlus } from 'react-icons/fa6';
 
 import { route } from '@frontend/route';
 
-import TopDashButton from '../atoms/TopDashButton';
+import TopDashButton from './TopDashButton';
 
 interface TopDashButtonsProps {
   userRole: string;

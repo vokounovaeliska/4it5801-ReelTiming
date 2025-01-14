@@ -3,7 +3,7 @@ import { Box } from '@chakra-ui/react';
 
 import { Heading } from '@frontend/shared/design-system';
 
-import FeatureCard from '../molecules/FeatureCard';
+import FeatureCard from '../atoms/FeatureCard';
 
 const AppFeatures = () => {
   return (
