@@ -118,7 +118,6 @@ export async function timesheetPdfReport(
     .moveDown(1);
 
   const hasCar = statements.some((statement) => statement.car_name !== null);
-  console.log(hasCar);
 
   if (!hasCar) {
     await basicTimesheetTable({ doc, statements, crewInfo });
