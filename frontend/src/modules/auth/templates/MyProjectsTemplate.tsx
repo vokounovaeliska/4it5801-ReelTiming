@@ -1,10 +1,7 @@
 import { useState } from 'react';
-import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import {
   Box,
   Center,
-  Collapse,
-  IconButton,
   Image,
   SimpleGrid,
   Text,
@@ -13,6 +10,7 @@ import {
 import { Link } from 'react-router-dom';
 
 import { AddProjectButton } from '@frontend/modules/myprojects/organisms/AddProjectButton';
+import InactiveProjectsSection from '@frontend/modules/myprojects/organisms/InactiveProjectsSection';
 import { Heading } from '@frontend/shared/design-system';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
@@ -126,82 +124,15 @@ export function MyProjectsTemplate({
             ))}
           </SimpleGrid>
         </Box>
-
         {inactiveProjects.length > 0 && (
-          <Box>
-            <Box display="flex" alignItems="center" mb={4}>
-              <Heading size="lg" as="h2" textAlign="left">
-                Inactive Projects
-              </Heading>
-              <IconButton
-                aria-label="Toggle Inactive Projects"
-                icon={
-                  showInactiveProjects ? (
-                    <ChevronUpIcon
-                      color="black"
-                      fontWeight="bold"
-                      boxSize={5}
-                    />
-                  ) : (
-                    <ChevronDownIcon
-                      color="black"
-                      fontWeight="bold"
-                      boxSize={5}
-                    />
-                  )
-                }
-                onClick={() => setShowInactiveProjects(!showInactiveProjects)}
-                variant="ghost"
-                ml={2}
-              />
-            </Box>
-            <Collapse in={showInactiveProjects}>
-              <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
-                {inactiveProjects.map((project) => (
-                  <Link
-                    key={project.id}
-                    to={`/projects/${project.id}`}
-                    style={{ textDecoration: 'none' }}
-                  >
-                    <Box
-                      bg={inactiveBoxBg}
-                      borderRadius="md"
-                      borderWidth={1}
-                      borderColor={border}
-                      p={6}
-                      boxShadow="md"
-                      _hover={{
-                        boxShadow: 'none',
-                        transform: 'none',
-                        bg: 'gray.400',
-                      }}
-                      transition="all 0.3s ease"
-                    >
-                      <Text
-                        fontWeight="bold"
-                        fontSize="lg"
-                        color={inactiveTextColor}
-                        mb={4}
-                        textAlign="center"
-                      >
-                        {project.name}
-                      </Text>
-                      <Text
-                        fontSize="sm"
-                        color={inactiveTextColor}
-                        textAlign="center"
-                        noOfLines={2}
-                        overflow="hidden"
-                        textOverflow="ellipsis"
-                      >
-                        {project.description || 'No description available'}
-                      </Text>
-                    </Box>
-                  </Link>
-                ))}
-              </SimpleGrid>
-            </Collapse>
-          </Box>
+          <InactiveProjectsSection
+            inactiveProjects={inactiveProjects}
+            showInactiveProjects={showInactiveProjects}
+            setShowInactiveProjects={setShowInactiveProjects}
+            inactiveBoxBg={inactiveBoxBg}
+            border={border}
+            inactiveTextColor={inactiveTextColor}
+          />
         )}
       </Box>
       <Footer />
