@@ -24,7 +24,7 @@ const TopDashButtons: React.FC<TopDashButtonsProps> = ({
             text="Report shift"
             icon={<FaCirclePlus />}
             ariaLabel="Submit shift times"
-            to={route.timesheets(projectId)}
+            to={`${route.timesheets(projectId)}?reportDirectly=true`}
           />
         )}
         <TopDashButton

@@ -12,7 +12,7 @@ import {
   Spinner,
   Text,
 } from '@chakra-ui/react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
@@ -36,11 +36,22 @@ import { useDeleteTimesheet } from './useDeleteTimesheet';
 
 export function TimesheetPage() {
   const auth = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [, setSelectedCar] = useState<string | null>(null);
   const cancelRef = React.useRef<HTMLButtonElement>(null);
+
+  const reportDirectly =
+    searchParams.get('reportDirectly')?.toLowerCase() === 'true';
+  useEffect(() => {
+    if (reportDirectly) {
+      setIsModalOpen(reportDirectly);
+      searchParams.delete('reportDirectly');
+      setSearchParams(searchParams);
+    }
+  });
 
   const isAuthenticated = auth.user !== null;
 
@@ -85,6 +96,7 @@ export function TimesheetPage() {
     handleAddClick,
     handleModalClose,
     handleFormSubmitWrapper,
+    setIsModalOpen,
   } = useTimesheetHandlers(
     projectId ?? '',
     roleData ?? null,
