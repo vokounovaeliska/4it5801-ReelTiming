@@ -125,7 +125,6 @@ export class timesheetPdfGeneratorService {
         },
       };
 
-      // Generate PDF
       const file = await timesheetPdfReport(dateRange, crewInfo, statementList);
 
       return file;

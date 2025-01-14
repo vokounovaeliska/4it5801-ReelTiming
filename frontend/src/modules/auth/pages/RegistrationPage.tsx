@@ -31,7 +31,7 @@ export function RegistrationPage() {
   const auth = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const invitationToken = searchParams.get('token'); // Get the token from query parameters
+  const invitationToken = searchParams.get('token');
   const [signupRequest, signupRequestState] = useMutation(SIGNUP_MUTATION, {
     onCompleted: ({ signUp: { user, token } }) => {
       auth.signIn({ token, user });

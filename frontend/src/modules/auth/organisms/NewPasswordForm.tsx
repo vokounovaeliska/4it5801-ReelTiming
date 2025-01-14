@@ -41,7 +41,7 @@ export function NewPasswordForm({
   children,
 }: NewPasswordFormProps) {
   const [searchParams] = useSearchParams();
-  const token = searchParams.get('token'); // Get the token from query parameters
+  const token = searchParams.get('token');
 
   const handleSubmit = (data: newPasswordFormValues) => {
     if (token) {

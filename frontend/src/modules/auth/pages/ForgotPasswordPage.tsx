@@ -16,7 +16,7 @@ const FORGOT_PASSWORD_MUTATION = gql(`
 
 export function ForgotPasswordPage() {
   const navigate = useNavigate();
-  const toast = useToast(); // Chakra UI's toast hook
+  const toast = useToast();
 
   const [forgotPasswordRequest, forgotPasswordRequestState] = useMutation(
     FORGOT_PASSWORD_MUTATION,

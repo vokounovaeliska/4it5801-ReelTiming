@@ -65,7 +65,7 @@ export function CrewListPage() {
       )
       .map(({ car_id, kilometers }) => ({
         car_id,
-        kilometers: kilometers ?? null, // Ensure kilometers is explicitly null if undefined
+        kilometers: kilometers ?? null,
       })) || [];
   const wrappedStatements = { carStatementsByProjectId: cleanedStatements };
 

@@ -120,7 +120,7 @@ const documents = {
     types.GetAdminStatementsDocument,
   '\n  query CarStatementsByProjectId($projectId: String!) {\n    carStatementsByProjectId(projectId: $projectId) {\n      car_id\n      kilometers\n    }\n  }\n':
     types.CarStatementsByProjectIdDocument,
-  '\n    query CarStatementsByProjectUserId($projectUserId: String!) {\n    statementsByProjectUserId(projectUserId: $projectUserId) {\n      car_id\n     kilometers\n  }\n}\n  ':
+  '\n    query CarStatementsByProjectUserId($projectUserId: String!) {\n      carStatementsByProjectUserId(projectUserId: $projectUserId) {\n      car_id\n     kilometers\n  }\n}\n  ':
     types.CarStatementsByProjectUserIdDocument,
   '\n  query GetUserProfileSettingsInfo($userId: String!) {\n    user(id: $userId) {\n      id\n      name\n      surname\n      email\n      phone_number\n      last_update_date\n      create_date\n    }\n  }\n':
     types.GetUserProfileSettingsInfoDocument,
@@ -482,8 +482,8 @@ export function gql(
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(
-  source: '\n    query CarStatementsByProjectUserId($projectUserId: String!) {\n    statementsByProjectUserId(projectUserId: $projectUserId) {\n      car_id\n     kilometers\n  }\n}\n  ',
-): (typeof documents)['\n    query CarStatementsByProjectUserId($projectUserId: String!) {\n    statementsByProjectUserId(projectUserId: $projectUserId) {\n      car_id\n     kilometers\n  }\n}\n  '];
+  source: '\n    query CarStatementsByProjectUserId($projectUserId: String!) {\n      carStatementsByProjectUserId(projectUserId: $projectUserId) {\n      car_id\n     kilometers\n  }\n}\n  ',
+): (typeof documents)['\n    query CarStatementsByProjectUserId($projectUserId: String!) {\n      carStatementsByProjectUserId(projectUserId: $projectUserId) {\n      car_id\n     kilometers\n  }\n}\n  '];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

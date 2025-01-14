@@ -70,7 +70,7 @@ const ProfileSettingsPage = () => {
         },
       });
       toast({ title: 'Profile updated successfully', status: 'success' });
-      refetch(); // Refetch the data after a successful update
+      refetch();
     } catch (err) {
       toast({ title: 'Error updating profile', status: 'error' });
     }

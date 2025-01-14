@@ -131,7 +131,6 @@ export function EditDepartmentsTemplate({
   };
 
   const handleAddDepartment = (newDepartment: Department) => {
-    console.log(newDepartment);
     setDepartments((prev) => [...prev, newDepartment]);
     setIsModalOpen(false);
   };

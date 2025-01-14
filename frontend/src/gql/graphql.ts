@@ -1983,9 +1983,9 @@ export type CarStatementsByProjectUserIdQueryVariables = Exact<{
 
 export type CarStatementsByProjectUserIdQuery = {
   __typename?: 'Query';
-  statementsByProjectUserId: Array<{
-    __typename?: 'Statement';
-    car_id: string;
+  carStatementsByProjectUserId: Array<{
+    __typename?: 'CarStatement';
+    car_id?: string | null;
     kilometers?: number | null;
   }>;
 };
@@ -8043,7 +8043,7 @@ export const CarStatementsByProjectUserIdDocument = {
         selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'statementsByProjectUserId' },
+            name: { kind: 'Name', value: 'carStatementsByProjectUserId' },
             arguments: [
               {
                 kind: 'Argument',

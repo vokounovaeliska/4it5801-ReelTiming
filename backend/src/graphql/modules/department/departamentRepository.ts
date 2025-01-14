@@ -63,8 +63,6 @@ export function getDepartmentRepository(db: Db) {
         is_visible?: boolean;
       }>,
     ) {
-      console.log('...');
-      console.log(data);
       return db.update(department).set(data).where(eq(department.id, id));
     },
   };

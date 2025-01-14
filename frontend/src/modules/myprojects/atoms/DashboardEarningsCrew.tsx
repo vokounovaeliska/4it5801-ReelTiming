@@ -7,7 +7,7 @@ import { GET_CREWUSERINFO_TIMESHEETS } from '@frontend/graphql/queries/GetCrewUs
 import { GET_ADMIN_STATEMENTS } from '@frontend/graphql/queries/GetStatements';
 import { currencyUtil } from '@shared/currencyUtil';
 
-import ShiftsButton from '../atoms/ShiftsButton';
+import ShiftsButton from './buttons/ShiftsButton';
 
 interface DashboardEarningsProps {
   projectId: string;
@@ -77,7 +77,6 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
     (statement) => statement.projectUser.id === userProjectInfo?.id,
   );
 
-  // Calculate total excess mileage for the specific user
   const totalMileage = userStatements.reduce(
     (total: number, statement: Statement) => {
       const kilometers = statement.kilometers || 0;
@@ -92,7 +91,6 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
     0,
   );
 
-  // Calculate total overtime earnings for the specific user
   const totalOvertimeEarnings = userStatements.reduce(
     (total: number, statement: Statement) => {
       const { claimed_overtime } = statement;
@@ -106,18 +104,17 @@ const DashboardEarningsCrew: React.FC<DashboardEarningsProps> = ({
         };
       let overtimeEarnings = 0;
 
-      // Apply overtime rates based on claimed overtime
       if (claimed_overtime! >= 1) {
-        overtimeEarnings += overtime_hour1!; // 1st overtime hour
+        overtimeEarnings += overtime_hour1!;
       }
       if (claimed_overtime! >= 2) {
-        overtimeEarnings += overtime_hour2!; // 2nd overtime hour
+        overtimeEarnings += overtime_hour2!;
       }
       if (claimed_overtime! >= 3) {
-        overtimeEarnings += overtime_hour3!; // 3rd overtime hour
+        overtimeEarnings += overtime_hour3!;
       }
       if (claimed_overtime! > 3) {
-        overtimeEarnings += (claimed_overtime! - 3) * overtime_hour4!; // Additional overtime hours
+        overtimeEarnings += (claimed_overtime! - 3) * overtime_hour4!;
       }
 
       return total + overtimeEarnings;

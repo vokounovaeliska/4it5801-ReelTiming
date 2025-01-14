@@ -88,8 +88,6 @@ export class DepartmentResolver {
       is_visible: isVisible,
     });
 
-    console.log(name, projectId, orderIndex, isVisible);
-    console.log(validatedData);
     const departmentService = new DepartmentService(db);
     return departmentService.createDepartment(
       validatedData.name,
@@ -111,8 +109,6 @@ export class DepartmentResolver {
       isVisible: data.is_visible,
       orderIndex: data.order_index,
     });
-    console.log(data);
-    console.log(validatedData);
     const departmentService = new DepartmentService(db);
     return departmentService.updateDepartment(id, {
       ...validatedData,

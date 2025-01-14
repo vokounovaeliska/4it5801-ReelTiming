@@ -92,8 +92,6 @@ export class StatementService {
     id: string,
     data: StatementInput,
   ): Promise<Statement | null> {
-    console.log(data.project_user_id);
-    console.log(data.last_update_user_id);
     await this.statementRepository.updateStatement(id, {
       start_date: data.start_date,
       from: data.from,

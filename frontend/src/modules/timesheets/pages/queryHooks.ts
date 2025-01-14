@@ -140,8 +140,10 @@ export const useCarStatementsByProjectUserId = (projectUserId: string) => {
     refetch,
   } = useQuery(GET_CARS_STATEMENTS_BY_CREW, {
     variables: { projectUserId },
+    skip: !projectUserId,
     fetchPolicy: 'cache-and-network',
   });
+
   return {
     projectStatementsCrew,
     projectCrewLoading,

@@ -98,13 +98,11 @@ export class ShiftOverviewService {
       let htmlContent = await fs.readFile(templatePath, 'utf-8');
       const reportLink = APP_LINK + link;
 
-      // Replace placeholders in the HTML template
       htmlContent = htmlContent.replace('{{message}}', message);
       htmlContent = htmlContent.replace('{{userName}}', name);
       htmlContent = htmlContent.replace('{{dates}}', dates);
       htmlContent = htmlContent.replace('{{reportsLink}}', reportLink);
 
-      // Send the email
       await sendMail(email, `${projectName} - shift not reported`, htmlContent);
     } catch (error) {
       console.error('Error sending shift notification email:', error);

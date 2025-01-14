@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { GetPersonalProjectInfoQuery } from '@frontend/gql/graphql';
 import { useAuth } from '@frontend/modules/auth';
+import { CarStatement } from '@frontend/modules/timesheets/interfaces';
 import { useCarStatementsByProjectUserId } from '@frontend/modules/timesheets/pages/queryHooks';
 import { route } from '@frontend/route';
 import { Heading } from '@frontend/shared/design-system';
@@ -33,20 +34,19 @@ export function MyProjectSettingPage() {
       personalProjectData?.projectUserByUserIdAndProjectId?.id!,
     );
 
-  console.log('projectStatementsCrew', projectStatementsCrew);
-
-  const cleanedStatements =
-    projectStatementsCrew?.statementsByProjectUserId
+  const cleanedStatements: CarStatement[] =
+    projectStatementsCrew?.carStatementsByProjectUserId
       ?.filter(
-        (statement) =>
-          statement.car_id !== null && statement.kilometers !== null,
+        (statement): statement is { car_id: string; kilometers: number } =>
+          statement.car_id !== null &&
+          statement.car_id !== undefined &&
+          statement.kilometers !== null &&
+          statement.kilometers !== undefined,
       )
       .map(({ car_id, kilometers }) => ({
         car_id,
         kilometers,
       })) || [];
-
-  console.log('cleanedStatements', cleanedStatements);
 
   const currentUser = auth?.user;
 
@@ -100,7 +100,7 @@ export function MyProjectSettingPage() {
       />
       <Box flex="1" p={0} width="100%">
         <Heading mb={4} mt={2} textAlign="center">
-          Crew List for Project {personalProjectData?.project?.name}
+          My project settings for {personalProjectData?.project?.name}
         </Heading>
       </Box>
       <MyProjectSettingsForm
@@ -120,7 +120,6 @@ export function MyProjectSettingPage() {
             },
             oldCars,
           );
-          //refetchAllCarsOnProjectData();
         }}
         isLoading={isSubmitting}
         departments={personalProjectData?.project?.departments!}
@@ -130,11 +129,7 @@ export function MyProjectSettingPage() {
         userRole={roleData?.userRoleInProject ?? 'CREW'}
         projectCurrency={personalProjectData?.project?.currency}
         cars={personalProjectData?.projectUserByUserIdAndProjectId?.car ?? []}
-        carStatements={
-          // cleanedStatements
-          //  ??
-          []
-        }
+        carStatements={cleanedStatements ?? []}
       />
       <Footer />
     </Box>

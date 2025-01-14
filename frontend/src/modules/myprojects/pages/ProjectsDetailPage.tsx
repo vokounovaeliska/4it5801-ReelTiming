@@ -14,15 +14,15 @@ import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 import { currencyUtil } from '@shared/currencyUtil';
 
 import BoxDashboard from '../atoms/BoxDashboard';
+import CrewInfo from '../atoms/CrewInfo';
+import DashboardCostsAdmin from '../atoms/DashboardCostsAdmin';
+import DashboardEarningsCrew from '../atoms/DashboardEarningsCrew';
 import PillButtonsTop from '../atoms/PillButtonsTop';
 import ProjectOrigin from '../atoms/ProjectOrigin';
 import ProjectStatus from '../atoms/ProjectStatus';
 import ProjectTimeline from '../atoms/ProjectTimeline';
+import ShiftInfo from '../atoms/ShiftInfo';
 import TopDashButtons from '../atoms/TopDashButtons';
-import CrewInfo from '../organisms/CrewInfo';
-import DashboardCostsAdmin from '../organisms/DashboardCostsAdmin';
-import DashboardEarningsCrew from '../organisms/DashboardEarningsCrew';
-import ShiftInfo from '../organisms/ShiftInfo';
 
 export function MyProjectDetailPage() {
   const auth = useAuth();

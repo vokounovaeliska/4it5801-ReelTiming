@@ -91,7 +91,6 @@ export const formatPhoneNumber = (phoneNumber: string): string => {
     );
     return formatted;
   }
-  // Return the original phone number if it doesn't match expected format
   return phoneNumber;
 };
 
