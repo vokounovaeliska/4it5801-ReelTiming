@@ -3,7 +3,7 @@ import { Route, Routes as RouterRoutes } from 'react-router-dom';
 import { LogInPage } from '@frontend/modules/auth/pages/LoginPage';
 import { RegistrationPage } from '@frontend/modules/auth/pages/RegistrationPage';
 import { HelloPage } from '@frontend/modules/hello/pages/HelloPage';
-import { HomePage } from '@frontend/modules/home/pages/HomePage';
+import { HomePage } from '@frontend/modules/landingPage/pages/HomePage';
 import { MyProjectsPage } from '@frontend/modules/myprojects/pages/MyProjectsPage';
 import { MyProjectDetailPage } from '@frontend/modules/myprojects/pages/ProjectsDetailPage';
 import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';

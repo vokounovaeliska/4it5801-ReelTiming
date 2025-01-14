@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { GET_PROJECT_DETAILS } from '@frontend/graphql/queries/GetProjectDetails';
 import { GET_USER_ROLE_IN_PROJECT } from '@frontend/graphql/queries/GetUserRoleInProject';
 import { useAuth } from '@frontend/modules/auth';
-import { HomePage } from '@frontend/modules/home/pages/HomePage';
+import { HomePage } from '@frontend/modules/landingPage/pages/HomePage';
 import { Heading } from '@frontend/shared/design-system';
 import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
