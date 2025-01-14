@@ -29,7 +29,6 @@ const AboutUsPage = () => {
           bg="white"
           textAlign="center"
           fontSize={{ base: 'md', md: 'lg' }}
-
         >
           <Box boxSize={{ base: '80px', md: '100px' }} mx="auto" py={8}>
             <Image src="/faviconlogo.png" alt="ReelTiming Logo" />
@@ -38,7 +37,7 @@ const AboutUsPage = () => {
           <Heading as="h1" size={{ base: 'xl', md: '2xl' }} mt={12} mb={4}>
             About Us
           </Heading>
-          <Text mb={4} >
+          <Text mb={4}>
             At ReelTiming, we solve critical challenges for film producers by
             simplifying their attendance and production scheduling systems. Our
             platform is designed to streamline crew management, ensuring that

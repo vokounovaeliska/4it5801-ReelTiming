@@ -79,6 +79,7 @@ export const ProjectInformationSection: React.FC<
             name="position"
             label="Position"
             isRequired
+            placeholder="Fill in the position title"
             isDisabled={userRole !== 'ADMIN'}
           />
         </Box>

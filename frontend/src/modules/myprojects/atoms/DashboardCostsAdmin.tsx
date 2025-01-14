@@ -1,9 +1,9 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import { Box, HStack, Text } from '@chakra-ui/react';
+import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { FaCoins } from 'react-icons/fa';
 
-import { GET_ADMIN_STATEMENTS } from '@frontend/graphql/queries/GetStatements';
+import { GET_ADMIN_STATEMENTS_LIGHT } from '@frontend/graphql/queries/GetStatements';
 import { currencyUtil } from '@shared/currencyUtil';
 
 import { Statement } from '../interface';
@@ -19,84 +19,55 @@ const DashboardCostsAdmin: React.FC<DashboardCostsProps> = ({
   projectId,
   currency,
 }) => {
-  const { data, loading, error } = useQuery(GET_ADMIN_STATEMENTS, {
+  const { data, loading, error } = useQuery(GET_ADMIN_STATEMENTS_LIGHT, {
     variables: { projectId },
     fetchPolicy: 'cache-first',
     nextFetchPolicy: 'cache-and-network',
   });
+  console.log('data', data);
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error loading data!</Text>;
 
   const statements: Statement[] = data?.statementsByProjectId || [];
 
-  const totalMileage = statements.reduce(
-    (total: number, statement: Statement) => {
-      const kilometers = statement.kilometers || 0;
-      const car = statement.car;
-      if (car && kilometers > (car.kilometer_allow || 0)) {
-        const excessKilometers = kilometers - (car.kilometer_allow || 0);
-        total += excessKilometers;
-      }
-      return total;
-    },
-    0,
-  );
+  let totalMileage = 0;
+  let totalOvertimeCosts = 0;
+  let totalOvertimeHours = 0;
+  let totalTransportationOvertimeCosts = 0;
 
-  const totalOvertimeCosts = statements.reduce(
-    (total: number, statement: Statement) => {
-      const { claimed_overtime } = statement;
-      const { overtime_hour1, overtime_hour2, overtime_hour3, overtime_hour4 } =
-        statement.projectUser.rate || {
-          standard_rate: 0,
-          overtime_hour1: 0,
-          overtime_hour2: 0,
-          overtime_hour3: 0,
-          overtime_hour4: 0,
-        };
+  statements.forEach((statement) => {
+    const kilometers = statement.kilometers ?? 0;
+    const claimed_overtime = statement.claimed_overtime ?? 0;
 
-      let overtimeCost = 0;
-      if (claimed_overtime! >= 1) {
-        overtimeCost += overtime_hour1!;
-      }
-      if (claimed_overtime! >= 2) {
-        overtimeCost += overtime_hour2!;
-      }
-      if (claimed_overtime! >= 3) {
-        overtimeCost += overtime_hour3!;
-      }
-      if (claimed_overtime! > 3) {
-        overtimeCost += (claimed_overtime! - 3) * overtime_hour4!;
-      }
+    const car = statement.car;
+    const allowKilometers = car?.kilometer_allow ?? 0;
+    const carRate = car?.kilometer_rate ?? 0;
+    const excessKilometers = Math.max(0, kilometers - allowKilometers);
+    totalMileage += excessKilometers;
+    totalTransportationOvertimeCosts += excessKilometers * carRate;
 
-      return total + overtimeCost;
-    },
-    0,
-  );
+    const rate = statement.projectUser?.rate || {};
+    const {
+      overtime_hour1 = 0,
+      overtime_hour2 = 0,
+      overtime_hour3 = 0,
+      overtime_hour4 = 0,
+    } = rate;
 
-  const totalOvertimeHours = statements.reduce(
-    (totalHours: number, statement: Statement) => {
-      const claimedOvertime = statement.claimed_overtime || 0;
-      return totalHours + claimedOvertime;
-    },
-    0,
-  );
+    totalOvertimeHours += claimed_overtime;
+    const hour1 = overtime_hour1 ?? 0;
+    const hour2 = overtime_hour2 ?? 0;
+    const hour3 = overtime_hour3 ?? 0;
+    const hour4 = overtime_hour4 ?? 0;
 
-  const totalTransportationOvertimeCosts = statements.reduce(
-    (totalCost: number, statement: Statement) => {
-      const kilometers = statement.kilometers || 0;
-      const car = statement.car;
-      const allowKilometers = car?.kilometer_allow || 0;
-      const carRate = car?.kilometer_rate || 0;
-      if (kilometers > allowKilometers) {
-        const excessKilometers = kilometers - allowKilometers;
-        totalCost += excessKilometers * carRate;
-      }
-
-      return totalCost;
-    },
-    0,
-  );
+    if (claimed_overtime >= 1) totalOvertimeCosts += hour1;
+    if (claimed_overtime >= 2) totalOvertimeCosts += hour2;
+    if (claimed_overtime >= 3) totalOvertimeCosts += hour3;
+    if (claimed_overtime > 3) {
+      totalOvertimeCosts += (claimed_overtime - 3) * hour4;
+    }
+  });
 
   const superTotalLaborCosts =
     totalOvertimeCosts + totalTransportationOvertimeCosts;
@@ -108,15 +79,18 @@ const DashboardCostsAdmin: React.FC<DashboardCostsProps> = ({
   const totalTransportationCostsText = `${totalTransportationOvertimeCosts.toLocaleString()} ${currencySymbol}`;
   const superTotalLaborCostsText = `${superTotalLaborCosts.toLocaleString()} ${currencySymbol}`;
 
+  const isLargeText = superTotalLaborCostsText.length > 10; // Podmínka pro příliš velké číslo
+  const Stack = isLargeText ? VStack : HStack;
+
   return (
     <>
       <Text fontSize="lg">Total overtime costs</Text>
-      <HStack spacing={2} align="center" mb={4}>
+      <Stack spacing={2} align="center" my={4}>
         <FaCoins size="64px" />
-        <Text fontSize={{ base: '6xl', md: '4xl', lg: '6xl' }}>
+        <Text fontSize={{ base: '5xl', md: '5xl', xl: '6xl' }}>
           {superTotalLaborCostsText}
         </Text>
-      </HStack>
+      </Stack>
 
       <Text mb={1}>Costs by category</Text>
       <HStack spacing={4} wrap="wrap" mb={3}>

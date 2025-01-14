@@ -66,7 +66,7 @@ export function EditProjectForm({
       width="100%"
       maxWidth="1600px"
       mx="auto"
-      p={{ sm: '4'}}
+      p={{ sm: '4' }}
       border="1px solid"
       borderColor="gray.200"
       borderRadius="md"

@@ -157,7 +157,6 @@ export const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         </FormControl>
 
         <LogoUploader
-
           initialLogo={
             formData.logo ? `data:image/png;base64,${formData.logo}` : ''
           }

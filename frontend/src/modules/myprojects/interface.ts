@@ -10,13 +10,13 @@ export interface Statement {
       overtime_hour4?: number | null;
     } | null;
   };
-  shift_lenght: number;
+  shift_lenght?: number;
   claimed_overtime?: number | null;
   car?: {
-    id: string;
+    id?: string;
     kilometer_allow: number;
     kilometer_rate: number;
-    name: string;
+    name?: string;
   } | null;
 }
 

@@ -11,10 +11,15 @@ export const PersonalInformationSection: React.FC = () => (
     fontSize="1.7rem"
   >
     <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-      <InputField name="name" label="Name" isRequired />
-      <InputField name="surname" label="Surname" isRequired />
-      <InputField name="email" label="Email" isRequired />
-      <InputField name="phone_number" label="Phone number" isRequired />
+      <InputField name="name" label="Name" isRequired placeholder="John" />
+      <InputField name="surname" label="Surname" isRequired placeholder="Doe" />
+      <InputField name="email" label="Email" isRequired placeholder="@" />
+      <InputField
+        name="phone_number"
+        label="Phone number"
+        isRequired
+        placeholder="+420"
+      />
     </SimpleGrid>
   </FormSection>
 );
