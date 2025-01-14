@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Box, Text, useDisclosure } from '@chakra-ui/react';
-import { addDays, format, max, parseISO } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 import { ShootingDay } from '@frontend/gql/graphql';
 import {
@@ -10,6 +10,12 @@ import {
 
 import { DeleteConfirmationDialog } from '../atoms/ShootingDaysDialog';
 import { ProjectData } from '../pages/EditProjectPage';
+import {
+  calculateNewDate,
+  calculateNewDayNumber,
+  isDateWithinProjectDays,
+  validateShootingDay,
+} from '../util/shootingDaysUtil';
 
 import { ShootingDaysInputForm } from './ShootingDaysInputForm';
 import { ShootingDaysTable } from './ShootingDaysTable';
@@ -20,39 +26,23 @@ interface ShootingDaysConfigFormProps {
   projectData: ProjectData;
 }
 
-export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
+export const ShootingDaysConfigForm = ({
   shootingDays,
   handleShootingDaysChange,
   projectData,
-}) => {
-  const setNewDate = (days: ShootingDay[]): string => {
-    if (days.length === 0) {
-      return projectData.start_date || format(Date.now(), 'yyyy-MM-dd');
-    }
-    const maximumDate = max(days.map((day) => day.date));
-    return format(addDays(maximumDate, 1), 'yyyy-MM-dd');
-  };
-
-  const setNewShootingDayNumber = (days: ShootingDay[]): number => {
-    if (days.length === 0) {
-      return 1;
-    }
-    return Math.max(...days.map((day) => day.shooting_day_number)) + 1;
-  };
-
+}: ShootingDaysConfigFormProps) => {
   const setNewShootingDay = (days: ShootingDay[]) => {
     setShootingDay({
       id: '',
-      shooting_day_number: setNewShootingDayNumber(days),
-      date: setNewDate(days),
+      shooting_day_number: calculateNewDayNumber(days),
+      date: calculateNewDate(days, projectData.start_date),
     });
   };
 
   const [shootingDay, setShootingDay] = useState<ShootingDay>({
     id: '',
-    shooting_day_number:
-      shootingDays !== undefined ? setNewShootingDayNumber(shootingDays) : 1,
-    date: setNewDate(shootingDays),
+    shooting_day_number: calculateNewDayNumber(shootingDays),
+    date: calculateNewDate(shootingDays, projectData.start_date),
   });
 
   const [shootingDaysCollection, setShootingDaysCollection] =
@@ -62,7 +52,6 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
   const [shootingDayToDeleteIndex, setShootingDayToDeleteIndex] = useState<
     number | null
   >(null);
-
   const {
     isOpen: isDeleteAlertOpen,
     onOpen: onDeleteAlertOpen,
@@ -75,52 +64,19 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
       return;
     }
 
-    const isWithinTheProjectDays = (): boolean => {
-      if (!projectData || !shootingDay || !shootingDay.date) {
-        return false;
-      }
-
-      if (projectData.start_date && projectData.end_date) {
-        const shootingDayDate = new Date(shootingDay.date).getTime();
-        const startDate = new Date(projectData.start_date).getTime();
-        const endDate = new Date(projectData.end_date).getTime();
-
-        return shootingDayDate >= startDate && shootingDayDate <= endDate;
-      }
-
-      return false;
-    };
-
-    const isDuplicateDayNumber = shootingDaysCollection.some(
-      (day) =>
-        day.shooting_day_number === shootingDay.shooting_day_number &&
-        (!isEditing || day.id !== shootingDay.id),
+    const { valid, message } = validateShootingDay(
+      shootingDay,
+      shootingDaysCollection,
+      isEditing,
     );
 
-    const isDuplicateDayDate = shootingDaysCollection.some(
-      (day) =>
-        new Date(day.date).getTime() === new Date(shootingDay.date).getTime() &&
-        (!isEditing || day.id !== shootingDay.id),
-    );
-
-    if (isDuplicateDayNumber) {
-      showErrorToast(
-        'A day with this number already exists! Please use a unique day number.',
-      );
+    if (!valid) {
+      showErrorToast(message);
       return;
     }
 
-    if (isDuplicateDayDate) {
-      showErrorToast(
-        'A shooting day with this date already exists! Please use a unique date.',
-      );
-      return;
-    }
-
-    if (!isWithinTheProjectDays()) {
-      showErrorToast(
-        'A shooting day date is not set withing the project! Please use a date within the project.',
-      );
+    if (!isDateWithinProjectDays(shootingDay, projectData)) {
+      showErrorToast('Shooting day date is after the project deadline!');
       return;
     }
 
@@ -128,13 +84,7 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
 
     if (isEditing) {
       updatedDaysCollection = shootingDaysCollection.map((day) =>
-        day.id === shootingDay.id
-          ? {
-              ...day,
-              shooting_day_number: shootingDay.shooting_day_number,
-              date: shootingDay.date,
-            }
-          : day,
+        day.id === shootingDay.id ? { ...day, ...shootingDay } : day,
       );
       setIsEditing(false);
       showSuccessToast(`Day ${shootingDay.date} has been updated.`);
@@ -148,46 +98,13 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
       showSuccessToast(`Day ${shootingDay.date} has been added.`);
     }
 
-    updatedDaysCollection = updatedDaysCollection.sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-    );
-    updatedDaysCollection = updatedDaysCollection.map((day, index) => ({
-      ...day,
-      shooting_day_number: index + 1,
-    }));
+    updatedDaysCollection = updatedDaysCollection
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .map((day, index) => ({ ...day, shooting_day_number: index + 1 }));
 
     setShootingDaysCollection(updatedDaysCollection);
-
     handleShootingDaysChange(updatedDaysCollection);
-
     setNewShootingDay(updatedDaysCollection);
-  };
-
-  const handleEditShootingDay = (index: number) => {
-    const dayToEdit = shootingDaysCollection[index];
-    if (dayToEdit) {
-      setShootingDay({
-        ...dayToEdit,
-        date: format(parseISO(dayToEdit.date), 'yyyy-MM-dd'),
-      });
-      setIsEditing(true);
-    }
-  };
-
-  const handleDeleteShootingDay = (indexToRemove: number) => {
-    setShootingDaysCollection((prev) => {
-      const updatedCollection = prev.filter(
-        (_, index) => index !== indexToRemove,
-      );
-
-      handleShootingDaysChange(updatedCollection);
-
-      setNewShootingDay(updatedCollection);
-
-      return updatedCollection;
-    });
-
-    showSuccessToast('The shooting day has been removed.');
   };
 
   return (
@@ -210,7 +127,16 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
         <>
           <ShootingDaysTable
             shootingDaysCollection={shootingDaysCollection}
-            handleEditShootingDay={handleEditShootingDay}
+            handleEditShootingDay={(index) => {
+              const dayToEdit = shootingDaysCollection[index];
+              if (dayToEdit) {
+                setShootingDay({
+                  ...dayToEdit,
+                  date: format(parseISO(dayToEdit.date), 'yyyy-MM-dd'),
+                });
+                setIsEditing(true);
+              }
+            }}
             handleDeleteShootingDay={(index) => {
               setShootingDayToDeleteIndex(index);
               onDeleteAlertOpen();
@@ -222,7 +148,13 @@ export const ShootingDaysConfigForm: React.FC<ShootingDaysConfigFormProps> = ({
             cancelRef={cancelRef}
             handleRemoveShootingDay={() => {
               if (shootingDayToDeleteIndex !== null) {
-                handleDeleteShootingDay(shootingDayToDeleteIndex);
+                const updatedCollection = shootingDaysCollection.filter(
+                  (_, index) => index !== shootingDayToDeleteIndex,
+                );
+                setShootingDaysCollection(updatedCollection);
+                handleShootingDaysChange(updatedCollection);
+                setNewShootingDay(updatedCollection);
+                showSuccessToast('The shooting day has been removed.');
               }
               onDeleteAlertClose();
             }}

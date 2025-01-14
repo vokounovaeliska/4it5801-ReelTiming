@@ -49,7 +49,7 @@ export function EditProjectForm({
   };
 
   const handleSaveChanges = () => {
-    onSubmit(formData, shootingDays, shootingDays);
+    onSubmit(formData, shootingDays, shootingDaysCollection);
   };
 
   const [shootingDaysCollection, setShootingDaysCollection] = useState<
