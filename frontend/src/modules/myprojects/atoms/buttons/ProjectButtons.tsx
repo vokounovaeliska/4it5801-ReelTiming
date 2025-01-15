@@ -13,8 +13,6 @@ import { FaPeopleGroup } from 'react-icons/fa6';
 import { MdBuild, MdOutlineSummarize } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
-import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
-
 interface ProjectButtonsProps {
   activePath?: string;
   projectId: string;
@@ -62,7 +60,6 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
       <StackComponent>
         <Button
           {...buttonStyle}
-          as={ReactRouterLink}
           leftIcon={<MdOutlineSummarize />}
           bg={activePath === dashboardPath ? 'orange.600' : 'transparent'}
           onClick={() => handleNavigation(dashboardPath)}
@@ -71,7 +68,6 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
         </Button>
         <Button
           {...buttonStyle}
-          as={ReactRouterLink}
           leftIcon={<CiViewTimeline />}
           bg={activePath === timesheetsPath ? 'orange.600' : 'transparent'}
           onClick={() => handleNavigation(timesheetsPath)}
@@ -82,7 +78,6 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
           <>
             <Button
               {...buttonStyle}
-              as={ReactRouterLink}
               leftIcon={<FaPeopleGroup />}
               bg={activePath === crewlistPath ? 'orange.600' : 'transparent'}
               onClick={() => handleNavigation(crewlistPath)}
@@ -94,7 +89,6 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
         <Button
           {...buttonStyle}
           leftIcon={<BsPersonGear />}
-          as={ReactRouterLink}
           bg={activePath === myProjectSettings ? 'orange.600' : 'transparent'}
           onClick={() => handleNavigation(myProjectSettings)}
         >
@@ -104,7 +98,6 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
           <>
             <Button
               {...buttonStyle}
-              as={ReactRouterLink}
               leftIcon={<AttachmentIcon />}
               bg={activePath === dailyReport ? 'orange.600' : 'transparent'}
               onClick={() => handleNavigation(dailyReport)}
@@ -113,7 +106,6 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
             </Button>
             <Button
               {...buttonStyle}
-              as={ReactRouterLink}
               leftIcon={<RepeatClockIcon />}
               bg={activePath === shiftsOverview ? 'orange.600' : 'transparent'}
               onClick={() => handleNavigation(shiftsOverview)}
@@ -122,7 +114,6 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
             </Button>
             <Button
               {...buttonStyle}
-              as={ReactRouterLink}
               leftIcon={<MdBuild />}
               bg={activePath === editPath ? 'orange.600' : 'transparent'}
               onClick={() => handleNavigation(editPath)}
