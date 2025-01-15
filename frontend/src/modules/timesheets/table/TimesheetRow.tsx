@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { DeleteIcon, WarningTwoIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -53,6 +53,11 @@ const TimesheetRow = ({
   const displayDate = (date: Date | string): string => {
     return (dateToDisplay ?? formatDateToDisplay)(date);
   };
+
+  const calculatedDetails = useMemo(
+    () => statementUtil.calculateStatementDetails(ts),
+    [ts],
+  );
 
   return (
     <Tr
@@ -125,7 +130,7 @@ const TimesheetRow = ({
       <Td textAlign="center">{ts.claimed_overtime}</Td>
       <Td textAlign={shouldShowCarColumns ? 'right' : 'center'}>
         {currencyUtil.formatAmount(
-          statementUtil.calculateOvertimeAmount(ts),
+          calculatedDetails.overtimeAmount,
           project.currency,
         )}
       </Td>
@@ -135,7 +140,7 @@ const TimesheetRow = ({
           <Td textAlign="center">{hasCar ? ts.kilometers : ''}</Td>
           <Td textAlign="center">{hasCar ? ts.car?.kilometer_allow : ''}</Td>
           <Td textAlign="center">
-            {hasCar ? statementUtil.calculateKilometersOver(ts) : ''}
+            {hasCar ? calculatedDetails.kilometersOver : ''}
           </Td>
           <Td textAlign="right">
             {hasCar
@@ -148,7 +153,7 @@ const TimesheetRow = ({
           <Td textAlign="right">
             {hasCar
               ? currencyUtil.formatAmount(
-                  statementUtil.calculateKilometerSum(ts),
+                  calculatedDetails.kilometerSum,
                   project.currency,
                   2,
                 )
@@ -158,7 +163,7 @@ const TimesheetRow = ({
       )}
       <Td textAlign="right">
         {currencyUtil.formatAmount(
-          statementUtil.calculateTotalCost(ts),
+          calculatedDetails.totalCost,
           project.currency,
           2,
         )}

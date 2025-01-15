@@ -3,6 +3,7 @@ import { ButtonProps } from '@chakra-ui/react';
 import { FaClock } from 'react-icons/fa';
 
 import { route } from '@frontend/route';
+import { ReactRouterLink } from '@frontend/shared/navigation/atoms';
 
 import DashButton from './DashButton';
 
@@ -17,6 +18,7 @@ const ShiftsButton: React.FC<ShiftsButtonProps> = ({
   return (
     <DashButton
       text="Shifts"
+      as={ReactRouterLink}
       icon={<FaClock />}
       ariaLabel="Shifts"
       to={route.timesheets(projectId)}

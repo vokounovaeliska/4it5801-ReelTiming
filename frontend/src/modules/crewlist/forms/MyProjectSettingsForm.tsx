@@ -14,6 +14,7 @@ import { CarCompensationSection } from '../atoms/CarCompensationSection';
 import { PersonalInformationSection } from '../atoms/PersonalInformationSection';
 import { ProjectInformationSection } from '../atoms/ProjectInformationSection';
 import { RatesAndCompensationSection } from '../atoms/RatesAndCompensationSection';
+import { Project } from '../interfaces/interfaces';
 
 export type CrewListFormProps = {
   errorMessage?: string;
@@ -27,7 +28,7 @@ export type CrewListFormProps = {
   departments: { id: string; name: string }[];
   initialValues?: crewListFormValues;
   userRole: string;
-  projectCurrency?: string;
+  project?: Project | null;
   cars: Car[] | null;
   carStatements: CarStatement[];
 };
@@ -39,7 +40,7 @@ export function MyProjectSettingsForm({
   departments,
   initialValues,
   userRole,
-  projectCurrency,
+  project,
   cars,
   carStatements,
 }: CrewListFormProps) {
@@ -73,12 +74,14 @@ export function MyProjectSettingsForm({
           departments={departments}
         />
 
-        <RatesAndCompensationSection projectCurrency={projectCurrency} />
+        <RatesAndCompensationSection
+          projectCurrency={project?.currency ?? 'CZK'}
+        />
 
         <CarCompensationSection
           cars={carData}
           onCarCollectionChange={handleCarCollectionChange}
-          projectCurrency={projectCurrency}
+          projectCurrency={project?.currency ?? 'CZK'}
           carStatements={carStatements}
         />
         <Button
@@ -87,6 +90,7 @@ export function MyProjectSettingsForm({
           width={{ base: '100%', md: 'md' }}
           placeSelf={{ md: 'end' }}
           isLoading={isLoading}
+          isDisabled={!project?.is_active}
         >
           Save Changes
         </Button>

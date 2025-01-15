@@ -151,6 +151,7 @@ export const EditableDepartmentTableRow = ({
         {editRowId === department.id ? (
           <Input
             size="sm"
+            w="auto"
             rounded="md"
             name="name"
             value={formState.name}

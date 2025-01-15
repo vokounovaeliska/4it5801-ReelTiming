@@ -11,11 +11,13 @@ import TopDashButton from './buttons/TopDashButton';
 interface TopDashButtonsProps {
   userRole: string;
   projectId: string;
+  isProjectActive?: boolean;
 }
 
 const TopDashButtons: React.FC<TopDashButtonsProps> = ({
   userRole,
   projectId,
+  isProjectActive = true,
 }) => {
   return (
     <Box mt={5} justifyContent="space-between" width="100%">
@@ -25,7 +27,7 @@ const TopDashButtons: React.FC<TopDashButtonsProps> = ({
             text="Report shift"
             icon={<FaCirclePlus />}
             ariaLabel="Submit shift times"
-            to={route.timesheets(projectId)}
+            to={`${route.timesheets(projectId)}?reportDirectly=${isProjectActive}`}
           />
         )}
         <TopDashButton
@@ -55,6 +57,7 @@ const TopDashButtons: React.FC<TopDashButtonsProps> = ({
             icon={<IoIosSettings />}
             ariaLabel="Edit departments"
             to={route.editDepartments(projectId)}
+            isDisabled={!isProjectActive}
           />
         )}
       </SimpleGrid>

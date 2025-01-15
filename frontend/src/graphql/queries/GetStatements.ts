@@ -72,6 +72,31 @@ export const GET_ADMIN_STATEMENTS = gql(`
   }
   `);
 
+export const GET_ADMIN_STATEMENTS_LIGHT = gql(`
+  query GetAdminStatementsLight($projectId: String!) {
+    statementsByProjectId(projectId: $projectId) {
+      id
+      projectUser {
+        id
+        rate {
+          compensation_rate
+          standard_rate
+          overtime_hour1
+          overtime_hour2
+          overtime_hour3
+          overtime_hour4
+        }
+      }
+      claimed_overtime
+      car {
+        kilometer_allow
+        kilometer_rate
+      }
+      kilometers
+    }
+  }
+  `);
+
 export const GET_CARS_STATEMENTS = gql(`
   query CarStatementsByProjectId($projectId: String!) {
     carStatementsByProjectId(projectId: $projectId) {

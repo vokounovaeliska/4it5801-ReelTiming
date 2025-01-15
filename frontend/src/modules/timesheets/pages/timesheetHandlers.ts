@@ -117,6 +117,7 @@ export const useTimesheetHandlers = (
     endDate,
     selectedUsers,
     isModalOpen,
+    setIsModalOpen,
     selectedTimesheet,
     mode,
     handleDateChange,

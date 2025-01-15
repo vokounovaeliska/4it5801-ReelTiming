@@ -55,7 +55,7 @@ export const AddDailyReportButton: React.FC<AddDailyReportButtonProps> = ({
       {isDisabled && (
         <Tooltip
           rounded="md"
-          label="Button is disabled when all shooting days already have meta information for the daily report. If you want to edit the information, please use the edit button next to shooting day."
+          label="Button is disabled when all shooting days already have meta information for the daily report (or there are no shooting days defined). If you want to edit the information, please use the edit button in PDF preview."
           fontSize="md"
         >
           <InfoOutlineIcon m={2} color="gray.400" />

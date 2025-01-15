@@ -114,6 +114,7 @@ export const ShiftOverviewTable = ({
           leftIcon={<LockIcon />}
           borderRadius="full"
           boxShadow="md"
+          isDisabled={!project.is_active}
           _hover={{
             bg: 'orange.500',
             color: 'white',
@@ -136,7 +137,9 @@ export const ShiftOverviewTable = ({
           Save Changes
         </Button>
 
-        <Button onClick={onOpen}>Notify members</Button>
+        <Button onClick={onOpen} isDisabled={!project.is_active}>
+          Notify members
+        </Button>
         <NotifyMembersModal
           isOpen={isOpen}
           onClose={onClose}

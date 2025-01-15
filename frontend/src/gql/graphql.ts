@@ -1964,6 +1964,38 @@ export type GetAdminStatementsQuery = {
   }>;
 };
 
+export type GetAdminStatementsLightQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+}>;
+
+export type GetAdminStatementsLightQuery = {
+  __typename?: 'Query';
+  statementsByProjectId: Array<{
+    __typename?: 'Statement';
+    id: string;
+    claimed_overtime?: number | null;
+    kilometers?: number | null;
+    projectUser: {
+      __typename?: 'ProjectUser';
+      id: string;
+      rate?: {
+        __typename?: 'Rate';
+        compensation_rate?: number | null;
+        standard_rate?: number | null;
+        overtime_hour1?: number | null;
+        overtime_hour2?: number | null;
+        overtime_hour3?: number | null;
+        overtime_hour4?: number | null;
+      } | null;
+    };
+    car?: {
+      __typename?: 'Car';
+      kilometer_allow: number;
+      kilometer_rate: number;
+    } | null;
+  }>;
+};
+
 export type CarStatementsByProjectIdQueryVariables = Exact<{
   projectId: Scalars['String']['input'];
 }>;
@@ -7959,6 +7991,128 @@ export const GetAdminStatementsDocument = {
 } as unknown as DocumentNode<
   GetAdminStatementsQuery,
   GetAdminStatementsQueryVariables
+>;
+export const GetAdminStatementsLightDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetAdminStatementsLight' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'projectId' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'statementsByProjectId' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'projectId' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'projectUser' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'rate' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: {
+                                kind: 'Name',
+                                value: 'compensation_rate',
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'standard_rate' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'overtime_hour1' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'overtime_hour2' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'overtime_hour3' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'overtime_hour4' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'claimed_overtime' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'car' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'kilometer_allow' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'kilometer_rate' },
+                      },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'kilometers' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetAdminStatementsLightQuery,
+  GetAdminStatementsLightQueryVariables
 >;
 export const CarStatementsByProjectIdDocument = {
   kind: 'Document',

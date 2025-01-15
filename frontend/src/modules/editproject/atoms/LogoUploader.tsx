@@ -62,7 +62,7 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({
   };
 
   return (
-    <Box>
+    <Box mt={4}>
       <ChakraImage
         display={displayLogo ? 'block' : 'none'}
         src={displayLogo}
@@ -74,8 +74,9 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({
         ml={1}
         mb={4}
       />
-      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+      <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={4} mt={4}>
         <Input
+          alignContent="center"
           ref={fileInputRef}
           type="file"
           accept=".png, .jpeg"
@@ -87,8 +88,8 @@ const LogoUploader: React.FC<LogoUploaderProps> = ({
             aria-label="Remove logo"
             leftIcon={<DeleteIcon />}
             colorScheme="red"
-            size="md"
             onClick={handleRemoveLogo}
+            maxW={40}
           >
             Remove logo
           </Button>

@@ -30,7 +30,7 @@ export function ForgotPasswordTemplate({
         alignItems="center"
         justifyContent="center"
         overflowY="auto"
-        padding={{ base: '4', sm: '6', md: '8' }}
+        padding={{ sm: '6', md: '8' }}
         mx="auto"
         width="100%"
         maxWidth="600px"

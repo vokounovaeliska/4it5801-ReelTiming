@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { Box, Center, Spinner, Text, useDisclosure } from '@chakra-ui/react';
+import { Box, Text, useDisclosure } from '@chakra-ui/react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { DELETE_DAILY_REPORT } from '@frontend/graphql/mutations/DeleteDailyReport';
@@ -8,6 +8,7 @@ import { GET_LAST_DAILY_REPORT_BY_PROJECT } from '@frontend/graphql/queries/GetL
 import { GET_SHOOTING_DAYS_BY_PROJECT } from '@frontend/graphql/queries/GetShootingDaysByProject';
 import { route } from '@frontend/route';
 import { Heading } from '@frontend/shared/design-system';
+import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 
 import DailyReportForm from '../forms/DailyReportForm';
 import {
@@ -113,13 +114,7 @@ const ShootingDaysOverview = ({ project }: ShootingDaysOverviewProps) => {
     }
   };
 
-  if (loading)
-    return (
-      <Center minHeight="100vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading shooting days...</Text>
-      </Center>
-    );
+  if (loading) return <LoadingSpinner title="shooting days" />;
 
   if (error) return <Text color="red.500">Error: {error.message}</Text>;
 
@@ -172,7 +167,7 @@ const ShootingDaysOverview = ({ project }: ShootingDaysOverviewProps) => {
         {selectedDay && (
           <DailyReportTabs
             shootingDay={selectedDay}
-            projectId={project.id}
+            project={project}
             onEdit={() => handleEditClick(selectedDay)}
             onDelete={() => handleDeleteClick(selectedDay)}
           />

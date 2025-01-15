@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   AlertDialog,
   AlertDialogBody,
@@ -9,13 +9,13 @@ import {
   Box,
   Button,
   Center,
-  Spinner,
   Text,
 } from '@chakra-ui/react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
+import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 import CustomModal from '@frontend/shared/forms/molecules/CustomModal';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
@@ -36,11 +36,22 @@ import { useDeleteTimesheet } from './useDeleteTimesheet';
 
 export function TimesheetPage() {
   const auth = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [, setSelectedCar] = useState<string | null>(null);
   const cancelRef = React.useRef<HTMLButtonElement>(null);
+
+  const reportDirectly =
+    searchParams.get('reportDirectly')?.toLowerCase() === 'true';
+  useEffect(() => {
+    if (reportDirectly) {
+      setIsModalOpen(reportDirectly);
+      searchParams.delete('reportDirectly');
+      setSearchParams(searchParams);
+    }
+  });
 
   const isAuthenticated = auth.user !== null;
 
@@ -85,6 +96,7 @@ export function TimesheetPage() {
     handleAddClick,
     handleModalClose,
     handleFormSubmitWrapper,
+    setIsModalOpen,
   } = useTimesheetHandlers(
     projectId ?? '',
     roleData ?? null,
@@ -99,22 +111,11 @@ export function TimesheetPage() {
     }
   }, [isAuthenticated, navigate, loading, projectId]);
 
-  if (loading) {
-    return (
-      <Center minHeight="100vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading project details...</Text>
-      </Center>
-    );
-  }
-
-  if (error || !userInfoData?.projectUserDetails?.project) {
-    return (
-      <Center minHeight="100vh">
-        <Text color="red.500">Error loading project details: {error}</Text>
-      </Center>
-    );
-  }
+  const timesheets = useMemo(() => {
+    return roleData?.userRoleInProject === 'ADMIN'
+      ? adminData?.statementsByProjectId
+      : crewData?.statementsByProjectUserId;
+  }, [roleData, adminData, crewData]);
 
   const carOptionsForLoggedInUser = userCarsData
     ? getCarOptionsForLoggedInUser(userCarsData)
@@ -142,15 +143,10 @@ export function TimesheetPage() {
 
   const userRole = roleData?.userRoleInProject;
 
-  if (roleData?.userRoleInProject !== 'ADMIN' && userRole !== 'CREW') {
+  if (roleData?.userRoleInProject !== ('ADMIN' || 'CREW') && !loading) {
     navigate(route.myprojects());
     return null;
   }
-
-  const timesheets =
-    userRole === 'ADMIN'
-      ? adminData?.statementsByProjectId
-      : crewData?.statementsByProjectUserId;
 
   const filteredTimesheets = filterTimesheets(
     timesheets ?? [],
@@ -166,6 +162,18 @@ export function TimesheetPage() {
     email: auth.user?.email ?? '',
     role: roleData?.userRoleInProject ?? '',
   };
+
+  if (loading) {
+    return <LoadingSpinner title="timesheets" />;
+  }
+
+  if (error || !userInfoData?.projectUserDetails?.project) {
+    return (
+      <Center minHeight="100vh">
+        <Text color="red.500">Error loading project details: {error}</Text>
+      </Center>
+    );
+  }
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">

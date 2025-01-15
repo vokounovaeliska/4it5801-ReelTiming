@@ -29,7 +29,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={size}>
       <ModalOverlay />
-      <ModalContent marginInline={0.5}>
+      <ModalContent marginInline={2}>
         <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>{children}</ModalBody>

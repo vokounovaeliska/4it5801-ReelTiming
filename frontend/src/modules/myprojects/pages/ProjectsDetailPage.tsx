@@ -134,6 +134,7 @@ export function MyProjectDetailPage() {
           <TopDashButtons
             userRole={userRole.userRoleInProject ?? ''}
             projectId={project.id}
+            isProjectActive={project.is_active}
           />
         </BoxDashboard>
 

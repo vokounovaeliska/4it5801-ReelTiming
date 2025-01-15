@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Box, Center, Spinner, Text } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useAuth } from '@frontend/modules/auth';
 import { route } from '@frontend/route';
+import { LoadingSpinner } from '@frontend/shared/design-system/atoms/LoadingSpinner';
 import { useUserRoleInProject } from '@frontend/shared/design-system/hooks/queryHooks';
 import Footer from '@frontend/shared/navigation/components/footer/Footer';
 import ProjectNavbar from '@frontend/shared/navigation/components/navbar/ProjectNavbar';
@@ -18,8 +19,8 @@ export function ShiftOverviewPage() {
 
   const [userRole, setUserRole] = useState<string | null>(null);
   const { roleData, roleLoading, roleError } = useUserRoleInProject(
-    auth.user?.id ?? '',
-    projectId ?? '',
+    auth.user?.id,
+    projectId,
   );
 
   const { projectData, projectLoading, projectError } = useProjectDetails(
@@ -33,12 +34,7 @@ export function ShiftOverviewPage() {
   }, [roleData]);
 
   if (roleLoading || !auth.user || projectLoading) {
-    return (
-      <Center minHeight="100vh">
-        <Spinner size="xl" color="orange.500" />
-        <Text ml={4}>Loading shift overview...</Text>
-      </Center>
-    );
+    return <LoadingSpinner title="shift overview" />;
   }
 
   if (

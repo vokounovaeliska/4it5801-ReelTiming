@@ -118,6 +118,8 @@ const documents = {
     types.GetCrewStatementsDocument,
   '\n  query GetAdminStatements($projectId: String!) {\n    statementsByProjectId(projectId: $projectId) {\n      id\n      projectUser {\n        id\n        name\n        surname\n        email\n        rate {\n          compensation_rate\n          standard_rate\n          overtime_hour1\n          overtime_hour2\n          overtime_hour3\n          overtime_hour4\n        }\n      }\n      start_date\n      from\n      to\n      shift_lenght\n      calculated_overtime\n      claimed_overtime\n      create_date\n      car {\n        id\n        kilometer_allow\n        kilometer_rate\n        name\n      }\n      kilometers\n    }\n  }\n  ':
     types.GetAdminStatementsDocument,
+  '\n  query GetAdminStatementsLight($projectId: String!) {\n    statementsByProjectId(projectId: $projectId) {\n      id\n      projectUser {\n        id\n        rate {\n          compensation_rate\n          standard_rate\n          overtime_hour1\n          overtime_hour2\n          overtime_hour3\n          overtime_hour4\n        }\n      }\n      claimed_overtime\n      car {\n        kilometer_allow\n        kilometer_rate\n      }\n      kilometers\n    }\n  }\n  ':
+    types.GetAdminStatementsLightDocument,
   '\n  query CarStatementsByProjectId($projectId: String!) {\n    carStatementsByProjectId(projectId: $projectId) {\n      car_id\n      kilometers\n    }\n  }\n':
     types.CarStatementsByProjectIdDocument,
   '\n    query CarStatementsByProjectUserId($projectUserId: String!) {\n      carStatementsByProjectUserId(projectUserId: $projectUserId) {\n      car_id\n     kilometers\n  }\n}\n  ':
@@ -472,6 +474,12 @@ export function gql(
 export function gql(
   source: '\n  query GetAdminStatements($projectId: String!) {\n    statementsByProjectId(projectId: $projectId) {\n      id\n      projectUser {\n        id\n        name\n        surname\n        email\n        rate {\n          compensation_rate\n          standard_rate\n          overtime_hour1\n          overtime_hour2\n          overtime_hour3\n          overtime_hour4\n        }\n      }\n      start_date\n      from\n      to\n      shift_lenght\n      calculated_overtime\n      claimed_overtime\n      create_date\n      car {\n        id\n        kilometer_allow\n        kilometer_rate\n        name\n      }\n      kilometers\n    }\n  }\n  ',
 ): (typeof documents)['\n  query GetAdminStatements($projectId: String!) {\n    statementsByProjectId(projectId: $projectId) {\n      id\n      projectUser {\n        id\n        name\n        surname\n        email\n        rate {\n          compensation_rate\n          standard_rate\n          overtime_hour1\n          overtime_hour2\n          overtime_hour3\n          overtime_hour4\n        }\n      }\n      start_date\n      from\n      to\n      shift_lenght\n      calculated_overtime\n      claimed_overtime\n      create_date\n      car {\n        id\n        kilometer_allow\n        kilometer_rate\n        name\n      }\n      kilometers\n    }\n  }\n  '];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: '\n  query GetAdminStatementsLight($projectId: String!) {\n    statementsByProjectId(projectId: $projectId) {\n      id\n      projectUser {\n        id\n        rate {\n          compensation_rate\n          standard_rate\n          overtime_hour1\n          overtime_hour2\n          overtime_hour3\n          overtime_hour4\n        }\n      }\n      claimed_overtime\n      car {\n        kilometer_allow\n        kilometer_rate\n      }\n      kilometers\n    }\n  }\n  ',
+): (typeof documents)['\n  query GetAdminStatementsLight($projectId: String!) {\n    statementsByProjectId(projectId: $projectId) {\n      id\n      projectUser {\n        id\n        rate {\n          compensation_rate\n          standard_rate\n          overtime_hour1\n          overtime_hour2\n          overtime_hour3\n          overtime_hour4\n        }\n      }\n      claimed_overtime\n      car {\n        kilometer_allow\n        kilometer_rate\n      }\n      kilometers\n    }\n  }\n  '];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

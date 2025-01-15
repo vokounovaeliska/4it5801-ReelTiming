@@ -19,6 +19,7 @@ const AppFeatures = () => {
       >
         Features That Make Filmmaking Easier
       </Heading>
+
       <Box
         width={{ base: '100%', md: '85%' }}
         justifyContent="center"
