@@ -92,7 +92,7 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
           bg={activePath === myProjectSettings ? 'orange.600' : 'transparent'}
           onClick={() => handleNavigation(myProjectSettings)}
         >
-          My project settings
+          My Settings
         </Button>
         {userRole === 'ADMIN' && (
           <>
@@ -106,7 +106,7 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
               }
               onClick={() => handleNavigation(dailyReport)}
             >
-              Daily report
+              Reports
             </Button>
             <Button
               {...buttonStyle}
@@ -114,7 +114,7 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
               bg={activePath === shiftsOverview ? 'orange.600' : 'transparent'}
               onClick={() => handleNavigation(shiftsOverview)}
             >
-              Shifts overview
+              Overview
             </Button>
             <Button
               {...buttonStyle}
