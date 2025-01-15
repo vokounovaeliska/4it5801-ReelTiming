@@ -146,6 +146,7 @@ export const ShiftOverviewTable = ({
           membersByDate={notReportedByDate}
           workDays={workDays}
           project={project}
+          refetch={refetch}
         />
       </Flex>
 
