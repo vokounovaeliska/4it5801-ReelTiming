@@ -33,6 +33,7 @@ export function LogInPage() {
   const { data } = useQuery(GET_PROJECT_BY_PROJECT_USER_TOKEN, {
     variables: { token: invitationToken! },
     skip: !invitationToken,
+    fetchPolicy: 'cache-and-network',
   });
 
   const [loginRequest, loginRequestState] = useMutation(SIGNIN_MUTATION, {
