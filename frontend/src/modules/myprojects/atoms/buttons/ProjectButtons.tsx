@@ -99,7 +99,11 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
             <Button
               {...buttonStyle}
               leftIcon={<AttachmentIcon />}
-              bg={activePath === dailyReport ? 'orange.600' : 'transparent'}
+              bg={
+                activePath?.startsWith(dailyReport)
+                  ? 'orange.600'
+                  : 'transparent'
+              }
               onClick={() => handleNavigation(dailyReport)}
             >
               Daily report
