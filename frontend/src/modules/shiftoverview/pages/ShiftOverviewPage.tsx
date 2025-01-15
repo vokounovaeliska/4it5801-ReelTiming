@@ -33,18 +33,19 @@ export function ShiftOverviewPage() {
     }
   }, [roleData]);
 
+  useEffect(() => {
+    if (
+      roleError ||
+      !roleData ||
+      projectError ||
+      roleData.userRoleInProject !== 'ADMIN'
+    ) {
+      navigate(route.myprojects());
+    }
+  }, [roleError, roleData, projectError, navigate]);
+
   if (roleLoading || !auth.user || projectLoading) {
     return <LoadingSpinner title="shift overview" />;
-  }
-
-  if (
-    roleError ||
-    !roleData ||
-    projectError ||
-    roleData.userRoleInProject !== 'ADMIN'
-  ) {
-    navigate(route.myprojects());
-    return null;
   }
 
   return (
