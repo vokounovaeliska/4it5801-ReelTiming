@@ -48,7 +48,7 @@ export const DepartmentTable: React.FC<DepartmentTableProps> = ({
           <Box
             overflowX="auto"
             overflowY="auto"
-            maxHeight={isInModal ? { sm: '650px' } : 'auto'}
+            maxHeight={isInModal ? { sm: '600px' } : 'auto'}
             minW={isInModal ? 'fit-content' : { md: '700px', xl: '1000px' }}
             sx={{
               '::-webkit-scrollbar': {
