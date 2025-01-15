@@ -55,7 +55,7 @@ export function HomePage() {
         minHeight="100vh"
         bgGradient="linear(to-b, gray.800, #2D3748)"
         overflow="hidden"
-        pt={{ base: '70px', lg: '0px' }}
+        pt={{ base: '50px', lg: '0px' }}
       >
         <Box
           flex="0 0 50%"
@@ -68,7 +68,7 @@ export function HomePage() {
         >
           <Heading
             as="h1"
-            fontSize={{ base: '5xl', md: '7xl' }}
+            fontSize={{ base: '4xl', md: '7xl' }}
             mb={4}
             fontWeight="extrabold"
           >
@@ -82,7 +82,7 @@ export function HomePage() {
               Production Workflow
             </Text>
           </Heading>
-          <Text fontSize="xl" maxW="100%" mb={6} color="gray.300">
+          <Text fontSize="l" maxW="100%" mb={6} color="gray.300">
             Reeltiming — the ultimate tool for film professionals to track work
             hours, manage crews, and streamline the production process.
           </Text>
@@ -172,86 +172,42 @@ export function HomePage() {
           flexDirection={{ base: 'column', lg: 'row' }}
           justifyContent="center"
           alignItems="center"
-          gap={20}
-          px={6}
+          gap={100}
         >
-          <Box gap={50}>
-            <img
+          <Box
+            textAlign="center"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            <Image
               src="/dailyReport.png"
               alt="Dashboard overview"
-              style={{ maxWidth: '400px', borderRadius: '8px' }}
+              width="100%"
+              maxWidth={{ base: '300px', sm: '500px' }}
+              borderRadius="8px"
+              boxShadow="0px 4px 8px rgba(0,0,0,0.6)"
             />
             <Text fontSize="md" color="gray.600" pt={2}>
-              Visualize project progress with interactive dashboards.
+              Generate detailed daily report on demand.
             </Text>
           </Box>
-          <Box>
-            <img
+          <Box
+            textAlign="center"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            <Image
               src="/overallReport.png"
               alt="Detailed report"
-              style={{ maxWidth: '400px', borderRadius: '8px' }}
+              width="100%"
+              maxWidth={{ base: '300px', sm: '500px' }}
+              borderRadius="8px"
+              boxShadow="0px 4px 8px rgba(0,0,0,0.6)"
             />
             <Text fontSize="md" color="gray.600" pt={2}>
-              Generate detailed reports with a single click.
-            </Text>
-          </Box>
-        </Box>
-
-        <Heading
-          as="h2"
-          fontSize="4xl"
-          mt={12}
-          mb={6}
-          fontWeight="bold"
-          color="#2D3748"
-          pb={3}
-        >
-          Why Reporting Matters
-        </Heading>
-        <Text fontSize="xl" pb={6} color="gray.700" maxWidth="70rem" mx="5px">
-          Accurate and timely reports ensure transparency, accountability, and
-          efficiency in your production workflow. Use our tools to:
-          <ul
-            style={{
-              textAlign: 'left',
-              margin: '20px auto',
-              maxWidth: '60rem',
-            }}
-          >
-            <li>Track project timelines and budgets effortlessly.</li>
-            <li>
-              Generate insights on team performance and resource allocation.
-            </li>
-            <li>Identify bottlenecks and improve operational efficiency.</li>
-            <li>Share updates with stakeholders to maintain alignment.</li>
-          </ul>
-        </Text>
-        <Box
-          display="flex"
-          flexDirection={{ base: 'column', lg: 'row' }}
-          justifyContent="center"
-          alignItems="center"
-          gap={6}
-          px={6}
-        >
-          <Box>
-            <img
-              src="/dailyReport.png"
-              alt="Stakeholder report"
-              style={{ maxWidth: '300px', borderRadius: '8px' }}
-            />
-            <Text fontSize="md" color="gray.600" pt={2}>
-              Share key insights with your stakeholders.
-            </Text>
-          </Box>
-          <Box>
-            <img
-              src="/overallReport.png"
-              alt="Budget tracking"
-              style={{ maxWidth: '300px', borderRadius: '8px' }}
-            />
-            <Text fontSize="md" color="gray.600" pt={2}>
-              Stay on top of budgets and resources.
+              Generate overall reports with a single click.
             </Text>
           </Box>
         </Box>
@@ -275,6 +231,7 @@ export function HomePage() {
         >
           Ready to Simplify Your Workflow?
         </Heading>
+
         <Text fontSize="xl" pb={6} color="gray.700" maxWidth="70rem" mx="5px">
           Whether you're working on a student film or managing a large-scale
           production, our app is designed to simplify the process for projects
@@ -283,6 +240,7 @@ export function HomePage() {
             Focus on the art while we handle the logistics!
           </Text>
         </Text>
+        <AppBenefits />
 
         <Button
           as={ReactRouterLink}
@@ -295,7 +253,6 @@ export function HomePage() {
         >
           Get Started Now
         </Button>
-        <AppBenefits />
       </LandingBox>
 
       <Footer />
