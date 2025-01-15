@@ -43,7 +43,7 @@ export const DepartmentTable: React.FC<DepartmentTableProps> = ({
 }) => {
   return (
     <Box>
-      <DndProvider backend={HTML5Backend}>
+      <DndProvider backend={HTML5Backend} options={{ enableMouseEvents: true }}>
         <TableContainer className="custom-scrollbar">
           <Box
             overflowX="auto"
