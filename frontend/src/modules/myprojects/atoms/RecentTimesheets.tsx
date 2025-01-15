@@ -72,7 +72,7 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
     .slice(0, 5);
 
   if (recentTimesheets.length === 0) {
-    return <Text>No shifts found for this user in this project.</Text>;
+    return <Text>No shifts found.</Text>;
   }
 
   return (
@@ -88,7 +88,7 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
             <Tr>
               <Th>Date</Th>
               <Th>Shift Type</Th>
-              <Th>Time (From-To)</Th>
+              <Th>Call - wrap</Th>
               <Th>Claimed OT</Th>
             </Tr>
           </Thead>

@@ -21,7 +21,7 @@ export const LabelValue = ({
   <View style={styles.labelValue}>
     <Text>
       <Text style={styles.label}>
-        {label} {label === '' ? '' : ':'}{' '}
+        {label}{label === '' ? '' : ':'}{' '}
       </Text>
       <Text style={styles.value}>{value || ''}</Text>
     </Text>
