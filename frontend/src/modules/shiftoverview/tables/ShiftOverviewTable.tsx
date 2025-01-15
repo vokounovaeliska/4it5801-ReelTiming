@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { LockIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -14,6 +13,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
+import { FaBell, FaSave } from 'react-icons/fa';
 
 import {
   AddShiftOverviewMutation,
@@ -111,7 +111,7 @@ export const ShiftOverviewTable = ({
           colorScheme="orange"
           bgColor="orange.500"
           size="md"
-          leftIcon={<LockIcon />}
+          leftIcon={<FaSave />}
           borderRadius="full"
           boxShadow="md"
           isDisabled={!project.is_active}
@@ -137,8 +137,20 @@ export const ShiftOverviewTable = ({
           Save Changes
         </Button>
 
-        <Button onClick={onOpen} isDisabled={!project.is_active}>
-          Notify members
+        <Button
+          onClick={onOpen}
+          isDisabled={!project.is_active}
+          leftIcon={<FaBell />}
+          borderRadius="full"
+          boxShadow="md"
+          size="md"
+          mr={4}
+          _hover={{
+            transform: 'scale(1.1)',
+          }}
+          transition="all 0.3s ease"
+        >
+          Notify Members
         </Button>
         <NotifyMembersModal
           isOpen={isOpen}
