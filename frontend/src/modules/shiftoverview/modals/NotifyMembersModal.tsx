@@ -28,6 +28,10 @@ import {
   Project,
 } from '@frontend/gql/graphql';
 import { NOTIFY_USERS } from '@frontend/graphql/mutations/NotifyUsers';
+import {
+  showErrorToast,
+  showSuccessToast,
+} from '@frontend/shared/design-system/molecules/toastUtils';
 
 import { transformToMemberDateMap } from '../utils/shiftOverviewUtils';
 
@@ -40,6 +44,7 @@ type NotifyMembersModalProps = {
   >;
   workDays: Date[];
   project: Project;
+  refetch: () => void;
 };
 
 export const NotifyMembersModal = ({
@@ -48,6 +53,7 @@ export const NotifyMembersModal = ({
   membersByDate,
   workDays,
   project,
+  refetch,
 }: NotifyMembersModalProps) => {
   const [notifyUsers] = useMutation<
     NotifyUserMutation,
@@ -232,12 +238,19 @@ export const NotifyMembersModal = ({
             colorScheme="orange"
             mr={3}
             onClick={async () => {
-              notifyMembers(
-                message,
-                usersToNotify,
-                transformToMemberDateMap(membersByDate),
-              );
-              onClose();
+              try {
+                await notifyMembers(
+                  message,
+                  usersToNotify,
+                  transformToMemberDateMap(membersByDate),
+                );
+                showSuccessToast('Members notified successfully.');
+                onClose();
+              } catch (error) {
+                showErrorToast('Failed to notify members.');
+              } finally {
+                refetch();
+              }
             }}
             isDisabled={!notificationDate || usersToNotify.size === 0}
           >
