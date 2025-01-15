@@ -30,7 +30,7 @@ export function RegisterTemplate({
       display="flex"
       flexDirection="column"
       minHeight="100vh"
-      bgColor={'gray.50'}
+      bgColor="gray.50"
     >
       <Navbar children={undefined} />
       <Box
@@ -39,8 +39,9 @@ export function RegisterTemplate({
         alignItems="center"
         justifyContent="center"
         overflowY="auto"
-        padding={{ base: '4', sm: '6', md: '8' }}
-        mx={{ base: '0', sm: 'auto' }}
+        padding={{ sm: '6', md: '8' }}
+        mx={{ sm: 'auto' }}
+        mt={4}
         width="100%"
         maxWidth={{ base: '100%', sm: '90%', md: '60%' }}
       >

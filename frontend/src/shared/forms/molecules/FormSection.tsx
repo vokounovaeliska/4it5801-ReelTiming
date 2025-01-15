@@ -29,13 +29,16 @@ export function FormSection({
       }}
       columnGap="4"
     >
-      <Box flex="1" textAlign={'left'} mt={2}>
+      <Box flex="1" textAlign="left" mt={2}>
         <Heading fontSize={fontSize}>{title}</Heading>
         {description && <Paragraph>{description}</Paragraph>}
       </Box>
       <Stack
         flex="2"
-        p="8"
+        p={{
+          base: 4,
+          md: 8,
+        }}
         bg="white"
         borderRadius="md"
         boxShadow="lg"

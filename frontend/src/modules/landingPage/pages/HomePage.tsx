@@ -55,7 +55,7 @@ export function HomePage() {
         minHeight="100vh"
         bgGradient="linear(to-b, gray.800, #2D3748)"
         overflow="hidden"
-        pt={{ base: '70px', lg: '0px' }}
+        pt={{ base: '50px', lg: '0px' }}
       >
         <Box
           flex="0 0 50%"
@@ -68,7 +68,7 @@ export function HomePage() {
         >
           <Heading
             as="h1"
-            fontSize={{ base: '5xl', md: '7xl' }}
+            fontSize={{ base: '4xl', md: '7xl' }}
             mb={4}
             fontWeight="extrabold"
           >
@@ -82,7 +82,7 @@ export function HomePage() {
               Production Workflow
             </Text>
           </Heading>
-          <Text fontSize="xl" maxW="100%" mb={6} color="gray.300">
+          <Text fontSize="l" maxW="100%" mb={6} color="gray.300">
             Reeltiming — the ultimate tool for film professionals to track work
             hours, manage crews, and streamline the production process.
           </Text>
@@ -131,7 +131,6 @@ export function HomePage() {
 
       <LandingBox
         bgGradient="linear(to-b, #2D3748, #b05e2a)"
-        //bgGradient="linear(to-b, #2D3748, orange.500)"
         pt={16}
         pb={{ base: 10, lg: 16 }}
         px={{ base: '2', mb: '8' }}
@@ -141,9 +140,81 @@ export function HomePage() {
       </LandingBox>
 
       <LandingBox
-        // bgGradient="linear(to-b, #b05e2a, orange.50, white)"
-        //bgGradient="linear(to-b, #b05e2a, orange.100, , white)"
         bgGradient="linear(to-b, #b05e2a, white)"
+        pt={{ base: 8, lg: 12 }}
+        pb={5}
+        color="gray.800"
+        minHeight="40vh"
+        textAlign="center"
+      >
+        <Heading
+          as="h2"
+          fontSize="5xl"
+          mb={6}
+          fontWeight="bold"
+          color="#2D3748"
+          pb={3}
+        >
+          Comprehensive Reporting Made Easy
+        </Heading>
+        <Text fontSize="xl" pb={6} color="gray.700" maxWidth="70rem" mx="5px">
+          Our reporting tools are designed to give you a complete overview of
+          your production, from budgets to crew hours, in a single dashboard.
+          Generate detailed reports that help you make informed decisions,
+          manage resources effectively, and stay on track.
+          <Text as="span" display="block">
+            Simplify data collection and analysis, so you can focus on creating
+            exceptional content.
+          </Text>
+        </Text>
+        <Box
+          display="flex"
+          flexDirection={{ base: 'column', lg: 'row' }}
+          justifyContent="center"
+          alignItems="center"
+          gap={100}
+        >
+          <Box
+            textAlign="center"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            <Image
+              src="/dailyReport.png"
+              alt="Dashboard overview"
+              width="100%"
+              maxWidth={{ base: '300px', sm: '500px' }}
+              borderRadius="8px"
+              boxShadow="0px 4px 8px rgba(0,0,0,0.6)"
+            />
+            <Text fontSize="md" color="gray.600" pt={2}>
+              Generate detailed daily report on demand.
+            </Text>
+          </Box>
+          <Box
+            textAlign="center"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            <Image
+              src="/overallReport.png"
+              alt="Detailed report"
+              width="100%"
+              maxWidth={{ base: '300px', sm: '500px' }}
+              borderRadius="8px"
+              boxShadow="0px 4px 8px rgba(0,0,0,0.6)"
+            />
+            <Text fontSize="md" color="gray.600" pt={2}>
+              Generate overall reports with a single click.
+            </Text>
+          </Box>
+        </Box>
+      </LandingBox>
+
+      <LandingBox
+        bgGradient="linear(to-b, white, white)"
         pt={{ base: 8, lg: 12 }}
         pb={5}
         color="gray.800"
@@ -155,13 +226,12 @@ export function HomePage() {
           fontSize="5xl"
           mb={6}
           fontWeight="bold"
-          //bgGradient="linear(to-l, gray.800, #2D3748)"
-          //bgClip="text"
           color="#2D3748"
           pb={3}
         >
           Ready to Simplify Your Workflow?
         </Heading>
+
         <Text fontSize="xl" pb={6} color="gray.700" maxWidth="70rem" mx="5px">
           Whether you're working on a student film or managing a large-scale
           production, our app is designed to simplify the process for projects
@@ -170,6 +240,7 @@ export function HomePage() {
             Focus on the art while we handle the logistics!
           </Text>
         </Text>
+        <AppBenefits />
 
         <Button
           as={ReactRouterLink}
@@ -182,7 +253,6 @@ export function HomePage() {
         >
           Get Started Now
         </Button>
-        <AppBenefits />
       </LandingBox>
 
       <Footer />

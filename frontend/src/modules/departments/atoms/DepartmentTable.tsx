@@ -24,6 +24,7 @@ interface DepartmentTableProps {
     isDragging: boolean,
   ) => void;
   handleDragEnd: () => void;
+  isInModal?: boolean;
 }
 
 const tableHeaders = [
@@ -38,15 +39,17 @@ export const DepartmentTable: React.FC<DepartmentTableProps> = ({
   projectId,
   handleMoveDepartment,
   handleDragEnd,
+  isInModal,
 }) => {
   return (
     <Box>
-      <DndProvider backend={HTML5Backend}>
+      <DndProvider backend={HTML5Backend} options={{ enableMouseEvents: true }}>
         <TableContainer className="custom-scrollbar">
           <Box
             overflowX="auto"
             overflowY="auto"
-            maxHeight={{ base: '430px', sm: '530px' }}
+            maxHeight={isInModal ? { sm: '650px' } : 'auto'}
+            minW={isInModal ? 'fit-content' : { md: '700px', xl: '1000px' }}
             sx={{
               '::-webkit-scrollbar': {
                 height: '12px',
@@ -59,6 +62,7 @@ export const DepartmentTable: React.FC<DepartmentTableProps> = ({
                 background: '#888',
                 borderRadius: '6px',
               },
+
               '::-webkit-scrollbar-thumb:hover': {
                 background: '#555',
               },
@@ -70,7 +74,7 @@ export const DepartmentTable: React.FC<DepartmentTableProps> = ({
               variant="simple"
               size="sm"
               w="max-content"
-              width={{ base: '100vh', sm: '100vh' }}
+              width={{ base: '100%', sm: '100%' }}
             >
               <Thead position="sticky" top={0} zIndex="docked">
                 <Tr>

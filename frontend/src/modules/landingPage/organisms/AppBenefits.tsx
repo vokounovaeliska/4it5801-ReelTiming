@@ -11,6 +11,7 @@ const AppBenefits = () => (
     justifyContent="center"
     gap={8}
     mb={6}
+    p={30}
     flexDirection={{ base: 'column', md: 'row' }}
   >
     <Benefit

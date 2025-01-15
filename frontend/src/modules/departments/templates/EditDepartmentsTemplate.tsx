@@ -20,11 +20,13 @@ import { CreateDepartmentForm } from '../forms/CreateDepartmentForm';
 interface EditDepartmentsTemplateProps {
   projectId?: string;
   userRole: string | null | undefined;
+  isInModal?: boolean;
 }
 
 export function EditDepartmentsTemplate({
   projectId,
   userRole,
+  isInModal,
 }: EditDepartmentsTemplateProps) {
   const auth = useAuth();
   const navigate = useNavigate();
@@ -171,6 +173,7 @@ export function EditDepartmentsTemplate({
         projectId={projectId}
         handleMoveDepartment={moveDepartment}
         handleDragEnd={handleDragEnd}
+        isInModal={isInModal}
       />
 
       <CustomModal

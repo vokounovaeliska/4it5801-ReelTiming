@@ -127,7 +127,7 @@ export function MyProjectSettingPage() {
           castProjectUserIntoCrewMemberData(personalProjectData) || undefined
         }
         userRole={roleData?.userRoleInProject ?? 'CREW'}
-        projectCurrency={personalProjectData?.project?.currency}
+        project={personalProjectData?.project}
         cars={personalProjectData?.projectUserByUserIdAndProjectId?.car ?? []}
         carStatements={cleanedStatements ?? []}
       />

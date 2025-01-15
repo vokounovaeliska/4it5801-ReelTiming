@@ -51,7 +51,7 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
         <Box
           overflowX="auto"
           overflowY="auto"
-          maxHeight={'76vh'}
+          // maxHeight={'76vh'} TODO zkontroluju na vice datech na serveru
           sx={{
             '::-webkit-scrollbar': {
               height: '12px',
