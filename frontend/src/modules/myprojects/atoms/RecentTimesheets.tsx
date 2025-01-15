@@ -27,8 +27,8 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
     data: dataUserInfo,
   } = useQuery(GET_CREWUSERINFO_TIMESHEETS, {
     variables: { userId, projectId },
-    fetchPolicy: 'cache-first',
-    nextFetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
 
   const {
@@ -38,8 +38,8 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
   } = useQuery(GET_CREW_STATEMENTS, {
     skip: !dataUserInfo?.projectUserDetails?.id,
     variables: { projectUserId: dataUserInfo?.projectUserDetails?.id! },
-    fetchPolicy: 'cache-first',
-    nextFetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
 
   if (loadingUserInfo || loadingTimesheets) {
