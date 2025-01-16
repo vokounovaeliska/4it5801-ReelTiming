@@ -66,7 +66,7 @@ export function CrewListForm({
   const [sendInvite, setSendInvite] = useState(false);
 
   const oldCars = cars;
-  const [carData, setCarData] = useState<Car[]>([]);
+  const [carData, setCarData] = useState<Car[]>(cars || []);
 
   const handleCarCollectionChange = (cars: Car[]) => {
     setCarData(cars);

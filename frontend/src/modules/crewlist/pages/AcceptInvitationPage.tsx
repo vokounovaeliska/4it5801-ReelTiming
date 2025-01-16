@@ -29,6 +29,7 @@ export function AcceptInvitationPage() {
   const { data, loading, error } = useQuery(GET_PROJECT_USER_BY_TOKEN, {
     variables: { token: token! },
     skip: !token,
+    fetchPolicy: 'cache-and-network',
   });
 
   const [UpdateAdActivateProjectUser] = useMutation(

@@ -34,8 +34,8 @@ export function MyProjectDetailPage() {
   } = useQuery(GET_PROJECT_DETAILS, {
     variables: { id: id! },
     skip: !id,
-    fetchPolicy: 'cache-first',
-    nextFetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
 
   const {

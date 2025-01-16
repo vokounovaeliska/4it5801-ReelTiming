@@ -39,6 +39,13 @@ import { CarResolver } from '@backend/graphql/modules/car/carResolver';
 import { ShootingDayResolver } from '@backend//graphql/modules/shootingDay/shootingDayResolver';
 import { DailyReportResolver } from '@backend//graphql/modules/dailyReport/dailyReportResolver';
 import { ShiftOverviewResolver } from '@backend//graphql/modules/shiftOverview/shiftOverviewResolver';
+import { getCarRepository } from './graphql/modules/car/carRepository';
+import { getDailyReportRepository } from './graphql/modules/dailyReport/dailyReportRepository';
+import { getDepartmentRepository } from './graphql/modules/department/departamentRepository';
+import { getRateRepository } from './graphql/modules/rate/rateRepository';
+import { getShootingDayRepository } from './graphql/modules/shootingDay/shootingDayRepository';
+import { getStatementRepository } from './graphql/modules/statement/statementRepository';
+import { getShiftOveviewRepository } from './graphql/modules/shiftOverview/shiftOverviewRepository';
 
 const init = async () => {
   const app = express();
@@ -87,12 +94,23 @@ const init = async () => {
       drizzle?.connection.end();
     });
 
+    res.on('finish', () => {
+      drizzle?.connection.end();
+    });
+
     return {
       db: drizzle.db,
       authUser,
       userRepository: getUserRepository(drizzle.db),
       projectRepository: getProjectRepository(drizzle.db),
       projectUserRepository: getProjectUserRepository(drizzle.db),
+      carRepository: getCarRepository(drizzle.db),
+      dailyReportRepository: getDailyReportRepository(drizzle.db),
+      departmentRepository: getDepartmentRepository(drizzle.db),
+      rateRepository: getRateRepository(drizzle.db),
+      shiftOverviewRepository: getShiftOveviewRepository(drizzle.db),
+      shootingDayRepository: getShootingDayRepository(drizzle.db),
+      statementRepository: getStatementRepository(drizzle.db),
     };
   };
 
@@ -118,9 +136,9 @@ const init = async () => {
     if (!projectUserId || !startDate || !endDate) {
       res.status(400).send('Missing parameters');
     }
-
+    let drizzle;
     try {
-      const drizzle = await getConnection();
+      drizzle = await getConnection();
 
       const pdfGeneratorService = new timesheetPdfGeneratorService(drizzle.db);
       const pdfStream = await pdfGeneratorService.generatePdfReport(
@@ -141,6 +159,10 @@ const init = async () => {
     } catch (error) {
       console.error('Error generating PDF:', error);
       res.status(500).send('Error generating PDF');
+    } finally {
+      if (drizzle && drizzle.connection) {
+        drizzle.connection.end();
+      }
     }
   });
 
