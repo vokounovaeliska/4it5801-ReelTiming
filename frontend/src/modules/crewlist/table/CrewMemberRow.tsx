@@ -16,7 +16,6 @@ export const CrewMemberRow = ({
   handleEditMemberClick,
   sendInvitation,
   handleRemoveButtonClick,
-  userRoleInProject,
 }: {
   user: ProjectUser;
   project: Project;
@@ -28,7 +27,6 @@ export const CrewMemberRow = ({
     resend: boolean,
   ) => void;
   handleRemoveButtonClick: (userId: string) => void;
-  userRoleInProject: string;
 }) => {
   const userData: CrewMemberData = {
     id: user.id,
@@ -161,7 +159,7 @@ export const CrewMemberRow = ({
         />
         <DeleteCrewButton
           userId={user.id}
-          userRoleInProject={userRoleInProject}
+          crewRole={user?.role}
           handleRemoveButtonClick={handleRemoveButtonClick}
           isDisabled={!project.is_active}
         />

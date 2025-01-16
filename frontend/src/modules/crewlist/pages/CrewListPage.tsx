@@ -172,7 +172,6 @@ export function CrewListPage() {
           handleEditMemberClick={handleEditMemberClick}
           handleRemoveButtonClick={handleRemoveButtonClick}
           sendInvitation={sendInvitation}
-          userRoleInProject={crewList?.userRoleInProject!}
           project={crewList?.project!}
         ></CrewListTable>
       </Box>
