@@ -94,6 +94,10 @@ const init = async () => {
       drizzle?.connection.end();
     });
 
+    res.on('finish', () => {
+      drizzle?.connection.end();
+    });
+
     return {
       db: drizzle.db,
       authUser,
@@ -132,9 +136,9 @@ const init = async () => {
     if (!projectUserId || !startDate || !endDate) {
       res.status(400).send('Missing parameters');
     }
-
+    let drizzle;
     try {
-      const drizzle = await getConnection();
+      drizzle = await getConnection();
 
       const pdfGeneratorService = new timesheetPdfGeneratorService(drizzle.db);
       const pdfStream = await pdfGeneratorService.generatePdfReport(
@@ -155,6 +159,10 @@ const init = async () => {
     } catch (error) {
       console.error('Error generating PDF:', error);
       res.status(500).send('Error generating PDF');
+    } finally {
+      if (drizzle && drizzle.connection) {
+        drizzle.connection.end();
+      }
     }
   });
 
