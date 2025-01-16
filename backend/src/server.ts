@@ -39,6 +39,13 @@ import { CarResolver } from '@backend/graphql/modules/car/carResolver';
 import { ShootingDayResolver } from '@backend//graphql/modules/shootingDay/shootingDayResolver';
 import { DailyReportResolver } from '@backend//graphql/modules/dailyReport/dailyReportResolver';
 import { ShiftOverviewResolver } from '@backend//graphql/modules/shiftOverview/shiftOverviewResolver';
+import { getCarRepository } from './graphql/modules/car/carRepository';
+import { getDailyReportRepository } from './graphql/modules/dailyReport/dailyReportRepository';
+import { getDepartmentRepository } from './graphql/modules/department/departamentRepository';
+import { getRateRepository } from './graphql/modules/rate/rateRepository';
+import { getShootingDayRepository } from './graphql/modules/shootingDay/shootingDayRepository';
+import { getStatementRepository } from './graphql/modules/statement/statementRepository';
+import { getShiftOveviewRepository } from './graphql/modules/shiftOverview/shiftOverviewRepository';
 
 const init = async () => {
   const app = express();
@@ -93,6 +100,13 @@ const init = async () => {
       userRepository: getUserRepository(drizzle.db),
       projectRepository: getProjectRepository(drizzle.db),
       projectUserRepository: getProjectUserRepository(drizzle.db),
+      carRepository: getCarRepository(drizzle.db),
+      dailyReportRepository: getDailyReportRepository(drizzle.db),
+      departmentRepository: getDepartmentRepository(drizzle.db),
+      rateRepository: getRateRepository(drizzle.db),
+      shiftOverviewRepository: getShiftOveviewRepository(drizzle.db),
+      shootingDayRepository: getShootingDayRepository(drizzle.db),
+      statementRepository: getStatementRepository(drizzle.db),
     };
   };
 
