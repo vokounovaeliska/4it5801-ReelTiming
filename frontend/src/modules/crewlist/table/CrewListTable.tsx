@@ -18,7 +18,6 @@ interface CrewListTableProps {
     email: string,
     resend: boolean,
   ) => void;
-  userRoleInProject: string;
   project: Project;
 }
 
@@ -42,7 +41,6 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
   handleEditMemberClick,
   handleRemoveButtonClick,
   sendInvitation,
-  userRoleInProject,
   project,
 }) => {
   return (
@@ -130,7 +128,6 @@ const CrewListTable: React.FC<CrewListTableProps> = ({
                       handleEditMemberClick={handleEditMemberClick}
                       sendInvitation={sendInvitation}
                       handleRemoveButtonClick={handleRemoveButtonClick}
-                      userRoleInProject={userRoleInProject}
                     />
                   ))}
                 </>

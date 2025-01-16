@@ -143,7 +143,7 @@ export function TimesheetPage() {
 
   const userRole = roleData?.userRoleInProject;
 
-  if (roleData?.userRoleInProject !== ('ADMIN' || 'CREW') && !loading) {
+  if (roleData?.userRoleInProject !== 'ADMIN' && userRole !== 'CREW') {
     navigate(route.myprojects());
     return null;
   }

@@ -27,8 +27,8 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
     data: dataUserInfo,
   } = useQuery(GET_CREWUSERINFO_TIMESHEETS, {
     variables: { userId, projectId },
-    fetchPolicy: 'cache-first',
-    nextFetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
 
   const {
@@ -38,8 +38,8 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
   } = useQuery(GET_CREW_STATEMENTS, {
     skip: !dataUserInfo?.projectUserDetails?.id,
     variables: { projectUserId: dataUserInfo?.projectUserDetails?.id! },
-    fetchPolicy: 'cache-first',
-    nextFetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
 
   if (loadingUserInfo || loadingTimesheets) {
@@ -72,7 +72,7 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
     .slice(0, 5);
 
   if (recentTimesheets.length === 0) {
-    return <Text>No shifts found for this user in this project.</Text>;
+    return <Text>No shifts found.</Text>;
   }
 
   return (
@@ -88,7 +88,7 @@ const RecentTimesheets: React.FC<RecentTimesheetsProps> = ({
             <Tr>
               <Th>Date</Th>
               <Th>Shift Type</Th>
-              <Th>Time (From-To)</Th>
+              <Th>Call - wrap</Th>
               <Th>Claimed OT</Th>
             </Tr>
           </Thead>

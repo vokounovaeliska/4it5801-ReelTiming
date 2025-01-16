@@ -11,8 +11,8 @@ export const useProjectDetails = (projectId: string) => {
   } = useQuery<{ project: Project }>(GET_PROJECT_DETAILS, {
     skip: !projectId,
     variables: { id: projectId },
-    fetchPolicy: 'cache-first',
-    nextFetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
 
   return { projectData, projectLoading, projectError };

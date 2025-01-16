@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import { FaDownload } from 'react-icons/fa';
 
@@ -10,6 +11,7 @@ type PDFGeneratorProps = {
 };
 
 const PDFGenerator = ({ data }: PDFGeneratorProps) => {
+  const [isHovered, setIsHovered] = useState(false);
   return (
     <div style={{ textAlign: 'center', margin: '0 20px' }}>
       <PDFDownloadLink
@@ -19,15 +21,17 @@ const PDFGenerator = ({ data }: PDFGeneratorProps) => {
           marginBottom: '20px',
           textAlign: 'right',
           padding: '10px 20px',
-          backgroundColor: '#DD6B20',
+          backgroundColor: isHovered ? '#C05621' : '#DD6B20',
           color: 'white',
-          borderRadius: '5px',
+          borderRadius: '25px',
           fontSize: '16px',
           fontWeight: 'bold',
           display: 'flex',
           width: 'fit-content',
           justifySelf: 'flex-end',
         }}
+        onMouseEnter={() => setIsHovered(true)} // Změna stavu při najetí myší
+        onMouseLeave={() => setIsHovered(false)} // Změna stavu při opuštění tlačítka
       >
         <FaDownload style={{ marginRight: '10px' }} />
         Download Report
