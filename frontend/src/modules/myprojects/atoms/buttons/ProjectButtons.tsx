@@ -66,14 +66,6 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
         >
           Dashboard
         </Button>
-        <Button
-          {...buttonStyle}
-          leftIcon={<CiViewTimeline />}
-          bg={activePath === timesheetsPath ? 'orange.600' : 'transparent'}
-          onClick={() => handleNavigation(timesheetsPath)}
-        >
-          Shifts
-        </Button>
         {userRole === 'ADMIN' && (
           <>
             <Button
@@ -88,14 +80,22 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
         )}
         <Button
           {...buttonStyle}
-          leftIcon={<BsPersonGear />}
-          bg={activePath === myProjectSettings ? 'orange.600' : 'transparent'}
-          onClick={() => handleNavigation(myProjectSettings)}
+          leftIcon={<CiViewTimeline />}
+          bg={activePath === timesheetsPath ? 'orange.600' : 'transparent'}
+          onClick={() => handleNavigation(timesheetsPath)}
         >
-          My Settings
+          Shifts
         </Button>
         {userRole === 'ADMIN' && (
           <>
+            <Button
+              {...buttonStyle}
+              leftIcon={<RepeatClockIcon />}
+              bg={activePath === shiftsOverview ? 'orange.600' : 'transparent'}
+              onClick={() => handleNavigation(shiftsOverview)}
+            >
+              Overview
+            </Button>
             <Button
               {...buttonStyle}
               leftIcon={<AttachmentIcon />}
@@ -108,23 +108,25 @@ const ProjectButtons: React.FC<ProjectButtonsProps> = ({
             >
               Reports
             </Button>
-            <Button
-              {...buttonStyle}
-              leftIcon={<RepeatClockIcon />}
-              bg={activePath === shiftsOverview ? 'orange.600' : 'transparent'}
-              onClick={() => handleNavigation(shiftsOverview)}
-            >
-              Overview
-            </Button>
-            <Button
-              {...buttonStyle}
-              leftIcon={<MdBuild />}
-              bg={activePath === editPath ? 'orange.600' : 'transparent'}
-              onClick={() => handleNavigation(editPath)}
-            >
-              Edit Project
-            </Button>
           </>
+        )}
+        <Button
+          {...buttonStyle}
+          leftIcon={<BsPersonGear />}
+          bg={activePath === myProjectSettings ? 'orange.600' : 'transparent'}
+          onClick={() => handleNavigation(myProjectSettings)}
+        >
+          My Settings
+        </Button>
+        {userRole === 'ADMIN' && (
+          <Button
+            {...buttonStyle}
+            leftIcon={<MdBuild />}
+            bg={activePath === editPath ? 'orange.600' : 'transparent'}
+            onClick={() => handleNavigation(editPath)}
+          >
+            Edit Project
+          </Button>
         )}
       </StackComponent>
     </Box>
