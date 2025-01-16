@@ -21,8 +21,8 @@ const DashboardCostsAdmin: React.FC<DashboardCostsProps> = ({
 }) => {
   const { data, loading, error } = useQuery(GET_ADMIN_STATEMENTS_LIGHT, {
     variables: { projectId },
-    fetchPolicy: 'cache-first',
-    nextFetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
 
   if (loading) return <Text>Loading...</Text>;
