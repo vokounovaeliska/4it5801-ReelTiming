@@ -1,5 +1,19 @@
-# [4IT580: Agilní vývoj webových aplikací](http://4it580.vse.cz/) na [VŠE](https://www.vse.cz/)
+# ReelTiming
 
+ReelTiming is a web-based application designed to simplify the management of film production crews. It helps production teams coordinate work, track attendance, and monitor tasks efficiently. The application ensures transparency in work schedules and offers tools for generating detailed reports.
+
+#### Features
+- **Crew Management**: Organize crew members by roles, departments, and availability.
+- **Attendance Tracking**: Log workdays with start dates, start times, and end times.
+- **Report Generation**: Generate PDF reports summarizing attendance and project updates.
+- **Responsive Design**: Optimized for both desktop and mobile use.
+
+#### Technology Stack
+- **Frontend**: React with Chakra UI for an intuitive, modern interface.
+- **Backend**: Node.js with TypeScript for scalable and maintainable code.
+- **Database**: Relational database for reliable data handling.
+
+ReelTiming was developed as part of the **4IT580: Agile Development of Web Applications** course at VŠE (University of Economics in Prague), applying agile principles and modern web development practices.
 ## [📖 4IT580: Docs](https://vse-4it580-docs-2024.vercel.app)
 
 ## JavaScript
@@ -55,15 +69,3 @@ To run Prettier, ESLint, and TypeScript checks run following command:
 ```shell
 yarn check-all
 ```
-
-## Server Setup
-
-### SSH
-
-- `ssh username@vse.handson.pro`
-- frontend code: `cd ~/code/cviceni/frontend`
-
-### Domains
-
-- [dev-frontend-**username**-vse.handson.pro](http://dev-frontend-username-vse.handson.pro)
-- [dev-backend-**username**-vse.handson.pro](http://dev-backend-username-vse.handson.pro)
